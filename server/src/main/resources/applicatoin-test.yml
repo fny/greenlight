@@ -1,0 +1,8 @@
+micronaut:
+
+
+twilio:
+  sid: xxxxx
+  auth: sxxxx
+  phones:
+    - qqweqweqwe

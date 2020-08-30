@@ -1,0 +1,30 @@
+micronaut:
+  application:
+    name: greenlight
+    io:
+      # live gradle rebuild on file change
+      watch:
+        paths: src/main
+        restart: true
+  server:
+    port: 1337
+
+#   Built-in Endpoints
+#  GET /beans – returns information about the loaded bean definitions
+#  GET /info – returns static information from the state of the application
+#  GET /health – exposes “healthcheck”
+#  POST /refresh – it is refresh the application state, all the beans annotated with @Refreshable will be reloaded
+#  GET /routes – returns information about URIs exposed by the application
+#  GET /logger – returns information about the available loggers
+#  GET /caches – returns information about the caches
+#  POST /stop – it shuts down the application server
+endpoints:
+  all:
+    enabled: true
+    sensitive: false
+
+twilio: # todo replace with greenlight dev keys
+  sid: "ACafe08922ab964b8992ee91ecbcf937e4"
+  auth: "11e184e568c34af2ef0391270c07cb08"
+  phones:
+    - "12026882299"

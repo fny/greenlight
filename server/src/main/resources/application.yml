@@ -1,0 +1,19 @@
+micronaut:
+  application:
+    name: greenlight
+    # todo probably useful in live setup in order to maintain unique logs
+    #instance: $(random.shortuuid)
+  server:
+    port: 80
+    # ram
+    
+    # connections
+    #
+
+# todo replace with greenlight keys
+twilio:
+  sid:  "todo"
+  auth: "todo"
+  phones:
+    - "todo"
+
