@@ -1,0 +1,34 @@
+.SplashPage, .SplashPage .login-screen-content, .SplashPage .login-screen-page, .SplashPage .login-screen .page {
+  background-color: var(--gl-green) !important;
+}
+
+/* TODO: Add fix for screens < 320px (Galaxy Fold is 280px) */
+
+.SplashPage .welcome {
+  font-family: var(--gl-title-font);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: -1rem;
+}
+
+.SplashPage .logo {
+  font-family: var(--gl-title-font);
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+
+.SplashPage .logo > span {
+  color: var(--gl-green-light);
+}
+
+
+.SplashPage .button {
+  color: #fff;
+  border-color: #fff;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}

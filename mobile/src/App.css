@@ -1,0 +1,15 @@
+body, #root {
+  background-image: url(/images/gl-desktop-bg.png);
+  background-repeat: repeat-y;
+  background-size: cover;
+  background-position: center;
+}
+.device-desktop .App {
+  max-width: 400px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.block-title {
+  color: var(--gl-green-dark) !important;
+}

@@ -1,0 +1,12 @@
+
+.SignInPage .greenlight-logo {
+  color: var(--gl-green);
+  font-weight: bold;
+  font-family: var(--gl-title-font);
+  text-align: center;
+  font-size: 32px;
+}
+
+.SignInPage .greenlight-logo > span {
+  color: var(--gl-green-light);
+}
