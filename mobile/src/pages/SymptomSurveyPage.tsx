@@ -1,8 +1,9 @@
 import React, { useState, getGlobal } from 'reactn'
 import { Row, Col, Page, Navbar, Link, Block, BlockTitle, Segmented, Button } from 'framework7-react'
-import fixtures, { User } from '../fixtures'
+import fixtures from '../fixtures'
 import { Case, When } from '../components/Case'
 import './SymptomSurveyPage.css'
+import { User } from '../models/user'
 
 interface SymptomButtonProps {
   title: string
@@ -87,6 +88,31 @@ export default class SymptomSurveyPage extends React.Component<SurveyProps, Surv
     hadContact: null,
   }
 
+  childId() {
+    const rawId = this.$f7route.params['id']
+    if (!rawId) throw new Error('Child id missing')
+    return parseInt(rawId)
+  }
+
+  child(): User {
+    return this.global.currentUser.children[this.childId() - 1]
+  }
+
+  hasNextChild() {
+    return this.childId() < this.global.currentUser.children.length
+  }
+
+  nextChild() {
+    if (!this.hasNextChild()) {
+      return null
+    }
+    return this.global.currentUser.children[this.childId()]
+  }
+
+  childCount() {
+    return this.global.currentUser.children.length
+  }
+
   submittingForSelf() {
     return this.state.submittingUser == this.state.targetUser
   }
@@ -113,12 +139,13 @@ export default class SymptomSurveyPage extends React.Component<SurveyProps, Surv
   }
 
   render() {
+    const child = this.child()
     return (
       <Page>
         <Navbar title="Symptom Survey" backLink="Back"></Navbar>
         <Block>
           <div className="survey-title">
-            Does {this.state.targetUser.firstName} have any of these symptoms?
+            Does {child.firstName} have any of these symptoms?
           </div>
         </Block>
         <div className="SymptomButtons">
@@ -162,10 +189,9 @@ export default class SymptomSurveyPage extends React.Component<SurveyProps, Surv
               you to quarantine?
             </When>
             <When value={false}>
-              Has {this.state.targetUser.firstName} had close contact—within 6
-              feet for at least 15 minutes—with someone diagnosed with COVID-19?
-              Has a health worker advised {this.state.targetUser.firstName} to
-              quarantine?
+              Has {child.firstName} had close contact—within 6 feet for at least
+              15 minutes—with someone diagnosed with COVID-19? Has a health
+              worker advised {child.firstName} to quarantine?
             </When>
           </Case>
           <br />
@@ -180,8 +206,8 @@ export default class SymptomSurveyPage extends React.Component<SurveyProps, Surv
               Have you been diagnosed with or tested positive for COVID-19?
             </When>
             <When value={false}>
-              Has {this.state.targetUser.firstName} been diagnosed with or
-              tested positive for COVID-19?
+              Has {child.firstName} been diagnosed with or tested positive for
+              COVID-19?
             </When>
           </Case>
           <YesNoButton
@@ -189,9 +215,21 @@ export default class SymptomSurveyPage extends React.Component<SurveyProps, Surv
             yesNo={this.state.hadDiagnosis}
           />
           <br />
-          <Button large fill>
-            Continue to Bart
-          </Button>
+          <Case test={this.hasNextChild()}>
+            <When value={true}>
+              <Button
+                href={`/welcome-parent/surveys/children/${this.childId() + 1}`}
+                fill
+              >
+                Continue to {this.nextChild()?.firstName}
+              </Button>
+            </When>
+            <When value={false}>
+              <Button fill href={`/welcome-parent/thank-you`}>
+                Finish
+              </Button>
+            </When>
+          </Case>
         </Block>
       </Page>
     )

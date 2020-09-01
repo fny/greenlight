@@ -43,7 +43,7 @@ export default class extends React.Component<Props, State> {
           <Case test={this.global.currentUser.children.length > 0}>
             <When value={true}>
               <p>Next you'll review your children.</p>
-              <Button large fill>
+              <Button large fill href="/welcome-parent/children/1">
                 Continue
               </Button>
             </When>

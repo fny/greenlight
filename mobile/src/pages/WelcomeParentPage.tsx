@@ -23,9 +23,8 @@ import {
 import { Case, When } from "../components/Case"
 
 import pluralize from "pluralize"
-
-import fixtures, { User } from '../fixtures'
 import { timeOfDay } from "../util";
+import { User } from '../models/user'
 
 
 interface Props {}
@@ -42,7 +41,7 @@ export default class WelcomeParentPage extends React.Component<Props, State> {
   }
 
   totalLocations() {
-    const user = this.global.currentUser
+    const user: User = this.global.currentUser
     return user.locations.length + user.children.map(x => x.locations.length).reduce((x, y) => x + y)
   }
 

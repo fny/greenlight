@@ -36,7 +36,7 @@ export default class SignInPage extends React.Component<SignInProps, SignInState
   }
 
   demoSignIn() {
-    this.setGlobal({ currentUser: fixtures.users.marge })
+    this.setGlobal({ currentUser: fixtures.users.mother })
     this.$f7router.navigate('/welcome-parent')
   }
 

@@ -62,6 +62,14 @@ export default [
     component: WelcomeParentReviewChildPage,
   },
   {
+    path: '/welcome-parent/surveys/children/:id',
+    component: SymptomSurveyPage,
+  },
+  {
+    path: '/welcome-parent/thank-you',
+    component: ThankYouPage,
+  },
+  {
     path: '(.*)',
     component: NotFoundPage,
   },

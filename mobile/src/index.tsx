@@ -24,7 +24,7 @@ Framework7.use(Framework7React)
 // })
 
 setGlobal({
-  currentUser: fixtures.users.marge
+  currentUser: fixtures.users.mother
 })
 
 ReactDOM.render(

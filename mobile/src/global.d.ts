@@ -1,4 +1,4 @@
-import { User } from "./fixtures";
+import {  User } from "./models/user";
 
 declare module "reactn/default" {
   // export interface Reducers {

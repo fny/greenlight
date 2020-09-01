@@ -2,6 +2,7 @@ import { Case, When } from '../../components/Case'
 import React from 'reactn'
 import { Page, Navbar, Block, Link, List, ListItem, ListInput, Row, Col, Button } from 'framework7-react'
 
+import { User } from '../../models/user'
 import pluralize from 'pluralize'
 
 interface Props {}
@@ -15,7 +16,7 @@ export default class extends React.Component<Props, State> {
     return parseInt(rawId)
   }
 
-  child() {
+  child(): User {
     return this.global.currentUser.children[this.childId() - 1]
   }
 
@@ -71,11 +72,13 @@ export default class extends React.Component<Props, State> {
           </When>
           {/* Last Child */}
           <When value={user.children[user.children.length - 1] === child}>
-            <Block>Take a moment to review Bart's information.</Block>
+            <Block>
+              Take a moment to review {child.firstName}'s information.
+            </Block>
           </When>
           <When value={true}>
             <Block>
-              Finally, take a moment to review Maggie's information.
+              Finally, take a moment to review {child.firstName}'s information.
             </Block>
           </When>
         </Case>
@@ -104,7 +107,7 @@ export default class extends React.Component<Props, State> {
         <List noHairlines>
           <ListItem footer="Who is Lisa's primary care doctor?">
             <div slot="title">
-              <b>Lisa's Primary Care (Optional)</b>
+              <b>{child.firstName}'s Primary Care (Optional)</b>
             </div>
           </ListItem>
           <ListItem
@@ -127,12 +130,17 @@ export default class extends React.Component<Props, State> {
         <Block>
           <Case test={this.hasNextChild()}>
             <When value={true}>
-              <Button href={`/welcome-parent/children/${this.childId() + 1}`} fill>
+              <Button
+                href={`/welcome-parent/children/${this.childId() + 1}`}
+                fill
+              >
                 Continue to {this.nextChild()?.firstName}
               </Button>
             </When>
             <When value={false}>
-              <Button fill>Continue</Button>
+              <Button fill href={`/welcome-parent/surveys/children/1`}>
+                Continue
+              </Button>
             </When>
           </Case>
         </Block>
