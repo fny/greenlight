@@ -1,19 +1,88 @@
 micronaut:
+
+  security:
+    enabled:        true
+    authentication: bearer
+
+    #    endpoints:
+    #      login:
+    #        enabled: false
+    #        path:    /login
+    #      logout:
+    #        enabled:     false
+    #        get-allowed: false
+    #        path:        /logout
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret:        'weGottaComeUpWithASecretThatWeBelieveIn0($_$)0' # fixme read secret externally
+              jws-algorithm: HS256
+        enabled: true
+        generator:
+          refresh-token:
+            enabled: true
+          access-token:
+            expiration: 10080 # 1 week
+      roles-name:
+        -
+          - student
+          - guardian
+          - staff
+          - admin
   application:
-    name: greenlight
-    # todo probably useful in live setup in order to maintain unique logs
-    #instance: $(random.shortuuid)
-  server:
-    port: 80
-    # ram
-    
-    # connections
-    #
+    name: Greenlight
 
-# todo replace with greenlight keys
-twilio:
-  sid:  "todo"
-  auth: "todo"
+# todo separate dev/prod dbs
+# todo set actual db credentials
+datasources:
+  default:
+    username:              postgres
+    password:              123123
+    auto-commit:           true
+    jdbc-url:              jdbc:postgresql://localhost:5432/postgres
+    allow-pool-suspension: false
+    # todo probably better to let postgres manage connection pools internally, instead of controlling it here
+    maximum-pool-size:     500 # max concurrent connections
+    minimum-idle:          50
+    connection-timeout:    10000 # 10 second timeout
+    driver-class-name:     org.postgresql.Driver
+
+
+jpa:
+  default:
+    entity-scan:
+      enabled: true
+      packages:
+        - 'greenlight.models'
+    properties:
+      hibernate:
+        dialect:                  org.hibernate.dialect.PostgreSQL95Dialect
+        hbm2ddl:
+          auto: create-drop
+        show_sql:                 true
+        physical_naming_strategy: greenlight.etc.CamelToSnakeCaseNamingStrategy
+#        transaction:
+#          coordinator_class: jta
+
+
+#   Built-in Endpoints
+#  GET /beans – returns information about the loaded bean definitions
+#  GET /info – returns static information from the state of the application
+#  GET /health – exposes “healthcheck”
+#  POST /refresh – it is refresh the application state, all the beans annotated with @Refreshable will be reloaded
+#  GET /routes – returns information about URIs exposed by the application
+#  GET /logger – returns information about the available loggers
+#  GET /caches – returns information about the caches
+#  POST /stop – it shuts down the application server
+endpoints:
+  all:
+    enabled:   true
+    sensitive: false
+
+twilio: # todo replace with greenlight dev keys
+  sid:  "ACafe08922ab964b8992ee91ecbcf937e4"
+  auth: "11e184e568c34af2ef0391270c07cb08"
   phones:
-    - "todo"
-
+    - "12026882299"
