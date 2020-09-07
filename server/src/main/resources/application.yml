@@ -1,9 +1,15 @@
 micronaut:
-
+  application:
+    name: Greenlight
+  
+  views:
+    soy:
+      enabled: true
+  
   security:
     enabled:        true
     authentication: bearer
-
+    
     #    endpoints:
     #      login:
     #        enabled: false
@@ -31,8 +37,7 @@ micronaut:
           - guardian
           - staff
           - admin
-  application:
-    name: Greenlight
+
 
 # todo separate dev/prod dbs
 # todo set actual db credentials
@@ -58,11 +63,11 @@ jpa:
         - 'greenlight.models'
     properties:
       hibernate:
-        dialect:                  org.hibernate.dialect.PostgreSQL95Dialect
+        dialect:  org.hibernate.dialect.PostgreSQL95Dialect
         hbm2ddl:
-          auto: create-drop
-        show_sql:                 true
-        physical_naming_strategy: greenlight.etc.CamelToSnakeCaseNamingStrategy
+          auto: create
+        show_sql: true
+#        physical_naming_strategy: greenlight.etc.CamelToSnakeCaseNamingStrategy
 #        transaction:
 #          coordinator_class: jta
 

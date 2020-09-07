@@ -1,0 +1,184 @@
+{namespace admin}
+
+{template .head}
+    <head>
+        <title>Greenlight Dashboard</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+{/template}
+
+{template .dashboard}
+    {@param loggedIn: bool}
+    {@param? username: string}
+
+    <!DOCTYPE html>
+    <html lang="en">
+        {call .head}{/call}
+
+    <body>
+        {if $loggedIn}
+        <h1>Hello {$username}</h1>
+        {else}
+        <h1>You are not logged in, are you?</h1>
+        {/if}
+
+    <ul>
+        <li><a href="/admin/users">Users</a></li>
+    </ul>
+    </body>
+    </html>
+{/template}
+
+{template .nav}
+    <ul>
+        <li><a href="/dashboard/">Home</a></li>
+        <li><a href="/dashboard/users">Users</a></li>
+        <li><a href="/dashboard/logout">Logout</a></li>
+    </ul>
+{/template}
+
+{template .users}
+    {@param users: list<any>}
+    {@param total: int}
+    {@param page: int}
+
+    <!DOCTYPE html>
+    <html lang="en">
+        {call .head}{/call}
+
+    <body>
+        {call .nav}{/call}
+
+    <div>
+        <h1>Current page: {$page}</h1>
+        <h1>Total count: {$total}</h1>
+
+        {if length($users) > 0}
+            {for $user in $users}
+
+            {/for}
+        {/if}
+    </div>
+
+        {call .addUser}{/call}
+    </body>
+    </html>
+{/template}
+
+{template .addUser}
+    <form class="form-horizontal" action="/user" method="post">
+        <fieldset>
+
+            <!-- Form Name -->
+            <legend>Add user</legend>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="name">Name</label>
+                <div class="col-md-4">
+                    <input id="name" name="name" type="text" placeholder="John Doe" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="phone">Phone</label>
+                <div class="col-md-4">
+                    <input id="phone" name="phone" type="text" placeholder="+1 234 567 8901" class="form-control input-md" required="">
+                    <span class="help-block"> </span>
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="email">Email</label>
+                <div class="col-md-4">
+                    <input id="email" name="email" type="text" placeholder="johndoe@gmail.com" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="birthday">Birth Date</label>
+                <div class="col-md-4">
+                    <input id="birthday" name="birthday" type="text" placeholder="YYYY/MM/DD" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Multiple Radios (inline) -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="gender">Gender</label>
+                <div class="col-md-4">
+                    <label class="radio-inline" for="gender-0">
+                        <input type="radio" name="gender" id="gender-0" value="1" checked="checked">
+                        Male
+                    </label>
+                    <label class="radio-inline" for="gender-1">
+                        <input type="radio" name="gender" id="gender-1" value="2">
+                        Female
+                    </label>
+                    <label class="radio-inline" for="gender-2">
+                        <input type="radio" name="gender" id="gender-2" value="0">
+                        Other
+                    </label>
+                </div>
+            </div>
+
+            <!-- Select Basic -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="ethnicity">Ethnicity</label>
+                <div class="col-md-4">
+                    <select id="ethnicity" name="ethnicity" class="form-control">
+                        <option value="1">Option one</option>
+                        <option value="2">Option two</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="zipcode">Zipcode</label>
+                <div class="col-md-4">
+                    <input id="zipcode" name="zipcode" type="text" placeholder="225 A1F" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="physician">Physician Name</label>
+                <div class="col-md-4">
+                    <input id="physician" name="physician" type="text" placeholder="Jake Lo" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="physicianPhone">Physician Phone Number</label>
+                <div class="col-md-4">
+                    <input id="physicianPhone" name="physicianPhone" type="text" placeholder="+1 123 456 8989"
+                           class="form-control input-md">
+
+                </div>
+            </div>
+
+            <!-- Button -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="submit"></label>
+                <div class="col-md-4">
+                    <button id="submit" type="submit" name="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+
+        </fieldset>
+    </form>
+{/template}

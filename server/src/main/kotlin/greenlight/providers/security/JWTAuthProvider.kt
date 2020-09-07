@@ -1,6 +1,6 @@
 package greenlight.providers.security
 
-import greenlight.services.db.user.PersonRepository
+import greenlight.services.db.user.UserRepository
 import io.micronaut.http.HttpRequest
 import io.micronaut.security.authentication.*
 import io.reactivex.BackpressureStrategy
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Singleton
 class JWTAuthProvider : AuthenticationProvider {
   
-  @Inject lateinit var personRepo : PersonRepository
+  @Inject lateinit var userRepo : UserRepository
   val logger = LoggerFactory.getLogger(this::class.java)
   
   
