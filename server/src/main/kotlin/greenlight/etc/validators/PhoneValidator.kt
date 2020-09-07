@@ -9,10 +9,10 @@ import javax.inject.Singleton
 
 
 @Singleton
-class PhoneValidator : ConstraintValidator<ValidPhone?, String?> {
+class PhoneValidator : ConstraintValidator<ValidPhone, String> {
 
      override fun isValid(value : String?,
-                          annotationMetadata : AnnotationValue<ValidPhone?>,
+                          annotationMetadata : AnnotationValue<ValidPhone>,
                           context : ConstraintValidatorContext) : Boolean {
           return isValid(value)
      }

@@ -22,32 +22,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eb7ca2be-90c7-40be-8f40-df7820a5d99a" name="Default Changelist" comment="User model and stuff (WIP)">
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/greenlight/etc/validators/ValidPhone.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/greenlight/models/entities/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/controllers/api/UsersController.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/etc/validators/PhoneValidator.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/models/entities/ZipCode.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/models/public/CreateUserFormData.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/providers/view/ViewFilesProvider.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/resources/views/dashboard.soy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/test/groovy/greenlight/services/db/user/UserEntityValidationTest.groovy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/test/groovy/greenlight/services/db/user/UserRepositoryTest.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+    <list default="true" id="eb7ca2be-90c7-40be-8f40-df7820a5d99a" name="Default Changelist" comment="User model validation updates and other fun stuff">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/server/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/server/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/Application.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/controllers/AdminController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/controllers/AdminController.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/controllers/AppController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/controllers/AppController.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/controllers/UserController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/controllers/UserController.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/models/entities/User.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/providers/security/JWTAuthProvider.kt" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/providers/security/JWTAuthProvider.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/services/db/user/PersonRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/services/db/user/UserRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/services/resources/UserService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/services/resources/PersonService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/test/groovy/greenlight/providers/security/JWTAuthProviderTest.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/test/groovy/greenlight/providers/security/JWTAuthProviderTest.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/test/groovy/greenlight/services/UserServiceTest.groovy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/greenlight/etc/validators/ValidPhone.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/greenlight/etc/validators/ValidPhone.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/etc/validators/PhoneValidator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/kotlin/greenlight/etc/validators/PhoneValidator.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/test/groovy/greenlight/services/db/user/UserEntityValidationTest.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/test/groovy/greenlight/services/db/user/UserEntityValidationTest.groovy" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,14 +160,6 @@
     <option name="mySaveCallSignatures" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateTestDialog.RecentsKey">
-      <recent name="greenlight.providers.security" />
-      <recent name="greenlight.controllers" />
-    </key>
-    <key name="CreateKotlinClassDialog.RecentsKey">
-      <recent name="greenlight.etc.validators" />
-      <recent name="greenlight.models.public" />
-    </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
       <recent name="greenlight.etc.validators" />
       <recent name="greenlight.etc" />
@@ -196,12 +167,23 @@
       <recent name="greenlight.providers.security" />
       <recent name="greenlight.models.entities" />
     </key>
+    <key name="CreateKotlinClassDialog.RecentsKey">
+      <recent name="greenlight.etc.validators" />
+      <recent name="greenlight.models.public" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="greenlight.providers.security" />
+      <recent name="greenlight.controllers" />
+    </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="spock.lang.Specification" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\nimag\projects\greenlight\server\src\main\kotlin\greenlight\etc\validators" />
       <recent name="$PROJECT_DIR$/app/controllers" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="greenlight.etc.validators" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -214,9 +196,9 @@
       <command value="gradlew --status" />
       <command value="./gradlew status" />
       <command value="server [test]" />
-      <command value="gradle run" />
       <command value="gradle dependencies" />
       <command value="gradle clean" />
+      <command value="gradle run" />
       <command value="gradle test" />
     </option>
   </component>
@@ -227,7 +209,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.UserEntityValidationTest.phone numbers are validated">
+  <component name="RunManager" selected="Gradle.server [test]">
     <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
@@ -298,7 +280,7 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="server [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="server [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/server" />
@@ -309,7 +291,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="clean" />
+            <option value="run" />
           </list>
         </option>
         <option name="vmOptions" value="" />
@@ -346,19 +328,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Gradle.server [test]" />
-      <item itemvalue="Gradle.server [clean]" />
       <item itemvalue="Gradle.UserEntityValidationTest.Creating users with correct info validated fine" />
       <item itemvalue="Gradle.UserEntityValidationTest" />
       <item itemvalue="Gradle.UserEntityValidationTest.phone numbers are validated" />
+      <item itemvalue="Gradle.server [run]" />
+      <item itemvalue="Gradle.server [test]" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.UserEntityValidationTest.phone numbers are validated" />
+        <item itemvalue="Gradle.server [test]" />
+        <item itemvalue="Gradle.server [run]" />
         <item itemvalue="Gradle.UserEntityValidationTest.Creating users with correct info validated fine" />
         <item itemvalue="Gradle.UserEntityValidationTest" />
-        <item itemvalue="Gradle.server [clean]" />
-        <item itemvalue="Gradle.server [test]" />
       </list>
     </recent_temporary>
   </component>
@@ -396,7 +378,7 @@
       <workItem from="1599178306927" duration="1632000" />
       <workItem from="1599235581700" duration="4896000" />
       <workItem from="1599271517304" duration="20518000" />
-      <workItem from="1599488334396" duration="23083000" />
+      <workItem from="1599488334396" duration="23405000" />
     </task>
     <task id="LOCAL-00002" summary="User model and stuff (WIP)">
       <created>1599163864661</created>
@@ -405,7 +387,14 @@
       <option name="project" value="LOCAL" />
       <updated>1599163864661</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="User model validation updates and other fun stuff">
+      <created>1599522559766</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1599522559766</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers>
       <GitHub url="https://github.com">
         <option name="repoAuthor" value="fny" />
@@ -437,7 +426,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Get app to compile (use npm run dev)" />
     <MESSAGE value="User model and stuff (WIP)" />
-    <option name="LAST_COMMIT_MESSAGE" value="User model and stuff (WIP)" />
+    <MESSAGE value="User model validation updates and other fun stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="User model validation updates and other fun stuff" />
   </component>
   <component name="WindowStateProjectService">
     <state x="1594" y="575" width="557" height="264" key="#Assign_Data_Sources" timestamp="1598902459439">
@@ -508,7 +498,7 @@
     </state>
     <state x="1447" y="383" key="FileChooserDialogImpl/0.0.3440.1410/-2560.0.2560.1410/3440.0.1920.1050@0.0.3440.1410" timestamp="1598895528819" />
     <state x="1447" y="383" key="FileChooserDialogImpl/0.0.3440.1410/3440.0.1920.1050/-1440.0.1440.2530@0.0.3440.1410" timestamp="1599014326830" />
-    <state width="2120" height="494" key="GridCell.Tab.0.bottom" timestamp="1599522519022">
+    <state width="2120" height="494" key="GridCell.Tab.0.bottom" timestamp="1599522819645">
       <screen x="-3440" y="0" width="3440" height="1410" />
     </state>
     <state width="1805" height="332" key="GridCell.Tab.0.bottom/-1440.0.1440.2530/3440.0.1920.1050/0.0.3440.1410@0.0.3440.1410" timestamp="1598974964616" />
@@ -516,11 +506,11 @@
     <state width="2560" height="447" key="GridCell.Tab.0.bottom/-2560.-592.2560.1440/0.0.1440.900/1440.-180.1920.1080@-2560.-592.2560.1440" timestamp="1598237584412" />
     <state width="2560" height="447" key="GridCell.Tab.0.bottom/-2560.-592.2560.1440/0.23.1440.877/1440.-157.1920.1057@-2560.-592.2560.1440" timestamp="1598229024120" />
     <state width="2898" height="431" key="GridCell.Tab.0.bottom/-3440.0.3440.1410/0.0.1920.1050/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599148419867" />
-    <state width="2120" height="494" key="GridCell.Tab.0.bottom/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522519022" />
+    <state width="2120" height="494" key="GridCell.Tab.0.bottom/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522819645" />
     <state width="1805" height="332" key="GridCell.Tab.0.bottom/0.0.3440.1410/-2560.0.2560.1410/3440.0.1920.1050@0.0.3440.1410" timestamp="1598904073349" />
     <state width="2466" height="430" key="GridCell.Tab.0.bottom/0.0.3440.1410/3440.0.1920.1050/-1440.0.1440.2530@0.0.3440.1410" timestamp="1599057895850" />
     <state width="2416" height="332" key="GridCell.Tab.0.bottom/3440.0.1920.1050/0.0.3440.1410/-1440.0.1440.2530@0.0.3440.1410" timestamp="1598982326240" />
-    <state width="2120" height="494" key="GridCell.Tab.0.center" timestamp="1599522519022">
+    <state width="2120" height="494" key="GridCell.Tab.0.center" timestamp="1599522819645">
       <screen x="-3440" y="0" width="3440" height="1410" />
     </state>
     <state width="1805" height="332" key="GridCell.Tab.0.center/-1440.0.1440.2530/3440.0.1920.1050/0.0.3440.1410@0.0.3440.1410" timestamp="1598974964616" />
@@ -528,11 +518,11 @@
     <state width="2560" height="447" key="GridCell.Tab.0.center/-2560.-592.2560.1440/0.0.1440.900/1440.-180.1920.1080@-2560.-592.2560.1440" timestamp="1598237584411" />
     <state width="2560" height="447" key="GridCell.Tab.0.center/-2560.-592.2560.1440/0.23.1440.877/1440.-157.1920.1057@-2560.-592.2560.1440" timestamp="1598229024118" />
     <state width="2898" height="431" key="GridCell.Tab.0.center/-3440.0.3440.1410/0.0.1920.1050/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599148419867" />
-    <state width="2120" height="494" key="GridCell.Tab.0.center/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522519022" />
+    <state width="2120" height="494" key="GridCell.Tab.0.center/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522819645" />
     <state width="1805" height="332" key="GridCell.Tab.0.center/0.0.3440.1410/-2560.0.2560.1410/3440.0.1920.1050@0.0.3440.1410" timestamp="1598904073348" />
     <state width="2466" height="430" key="GridCell.Tab.0.center/0.0.3440.1410/3440.0.1920.1050/-1440.0.1440.2530@0.0.3440.1410" timestamp="1599057895850" />
     <state width="2416" height="332" key="GridCell.Tab.0.center/3440.0.1920.1050/0.0.3440.1410/-1440.0.1440.2530@0.0.3440.1410" timestamp="1598982326239" />
-    <state width="2120" height="494" key="GridCell.Tab.0.left" timestamp="1599522519022">
+    <state width="2120" height="494" key="GridCell.Tab.0.left" timestamp="1599522819645">
       <screen x="-3440" y="0" width="3440" height="1410" />
     </state>
     <state width="1805" height="332" key="GridCell.Tab.0.left/-1440.0.1440.2530/3440.0.1920.1050/0.0.3440.1410@0.0.3440.1410" timestamp="1598974964616" />
@@ -540,11 +530,11 @@
     <state width="2560" height="447" key="GridCell.Tab.0.left/-2560.-592.2560.1440/0.0.1440.900/1440.-180.1920.1080@-2560.-592.2560.1440" timestamp="1598237584410" />
     <state width="2560" height="447" key="GridCell.Tab.0.left/-2560.-592.2560.1440/0.23.1440.877/1440.-157.1920.1057@-2560.-592.2560.1440" timestamp="1598229024116" />
     <state width="2898" height="431" key="GridCell.Tab.0.left/-3440.0.3440.1410/0.0.1920.1050/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599148419867" />
-    <state width="2120" height="494" key="GridCell.Tab.0.left/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522519022" />
+    <state width="2120" height="494" key="GridCell.Tab.0.left/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522819645" />
     <state width="1805" height="332" key="GridCell.Tab.0.left/0.0.3440.1410/-2560.0.2560.1410/3440.0.1920.1050@0.0.3440.1410" timestamp="1598904073348" />
     <state width="2466" height="430" key="GridCell.Tab.0.left/0.0.3440.1410/3440.0.1920.1050/-1440.0.1440.2530@0.0.3440.1410" timestamp="1599057895849" />
     <state width="2416" height="332" key="GridCell.Tab.0.left/3440.0.1920.1050/0.0.3440.1410/-1440.0.1440.2530@0.0.3440.1410" timestamp="1598982326239" />
-    <state width="2120" height="494" key="GridCell.Tab.0.right" timestamp="1599522519022">
+    <state width="2120" height="494" key="GridCell.Tab.0.right" timestamp="1599522819645">
       <screen x="-3440" y="0" width="3440" height="1410" />
     </state>
     <state width="1805" height="332" key="GridCell.Tab.0.right/-1440.0.1440.2530/3440.0.1920.1050/0.0.3440.1410@0.0.3440.1410" timestamp="1598974964616" />
@@ -552,26 +542,26 @@
     <state width="2560" height="447" key="GridCell.Tab.0.right/-2560.-592.2560.1440/0.0.1440.900/1440.-180.1920.1080@-2560.-592.2560.1440" timestamp="1598237584412" />
     <state width="2560" height="447" key="GridCell.Tab.0.right/-2560.-592.2560.1440/0.23.1440.877/1440.-157.1920.1057@-2560.-592.2560.1440" timestamp="1598229024118" />
     <state width="2898" height="431" key="GridCell.Tab.0.right/-3440.0.3440.1410/0.0.1920.1050/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599148419867" />
-    <state width="2120" height="494" key="GridCell.Tab.0.right/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522519022" />
+    <state width="2120" height="494" key="GridCell.Tab.0.right/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522819645" />
     <state width="1805" height="332" key="GridCell.Tab.0.right/0.0.3440.1410/-2560.0.2560.1410/3440.0.1920.1050@0.0.3440.1410" timestamp="1598904073349" />
     <state width="2466" height="430" key="GridCell.Tab.0.right/0.0.3440.1410/3440.0.1920.1050/-1440.0.1440.2530@0.0.3440.1410" timestamp="1599057895850" />
     <state width="2416" height="332" key="GridCell.Tab.0.right/3440.0.1920.1050/0.0.3440.1410/-1440.0.1440.2530@0.0.3440.1410" timestamp="1598982326239" />
-    <state width="2120" height="494" key="GridCell.Tab.1.bottom" timestamp="1599522519022">
+    <state width="2120" height="494" key="GridCell.Tab.1.bottom" timestamp="1599522819645">
       <screen x="-3440" y="0" width="3440" height="1410" />
     </state>
-    <state width="2120" height="494" key="GridCell.Tab.1.bottom/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522519022" />
-    <state width="2120" height="494" key="GridCell.Tab.1.center" timestamp="1599522519022">
+    <state width="2120" height="494" key="GridCell.Tab.1.bottom/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522819645" />
+    <state width="2120" height="494" key="GridCell.Tab.1.center" timestamp="1599522819645">
       <screen x="-3440" y="0" width="3440" height="1410" />
     </state>
-    <state width="2120" height="494" key="GridCell.Tab.1.center/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522519022" />
-    <state width="2120" height="494" key="GridCell.Tab.1.left" timestamp="1599522519022">
+    <state width="2120" height="494" key="GridCell.Tab.1.center/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522819645" />
+    <state width="2120" height="494" key="GridCell.Tab.1.left" timestamp="1599522819645">
       <screen x="-3440" y="0" width="3440" height="1410" />
     </state>
-    <state width="2120" height="494" key="GridCell.Tab.1.left/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522519022" />
-    <state width="2120" height="494" key="GridCell.Tab.1.right" timestamp="1599522519022">
+    <state width="2120" height="494" key="GridCell.Tab.1.left/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522819645" />
+    <state width="2120" height="494" key="GridCell.Tab.1.right" timestamp="1599522819645">
       <screen x="-3440" y="0" width="3440" height="1410" />
     </state>
-    <state width="2120" height="494" key="GridCell.Tab.1.right/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522519022" />
+    <state width="2120" height="494" key="GridCell.Tab.1.right/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522819645" />
     <state x="1287" y="342" key="NewModule_or_Project.wizard" timestamp="1598888248306">
       <screen x="0" y="0" width="3440" height="1410" />
     </state>
@@ -597,7 +587,7 @@
     <state x="-2066" y="383" width="675" height="655" key="StructurePopup/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599324346217" />
     <state x="1374" y="383" width="675" height="655" key="StructurePopup/0.0.3440.1410/-2560.0.2560.1410/3440.0.1920.1050@0.0.3440.1410" timestamp="1598888189566" />
     <state x="1374" y="383" width="675" height="655" key="StructurePopup/0.0.3440.1410/3440.0.1920.1050/-1440.0.1440.2530@0.0.3440.1410" timestamp="1599057895292" />
-    <state width="1195" height="716" key="SwitcherDM" timestamp="1599522496358">
+    <state width="1195" height="716" key="SwitcherDM" timestamp="1599522773597">
       <screen x="-3440" y="0" width="3440" height="1410" />
     </state>
     <state width="500" height="792" key="SwitcherDM/-1440.-261.1440.2560/0.0.1440.900/0.900.1920.1080@-1440.-261.1440.2560" timestamp="1598291757970" />
@@ -606,15 +596,16 @@
     <state width="500" height="445" key="SwitcherDM/-2560.-592.2560.1440/0.0.1440.900/1440.-180.1920.1080@-2560.-592.2560.1440" timestamp="1598288542676" />
     <state width="500" height="445" key="SwitcherDM/-2560.-592.2560.1440/0.23.1440.877/1440.-157.1920.1057@-2560.-592.2560.1440" timestamp="1598229147789" />
     <state width="1195" height="692" key="SwitcherDM/-3440.0.3440.1410/0.0.1920.1050/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599148418091" />
-    <state width="1195" height="716" key="SwitcherDM/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522496358" />
+    <state width="1195" height="716" key="SwitcherDM/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522773597" />
     <state width="1195" height="691" key="SwitcherDM/0.0.3440.1410/-2560.0.2560.1410/3440.0.1920.1050@0.0.3440.1410" timestamp="1598904413944" />
     <state width="1195" height="692" key="SwitcherDM/0.0.3440.1410/3440.0.1920.1050/-1440.0.1440.2530@0.0.3440.1410" timestamp="1599078936711" />
     <state width="1195" height="692" key="SwitcherDM/3440.0.1920.1050/0.0.3440.1410/-1440.0.1440.2530@0.0.3440.1410" timestamp="1598982316616" />
     <state width="1195" height="706" key="SwitcherDM/3440.0.1920.1080/0.0.3440.1440/-1440.0.1440.2560@0.0.3440.1440" timestamp="1598980139602" />
-    <state x="-2257" y="480" key="Vcs.Push.Dialog.v2" timestamp="1599163882205">
-      <screen x="-3440" y="30" width="3440" height="1410" />
+    <state x="-2257" y="450" key="Vcs.Push.Dialog.v2" timestamp="1599522567950">
+      <screen x="-3440" y="0" width="3440" height="1410" />
     </state>
     <state x="-1680" y="-132" key="Vcs.Push.Dialog.v2/-2560.-592.2560.1440/0.0.1440.900/1440.-180.1920.1080@-2560.-592.2560.1440" timestamp="1598235000860" />
+    <state x="-2257" y="450" key="Vcs.Push.Dialog.v2/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522567950" />
     <state x="-2257" y="480" key="Vcs.Push.Dialog.v2/0.0.1920.1050/-3440.30.3440.1410/-4880.0.1440.2530@-3440.30.3440.1410" timestamp="1599163882205" />
     <state x="1486" y="599" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1599077338987">
       <screen x="0" y="0" width="3440" height="1410" />
@@ -653,13 +644,13 @@
     </state>
     <state x="1435" y="410" key="org.jetbrains.kotlin.idea.testIntegration.KotlinCreateTestDialog/-1440.0.1440.2530/3440.0.1920.1050/0.0.3440.1410@0.0.3440.1410" timestamp="1598920149009" />
     <state x="1435" y="410" key="org.jetbrains.kotlin.idea.testIntegration.KotlinCreateTestDialog/0.0.3440.1410/3440.0.1920.1050/-1440.0.1440.2530@0.0.3440.1410" timestamp="1599013299176" />
-    <state x="-2148" y="329" width="840" height="1034" key="run.anything.popup" timestamp="1599522350092">
+    <state x="-2148" y="329" width="840" height="1034" key="run.anything.popup" timestamp="1599522819631">
       <screen x="-3440" y="0" width="3440" height="1410" />
     </state>
     <state x="1292" y="329" width="840" height="1034" key="run.anything.popup/-1440.0.1440.2530/3440.0.1920.1050/0.0.3440.1410@0.0.3440.1410" timestamp="1598974793677" />
     <state x="1292" y="336" width="840" height="1056" key="run.anything.popup/-1440.0.1440.2560/3440.0.1920.1080/0.0.3440.1440@0.0.3440.1440" timestamp="1598975355860" />
     <state x="-2148" y="329" width="840" height="1034" key="run.anything.popup/-3440.0.3440.1410/0.0.1920.1050/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599147721988" />
-    <state x="-2148" y="329" width="840" height="1034" key="run.anything.popup/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522350092" />
+    <state x="-2148" y="329" width="840" height="1034" key="run.anything.popup/0.0.1920.1050/-3440.0.3440.1410/-4880.0.1440.2530@-3440.0.3440.1410" timestamp="1599522819631" />
     <state x="1292" y="329" width="840" height="1034" key="run.anything.popup/0.0.3440.1410/-2560.0.2560.1410/3440.0.1920.1050@0.0.3440.1410" timestamp="1598902292009" />
     <state x="1292" y="329" width="840" height="1034" key="run.anything.popup/0.0.3440.1410/3440.0.1920.1050/-1440.0.1440.2530@0.0.3440.1410" timestamp="1599013876020" />
     <state x="1292" y="329" width="840" height="1034" key="run.anything.popup/3440.0.1920.1050/0.0.3440.1410/-1440.0.1440.2530@0.0.3440.1410" timestamp="1598981050228" />
@@ -688,6 +679,11 @@
           <url>file://$PROJECT_DIR$/server/src/test/groovy/greenlight/services/db/user/UserEntityValidationTest.groovy</url>
           <line>75</line>
           <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/server/src/main/kotlin/greenlight/etc/validators/PhoneValidator.kt</url>
+          <line>27</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -89,7 +89,7 @@ class UserEntityValidationTest extends Specification {
               "+12265040"        | false
               "+16678877"        | false
               "+16666666"        | false
-              "+1 666 666 66 66" | true
+              "+1 666 666 66 66" | false
               "+1 226 500 04 05" | true
     }
 }
