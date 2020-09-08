@@ -19,15 +19,13 @@ class UserEntityValidationTest extends Specification {
     SessionFactory sf
     
     @AutoCleanup
-    @Shared
-    ApplicationContext ctx = ApplicationContext.run()
-    @Shared
-    Validator validator = ctx.getBean(Validator)
+    @Shared ApplicationContext ctx = ApplicationContext.run()
+    @Shared Validator validator = ctx.getBean(Validator)
     
     def 'Creating users with correct info validated fine'() {
         
         when:
-              def user = new User(UUID.randomUUID(), "Nima", "G", "nima@gmail.com", "+1 2265000405")
+              def user = new User(UUID.randomUUID(), "Nima", "G", "nima@gmail.com", "+12265000405")
         then:
               def validate = validator.validate(user)
               validate.isEmpty()
@@ -66,6 +64,7 @@ class UserEntityValidationTest extends Specification {
               "asd@@imanomail.com" | 6
     }
     
+    @Unroll
     def 'phone numbers are validated'(phone, isValid) {
         when:
               def userToSave = new User(UUID.randomUUID(), "test", "test", "test@test.com", phone)
