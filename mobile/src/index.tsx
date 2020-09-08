@@ -1,6 +1,6 @@
-import './models'
+import './common/models'
 
-import React, { setGlobal, addCallback } from 'reactn'
+import React, { setGlobal } from 'reactn'
 
 import ReactDOM from 'react-dom'
 
@@ -20,8 +20,14 @@ import 'framework7-icons'
 import './index.css'
 
 
-
+import addReactNDevTools from 'reactn-devtools';
 import fixtures from './fixtures'
+addReactNDevTools();
+
+
+setGlobal({
+  currentUser: fixtures.users.beyu
+})
 
 // Init Framework7-React plugin
 Framework7.use(Framework7React)
@@ -29,10 +35,6 @@ Framework7.use(Framework7React)
 // addCallback((global) => {
 //   window.localStorage.setItem('globalState', JSON.stringify(global));
 // })
-
-setGlobal({
-  currentUser: fixtures.users.mother
-})
 
 ReactDOM.render(
   <React.StrictMode>

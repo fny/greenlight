@@ -5,6 +5,7 @@ import { timeStamp } from 'console'
 
 interface Props {
   value: string
+  onInput?: (...args: any[]) => void
 }
 
 interface State {
@@ -60,6 +61,7 @@ export default class ListEmailOrPhoneInput extends React.Component<Props, State>
           errorMessage={this.state.errorMessage}
           errorMessageForce={this.state.errorMessageForce}
           placeholder="Email or mobile phone number"
+          onInput={this.props.onInput}
         />
     )
   }

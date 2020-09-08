@@ -7,4 +7,4 @@ import { MedicalEvent } from './medicalEvent'
 
 ModelRegistry.register(User, GreenlightStatus, Location, MedicalEvent)
 
-export { ModelRegistry }
+export { ModelRegistry, User, GreenlightStatus, Location, MedicalEvent }

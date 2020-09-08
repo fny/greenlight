@@ -6,13 +6,10 @@ export default () => (
     <Navbar title="All Clear!" backLink="Back"></Navbar>
 
     <Block>
-      <p style={{fontWeight: "bold"}}>Your children are cleared for school.</p>
+      <p style={{fontWeight: "bold"}}>You are cleared!</p>
       <p>Enjoy your day! Here's something we hope will make you smile. 😃</p>
-      <img
-        style={{ width: "100%" }}
-        src="https://media.giphy.com/images/322FvxfciE8UsYvILG/giphy.gif"
-        alt="Image of the Day"
-      />
+      <div dangerouslySetInnerHTML={{__html: '<div style="width:100%;height:0;padding-bottom:100%;position:relative;"><iframe src="https://giphy.com/embed/22YOkQog92fpS" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div><p><a href="https://giphy.com/gifs/cheezburger-funny-fail-22YOkQog92fpS">via GIPHY</a></p>' }}>
+      </div>
       <Button large fill href="/dashboard">
         Back Home
       </Button>

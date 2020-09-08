@@ -48,7 +48,11 @@ export default class extends React.Component<Props, State> {
               </Button>
             </When>
             <When value={false}>
-              {/* TODO: Go to Survey */}
+              <p>Next you'll fill out your first survey!</p>
+
+              <Button large fill href="/welcome/users/me/surveys/new">
+                Continue
+              </Button>
             </When>
           </Case>
         </Block>

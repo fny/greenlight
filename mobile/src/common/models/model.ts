@@ -145,6 +145,10 @@ function deserialize(model: typeof Model, data: any, this_?: Model) {
       continue
     }
 
+    if (['_data'].includes(property)) {
+      continue
+    }
+
     // Cast and assign attributes
     if (attrMeta && property in attrMeta) {
       const attrDef = ((attrMeta as any)[property] as AttributeDefinition)

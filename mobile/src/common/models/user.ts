@@ -64,6 +64,15 @@ export class User extends Model {
   @relationship({ type: 'hasMany', model: 'greenlight-status' })
   greenlightStatuses: GreenlightStatus[] = []
 
+
+  hasChildren() {
+    return this.children.length > 0
+  }
+
+  isParent() {
+    return this.hasChildren()
+  }
+
   greenlightStatus() {
     if (this.greenlightStatuses.length === 0) {
       return new GreenlightStatus({ status: GreenlightStatus.STATUSES.UNKNOWN })

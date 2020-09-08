@@ -3,8 +3,13 @@ import { Row, Col, Page, Navbar, Link, Block, BlockTitle, Segmented, Button } fr
 import fixtures from '../fixtures'
 import { Case, When } from '../components/Case'
 import './SymptomSurveyPage.css'
-import { User } from '../models/user'
+import { User } from '../common/models/user'
 import YesNoButton from '../components/YesNoButton'
+
+
+
+
+
 
 interface SymptomButtonProps {
   title: string
@@ -60,14 +65,37 @@ export default class SymptomSurveyPage extends React.Component<SurveyProps, Surv
     hadContact: null,
   }
 
-  childId() {
+  submittingFor() {
     const rawId = this.$f7route.params['id']
-    if (!rawId) throw new Error('Child id missing')
-    return parseInt(rawId)
+    if (!rawId) throw new Error('User id missing')
+    if (rawId === "me") {
+      return this.global.currentUser
+    } else {
+      return this.global.currentUser.children[parseInt(rawId) - 1]
+    }
+
+    // return Object.values(fixtures.users).filter(x => x.id === rawId)[0]
+
   }
 
-  child(): User {
-    return this.global.currentUser.children[this.childId() - 1]
+  submittingBy() {
+    return this.global.currentUser
+  }
+
+  isSubmittingForSelf() {
+    return this.$f7route.params['id'] === 'me'
+    // return this.submittingBy() === this.submittingFor()
+  }
+
+  isSubmittingForChild() {
+    if (this.isSubmittingForSelf()) return false
+    return true
+    // const maybeChild = this.submittingFor()
+    // return this.global.currentUser.children.filter(c => c.id === maybeChild.id).length > 0
+  }
+
+  childId(): number {
+    return parseInt(this.$f7route.params['id'] || '1')
   }
 
   hasNextChild() {
@@ -107,13 +135,19 @@ export default class SymptomSurveyPage extends React.Component<SurveyProps, Surv
   }
 
   render() {
-    const child = this.child()
+    const submittingFor = this.submittingFor()
+    const isSubmittingForSelf = this.isSubmittingForSelf()
     return (
       <Page>
         <Navbar title="Symptom Survey" backLink="Back"></Navbar>
         <Block>
           <div className="survey-title">
-            Does {child.firstName} have any of these symptoms?
+            {
+              isSubmittingForSelf ?
+              `Do you have any of these symptoms?`
+              :
+              `Does ${submittingFor.firstName} have any of these symptoms?`
+            }
           </div>
         </Block>
         <div className="SymptomButtons">
@@ -150,17 +184,29 @@ export default class SymptomSurveyPage extends React.Component<SurveyProps, Surv
         </div>
         <Block>
           <div className="survey-title">COVID Contact?</div>
-          Has {child.firstName} had close contact—within 6 feet for at least 15
-          minutes—with someone diagnosed with COVID-19? Has a health worker
-          advised {child.firstName} to quarantine?
+            {
+              isSubmittingForSelf ?
+              `Have you had close contact—within 6 feet for at least 15
+              minutes—with someone diagnosed with COVID-19? Has a health worker
+              advised you to quarantine?`
+              :
+              `Has ${submittingFor.firstName} had close contact—within 6 feet for at least 15
+              minutes—with someone diagnosed with COVID-19? Has a health worker
+              advised ${submittingFor.firstName} to quarantine?`
+            }
           <br />
           <YesNoButton
             setYesNo={(yesNo: boolean) => this.setHadContact(yesNo)}
             yesNo={this.state.hadContact}
           />
           <div className="survey-title">COVID Diagnosis?</div>
-          Has {child.firstName} been diagnosed with or tested positive for
-          COVID-19?
+            {
+              isSubmittingForSelf ?
+              `Have you been diagnosed with or tested positive for COVID-19?`
+              :
+              `Has ${submittingFor.firstName} been diagnosed with or tested positive for
+              COVID-19?`
+            }
           <YesNoButton
             setYesNo={(yesNo: boolean) => this.setHadDiagnosis(yesNo)}
             yesNo={this.state.hadDiagnosis}

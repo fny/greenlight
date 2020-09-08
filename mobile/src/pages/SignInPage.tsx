@@ -36,7 +36,16 @@ export default class SignInPage extends React.Component<SignInProps, SignInState
   }
 
   demoSignIn() {
-    this.setGlobal({ currentUser: fixtures.users.mother })
+
+
+    
+    if (this.state.emailOrPhone?.includes('beyu')) {
+      this.setGlobal({ currentUser: fixtures.users.beyu })
+    } else {
+      this.setGlobal({ currentUser: fixtures.users.mother })
+    }
+
+
     this.$f7router.navigate('/welcome-parent')
   }
 
@@ -50,7 +59,9 @@ export default class SignInPage extends React.Component<SignInProps, SignInState
 
         <List form>
           <li>
-            <EmailOrPhoneInput value={this.state.emailOrPhone} />
+            <EmailOrPhoneInput value={this.state.emailOrPhone} onInput={(e) => {
+              this.setState({ emailOrPhone: e.target.value })
+            }} />
           </li>
           <ListInput
             type="password"

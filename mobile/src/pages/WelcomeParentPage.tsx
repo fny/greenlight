@@ -24,7 +24,7 @@ import { Case, When } from "../components/Case"
 
 import pluralize from "pluralize"
 import { timeOfDay } from "../util";
-import { User } from '../models/user'
+import { User } from '../common/models/user'
 
 
 interface Props {}
@@ -42,7 +42,7 @@ export default class WelcomeParentPage extends React.Component<Props, State> {
 
   totalLocations() {
     const user: User = this.global.currentUser
-    return user.locations.length + user.children.map(x => x.locations.length).reduce((x, y) => x + y)
+    return user.locations.length + user.children.map(x => x.locations.length).reduce((x, y) => x + y, 0)
   }
 
   whoDoYouFillSurveysFor() {

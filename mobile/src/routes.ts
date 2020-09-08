@@ -46,27 +46,31 @@ export default [
     component: ForgotPasswordPage,
   },
   {
-    path: '/welcome-parent',
+    path: '/welcome',
     component: WelcomeParentPage,
   },
   {
-    path: '/welcome-parent/review',
+    path: '/welcome/review',
     component: WelcomeParentReviewUserPage,
   },
   {
-    path: '/welcome-parent/password',
+    path: '/welcome/password',
     component: WelcomeParentPasswordPage,
   },
   {
-    path: '/welcome-parent/children/:id',
+    path: '/welcome/children/:id',
     component: WelcomeParentReviewChildPage,
   },
   {
-    path: '/welcome-parent/surveys/children/:id',
+    path: '/welcome/children/:id/surveys/new',
     component: SymptomSurveyPage,
   },
   {
-    path: '/welcome-parent/thank-you',
+    path: '/welcome/users/:id/surveys/new',
+    component: SymptomSurveyPage,
+  },
+  {
+    path: '/welcome/thank-you',
     component: ThankYouPage,
   },
   {

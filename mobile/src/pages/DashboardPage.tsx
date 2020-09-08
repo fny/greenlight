@@ -1,7 +1,7 @@
 import React, { useGlobal } from 'reactn'
 import { AccordionContent, Card, CardHeader, CardContent, Page, List, ListItem, Navbar, Link, Block, BlockTitle, NavLeft, NavTitle, NavRight, Icon } from "framework7-react";
 import JDenticon from '../components/JDenticon'
-import { User } from '../models/user'
+import { User } from '../common/models/user'
 
 export default () => {
   const currentUser: User = useGlobal('currentUser')[0]

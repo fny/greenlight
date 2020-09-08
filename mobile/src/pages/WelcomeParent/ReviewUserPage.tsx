@@ -3,7 +3,7 @@ import React from 'reactn'
 import { clone } from 'lodash'
 import { Page, Navbar, Block, Button, List, ListInput } from 'framework7-react'
 
-import { User } from '../../models/user'
+import { User } from '../../common/models/user'
 
 interface Props {}
 

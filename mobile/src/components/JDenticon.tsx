@@ -1,7 +1,7 @@
 import React from 'react'
 import * as jdenticon from 'jdenticon'
-import { User } from '../models/user'
-import { GREENLIGHT_STATUSES } from  '../models/greenlightStatus'
+import { User } from '../common/models/user'
+import { GREENLIGHT_STATUSES } from  '../common/models/greenlightStatus'
 const configs: { [k in GREENLIGHT_STATUSES]: jdenticon.JdenticonConfig } = {
   red: {
     hues: [328],
