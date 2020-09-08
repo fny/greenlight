@@ -1,102 +1,5 @@
 import { User } from './models/user'
 
-const simpsons = {
-  marge: {
-    id: 1,
-    firstName: 'Marge',
-    lastName: 'Simpson',
-    email: 'marge@thesimpsons.com',
-    mobileNumber: '(939) 174-4432',
-    children: [] as any[],
-    parents: [] as any[],
-    locations: [] as any[],
-  },
-  homer: {
-    id: 2,
-    firstName: 'Homer',
-    lastName: 'Simpson',
-    email: 'marge@thesimpsons.com',
-    mobileNumber: '(939) 174-4432',
-    children: [] as any[],
-    parents: [] as any[],
-    locations: [] as any[],
-  },
-  lisa: {
-    id: 3,
-    firstName: 'Lisa',
-    lastName: 'Simpson',
-    children: [] as any[],
-    parents: [] as any[],
-    locations: [] as any[],
-  },
-  bart: {
-    id: 4,
-    firstName: 'Bart',
-    lastName: 'Simpson',
-    email: 'barthax@thesimpsons.com',
-    mobileNumber: '(939) 666-1423',
-    children: [] as any[],
-    parents: [] as any[],
-    locations: [] as any[],
-  },
-  maggie: {
-    id: 5,
-    firstName: 'Maggie',
-    lastName: 'Simpson',
-    children: [] as any[],
-    parents: [] as any[],
-    locations: [] as any[],
-  },
-}
-
-const thegreenes = {
-  mother: {
-    id: 6,
-    firstName: 'Chloe',
-    lastName: 'Greene',
-    email: 'chloe@gogreene.com',
-    mobileNumber: '(919) 174-4432',
-    children: [] as any[],
-    parents: [] as any[],
-    locations: [] as any[],
-  },
-  father: {
-    id: 7,
-    firstName: 'Meyer',
-    lastName: 'Greene',
-    email: 'hunter@gogreene.com',
-    mobileNumber: '(919) 174-4432',
-    children: [] as any[],
-    parents: [] as any[],
-    locations: [] as any[],
-  },
-  daughter: {
-    id: 8,
-    firstName: 'Lucy',
-    lastName: 'Greene',
-    children: [] as any[],
-    parents: [] as any[],
-    locations: [] as any[],
-  },
-  son: {
-    id: 9,
-    firstName: 'Beacon',
-    lastName: 'Greene',
-    mobileNumber: '(919) 666-1423',
-    children: [] as any[],
-    parents: [] as any[],
-    locations: [] as any[],
-  },
-  baby: {
-    id: 10,
-    firstName: 'Dawn',
-    lastName: 'Greene',
-    children: [] as any[],
-    parents: [] as any[],
-    locations: [] as any[],
-  },
-}
-
 const locations = {
   springfieldElementary: {
     name: "Springfield Elementary",
@@ -140,59 +43,127 @@ const locations = {
   }
 }
 
-//
-// Simpsons Relationships
-//
+const simpsons: { [k: string]: User } = {
+  marge: new User({
+    id: 1,
+    firstName: 'Marge',
+    lastName: 'Simpson',
+    email: 'marge@thesimpsons.com',
+    mobileNumber: '(939) 174-4432',
+    children: [] as any[],
+    parents: [] as any[],
+    locations: [] as any[],
+  }),
+  homer: new User({
+    id: 2,
+    firstName: 'Homer',
+    lastName: 'Simpson',
+    email: 'marge@thesimpsons.com',
+    mobileNumber: '(939) 174-4432',
+    children: [] as any[],
+    parents: [] as any[],
+    locations: [] as any[],
+  }),
+  lisa: new User({
+    id: 3,
+    firstName: 'Lisa',
+    lastName: 'Simpson',
+    children: [] as any[],
+    parents: [] as any[],
+    locations: [locations.springfieldElementary, locations.bandPractice] as any[],
+  }),
+  bart: new User({
+    id: 4,
+    firstName: 'Bart',
+    lastName: 'Simpson',
+    email: 'barthax@thesimpsons.com',
+    mobileNumber: '(939) 666-1423',
+    children: [] as any[],
+    parents: [] as any[],
+    locations: [locations.springfieldElementary] as any[],
+  }),
+  maggie: new User({
+    id: 5,
+    firstName: 'Maggie',
+    lastName: 'Simpson',
+    children: [] as any[],
+    parents: [] as any[],
+    locations: [locations.longestDaycare] as any[],
+  }),
+}
 
-// Add bart, lisa, and maggie as children
-;[simpsons.bart, simpsons.lisa, simpsons.maggie].forEach((child: any) => {
-  simpsons.homer.children.push(child)
-  simpsons.marge.children.push(child)
+const thegreenes: { [k: string]: User } = {
+  mother: new User({
+    id: 6,
+    firstName: 'Chloe',
+    lastName: 'Greene',
+    email: 'chloe@gogreene.com',
+    mobileNumber: '(919) 174-4432',
+    children: [] as any[],
+    parents: [] as any[],
+    locations: [] as any[],
+  }),
+  father: new User({
+    id: 7,
+    firstName: 'Meyer',
+    lastName: 'Greene',
+    email: 'hunter@gogreene.com',
+    mobileNumber: '(919) 174-4432',
+    children: [] as any[],
+    parents: [] as any[],
+    locations: [locations.forestHillsElementary] as any[],
+  }),
+  daughter: new User({
+    id: 8,
+    firstName: 'Lucy',
+    lastName: 'Greene',
+    children: [] as any[],
+    parents: [] as any[],
+    locations: [locations.greenwoodMiddle, locations.soccerLeague] as any[],
+  }),
+  son: new User({
+    id: 9,
+    firstName: 'Beacon',
+    lastName: 'Greene',
+    mobileNumber: '(919) 666-1423',
+    children: [] as any[],
+    parents: [] as any[],
+    locations: [locations.forestHillsElementary] as any[],
+  }),
+  baby: new User({
+    id: 10,
+    firstName: 'Dawn',
+    lastName: 'Greene',
+    children: [] as any[],
+    parents: [] as any[],
+    locations: [locations.longestDaycare] as any[],
+  }),
+}
 
-  if (child === simpsons.maggie) {
-    child.locations.push(locations.longestDaycare)
-  } else {
-    child.locations.push(locations.springfieldElementary)
-  }
+  //
+  // Simpsons Relationships
+  //
 
-  if (child === simpsons.lisa) {
-    child.locations.push(locations.bandPractice)
-  }
-})
+  // Add bart, lisa, and maggie as children
+  ;[simpsons.bart, simpsons.lisa, simpsons.maggie].forEach((child: User) => {
+    simpsons.homer.children.push(child)
+    simpsons.marge.children.push(child)
+  })
 
-// Add homer and marge as parents
-;[simpsons.homer, simpsons.marge].forEach((x: any) => {
-  simpsons.bart.parents.push(x)
-  simpsons.lisa.parents.push(x)
-  simpsons.maggie.parents.push(x)
-})
+  //
+  // The Greenes
+  //
 
-// Add homer to his work
-simpsons.homer.locations.push(locations.nuclearPlant)
+  ;[thegreenes.daughter, thegreenes.son, thegreenes.baby].forEach((child: any) => {
+    thegreenes.father.children.push(child)
+    thegreenes.mother.children.push(child)
+  })
 
-//
-// The Greenes
-//
-
-;[thegreenes.daughter, thegreenes.son, thegreenes.baby].forEach((child: any) => {
-  thegreenes.father.children.push(child)
-  thegreenes.mother.children.push(child)
-})
-
-thegreenes.daughter.locations.push(locations.greenwoodMiddle)
-thegreenes.daughter.locations.push(locations.soccerLeague)
-thegreenes.son.locations.push(locations.forestHillsElementary)
-thegreenes.baby.locations.push(locations.shiningDaycare)
-
-const users: {[k: string]: User } = {}
-const usersData = {
+const users = {
   ...simpsons,
   ...thegreenes
 }
-// Object.keys(usersData).forEach((key) => {
-//   users[key] = new User((usersData as any)[key])
-// })
 
 export default {
-  users: usersData
+  users
 }

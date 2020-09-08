@@ -37,14 +37,10 @@ export default class ReviewUserPage extends React.Component<Props, State> {
             type="text"
             placeholder="Your first name"
             value={updatedUser.firstName}
-            onChange={(e) =>
-              this.setState({
-                updatedUser: {
-                  ...updatedUser,
-                  firstName: (e.target.value as string) || '',
-                },
-              })
-            }
+            onChange={(e) => {
+              updatedUser.firstName = (e.target.value as string) || ''
+              this.setState({ updatedUser })
+            }}
             required
           />
           <ListInput
@@ -52,14 +48,10 @@ export default class ReviewUserPage extends React.Component<Props, State> {
             type="text"
             placeholder="Your last name"
             value={updatedUser.lastName}
-            onChange={(e) =>
-              this.setState({
-                updatedUser: {
-                  ...updatedUser,
-                  lastName: (e.target.value as string) || '',
-                },
-              })
-            }
+            onChange={(e) => {
+              updatedUser.lastName = (e.target.value as string) || ''
+              this.setState({ updatedUser })
+            }}
             required
           />
           <ListInput
@@ -72,14 +64,10 @@ export default class ReviewUserPage extends React.Component<Props, State> {
                 ? "We'll need to verify this new email."
                 : undefined
             }
-            onChange={(e) =>
-              this.setState({
-                updatedUser: {
-                  ...updatedUser,
-                  email: (e.target.value as string) || '',
-                },
-              })
-            }
+            onChange={(e) => {
+              updatedUser.email = (e.target.value as string) || ''
+              this.setState({ updatedUser })
+            }}
             required
             validate
           />
@@ -93,14 +81,10 @@ export default class ReviewUserPage extends React.Component<Props, State> {
                 ? "We'll need to verify this new phone number."
                 : undefined
             }
-            onChange={(e) =>
-              this.setState({
-                updatedUser: {
-                  ...updatedUser,
-                  mobileNumber: e.target.value as string,
-                },
-              })
-            }
+            onChange={(e) => {
+              updatedUser.mobileNumber = (e.target.value as string) || ''
+              this.setState({ updatedUser })
+            }}
             required
             validate
           />

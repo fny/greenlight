@@ -9,11 +9,11 @@
   --gl-pink: #FF3494;
   --gl-gold-light: #FFFAA1;
   --gl-gold: #FFCD65;
+  --gl-gold-grad: linear-gradient(90deg, var(--gl-gold-light), var(--gl-gold));
   --f7-theme-color: #00A183;
   --f7-page-bg-color: #fff;
   --f7-button-fill-bg-color: var(--gl-green);
   --f7-button-fill-pressed-bg-color: var(--gl-green-light);
-
 }
 
 body {

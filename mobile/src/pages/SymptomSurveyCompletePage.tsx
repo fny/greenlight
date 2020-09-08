@@ -10,10 +10,10 @@ export default () => (
       <p>Enjoy your day! Here's something we hope will make you smile. 😃</p>
       <img
         style={{ width: "100%" }}
-        src="https://media.giphy.com/media/322FvxfciE8UsYvILG/giphy.gif"
+        src="https://media.giphy.com/images/322FvxfciE8UsYvILG/giphy.gif"
         alt="Image of the Day"
       />
-      <Button large fill>
+      <Button large fill href="/dashboard">
         Back Home
       </Button>
     </Block>

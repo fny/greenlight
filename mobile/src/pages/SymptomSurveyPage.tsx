@@ -4,6 +4,7 @@ import fixtures from '../fixtures'
 import { Case, When } from '../components/Case'
 import './SymptomSurveyPage.css'
 import { User } from '../models/user'
+import YesNoButton from '../components/YesNoButton'
 
 interface SymptomButtonProps {
   title: string
@@ -26,39 +27,12 @@ function SymptomButton({ title, image, selected, onClick }: SymptomButtonProps) 
   )
 }
 
-interface YesNoButtonProps {
-  setYesNo: (yesNo: boolean) => void
-  yesNo: boolean | null
-}
-
-function YesNoButton({ yesNo, setYesNo }: YesNoButtonProps) {
-  return (
-    <Row>
-      <Col width="50">
-        <Segmented tag="p">
-          <Button outline fill={yesNo === true} onClick={() => setYesNo(true)}>
-            Yes
-          </Button>
-          <Button
-            outline
-            fill={yesNo === false}
-            onClick={() => setYesNo(false)}
-          >
-            No
-          </Button>
-        </Segmented>
-      </Col>
-    </Row>
-  )
-}
 
 interface SurveyProps {
 
 }
 
 interface SurveyState {
-  submittingUser: User
-  targetUser: User
   hasFever: boolean
   hasChills: boolean
   hasNewCough: boolean
@@ -77,8 +51,6 @@ type Symptoms =
 
 export default class SymptomSurveyPage extends React.Component<SurveyProps, SurveyState> {
   state: SurveyState = {
-    submittingUser: fixtures.users.marge,
-    targetUser: fixtures.users.lisa,
     hasFever: false,
     hasChills: false,
     hasNewCough: false,
@@ -111,10 +83,6 @@ export default class SymptomSurveyPage extends React.Component<SurveyProps, Surv
 
   childCount() {
     return this.global.currentUser.children.length
-  }
-
-  submittingForSelf() {
-    return this.state.submittingUser == this.state.targetUser
   }
 
   setHadDiagnosis(yesNo: boolean) {
@@ -182,34 +150,17 @@ export default class SymptomSurveyPage extends React.Component<SurveyProps, Surv
         </div>
         <Block>
           <div className="survey-title">COVID Contact?</div>
-          <Case test={this.submittingForSelf()}>
-            <When value={true}>
-              Have you had close contact (within 6 feet for at least 15 minutes)
-              with someone diagnosed with COVID-19? Has a health worker advised
-              you to quarantine?
-            </When>
-            <When value={false}>
-              Has {child.firstName} had close contact—within 6 feet for at least
-              15 minutes—with someone diagnosed with COVID-19? Has a health
-              worker advised {child.firstName} to quarantine?
-            </When>
-          </Case>
+          Has {child.firstName} had close contact—within 6 feet for at least 15
+          minutes—with someone diagnosed with COVID-19? Has a health worker
+          advised {child.firstName} to quarantine?
           <br />
           <YesNoButton
             setYesNo={(yesNo: boolean) => this.setHadContact(yesNo)}
             yesNo={this.state.hadContact}
           />
           <div className="survey-title">COVID Diagnosis?</div>
-
-          <Case test={this.submittingForSelf()}>
-            <When value={true}>
-              Have you been diagnosed with or tested positive for COVID-19?
-            </When>
-            <When value={false}>
-              Has {child.firstName} been diagnosed with or tested positive for
-              COVID-19?
-            </When>
-          </Case>
+          Has {child.firstName} been diagnosed with or tested positive for
+          COVID-19?
           <YesNoButton
             setYesNo={(yesNo: boolean) => this.setHadDiagnosis(yesNo)}
             yesNo={this.state.hadDiagnosis}

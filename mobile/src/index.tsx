@@ -1,3 +1,5 @@
+import './models'
+
 import React, { setGlobal, addCallback } from 'reactn'
 
 import ReactDOM from 'react-dom'
@@ -13,7 +15,12 @@ import Framework7React from 'framework7-react'
 
 // Framework7 styles
 import 'framework7/css/framework7.bundle.css'
+import 'framework7-icons'
+
 import './index.css'
+
+
+
 import fixtures from './fixtures'
 
 // Init Framework7-React plugin
