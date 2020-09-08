@@ -1,50 +1,42 @@
 package greenlight.controllers
 
-import greenlight.entities.Person
-import greenlight.services.resources.UserService
+import greenlight.models.public.CreateUserFormData
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
-import io.micronaut.validation.Validated
-import io.reactivex.Single
-import java.util.*
-import javax.inject.Inject
-import kotlin.NoSuchElementException
+import io.micronaut.security.annotation.Secured
+import io.micronaut.security.rules.SecurityRule
+import org.slf4j.LoggerFactory
+import java.net.URI
+import java.security.Principal
+import javax.validation.Valid
 
 @Controller("/user")
-class UserController {
-  
-  @Inject lateinit var userService : UserService
-  
-  @Get("/") fun index() : Single<List<Person>> {
-    return Single.fromCallable {
-      userService.all().toList()
+@Secured(SecurityRule.IS_ANONYMOUS)
+open class UserController {
+
+    /**
+     * Returns the current user associated with the auth token
+     */
+    @Get("/")
+    fun getCurrentUser(principal: Principal?): String {
+        return "Current User"
     }
-  }
-  
-  @Get("/auth{?email,token}") fun auth(email : String?, token : String?)
-      : Single<HttpStatus> {
-    return userService.authenticate("test@gmail.com", "123454321").map {
-      if (it) {
-        return@map HttpStatus.OK
-      } else {
-        return@map HttpStatus.UNAUTHORIZED
-      }
-    }.onErrorReturn { t ->
-      if (t is NoSuchElementException)
-        HttpStatus.NOT_FOUND
-      else
-        HttpStatus.INTERNAL_SERVER_ERROR
+
+    @Get("/:{id}")
+    fun getUser(@PathVariable
+                id: String): String {
+        return "User $id"
     }
-  }
-  
-  @Post(value = "/", consumes = [MediaType.APPLICATION_FORM_URLENCODED],
-        produces = [MediaType.TEXT_PLAIN])
-  fun createUser(name : String?, email : String?, zipCode : String?) :
-      Single<HttpStatus> {
-    return userService.createUser(name!!, email!!, zipCode!!).map {
-      HttpStatus.OK
+
+
+    @Post
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    open fun createUser(@Body formData: CreateUserFormData): HttpResponse<Any> {
+        LoggerFactory.getLogger("UserController")
+                .info("Received a form submittion with body $formData")
+
+        return HttpResponse.redirect(URI("/admin/users"))
     }
-  }
 }

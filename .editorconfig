@@ -5,10 +5,12 @@ root = true
 
 # Defaults
 [*]
+charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 indent_style = space
 indent_size = 2
+max_line_length = 120
 
 # 4 space indentation for certain file types
 [*.{py,java,kt}]
