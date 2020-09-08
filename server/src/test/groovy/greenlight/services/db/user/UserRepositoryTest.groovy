@@ -29,16 +29,7 @@ class UserRepositoryTest extends Specification {
     
     }
     
-    def 'A child without a parent cannot be created'() {
-    
-    }
-    
-    def 'A parent without a child cannot be created'() {
-    
-    }
-    
     def 'A default parent named GREENLIGHT exists'() {
     
     }
-    
 }

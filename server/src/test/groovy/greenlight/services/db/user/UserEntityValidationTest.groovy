@@ -10,8 +10,6 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import javax.inject.Inject
-import javax.validation.ConstraintViolation
-import javax.validation.ConstraintViolationException
 import javax.validation.Validator
 
 @MicronautTest
