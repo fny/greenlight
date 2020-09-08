@@ -25,7 +25,7 @@ class PhoneValidator : ConstraintValidator<ValidPhone, String> {
      private fun isValid(value : String?) : Boolean {
           val pnu = PhoneNumberUtil.getInstance()
           return try {
-               val phoneNumber = pnu.parse(value, null)
+               val phoneNumber = pnu.parse(value, "1")
                pnu.isValidNumber(phoneNumber)
           } catch (e : Exception) {
                false
