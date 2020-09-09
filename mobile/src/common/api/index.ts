@@ -1,4 +1,4 @@
-import { verify as jwtverify } from 'jsonwebtoken'
+import jwt_decode from 'jwt-decode';
 import Cookies from 'js-cookie'
 import moment from 'moment'
 
@@ -31,7 +31,7 @@ class Requestor {
       body: JSON.stringify(data) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
-  }  
+  }
 
   async delete(path: string, data = {}) {
     // Default options are marked with *
@@ -47,7 +47,7 @@ class Requestor {
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
     });
     return response.json(); // parses JSON response into native JavaScript objects
-  }  
+  }
 }
 
 const v1 = new Requestor(BASE_URL, 1000)
@@ -60,6 +60,9 @@ interface SessionJWT {
 }
 
 class NullToken {
+  isValid() {
+    return false
+  }
   issueAt() {
     return moment()
   }
@@ -91,7 +94,11 @@ class SessionToken {
 
   constructor(token: string) {
     this.token = token
-    this.data = jwtverify(token, 'TODO_JWT_PUBLIC_KEY') as SessionJWT
+    this.data = jwt_decode(token) as SessionJWT
+  }
+
+  isValid() {
+    return !this.isExpired()
   }
 
   issuedAt() {
@@ -111,7 +118,7 @@ class SessionToken {
       Cookies.set(SESSION_COOKIE_NAME, this.token, { expires: expiry })
     } else {
       Cookies.set(SESSION_COOKIE_NAME, this.token)
-    }   
+    }
   }
 
   headers() {
@@ -132,8 +139,8 @@ export async function signIn(emailOrMobile: string, password: string, rememberMe
       rememberMe,
       userAgent: navigator.userAgent
     })
-    
-  
+
+
   session = new SessionToken(response.data.token)
   if (rememberMe) {
     session.saveCookie(SESSION_REMEBER_ME_DAYS)

@@ -22,7 +22,7 @@ if (process.env.JWT_SECRET === undefined || process.env.JWT_SECRET.length !== 64
 
 
 function tokenResponse(user: fixtures.Fixture) {
-  return { 
+  return {
     token: jwt.sign(user._data.authToken, process.env.JWT_SECRET, { algorithm: 'HS256' })
   }
 }
@@ -46,14 +46,22 @@ server.post('/api/v1/auth/sign-in', async (req, res) => {
   return tokenResponse(user)
 })
 
-
 server.get('/api/v1/users', async (req, res) => {
   res.type('application/json').code(200)
   const queryParams: any = req.query
   const include = queryParams['include'] ? queryParams['include'].split(',') : []
-  
+
   return fixtures.all('users').map(f => f.data(include))
 })
+
+server.get('/api/v1/users/me', async (req, res) => {
+  res.type('application/json').code(200)
+  const queryParams: any = req.query
+  const include = queryParams['include'] ? queryParams['include'].split(',') : []
+
+  return fixtures.all('users').map(f => f.data(include))
+})
+
 
 server.listen(port, (err, address) => {
   if (err) throw err

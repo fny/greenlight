@@ -6,7 +6,7 @@ import SymptomSurveyPage from './pages/SymptomSurveyPage'
 import ThankYouPage from './pages/SymptomSurveyCompletePage'
 import SignInPage from './pages/SignInPage'
 import MagicSignInPage from './pages/MagicSignInPage'
-import SplashPage from './pages/SplashPage'
+import RootPage from './pages/RootPage'
 import RegistrationPage from './pages/RegistrationPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import PasswordResetPage from './pages/PasswordResetPage'
@@ -22,7 +22,7 @@ import { session } from './common/api'
 import { resolve } from 'dns'
 
 type GLRoute = Router.RouteParameters & {
-  unauthenticated?: boolean 
+  unauthenticated?: boolean
 }
 
 export const paths = {
@@ -44,12 +44,12 @@ export const paths = {
 const routes: GLRoute[] = [
   {
     path: paths.rootPath,
-    component: SplashPage,
+    component: RootPage,
     unauthenticated: true
   },
   {
     path: paths.welcomePath,
-    component: SplashPage,
+    component: RootPage,
     unauthenticated: true
   },
   {

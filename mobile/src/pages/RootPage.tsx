@@ -18,17 +18,14 @@ import {
 } from 'framework7-react'
 
 import './RootPage.css'
+import { paths } from '../routes'
 
-interface SplashProps {}
-interface SplashState {
+interface Props {}
+interface State {
 }
 
-export default class RootPage extends React.Component<
-  SplashProps,
-  SplashState
-> {
-  state: SplashState = {
-  }
+export default class RootPage extends React.Component<Props, State> {
+  state: State = {}
 
   render() {
     return (
@@ -44,6 +41,7 @@ export default class RootPage extends React.Component<
           <Button outline href="/sign-in">Sign In with Password</Button>
           <Button outline href="/magic-sign-in">Magic Sign In</Button>
           <Button outline href="/join">Join Greenlight</Button>
+          <Button outline onClick={() => this.$f7router.navigate('asdfasfasdfa')}>Join Greenlight</Button>
         </Block>
       </Page>
     )

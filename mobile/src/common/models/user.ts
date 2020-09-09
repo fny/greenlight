@@ -44,7 +44,13 @@ export class User extends Model {
   physicianPhone: string | null = null
 
   @attr({ type: DATETIME })
+  passwordSetAt: moment.Moment | null = null
+
+  @attr({ type: DATETIME })
   reviewedAt: moment.Moment | null = null
+
+  @attr({ type: DATETIME })
+  firstSurveyAt: moment.Moment | null = null
 
   @relationship({ type: 'hasOne', model: 'user' })
   reviewedBy?: User
@@ -65,6 +71,10 @@ export class User extends Model {
   greenlightStatuses: GreenlightStatus[] = []
 
 
+  shouldSubmitSurveys() {
+    return this.locations.length > 0
+  }
+
   hasChildren() {
     return this.children.length > 0
   }
@@ -72,6 +82,8 @@ export class User extends Model {
   isParent() {
     return this.hasChildren()
   }
+
+
 
   greenlightStatus() {
     if (this.greenlightStatuses.length === 0) {
