@@ -1,4 +1,5 @@
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import { includes } from 'lodash'
 
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
@@ -23,4 +24,24 @@ export function timeOfDay(): 'morning' | 'afternoon' | 'evening' {
   } else {
     return 'evening'
   }
+}
+
+type NubmerOrString = number | string
+
+export function url(path: string, values: NubmerOrString[], query: {}) {
+  let re = /(:[A-z0-9\-_]+)/g
+  const matches = path.match(re)
+  
+  if (!matches) {
+    return path
+  }
+
+  if (matches.length !== values.length) {
+    throw new Error(`Expected ${matches.length} values, but only got ${values.length}`)
+  }
+
+  for (let i = 0; i < matches.length; i++) {
+    path = path.replace(matches[i], String(values[i]))
+  }
+  return path
 }

@@ -1,0 +1,109 @@
+#
+# The Simpsons
+#
+
+- id: marge
+  firstName: Marge
+  lastName: Simpson
+  email: marge@thesimpsons.com
+  mobileNumber: "+19391744432"
+  relationships:
+    locations: []
+    parents: { users: [] }
+    children: { users: [lisa, bart] }
+
+- id: homer
+  firstName: Homer
+  lastName: Simpson
+  email: marge@thesimpsons.com
+  mobileNumber: "+19391744432"
+  relationships:
+    locations: [nuclearPlant]
+    parents: { users: [] }
+    children: { users: [lisa, bart] }
+
+- id: lisa
+  firstName: Lisa
+  lastName: Simpson
+  relationships:
+    locations: [springfieldElementary, bandPractice]
+    parents: { users: [homer, marge] }
+    children: { users: [] }
+
+- id: bart
+  firstName: Bart
+  lastName: Simpson
+  email: barthax@thesimpsons.com
+  mobileNumber: "+19396661423"
+  relationships:
+    locations: [springfieldElementary]
+    parents: { users: [homer, marge] }
+    children: { users: [] }
+
+- id: maggie
+  firstName: Maggie
+  lastName: Simpson
+  relationships:
+    locations: [longestDaycare]
+    parents: { users: [homer, marge] }
+    children: { users: [] }
+
+#
+# The Greenes - A New Family
+#
+
+- id: mother
+  firstName: Chloe
+  lastName: Greene
+  email: chloe@gogreene.com
+  mobileNumber: "+19191744432"
+  relationships:
+    locations: [greenwoodMiddle]
+    parents: { users: [] }
+    children: { users: [daughter, son, baby] }
+
+- id: father
+  firstName: Meyer
+  lastName: Greene
+  email: hunter@gogreene.com
+  mobileNumber: "+19191744432"
+  relationships:
+    locations: []
+    parents: { users: [] }
+    children: { users: [daughter, son, baby] }
+
+- id: daughter
+  firstName: Lucy
+  lastName: Greene
+  relationships:
+    locations: [greenwoodMiddle, soccerLeague]
+    parents: { users: [father, mother] }
+    children: { users: [] }
+
+- id: son
+  firstName: Beacon
+  lastName: Greene
+  mobileNumber: "+19196661423"
+  relationships:
+    locations: [forestHillsElementary]
+    parents: { users: [father, mother] }
+    children: { users: [] }
+
+- id: baby
+  firstName: Dawn
+  lastName: Greene
+  relationships:
+    locations: [shiningDaycare]
+    parents: { users: [father, mother] }
+    children: { users: [] }
+
+
+- id: faraz
+  firstName: Faraz
+  lastName: Yashar
+  email: faraz.yashar@gmail.com
+  mobileNumber: "+13303332729"
+  relationships:
+    locations: [greenlight]
+    parents: { users: [] }
+    children: { users: [] }

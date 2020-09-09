@@ -15,66 +15,110 @@ import WelcomeParentPage from './pages/WelcomeParentPage'
 import WelcomeParentReviewChildPage from './pages/WelcomeParent/ReviewChildPage'
 import WelcomeParentReviewUserPage from './pages/WelcomeParent/ReviewUserPage'
 import WelcomeParentPasswordPage from './pages/WelcomeParent/PasswordPage'
+import { Router } from 'framework7/modules/router/router'
 
-export default [
+
+import { session } from './common/api'
+import { resolve } from 'dns'
+
+type GLRoute = Router.RouteParameters & {
+  unauthenticated?: boolean 
+}
+
+export const paths = {
+  rootPath: '/',
+  signInPath: '/sign-in',
+  magicSignInPath: '/magic-sign-in',
+  registrationPath: '/join',
+  dashboardPath: '/dashboard',
+  passwordResetsPath: '/password-resets/:token',
+  forgotPasswordPath: '/forgot-password',
+  welcomePath: '/welcome',
+  welcomeReviewPath: '/welcome/review',
+  welcomePasswordPath: '/welcome/password',
+  welcomeChildrenReviewPath: '/welcome/review/children/:id',
+  userSurveysPath: '/users/:id/surveys/new',
+  surveyThankYouPath: '/surveys/thank-you'
+}
+
+const routes: GLRoute[] = [
   {
-    path: '/',
+    path: paths.rootPath,
     component: SplashPage,
+    unauthenticated: true
   },
   {
-    path: '/sign-in',
+    path: paths.welcomePath,
+    component: SplashPage,
+    unauthenticated: true
+  },
+  {
+    path: paths.signInPath,
     component: SignInPage,
+    unauthenticated: true
   },
   {
-    path: '/magic-sign-in',
+    path: paths.magicSignInPath,
     component: MagicSignInPage,
+    unauthenticated: true
   },
   {
-    path: '/join',
+    path: paths.registrationPath,
     component: RegistrationPage,
   },
   {
-    path: '/dashboard',
+    path: paths.dashboardPath,
     component: DashboardPage,
   },
   {
-    path: '/password-resets/:token',
+    path: paths.passwordResetsPath,
     component: PasswordResetPage,
   },
   {
-    path: '/forgot-password',
+    path: paths.forgotPasswordPath,
     component: ForgotPasswordPage,
   },
   {
-    path: '/welcome',
+    path: paths.welcomePath,
     component: WelcomeParentPage,
   },
   {
-    path: '/welcome/review',
+    path: paths.welcomeReviewPath,
     component: WelcomeParentReviewUserPage,
   },
   {
-    path: '/welcome/password',
+    path: paths.welcomePasswordPath,
     component: WelcomeParentPasswordPage,
   },
   {
-    path: '/welcome/children/:id',
+    path: paths.welcomeChildrenReviewPath,
     component: WelcomeParentReviewChildPage,
   },
   {
-    path: '/welcome/children/:id/surveys/new',
+    path: paths.userSurveysPath,
     component: SymptomSurveyPage,
   },
   {
-    path: '/welcome/users/:id/surveys/new',
-    component: SymptomSurveyPage,
-  },
-  {
-    path: '/welcome/thank-you',
+    path: paths.surveyThankYouPath,
     component: ThankYouPage,
   },
   {
     path: '(.*)',
     component: NotFoundPage,
+    unauthenticated: true
   },
 ]
+
+const f7routes = routes.map(route => {
+    if (route.unauthenticated) {
+      return route as Router.RouteParameters
+    }
+    route.on = {
+      pageBeforeIn: (event, page) => {
+        page.router.navigate(paths.signInPath)
+      }
+    }
+    return route
+})
+
+export default f7routes

@@ -1,4 +1,5 @@
 import { User, Location } from './common/models'
+import * as uuid from 'uuid'
 
 const locations = {
   springfieldElementary: new Location({
@@ -57,7 +58,7 @@ const simpsons: { [k: string]: User } = {
     mobileNumber: '(939) 174-4432',
     children: [] as User[],
     parents: [] as User[],
-    locations: [] as User[],
+    locations: [] as Location[],
   }),
   homer: new User({
     id: '2',
@@ -67,7 +68,7 @@ const simpsons: { [k: string]: User } = {
     mobileNumber: '(939) 174-4432',
     children: [] as User[],
     parents: [] as User[],
-    locations: [] as User[],
+    locations: [] as Location[],
   }),
   lisa: new User({
     id: '3',
@@ -106,7 +107,7 @@ const thegreenes: { [k: string]: User } = {
     mobileNumber: '(919) 174-4432',
     children: [] as User[],
     parents: [] as User[],
-    locations: [] as User[],
+    locations: [] as Location[],
   }),
   father: new User({
     id: '7',

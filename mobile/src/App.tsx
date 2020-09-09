@@ -24,19 +24,19 @@ import {
 } from 'framework7-react';
 
 import routes from './routes';
+import { Framework7Params } from 'framework7/components/app/app-class';
 
 export default function () {
 
   // Framework7 parameters here
-  const f7params = {
+  const f7params: Framework7Params = {
     id: 'com.greenlightready.mobile', // App bundle ID
     name: 'Greenlight', // App name
     theme: 'auto', // Automatic theme detection
     // App routes
     routes,
     view: {
-      pushState: true,
-      history: true
+      pushState: true
     },
   }
 

@@ -17,13 +17,13 @@ import {
   ListItem,
 } from 'framework7-react'
 
-import './SplashPage.css'
+import './RootPage.css'
 
 interface SplashProps {}
 interface SplashState {
 }
 
-export default class SplashPage extends React.Component<
+export default class RootPage extends React.Component<
   SplashProps,
   SplashState
 > {
@@ -32,7 +32,7 @@ export default class SplashPage extends React.Component<
 
   render() {
     return (
-      <Page className="SplashPage" noToolbar noNavbar noSwipeback loginScreen>
+      <Page className="RootPage" noToolbar noNavbar noSwipeback loginScreen>
         <Block>
           <div className="welcome">Welcome to</div>
           <div className="logo">

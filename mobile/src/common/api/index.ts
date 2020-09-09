@@ -119,7 +119,7 @@ class SessionToken {
   }
 }
 
-let session = SessionToken.init()
+export let session = SessionToken.init()
 
 //
 // Authentication
@@ -142,4 +142,9 @@ export async function signIn(emailOrMobile: string, password: string, rememberMe
 
 export function signOut() {
   return v1.delete('auth/sign-out', { headers: session.headers() })
+}
+
+
+export async function signInDemo(emailOrMobile: string, password: string, rememberMe: boolean) {
+
 }

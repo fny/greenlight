@@ -20,6 +20,7 @@ import {
 import EmailOrPhoneInput from '../components/EmailOrPhoneInput'
 import './SignInPage.css'
 import fixtures from '../fixtures'
+import { paths } from '../routes'
 
 interface SignInProps {}
 interface SignInState {
@@ -44,9 +45,7 @@ export default class SignInPage extends React.Component<SignInProps, SignInState
     } else {
       this.setGlobal({ currentUser: fixtures.users.mother })
     }
-
-
-    this.$f7router.navigate('/welcome-parent')
+    this.$f7router.navigate(paths.rootPath)
   }
 
   render() {
