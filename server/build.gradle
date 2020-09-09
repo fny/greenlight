@@ -51,7 +51,6 @@ dependencies {
 //    exclude group: "io.micronaut", module: "http-server-netty"
 //    exclude group: "io.micronaut", module: "http-client"
     }
-    implementation("io.micronaut.views:micronaut-views-soy")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime:2.0.0")
     implementation("io.micronaut:micronaut-runtime:$micronautVersion")
     implementation("io.micronaut:micronaut-http-server-netty:$micronautVersion")
@@ -70,7 +69,6 @@ dependencies {
     kapt("javax.persistence:javax.persistence-api:2.2")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("io.reactivex.rxjava3:rxjava:3.0.6")
-    implementation("com.twilio.sdk:twilio:7.55.0")
     implementation("com.googlecode.libphonenumber:libphonenumber:8.12.9")
     
     implementation('org.postgresql:postgresql:42.2.16')

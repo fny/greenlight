@@ -1,4 +1,4 @@
-package greenlight.models.entities
+package greenlight.models.db
 
 import org.hibernate.annotations.Immutable
 import javax.persistence.Entity

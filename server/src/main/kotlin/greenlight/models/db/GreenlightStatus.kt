@@ -1,4 +1,4 @@
-package greenlight.models.entities
+package greenlight.models.db
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
