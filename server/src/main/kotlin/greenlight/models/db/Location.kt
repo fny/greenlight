@@ -1,4 +1,4 @@
-package greenlight.models.entities
+package greenlight.models.db
 
 import greenlight.etc.validators.ValidPhone
 import org.hibernate.annotations.CreationTimestamp

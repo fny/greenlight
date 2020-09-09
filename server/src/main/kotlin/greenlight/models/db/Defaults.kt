@@ -1,4 +1,4 @@
-package greenlight.models.entities
+package greenlight.models.db
 
 import java.util.UUID
 import javax.persistence.Transient
