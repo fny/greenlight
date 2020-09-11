@@ -1,14 +1,19 @@
 package greenlight.entities
 
-import java.util.*
+import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
+import javax.persistence.MappedSuperclass
+import javax.validation.ConstraintViolation
+import javax.validation.Validation
 
-open abstract class AbstractBase {
+@MappedSuperclass
+abstract class AbstractBase {
+
     @Id
     @GeneratedValue
-    @Column( columnDefinition = "uuid", updatable = false )
+    @Column(columnDefinition = "uuid", updatable = false)
     open var id: UUID = UUID.randomUUID()
 
     override fun equals(other: Any?): Boolean {

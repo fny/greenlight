@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id:  2020-09-10T05:52:33-configure-database
+      author:  faraz
+      changes:
+      -  sqlFile:
+          path:  db/migrations/2020-09-10T05:52:33-configure-database.sql
+  - changeSet:
+      id:  2020-09-10T05:58:55-create-users-table
+      author:  faraz
+      changes:
+      -  sqlFile:
+          path:  db/migrations/2020-09-10T05:58:55-create-users-table.sql
+  - changeSet:
+      id:  2020-09-10T14:59:03.716-create-parents-children-table
+      author:  faraz
+      changes:
+      -  sqlFile:
+          path:  db/migrations/2020-09-10T14:59:03.716-create-parents-children-table.sql
+
+
+

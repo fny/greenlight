@@ -1,4 +1,3 @@
 datasources:
   default:
-    url: jdbc:tc:postgresql:12:///greenlight_test
-    driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:postgresql://localhost:5432/greenlight_wip

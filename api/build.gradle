@@ -4,6 +4,7 @@ plugins {
     id "org.jetbrains.kotlin.plugin.allopen" version "1.3.72"
     id "groovy"
     id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "org.jlleitschuh.gradle.ktlint" version "9.4.0"
     id "application"
 }
 
@@ -13,6 +14,7 @@ group "greenlight"
 repositories {
     mavenCentral()
     jcenter()
+    maven { url "https://jitpack.io" }
 }
 
 configurations {
@@ -43,18 +45,13 @@ dependencies {
     implementation("io.micronaut.micrometer:micronaut-micrometer-core")
     implementation("io.micronaut.micrometer:micronaut-micrometer-registry-new-relic")
     implementation("io.micronaut.liquibase:micronaut-liquibase")
-    implementation("org.liquibase.exit.liquibase-hibernate4")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.beanvalidation:micronaut-hibernate-validator")
     implementation("io.micronaut.sql:micronaut-hibernate-jpa")
     implementation("io.micronaut.security:micronaut-security")
     implementation("io.micronaut.security:micronaut-security-jwt")
-    implementation "io.micronaut.acme:micronaut-acme"
     implementation("io.micronaut.kotlin:micronaut-kotlin-extension-functions")
-    implementation("org.apache.logging.log4j:log4j-core:2.12.1")
-    runtimeOnly("org.apache.logging.log4j:log4j-api:2.12.1")
-    runtimeOnly("org.apache.logging.log4j:log4j-slf4j-impl:2.12.1")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
@@ -63,8 +60,17 @@ dependencies {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
     testImplementation("io.micronaut.test:micronaut-test-spock")
-    testImplementation(platform("org.testcontainers:testcontainers-bom:1.14.3"))
-    testRuntimeOnly("org.testcontainers:postgresql")
+    implementation("org.springframework.security:spring-security-crypto:5.3.4.RELEASE")
+    implementation("io.micronaut.liquibase:micronaut-liquibase")
+
+    implementation('com.fasterxml.jackson.module:jackson-module-kotlin:2.7.1-2')
+    implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.7.1')
+
+    testImplementation 'com.github.fny:java-factory-bot:0.2.0'
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+
+
+//    testImplementation('com.github.fny:java-factory-bot:master-SNAPSHOT')
 }
 
 test.classpath += configurations.developmentOnly
@@ -121,5 +127,9 @@ tasks.withType(JavaExec) {
     }
 }
 
+task getDeps(type: Copy) {
+  from sourceSets.main.runtimeClasspath
+  into 'runtime/'
+}
 
-
+apply plugin: 'idea'

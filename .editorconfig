@@ -13,8 +13,7 @@ indent_size = 2
 max_line_length = 120
 
 # 4 space indentation for certain file types
-[*.{py,java,kt}]
-indent_style = space
+[*.{py,java,kt,kts,groovy,gradle}]
 indent_size = 4
 
 # Tab indentation (no size specified)
