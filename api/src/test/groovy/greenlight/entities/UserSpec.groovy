@@ -86,23 +86,22 @@ class UserSpec extends Specification {
         user == foundUser
     }
 
-    def "can creat child parent relationships"() {
+    def "can create child parent relationships"() {
         User parent = new UserFactory().build()
         User child = new UserFactory().build()
         child.lastName = parent.lastName
 
-        Util.withinTransaction {
+        Util.withinTransaction(sessionFactory) {
             sess ->
                 sess.save(parent)
                 sess.save(child)
                 parent.children.add(child)
                 sess.save(parent)
-
         }
 
-        User foundParent
+        User foundParent;
         User foundChild
-        Util.withinTransaction {
+        Util.withinTransaction((sessionFactory)) {
             sess ->
                 foundParent = sess.find(User.class, parent.id)
                 foundChild = sess.find(User.class, child.id)
@@ -116,8 +115,4 @@ class UserSpec extends Specification {
         foundParent.isParent()
         !foundParent.isChild()
     }
-
-
-
-
 }
