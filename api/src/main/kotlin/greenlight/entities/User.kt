@@ -103,14 +103,14 @@ class User : AbstractBase() {
     //endregion
 
     //region relationships
-    @ManyToMany(targetEntity = User::class, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = User::class, fetch = FetchType.LAZY)
     @JoinTable(name = "parents_children",
             joinColumns = [JoinColumn(name = "parent_user_id")],
             inverseJoinColumns = [JoinColumn(name = "child_user_id")]
     )
     var children: Set<User> = HashSet<User>()
 
-    @ManyToMany(targetEntity = User::class, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = User::class, fetch = FetchType.LAZY)
     @JoinTable(name = "parents_children",
             joinColumns = [JoinColumn(name = "child_user_id")],
             inverseJoinColumns = [JoinColumn(name = "parent_user_id")]

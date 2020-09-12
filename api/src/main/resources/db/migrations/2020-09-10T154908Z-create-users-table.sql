@@ -55,9 +55,9 @@ CREATE TABLE users (
 	current_user_agent text,
 	last_user_agent text,
 
-	-- Paper Trail
+	-- Timestamps
 	created_at timestamp not null default now(),
-	updated_at timestamp
+	updated_at timestamp not null default now()
 );
 
 CREATE TRIGGER users_updated_at_moddatetime
