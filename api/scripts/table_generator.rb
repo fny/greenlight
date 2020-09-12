@@ -1,4 +1,6 @@
+require 'pp'
 require 'erb'
+
 require 'time'
 
 class Turtle
@@ -243,5 +245,3 @@ end
 
 
 render cohorts.read
-sleep(5)
-render user_cohorts.read
