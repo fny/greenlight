@@ -1,16 +1,16 @@
 create table locations (
-   id uuid primary key default uuid_generate_v4(),
-   name text,
-   permalink text unique,
-   category string not null.
-   phone_number text,
-   email_address text,
-   zip_code text,
-   hidden boolean default true,
+    id uuid primary key default uuid_generate_v4(),
+    name text,
+    permalink text unique,
+    category string not null.
+    phone_number text,
+    email text,
+    zip_code text,
+    hidden boolean default true,
 
-	-- Timestamps
-	created_at timestamp not null default now(),
-	updated_at timestamp not null default now()
+  	-- Timestamps
+    created_at timestamp not null default now(),
+    updated_at timestamp not null default now()
 );
 
 CREATE TRIGGER locations_updated_at_moddatetime

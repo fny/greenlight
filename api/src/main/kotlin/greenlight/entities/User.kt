@@ -7,16 +7,6 @@ import io.micronaut.core.annotation.Introspected
 import java.time.Instant
 import java.util.Date
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.JoinColumn
-import javax.persistence.JoinTable
-import javax.persistence.ManyToMany
-import javax.persistence.OneToOne
-import javax.persistence.PrePersist
-import javax.persistence.PreUpdate
-import javax.persistence.Table
 import javax.validation.constraints.Email
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
@@ -24,6 +14,7 @@ import javax.validation.constraints.NotBlank
 
 import greenlight.etc.Phone
 import greenlight.etc.ZipCode
+import javax.persistence.*
 
 @Introspected
 @Entity
@@ -116,7 +107,19 @@ class User : AbstractBase() {
             inverseJoinColumns = [JoinColumn(name = "parent_user_id")]
     )
     var parents: Set<User> = HashSet<User>()
+
+    @ManyToMany(targetEntity = Location::class, fetch = FetchType.LAZY)
+    @JoinTable(name = "location_accounts",
+            joinColumns = [JoinColumn(name = "user_id")],
+            inverseJoinColumns = [JoinColumn(name = "location_id")]
+    )
+    var locations: Set<Location> = HashSet<Location>()
+
+    @OneToMany(targetEntity = LocationAccount::class, fetch = FetchType.LAZY)
+    var locationAccounts: Set<LocationAccount> = HashSet<LocationAccount>()
     //endregion
+
+
 
 
     @PrePersist

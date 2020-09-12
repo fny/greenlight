@@ -210,7 +210,7 @@ greenlight_statuses = Turtle.table do
   column :id, :uuid
   column :user_id, :uuid, references: 'user(id) on delete cascade'
   column :location_id, :uuid, references: 'location(id) on delete cascade'
-  column :status, :string, nullable: false
+  column :status, :string, nullable: false, index: true
   column :status_set_at, :timestamp, nullable: false
   column :status_expires_at, :timestamp, nullable: false
   column :is_override, :boolean, nullable: false, default: false
@@ -221,7 +221,7 @@ end
 
 medical_events = Turtle.table do
   table_name 'medical_events'
-  column :event_type, :string, nullable: false
+  column :event_type, :string, nullable: false, index: true
   column :occurred_at, :timestamp, nullable: false
   column :created_at, :timestamp, default: 'now()', nullable: false
 end
@@ -231,16 +231,17 @@ cohorts = Turtle.table do
   table_name 'cohorts'
   column :id, :uuid
   column :name, :string
-  column :category, :string
+  column :category, :string, index: true
   column :location_id, :uuid, references: 'location(id) on delete cascade'
 end
 
 user_cohorts = Turtle.table do
   table_name 'user_cohorts'
-  column :user_id, references: 'user(id) on delete cascade'
-  column :cohort_id, references: 'user(id) on delete cascade'
+  column :user_id, :uuid, references: 'user(id) on delete cascade'
+  column :cohort_id, :uuid, references: 'user(id) on delete cascade'
 end
 
-render locations.read
-render location_accounts.read
-render greenlight_statuses.read
+
+render cohorts.read
+sleep(5)
+render user_cohorts.read
