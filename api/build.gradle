@@ -65,7 +65,7 @@ dependencies {
 
     implementation('com.fasterxml.jackson.module:jackson-module-kotlin:2.7.1-2')
     implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.7.1')
-
+    implementation('com.googlecode.libphonenumber:libphonenumber:8.12.9')
     testImplementation 'com.github.fny:java-factory-bot:0.2.0'
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
 

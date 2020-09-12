@@ -33,6 +33,18 @@ class Util {
         }
 
         @JvmStatic
+        fun resourceURI(path: String): URI {
+            return resourceLoader.getResource("classpath:$path").get().toURI()
+        }
+
+
+
+        //
+        // Validations
+        //
+
+        @JvmStatic
+        @JvmOverloads // Needed for optional arguments to work in Groovy
         fun <T> hasConstraintViolation(
             violations: Set<ConstraintViolation<T>>,
             property: String,
@@ -42,13 +54,6 @@ class Util {
                 it.propertyPath.toString() == property && (message == null || it.message == message)
             }
         }
-
-        @JvmStatic
-        fun resourceURI(path: String): URI {
-            return resourceLoader.getResource("classpath:$path").get().toURI()
-        }
-
-        // Validations
 
         @JvmStatic
         fun <T> findConstraintViolations(

@@ -1,5 +1,6 @@
 package greenlight.entities
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil
 import greenlight.etc.BCryptPasswordService
 import greenlight.etc.Util
 import io.micronaut.core.annotation.Introspected
@@ -20,6 +21,9 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
+
+import greenlight.etc.Phone
+import greenlight.etc.ZipCode
 
 @Introspected
 @Entity
@@ -51,21 +55,30 @@ class User : AbstractBase() {
     //endregion
 
     //region mobile
+    @Phone
     var mobileNumber : String? = null
+        set(value) {
+            val pnu = PhoneNumberUtil.getInstance()
+            val parsed = pnu.parse(value, "US")
+            field = pnu.format(parsed, PhoneNumberUtil.PhoneNumberFormat.E164)
+        }
     var mobileCarrier : String? = null
     var isSmsGatewayEmailable = false
     var mobileNumberConfirmationToken : String? = null
     var mobileNumberConfirmationSentAt : Instant? = null
     var mobileNumberConfirmedAt : Instant? = null
+    @Phone
     var mobileNumberUnconfirmed : String? = null
     //endregion
 
     //region user details
+    @ZipCode
     var zipCode : String? = null
     @Min(0) @Max(2) var gender : Int? = null
     var ethnicity : String? = null
     var birthDate : Date? = null
     var physicianName : String? = null
+    @Phone
     var physicianPhoneNumber : String? = null
     //endregion
 
@@ -103,7 +116,6 @@ class User : AbstractBase() {
             inverseJoinColumns = [JoinColumn(name = "parent_user_id")]
     )
     var parents: Set<User> = HashSet<User>()
-
     //endregion
 
 

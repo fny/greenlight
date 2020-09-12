@@ -115,4 +115,49 @@ class UserSpec extends Specification {
         foundParent.isParent()
         !foundParent.isChild()
     }
+
+    def "setting a phone number reformats it to the E.164 format"(String number, String formatted) {
+        expect:
+        def user = new User()
+        user.setMobileNumber(number)
+        user.mobileNumber == formatted
+
+        where:
+        number            | formatted
+        "(330) 333-2729"  | "+13303332729"
+        "330-333-2729"    | "+13303332729"
+        "555-555-5555"    | "+15555555555"
+        "555"             | "+1555"
+    }
+
+    def "validates phone numbers"(String number, boolean isInvalid) {
+        expect:
+        def user = new User()
+        user.setMobileNumber(number)
+        def violations = Util.validate(user)
+        Util.hasConstraintViolation(violations, "mobileNumber") == isInvalid
+
+        where:
+        number            | isInvalid
+        "(330) 333-2729"  | false
+        "330-333-2729"    | false
+        "555-555-5555"    | true
+        "555"             | true
+    }
+
+    def "validates zip code"(String zip, boolean isInvalid) {
+        expect:
+        def user = new User()
+        user.setZipCode(zip)
+        def violations = Util.validate(user)
+        def result = Util.hasConstraintViolation(violations, "zipCode")
+        result == isInvalid
+
+        where:
+        zip               | isInvalid
+        "32779"           | false
+        "32779-3014"      | false
+        "3219"            | true
+        "32774-2"         | true
+    }
 }
