@@ -3,6 +3,7 @@ package greenlight.entities
 import io.micronaut.core.annotation.Introspected
 import java.time.Instant
 import javax.persistence.Entity
+import javax.persistence.PrePersist
 import javax.persistence.Table
 import javax.validation.constraints.NotBlank
 @Introspected
@@ -24,10 +25,16 @@ class MedicalEvent : AbstractBase() {
       COVID_RULED_OUT("covid_ruled_out"),
       SYMPTOM_IMPROVEMENT("symptom_improvement")
     }
+
     @NotBlank
     var eventType : String? = null
     @NotBlank
     var occurredAt : Instant? = null
     @NotBlank
     var createdAt : Instant? = null
+
+    @PrePersist
+    fun onPersist() {
+        createdAt = Instant.now()
+    }
 }

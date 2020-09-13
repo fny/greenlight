@@ -4,6 +4,7 @@ import io.micronaut.core.annotation.Introspected
 import java.time.Instant
 import java.util.*
 import javax.persistence.Entity
+import javax.persistence.PrePersist
 import javax.persistence.Table
 import javax.validation.constraints.NotBlank
 
@@ -24,7 +25,6 @@ class GreenlightStatus : AbstractBase() {
         UNKNOWN("unknown"),
     }
 
-
     var userId : UUID? = null
     var locationId : UUID? = null
     @NotBlank
@@ -38,4 +38,10 @@ class GreenlightStatus : AbstractBase() {
     var createdByUserId : UUID? = null
     @NotBlank
     var createdAt : Instant? = null
+
+    @PrePersist
+    fun onPersist() {
+        createdAt = Instant.now()
+    }
+
 }

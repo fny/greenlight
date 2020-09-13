@@ -1,6 +1,7 @@
 package greenlight.entities
 
 import greenlight.etc.Util
+import greenlight.factories.LocationFactory
 import greenlight.factories.UserFactory
 import io.micronaut.context.ApplicationContext
 import io.micronaut.test.annotation.MicronautTest
@@ -18,7 +19,7 @@ import javax.validation.Validator
 class UserSpec extends Specification {
 
     @Inject
-    SessionFactory sessionFactory
+    SessionFactory sf
 
     @AutoCleanup
     @Shared
@@ -53,14 +54,14 @@ class UserSpec extends Specification {
     }
     def "Does not persist an invalid user"() {
         expect:
-        Util.withinTransaction(sessionFactory) { sess ->
+        Util.withinTransaction(sf) { sess ->
             sess.save(new User())
         }
     }
 
     def "fails to save an invalid user"() {
         when:
-        Util.withinTransaction(sessionFactory) {
+        Util.withinTransaction(sf) {
             sess -> sess.save(new User())
         }
         then:
@@ -70,12 +71,12 @@ class UserSpec extends Specification {
     def "saves a valid user"() {
         when:
         def user = new UserFactory().build()
-        Util.withinTransaction(sessionFactory) {
+        Util.withinTransaction(sf) {
             sess -> sess.save(user)
         }
 
         User foundUser;
-        Util.withinTransaction((sessionFactory)) {
+        Util.withinTransaction((sf)) {
             sess ->
                 foundUser = sess.find(User.class, user.id)
         }
@@ -92,7 +93,7 @@ class UserSpec extends Specification {
         User child = new UserFactory().build()
         child.lastName = parent.lastName
 
-        Util.withinTransaction(sessionFactory) {
+        Util.withinTransaction(sf) {
             sess ->
                 sess.save(parent)
                 sess.save(child)
@@ -102,7 +103,7 @@ class UserSpec extends Specification {
 
         User foundParent;
         User foundChild
-        Util.withinTransaction((sessionFactory)) {
+        Util.withinTransaction((sf)) {
             sess ->
                 foundParent = sess.find(User.class, parent.id)
                 foundChild = sess.find(User.class, child.id)
@@ -162,13 +163,28 @@ class UserSpec extends Specification {
         "32774-2"         | true
     }
 
-    @Transactional
-    def "transactional"() {
-        expect:
+    // @Transactional
+    // TODO: ^This doesn't seem to work here
+    def "adding a location to a user"() {
+        // TODO: Ask Igor why this isn't saving in one shot
+        when:
         def user = new UserFactory().build()
-        def sess = sessionFactory.openSession()
-        sess.save(user)
-        sess.close()
-        "1" == "1"
+        def location = new LocationFactory().build()
+        def account = user.addLocation(location, "student")
+        Util.withinTransaction(sf) { sess ->
+            sess.save(user)
+            sess.save(location)
+            sess.save(account)
+        }
+        def foundUser
+        Util.withinTransaction(sf) {
+            sess ->
+            foundUser = sess.find(User.class, user.id)
+        }
+        then:
+        foundUser != null
+        foundUser.locations.contains(location)
+        foundUser.locationAccounts.contains(account)
     }
+
 }

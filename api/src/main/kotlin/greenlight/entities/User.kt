@@ -14,6 +14,7 @@ import javax.validation.constraints.NotBlank
 
 import greenlight.etc.Phone
 import greenlight.etc.ZipCode
+import io.micronaut.runtime.startApplication
 import javax.persistence.*
 
 @Introspected
@@ -126,6 +127,7 @@ class User : AbstractBase() {
 
     //endregion
 
+
     @PrePersist
     fun onPersist() {
         updatedAt = Instant.now()
@@ -136,6 +138,21 @@ class User : AbstractBase() {
     @PreUpdate
     fun onUpdate() {
         updatedAt = Instant.now()
+    }
+
+    // TODO: Ask Nima why this is necessary?
+    fun addLocation(location: Location, role: String): LocationAccount {
+        return this.addLocation(location, role, null)
+    }
+
+    // TODO: Roles need to be location specific
+    fun addLocation(location: Location, role: String, attendanceStatus: String? = null): LocationAccount {
+        val account = LocationAccount()
+        account.user = this
+        account.location = location
+        account.role = role.toLowerCase()
+        account.attendanceStatus = attendanceStatus?.toLowerCase()
+        return account
     }
 
     // TODO: These should be set in setters of current tracking items

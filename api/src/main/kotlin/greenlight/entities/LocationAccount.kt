@@ -9,6 +9,14 @@ import javax.validation.constraints.NotBlank
 @Entity
 @Table(name = "medical_events")
 class LocationAccount : AbstractBase() {
+    // TODO: This needs to go into a file somewhere or in the UI only
+    // Maybe even a seperate table.
+    enum class Roles(val value: String) {
+        STUDENT("student"),
+        TEACHER("teacher"),
+        STAFF("staff"),
+    }
+
     @NotBlank
     var role : String? = null
     var attendanceStatus : String? = null
@@ -21,14 +29,20 @@ class LocationAccount : AbstractBase() {
     var createdAt : Instant? = null
     var updatedAt : Instant? = null
 
-    @OneToMany(targetEntity = LocationAccount::class, fetch = FetchType.LAZY)
-    var locationAccounts: Set<LocationAccount> = HashSet<LocationAccount>()
+    @OneToOne(targetEntity = User::class, fetch = FetchType.LAZY)
+    var user: User? = null
 
-    @ManyToMany(targetEntity = User::class, fetch = FetchType.LAZY)
-    @JoinTable(name = "location_accounts",
-            joinColumns = [JoinColumn(name = "location_id")],
-            inverseJoinColumns = [JoinColumn(name = "user_id")]
-    )
-    var users: Set<User> = HashSet<User>()
+    @OneToOne(targetEntity = Location::class, fetch = FetchType.LAZY)
+    var location: Location? = null
 
+    @PrePersist
+    fun onPersist() {
+        updatedAt = Instant.now()
+        createdAt = updatedAt
+    }
+
+    @PreUpdate
+    fun onUpdate() {
+        updatedAt = Instant.now()
+    }
 }

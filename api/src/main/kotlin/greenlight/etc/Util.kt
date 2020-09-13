@@ -75,6 +75,12 @@ class Util {
         // fun withinTransaction(work: (sess: Session) -> Void) {
         //     withinTransaction(sessionFactory, work)
         // }
+        @JvmStatic
+        fun withinSession(sf: SessionFactory, work: (sess: Session) -> Void) {
+            val sess = sf.openSession()
+            work(sess)
+            sess.close()
+        }
 
         @JvmStatic
         fun withinTransaction(sf: SessionFactory, work: (sess: Session) -> Void) {
