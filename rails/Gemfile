@@ -1,0 +1,100 @@
+source 'https://rubygems.org'
+
+ruby '2.7.1'
+
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '~> 6.0.3', '>= 6.0.3.2'
+# Use postgresql as the database for Active Record
+gem 'pg', '>= 0.18', '< 2.0'
+# Use Puma as the app server
+gem 'puma', '~> 4.1'
+# A lightning fast JSON:API serializer for Ruby Objects.
+gem 'fast_jsonapi'
+# Use Active Model has_secure_password
+gem 'bcrypt', '~> 3.1.7'
+
+#
+# Engines and Middlewares
+#
+
+# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
+gem 'rack-cors'
+
+#
+# Performance
+#
+
+# Reduces boot times through caching; required in config/boot.rb
+gem 'bootsnap', require: false
+# C implementation of Active Support's String#blank?
+gem 'fast_blank', platform: :mri
+# C extensions for escaping text
+gem 'fast_xs', platform: :mri
+# Generic swappable back-end for JSON
+gem 'multi_json'
+# Optimized JSON
+gem 'oj', platform: :mri
+# Blazing-fast-cross-platform-monkey-patch-free string XOR
+gem 'xorcist'
+
+#
+# Misc
+#
+
+# What ActiveModel left out
+gem 'active_attr'
+# Exception notifier
+gem 'exception_notification'
+# Tame Rails' default policy to log everything
+gem 'lograge'
+# Email validations
+gem 'valid_email2'
+# Phone validations
+gem 'phonelib'
+
+group :development, :test do
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  # Annotate Rails classes with schema and routes info
+  gem 'annotate'
+  # Load environment variables from `.env`
+  gem 'dotenv-rails'
+  # `rails c` alternative and runtime developer console
+  gem 'pry-rails'
+  # Launch a pry session when a test fails
+  gem 'pry-rescue'
+  # Move up and down the stack with pry
+  gem 'pry-stack_explorer'
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem 'fabrication'
+  gem 'parallel_tests'
+  gem 'shoulda-matchers'
+end
+
+group :development do
+  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
+  gem 'web-console', '>= 3.3.0'
+  # Listens for file modifications, used by Spring
+  gem 'listen', '~> 3.2'
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring'
+  gem 'spring-watcher-listen', '~> 2.0.0'
+
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  # Help to kill N+1 queries and unused eager loading
+  gem 'bullet', '~> 6.1.0'
+  # Preview mail in the browser inste ad of sending
+  gem 'letter_opener'
+
+  # Supporting gem for Rails Panel
+  gem 'meta_request'
+  # Manage Procfile-based apps
+  gem 'foreman', require: false
+  # Generate Entity-Relationship Diagrams for Rails applications
+  gem 'rails-erd', require: false
+  gem 'ruby-prof', require: false, platform: :mri
+  gem 'solargraph'
+  gem 'rubocop'
+end
