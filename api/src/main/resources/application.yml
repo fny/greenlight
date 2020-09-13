@@ -1,17 +1,9 @@
 micronaut:
   application:
     name: api
-  metrics:
-    export:
-      newrelic:
-        enabled: true
-        apiKey: ${NEWRELIC_API_KEY:asfasdf}
-        accountId: ${NEWRELIC_ACCOUNT_ID:asdfasdf}
-        step: PT1M
-    enabled: true
   server:
     ssl:
-      enabled: 'true'
+      enabled: false
   security:
     authentication: bearer
     token:
@@ -19,7 +11,7 @@ micronaut:
         signatures:
           secret:
             generator:
-              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
+              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:SUPER_SECRET_CODE}"'
 datasources:
   default:
     url: jdbc:postgresql://localhost:5432/greenlight_wip
@@ -41,12 +33,6 @@ jpa:
         physical_naming_strategy: greenlight.etc.CamelToSnakeCaseNamingStrategy
 
 liquibase:
-    datasources:
-        default:
-#            default-schema: greenlight_wip
-            change-log: classpath:db/liquibase-changelog.yml
-
-endpoints:
-  liquibase:
-    enabled: true
-    sensitive: false
+  datasources:
+    default:
+      change-log: classpath:db/liquibase-changelog.yml
