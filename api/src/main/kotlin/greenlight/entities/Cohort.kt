@@ -1,8 +1,14 @@
 package greenlight.entities
+import io.micronaut.core.annotation.Introspected
 import java.util.*
+import javax.persistence.Entity
+import javax.persistence.Table
 import javax.validation.constraints.NotBlank
 
-class Cohorts : AbstractBase() {
+@Introspected
+@Entity
+@Table(name = "cohorts")
+class Cohort : AbstractBase() {
     @NotBlank
     var name : String? = null
     @NotBlank

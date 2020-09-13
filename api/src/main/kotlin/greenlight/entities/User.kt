@@ -99,28 +99,32 @@ class User : AbstractBase() {
             joinColumns = [JoinColumn(name = "parent_user_id")],
             inverseJoinColumns = [JoinColumn(name = "child_user_id")]
     )
-    var children: Set<User> = HashSet<User>()
+    var children: Set<User> = HashSet()
 
     @ManyToMany(targetEntity = User::class, fetch = FetchType.LAZY)
     @JoinTable(name = "parents_children",
             joinColumns = [JoinColumn(name = "child_user_id")],
             inverseJoinColumns = [JoinColumn(name = "parent_user_id")]
     )
-    var parents: Set<User> = HashSet<User>()
+    var parents: Set<User> = HashSet()
 
     @ManyToMany(targetEntity = Location::class, fetch = FetchType.LAZY)
     @JoinTable(name = "location_accounts",
             joinColumns = [JoinColumn(name = "user_id")],
             inverseJoinColumns = [JoinColumn(name = "location_id")]
     )
-    var locations: Set<Location> = HashSet<Location>()
+    var locations: Set<Location> = HashSet()
 
     @OneToMany(targetEntity = LocationAccount::class, fetch = FetchType.LAZY)
-    var locationAccounts: Set<LocationAccount> = HashSet<LocationAccount>()
+    var locationAccounts: Set<LocationAccount> = HashSet()
+
+    @OneToMany(targetEntity = MedicalEvent::class, fetch = FetchType.LAZY)
+    var medicalEvents: Set<MedicalEvent> = HashSet()
+
+    @OneToMany(targetEntity = GreenlightStatus::class, fetch = FetchType.LAZY)
+    var greenlightStatuses: Set<GreenlightStatus> = HashSet()
+
     //endregion
-
-
-
 
     @PrePersist
     fun onPersist() {

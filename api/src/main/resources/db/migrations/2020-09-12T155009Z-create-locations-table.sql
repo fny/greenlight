@@ -2,7 +2,7 @@ create table locations (
     id uuid primary key default uuid_generate_v4(),
     name text,
     permalink text unique,
-    category string not null.
+    category text not null,
     phone_number text,
     email text,
     zip_code text,

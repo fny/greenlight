@@ -1,7 +1,7 @@
 CREATE TABLE location_accounts (
     id uuid primary key default uuid_generate_v4(),
-    user_id uuid references user(id) on delete cascade,
-    location_id uuid references location(id) on delete cascade,
+    user_id uuid references users(id) on delete cascade,
+    location_id uuid references locations(id) on delete cascade,
     role text not null,
     attendance_status text,
     approved_by_user_at timestamp,

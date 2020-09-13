@@ -11,7 +11,3 @@ interface UserRespository : CrudRepository<User, UUID> {
   fun find(id: UUID): User
   fun findByAuthToken(authToken: String): User
 }
-
-
-user = repo.finByAuthToken('asdf')
-user.children.where( age < 10)

@@ -1,10 +1,13 @@
 package greenlight.entities
 
+import io.micronaut.core.annotation.Introspected
 import java.time.Instant
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
-
+@Introspected
+@Entity
+@Table(name = "medical_events")
 class LocationAccount : AbstractBase() {
     @NotBlank
     var role : String? = null

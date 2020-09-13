@@ -10,6 +10,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 import javax.inject.Inject
+import javax.transaction.Transactional
 import javax.validation.ConstraintViolationException
 import javax.validation.Validator
 
@@ -159,5 +160,15 @@ class UserSpec extends Specification {
         "32779-3014"      | false
         "3219"            | true
         "32774-2"         | true
+    }
+
+    @Transactional
+    def "transactional"() {
+        expect:
+        def user = new UserFactory().build()
+        def sess = sessionFactory.openSession()
+        sess.save(user)
+        sess.close()
+        "1" == "1"
     }
 }

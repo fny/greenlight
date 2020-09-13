@@ -1,28 +1,26 @@
-databaseChangeLog:
-  - changeSet:
-      id:  2020-09-10T154856Z-configure-database.sql
-      author: faraz
-      changes:
-      -  sqlFile:
-          path: db/migrations/2020-09-10T154856Z-configure-database.sql
+import java.nio.file.DirectoryStream
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+def basePath = new File(getClass().protectionDomain.codeSource.location.path).parent,
+def migrationsDir = Paths.get(basePath, 'migrations')
 
-  - changeSet:
-      id:  2020-09-10T154908Z-create-users-table.sql
-      author: faraz
-      changes:
-      -  sqlFile:
-          path: db/migrations/2020-09-10T154908Z-create-users-table.sql
+DirectoryStream<Path> paths = Files.newDirectoryStream(migrationsDir, "*.sql")
 
-  - changeSet:
-      id:  2020-09-10T154926Z-create-parents-children-table.sql
-      author: faraz
-      changes:
-      -  sqlFile:
-          path: db/migrations/2020-09-10T154926Z-create-parents-children-table.sql
-
-  - changeSet:
-      id:  2020-09-12T155009Z-create-locations-table
-      author: faraz
-      changes:
-      -  sqlFile:
-          path: db/migrations/2020-09-12T155009Z-create-locations-table.sql
+for (p in paths) {
+    println(p.getFileName())
+}
+//
+databaseChangeLog {
+    for (p in paths) {
+        changeSet {
+            id = p.getFileName()
+            author = "greenlight"
+            changes {
+                sqlFile {
+                    path = p.toString().replace(basePath, "")
+                }
+            }
+        }
+    }
+}

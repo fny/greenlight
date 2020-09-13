@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2020-09-10T154856Z-configure-database.sql
+      author: greenlight
+      changes:
+      - sqlFile:
+          path: db/migrations/2020-09-10T154856Z-configure-database.sql
+  - changeSet:
+      id: 2020-09-10T154908Z-create-users-table.sql
+      author: greenlight
+      changes:
+      - sqlFile:
+          path: db/migrations/2020-09-10T154908Z-create-users-table.sql
+  - changeSet:
+      id: 2020-09-10T154926Z-create-parents-children-table.sql
+      author: greenlight
+      changes:
+      - sqlFile:
+          path: db/migrations/2020-09-10T154926Z-create-parents-children-table.sql
+  - changeSet:
+      id: 2020-09-12T155009Z-create-locations-table.sql
+      author: greenlight
+      changes:
+      - sqlFile:
+          path: db/migrations/2020-09-12T155009Z-create-locations-table.sql
+  - changeSet:
+      id: 2020-09-12T204953Z-create-greenlight-statuses-table.sql
+      author: greenlight
+      changes:
+      - sqlFile:
+          path: db/migrations/2020-09-12T204953Z-create-greenlight-statuses-table.sql
+  - changeSet:
+      id: 2020-09-12T204953Z-create-location-accounts-table.sql
+      author: greenlight
+      changes:
+      - sqlFile:
+          path: db/migrations/2020-09-12T204953Z-create-location-accounts-table.sql
+  - changeSet:
+      id: 2020-09-12T205833Z-create-medical-events-table.sql
+      author: greenlight
+      changes:
+      - sqlFile:
+          path: db/migrations/2020-09-12T205833Z-create-medical-events-table.sql
+  - changeSet:
+      id: 2020-09-12T210029Z-create-cohorts-table.sql
+      author: greenlight
+      changes:
+      - sqlFile:
+          path: db/migrations/2020-09-12T210029Z-create-cohorts-table.sql
+  - changeSet:
+      id: 2020-09-12T210034Z-create-user-cohorts-table.sql
+      author: greenlight
+      changes:
+      - sqlFile:
+          path: db/migrations/2020-09-12T210034Z-create-user-cohorts-table.sql

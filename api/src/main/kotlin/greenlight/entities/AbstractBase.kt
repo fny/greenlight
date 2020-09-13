@@ -20,15 +20,11 @@ abstract class AbstractBase {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as AbstractBase
-        if (id != other.id) return false
+        if (id != that.id) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return if (id != null) {
-            id.hashCode()
-        } else {
-            0
-        }
+        return id.hashCode()
     }
 }
