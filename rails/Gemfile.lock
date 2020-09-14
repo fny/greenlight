@@ -99,6 +99,8 @@ GEM
       actionmailer (>= 4.0, < 7)
       activesupport (>= 4.0, < 7)
     fabrication (2.21.1)
+    faker (2.13.0)
+      i18n (>= 1.6, < 2)
     fast_blank (1.0.0)
     fast_jsonapi (1.5)
       activesupport (>= 4.2)
@@ -315,6 +317,7 @@ DEPENDENCIES
   dotenv-rails
   exception_notification
   fabrication
+  faker
   fast_blank
   fast_jsonapi
   fast_xs

@@ -53,6 +53,7 @@ gem 'valid_email2'
 gem 'phonelib'
 
 group :development, :test do
+  gem 'faker'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Annotate Rails classes with schema and routes info
@@ -95,6 +96,6 @@ group :development do
   # Generate Entity-Relationship Diagrams for Rails applications
   gem 'rails-erd', require: false
   gem 'ruby-prof', require: false, platform: :mri
-  gem 'solargraph'
-  gem 'rubocop'
+  gem 'solargraph', require: false
+  gem 'rubocop', require: false
 end
