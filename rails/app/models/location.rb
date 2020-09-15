@@ -3,6 +3,7 @@
 # Table name: locations
 #
 #  id           :uuid             not null, primary key
+#  category     :text             not null
 #  email        :text
 #  hidden       :boolean          default(TRUE), not null
 #  name         :text             not null

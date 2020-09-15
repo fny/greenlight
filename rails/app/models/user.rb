@@ -62,7 +62,7 @@ class User < ApplicationRecord
   has_many :medical_events
   has_many :location_accounts
   has_many :locations, through: :location_accounts
-  has_and_belongs_to_many :cohorts
+  has_many :cohorts, through: :cohort_user
   
   has_secure_token :auth_token
   has_secure_password

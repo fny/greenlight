@@ -23,10 +23,9 @@
 #  fk_rails_...  (user_id => users.id) ON DELETE => cascade
 #
 Fabricator(:greenlight_status) do
-  user              nil
-  status            "MyString"
-  status_set_at     "2020-09-14 17:50:46"
-  status_expires_at "2020-09-14 17:50:46"
-  is_override       false
-  created_by_user   nil
+  status {
+    ['green', 'green', 'green', 'green', 'green', 'green', 'green', 'absent', 'unknown'].sample
+  }
+  status_set_at { DateTime.now }
+  status_expires_at { |attrs| attrs[:status_set_at] + 1.day }
 end

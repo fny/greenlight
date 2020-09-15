@@ -2,12 +2,12 @@
 #
 # Table name: medical_events
 #
-#  id         :uuid             not null, primary key
-#  event_type :text             not null
-#  occured_at :datetime         not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  user_id    :uuid             not null
+#  id          :uuid             not null, primary key
+#  event_type  :text             not null
+#  occurred_at :datetime         not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  user_id     :uuid             not null
 #
 # Indexes
 #

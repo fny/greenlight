@@ -5,16 +5,16 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.text :last_name, null: false
       t.text :password_digest
       t.timestamp :password_set_at
-      t.text :password_reset_token, unique: true
+      t.text :password_reset_token, index: { unique: true}
       t.timestamp :password_reset_sent_at
-      t.text :auth_token, unique: true, null: false
+      t.text :auth_token, index: { unique: true }, null: false
       t.timestamp :auth_token_set_at
-      t.text :email, unique: true
-      t.text :email_confirmation_token, unique: true
+      t.text :email, index: { unique: true}
+      t.text :email_confirmation_token, index: { unique: true}
       t.timestamp :email_confirmation_sent_at
       t.timestamp :email_confirmed_at
       t.text :email_unconfirmed
-      t.text :mobile_number, unique: true
+      t.text :mobile_number, index: { unique: true}
       t.text :mobile_carrier
       t.boolean :is_sms_gateway_emailable
       t.text :mobile_number_confirmation_token, index: true

@@ -9,133 +9,24 @@
 
 if Rails.env.development?
 
+  puts "WHAT THE FUCK"
+
   require 'faker'
   require 'json'
   require 'pp'
 
-  class Dummy
-    def self.create(&block)
-      d = Dummy.new
-      d.instance_eval(&block)
-
-      d.klass
-    end
+  N_PARENTS = 100
 
 
-    attr_reader :klass
+  location = Location.create!(
+    name: 'Greenwood Lakes High School',
+    permalink: 'greenwood-lakes',
+    email: 'help@glhs.org',
+    phone_number: '+14073238891',
+    zip_code: '32779',
+    category: 'school'
+  )
 
-    def initialize
-      @klass = Class.new do
-        class << self
-          attr_accessor :columns
-        end
-
-        def initialize(**attrs)
-          attrs.each do |k, v|
-            self.send("#{k}=", v)
-          end
-        end
-
-        self.columns = []
-
-        def to_h
-          self.class.columns.each_with_object({}) do |col, hash|
-            hash[col] = send(col)
-          end
-        end
-
-        def to_json
-          to_h.to_json
-        end
-      end
-
-      @klass.class_variable_set(:@@columns, [])
-    end
-
-    def method_missing(method, *args, &block)
-      @klass.columns << method
-      @klass.instance_eval do
-        define_method("#{method}=") do |value|
-          instance_variable_set("@#{method}", value)
-        end
-
-        define_method(method) do
-
-          if instance_variable_defined?("@#{method}")
-            return instance_variable_get("@#{method}")
-          end
-          instance_variable_set("@#{method}", block.call)
-        end
-      end
-    end
-  end
-
-  User = Dummy.create do
-    first_name { Faker::Name.first_name }
-    last_name { Faker::Name.last_name }
-    email { Faker::Internet.unique.email }
-    mobile_number { Faker::PhoneNumber.unique.cell_phone_in_e164 }
-    parents { [] }
-    children { [] }
-    greenlight_statuses { [] }
-    medical_events { [] }
-    location_accounts { [] }
-    cohorts { [] }
-  end
-
-  GreenlightStatus = Dummy.create do
-    status {
-      ['green', 'green', 'green', 'green', 'green', 'green', 'green', 'absent', 'unknown'].sample
-    }
-
-    status_set_at { DateTime.now }
-    status_expires_at { DateTime.now.next_day(1) }
-  end
-
-  YellowMedicalEvent = Dummy.create do
-    event_type { 
-      ['fever', 'new_cough', 'difficulty_breathing', 'fever', 'chills', 'taste_smell'].sample
-    }
-    occurred_at {
-      DateTime.now
-    }
-  end
-
-  RedMedicalEvent = Dummy.create do
-    event_type {
-      ['covid_test_positive', 'covid_diagnosis'].sample
-    }
-    occurred_at {
-      DateTime.now
-    }
-  end
-
-  Location = Dummy.create do
-    name { 'Greenwood Lakes High School' }
-    permalink { 'greenwood-lakes' }
-    email { 'help@glhs.org' }
-    phone_number { '+14073238891' }
-    zip_code { '32779' }
-    category { 'school' }
-    location_accounts { [] }
-  end
-
-  LocationAccount = Dummy.create do
-    user { nil }
-    location { nil }
-    role { nil }
-    attendance_status { 'attending' }
-    approved_by_user_at { DateTime.now }
-    approved_by_location_at { DateTime.now }
-  end
-
-  Cohort = Dummy.create do
-    name { nil }
-    category { nil }
-    users { [] }
-  end
-
-  ['green', 'green', 'green', 'green', 'green', 'green', 'absent', 'unknown']
 
   def set_statuses(user, length, color)
     dates = (0...length).map { |d|
@@ -143,33 +34,30 @@ if Rails.env.development?
     }
 
     statuses = dates.map { |d| 
-      g = GreenlightStatus.new
-      g.status_set_at = d
-      g.status_expires_at = d.next_day
-      g
+      GreenlightStatus.new(status_set_at: d, status_expires_at: d + 1.day)
     }
 
     medical_events = []
 
     if color == 'red'
       statuses[-3].status = 'yellow'
-      medical_event = YellowMedicalEvent.new
-      medical_event.occurred_at = statuses[-3].status_set_at
-      medical_events.push(medical_event)
+      medical_events.push(
+        Fabricate.build(:yellow_medical_event, occurred_at: statuses[-3].status_set_at)
+      )
       statuses[-2].status = 'yellow'
-      medical_event = YellowMedicalEvent.new
-      medical_event.occurred_at = statuses[-2].status_set_at
-      medical_events.push(medical_event)
+      medical_events.push(
+        Fabricate.build(:yellow_medical_event, occurred_at: statuses[-2].status_set_at)
+      )
       statuses[-1].status = 'red'
-      medical_event = RedMedicalEvent.new
-      medical_event.occurred_at = statuses[-2].status_set_at
-      medical_events.push(medical_event)
+      medical_events.push(
+        Fabricate.build(:red_medical_event, occurred_at: statuses[-1].status_set_at)
+      )
     end
 
     if color == 'absent'
       statuses[-3].status = 'absent'
       statuses[-2].status = 'absent'
-      statuses[-1].status = 'abset'
+      statuses[-1].status = 'absent'
     end
     if color == 'unknown'
       statuses[-1].status = 'unknown'
@@ -181,19 +69,15 @@ if Rails.env.development?
   #
   # Set up parents
   #
+  puts "parents"
+  single_parents = Array.new((N_PARENTS * 0.10).round) { Fabricate.build(:user) }
 
-  single_parents = Array.new(1000) { User.new }
-  husbands = Array.new(5000) { 
-    u = User.new
-    u.first_name = Faker::Name.male_first_name
-    u
+  husbands = Array.new(N_PARENTS) { 
+    Fabricate.build(:user, first_name: Faker::Name.male_first_name)
   }
 
   wives = husbands.map { |h| 
-    u = User.new
-    u.last_name = Faker::Name.female_first_name
-    u.last_name = h.last_name
-    u
+    Fabricate.build(:user, first_name: Faker::Name.female_first_name)
   }
 
   parents = [single_parents, husbands, wives].flatten
@@ -202,15 +86,16 @@ if Rails.env.development?
   # Children
   #
 
+  puts "children"
   single_parents.each do |parent|
-    child = User.new
+    child = Fabricate.build(:user)
     child.last_name = parent.last_name
     parent.children << child
     child.parents << parent
   end
 
   husbands.zip(wives).each do |h, w|
-    children = Array.new(2) { User.new }
+    children = Array.new(2) { Fabricate.build(:user) }
     children.each { |c| c.parents = [h, w ]}
     h.children = children
     w.children = children
@@ -222,9 +107,9 @@ if Rails.env.development?
   # Teachers and Staff
   #
 
-  teachers = Array.new((children.size / 30).round) { User.new }
+  teachers = Array.new((children.size / 30).round) { Fabricate.build(:user) }
   teachers = [teachers + parents.sample(10)].flatten
-  staff = Array.new((teachers.size / 3).round) { User.new }
+  staff = Array.new((teachers.size / 3).round) { Fabricate.build(:user) }
 
   #
   # Assign Statuses
@@ -263,13 +148,13 @@ if Rails.env.development?
   assign_gl_statuses(teachers)
   assign_gl_statuses(staff)
 
-  soccer_team = Cohort.new(name: 'Soccer Team', category: 'activities')
-  football_team = Cohort.new(name: 'Football Team', category: 'activities')
+  soccer_team = Cohort.new(name: 'Soccer Team', category: 'activities', location: location)
+  football_team = Cohort.new(name: 'Football Team', category: 'activities', location: location)
 
-  freshmen = Cohort.new(name: 'Freshmen', category: 'grade')
-  sophomore = Cohort.new(name: 'Sophomore', category: 'grade')
-  junior = Cohort.new(name: 'Junior', category: 'grade')
-  senior = Cohort.new(name: 'Senior', category: 'grade')
+  freshmen = Cohort.new(name: 'Freshmen', category: 'grade', location: location)
+  sophomore = Cohort.new(name: 'Sophomore', category: 'grade', location: location)
+  junior = Cohort.new(name: 'Junior', category: 'grade', location: location)
+  senior = Cohort.new(name: 'Senior', category: 'grade', location: location)
 
   cohorts = [freshmen, sophomore, junior, senior, soccer_team, football_team]
 
@@ -290,6 +175,39 @@ if Rails.env.development?
   assign_cohorts(children.sample(100), [50, 50], [soccer_team, football_team])
   assign_cohorts(teachers.shuffle, [30, 25, 24, 21], [freshmen, sophomore, junior, senior])
 
+  teachers.each { |t| t.location_accounts.build(
+    role: 'teacher', location: location, title: [
+        'History Teacher',
+        'Spanish Teacher',
+        'English Teacher',
+        'ESL Teacher',
+        'Math Teacher',
+        'Science Teacher'
+      ].sample
+    )
+  }
 
-  pp freshmen.users[0..]
+  staff.each { |t| t.location_accounts.build(
+    role: 'staff', location: location, title: [
+        'Administrator',
+        'Secretary',
+        'Secretary',
+        'Custodian',
+        'Custodian',
+        'Secretary'
+      ].sample
+    )
+  }
+
+  children.each { |t| t.location_accounts.build(
+    role: 'std', location: location)
+  }
+
+  ActiveRecord::Base.transaction do
+    users [children, teachers, parents].flatten
+    users.each_with_index { |u, i|
+      puts "#{i}/#{users.size} #{u.first_name}"
+      u.save
+    }
+  end
 end

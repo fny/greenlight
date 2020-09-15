@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["created_by_user_id"], name: "index_greenlight_statuses_on_created_by_user_id"
+    t.index ["status"], name: "index_greenlight_statuses_on_status"
     t.index ["user_id"], name: "index_greenlight_statuses_on_user_id"
   end
 
@@ -59,6 +60,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.datetime "approved_by_location_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["external_id"], name: "index_location_accounts_on_external_id", unique: true
     t.index ["location_id"], name: "index_location_accounts_on_location_id"
     t.index ["role"], name: "index_location_accounts_on_role"
     t.index ["user_id"], name: "index_location_accounts_on_user_id"
@@ -66,6 +68,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
 
   create_table "locations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "name", null: false
+    t.text "category", null: false
     t.text "permalink", null: false
     t.text "phone_number"
     t.text "email"
@@ -74,14 +77,16 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.boolean "hidden", default: true, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["permalink"], name: "index_locations_on_permalink", unique: true
   end
 
   create_table "medical_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.text "event_type", null: false
-    t.datetime "occured_at", null: false
+    t.datetime "occurred_at", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["event_type"], name: "index_medical_events_on_event_type"
     t.index ["user_id"], name: "index_medical_events_on_user_id"
   end
 
@@ -134,7 +139,12 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.text "last_user_agent"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["auth_token"], name: "index_users_on_auth_token", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email_confirmation_token"], name: "index_users_on_email_confirmation_token", unique: true
+    t.index ["mobile_number"], name: "index_users_on_mobile_number", unique: true
     t.index ["mobile_number_confirmation_token"], name: "index_users_on_mobile_number_confirmation_token"
+    t.index ["password_reset_token"], name: "index_users_on_password_reset_token", unique: true
   end
 
   add_foreign_key "cohorts", "locations", on_delete: :cascade
