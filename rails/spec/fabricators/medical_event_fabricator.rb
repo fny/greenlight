@@ -11,7 +11,8 @@
 #
 # Indexes
 #
-#  index_medical_events_on_user_id  (user_id)
+#  index_medical_events_on_event_type  (event_type)
+#  index_medical_events_on_user_id     (user_id)
 #
 # Foreign Keys
 #

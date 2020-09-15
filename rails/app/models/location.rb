@@ -14,6 +14,10 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #
+# Indexes
+#
+#  index_locations_on_permalink  (permalink) UNIQUE
+#
 class Location < ApplicationRecord
   has_many :location_accounts
   has_many :users, through: :location_accounts

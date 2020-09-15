@@ -60,8 +60,6 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
-    addressable (2.7.0)
-      public_suffix (>= 2.0.2, < 5.0)
     annotate (3.1.1)
       activerecord (>= 3.2, < 7.0)
       rake (>= 10.4, < 14.0)
@@ -69,11 +67,6 @@ GEM
     backport (1.1.2)
     bcrypt (3.1.16)
     benchmark (0.1.0)
-    better_errors (2.7.1)
-      coderay (>= 1.0.0)
-      erubi (>= 1.0.0)
-      rack (>= 0.9.0)
-    bindex (0.8.1)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
     bootsnap (1.4.8)
@@ -83,7 +76,6 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     byebug (11.1.3)
-    choice (0.2.0)
     coderay (1.1.3)
     concurrent-ruby (1.1.7)
     crass (1.0.6)
@@ -113,10 +105,6 @@ GEM
       concurrent-ruby (~> 1.0)
     interception (0.5)
     jaro_winkler (1.5.4)
-    launchy (2.5.0)
-      addressable (~> 2.7)
-    letter_opener (1.7.0)
-      launchy (~> 2.2)
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -133,9 +121,6 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     maruku (0.7.3)
-    meta_request (0.7.2)
-      rack-contrib (>= 1.1, < 3)
-      railties (>= 3.0.0, < 7)
     method_source (1.0.0)
     mimemagic (0.3.5)
     mini_mime (1.0.2)
@@ -165,12 +150,9 @@ GEM
     pry-stack_explorer (0.5.1)
       binding_of_caller (~> 0.7)
       pry (~> 0.13)
-    public_suffix (4.0.6)
     puma (4.3.6)
       nio4r (~> 2.0)
     rack (2.2.3)
-    rack-contrib (2.2.0)
-      rack (~> 2.0)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
     rack-test (1.1.0)
@@ -193,11 +175,6 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-erd (1.6.0)
-      activerecord (>= 4.2)
-      activesupport (>= 4.2)
-      choice (~> 0.2.0)
-      ruby-graphviz (~> 1.2)
     rails-html-sanitizer (1.3.0)
       loofah (~> 2.3)
     railties (6.0.3.3)
@@ -249,10 +226,10 @@ GEM
       unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-ast (0.4.0)
       parser (>= 2.7.1.4)
-    ruby-graphviz (1.2.5)
-      rexml
-    ruby-prof (1.4.1)
     ruby-progressbar (1.10.1)
+    seed-fu (2.3.9)
+      activerecord (>= 3.1)
+      activesupport (>= 3.1)
     shoulda-matchers (4.4.1)
       activesupport (>= 4.2.0)
     solargraph (0.39.15)
@@ -290,11 +267,6 @@ GEM
     valid_email2 (3.4.0)
       activemodel (>= 3.2)
       mail (~> 2.5)
-    web-console (4.0.4)
-      actionview (>= 6.0.0)
-      activemodel (>= 6.0.0)
-      bindex (>= 0.4.0)
-      railties (>= 6.0.0)
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -309,8 +281,6 @@ DEPENDENCIES
   active_attr
   annotate
   bcrypt (~> 3.1.7)
-  better_errors
-  binding_of_caller
   bootsnap
   bullet (~> 6.1.0)
   byebug
@@ -322,10 +292,8 @@ DEPENDENCIES
   fast_jsonapi
   fast_xs
   foreman
-  letter_opener
   listen (~> 3.2)
   lograge
-  meta_request
   multi_json
   oj
   parallel_tests
@@ -337,17 +305,15 @@ DEPENDENCIES
   puma (~> 4.1)
   rack-cors
   rails (~> 6.0.3, >= 6.0.3.2)
-  rails-erd
   rspec
   rspec-rails
   rubocop
-  ruby-prof
+  seed-fu (~> 2.3)
   shoulda-matchers
   solargraph
   spring
   spring-watcher-listen (~> 2.0.0)
   valid_email2
-  web-console (>= 3.3.0)
   xorcist
 
 RUBY VERSION

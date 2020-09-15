@@ -45,7 +45,12 @@
 #
 # Indexes
 #
+#  index_users_on_auth_token                        (auth_token) UNIQUE
+#  index_users_on_email                             (email) UNIQUE
+#  index_users_on_email_confirmation_token          (email_confirmation_token) UNIQUE
+#  index_users_on_mobile_number                     (mobile_number) UNIQUE
 #  index_users_on_mobile_number_confirmation_token  (mobile_number_confirmation_token)
+#  index_users_on_password_reset_token              (password_reset_token) UNIQUE
 #
 class User < ApplicationRecord
   

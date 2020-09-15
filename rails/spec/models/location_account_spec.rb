@@ -16,6 +16,7 @@
 #
 # Indexes
 #
+#  index_location_accounts_on_external_id  (external_id) UNIQUE
 #  index_location_accounts_on_location_id  (location_id)
 #  index_location_accounts_on_role         (role)
 #  index_location_accounts_on_user_id      (user_id)

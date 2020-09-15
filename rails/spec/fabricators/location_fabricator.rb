@@ -14,6 +14,10 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #
+# Indexes
+#
+#  index_locations_on_permalink  (permalink) UNIQUE
+#
 Fabricator(:location) do
   name         "MyText"
   permalink    "MyText"

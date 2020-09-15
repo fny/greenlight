@@ -15,6 +15,7 @@
 # Indexes
 #
 #  index_greenlight_statuses_on_created_by_user_id  (created_by_user_id)
+#  index_greenlight_statuses_on_status              (status)
 #  index_greenlight_statuses_on_user_id             (user_id)
 #
 # Foreign Keys
