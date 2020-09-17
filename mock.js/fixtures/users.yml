@@ -97,7 +97,6 @@
     parents: { users: [father, mother] }
     children: { users: [] }
 
-
 - id: faraz
   firstName: Faraz
   lastName: Yashar

@@ -4,20 +4,24 @@
 
 - id: "springfieldElementary"
   name: "Springfield Elementary"
+  permalink: "springfield-elementary"
   email: "help@sprinfieldelementary.org"
   website: "https://springfieldelementary.org"
 
 - id: "nuclearPlant"
   name: "Springfield Nuclear Power Plant"
+  permalink: "springfield-nuke"
   email: "smithers@springfieldnuke.com"
   website: "https://sprinfieldnuke.com"
 
 - id: "longestDaycare"
   name: "Longest Daycare"
+  permalink: "longest-daycare"
   email: "help@longestday.care"
   website: "https://longestday.care"
 
 - id: "bandPractice"
+  permalink: "springfield-band"
   name: "Springfield Marching Band"
   email: "help@springfieldband.org"
   website: "https://springfieldband.org"
@@ -28,25 +32,30 @@
 
 - id: "greenwoodMiddle"
   name: "Greenwood Middle School"
+  permalink: "greenwood-lakes"
   email: "help@greenwoodmiddle.org"
   website: "https://greenwoodmiddle.org"
 
 - id: "forestHillsElementary"
   name: "Forest Hills Elementary School"
+  permalink: "forest-hills-elementary"
   email: "help@foresthills.org"
   website: "https://foresthills.org"
 
 - id: "shiningDaycare"
   name: "Shining Daycare"
+  permalink: "shining-daycare"
   email: "help@shinigday.care"
   website: "https://shiningday.care"
 
 - id: "soccerLeague"
   name: "Greenwood Soccer League"
+  permalink: "greenwood-soccer"
   email: "help@greenwoodsoccer.org"
   website: "https://greenwoodsoccer.org"
 
 - id: "greenlight"
   name: "Greenlight Ready LLC"
+  permalink: "greenlight"
   email: "hello@greenlighready.com"
   website: "https://greenlightready.com"

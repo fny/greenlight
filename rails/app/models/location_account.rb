@@ -2,6 +2,7 @@
 #
 # Table name: location_accounts
 #
+#  id                      :uuid             not null, primary key
 #  approved_by_location_at :datetime
 #  approved_by_user_at     :datetime
 #  attendance_status       :text

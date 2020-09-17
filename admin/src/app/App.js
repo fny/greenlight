@@ -10,6 +10,8 @@ import { Routes } from "../app/Routes";
 import { I18nProvider } from "../_metronic/i18n";
 import { LayoutSplashScreen, MaterialThemeProvider } from "../_metronic/layout";
 
+import '../common/stores/sources'
+
 export default function App({ store, persistor, basename }) {
   return (
     /* Provide Redux store */

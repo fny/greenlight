@@ -25,5 +25,5 @@
 #
 class GreenlightStatus < ApplicationRecord
   belongs_to :user
-  belongs_to :created_by_user
+  belongs_to :created_by, class_name: 'User'
 end

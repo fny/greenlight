@@ -13,12 +13,17 @@ gem 'puma', '~> 4.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3', '>= 6.0.3.2'
 
+
+
+
 #
 # Engines and Middlewares
 #
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
+# The Routing Tree Web Toolking
+gem 'roda'
 
 #
 # Performance
@@ -49,14 +54,19 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'exception_notification'
 # A lightning fast JSON:API serializer for Ruby Objects.
 gem 'fast_jsonapi'
+# JSON web tokens
+gem 'jwt'
 # Tame Rails' default policy to log everything
 gem 'lograge'
 # Phone validations
 gem 'phonelib'
 # Advanced seed data handling for Rails
 gem 'seed-fu', '~> 2.3'
+
+gem 'sorbet-runtime'
 # Email validations
 gem 'valid_email2'
+
 
 group :development, :test do
   # Annotate Rails classes with schema and routes info
@@ -91,11 +101,14 @@ group :development do
   gem 'foreman', require: false
   # Listens for file modifications, used by Spring
   gem 'listen', '~> 3.2'
+  # A Ruby language server and code formatter
+  gem 'rubocop', require: false
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   # A Ruby language server
   gem 'solargraph', require: false
-  # A Ruby language server and code formatter
-  gem 'rubocop', require: false
+
+
+  gem 'sorbet'
 end

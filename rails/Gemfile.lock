@@ -105,6 +105,7 @@ GEM
       concurrent-ruby (~> 1.0)
     interception (0.5)
     jaro_winkler (1.5.4)
+    jwt (2.2.2)
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -194,6 +195,8 @@ GEM
     reverse_markdown (2.0.0)
       nokogiri
     rexml (3.2.4)
+    roda (3.36.0)
+      rack
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -246,6 +249,10 @@ GEM
       thor (~> 1.0)
       tilt (~> 2.0)
       yard (~> 0.9, >= 0.9.24)
+    sorbet (0.5.5909)
+      sorbet-static (= 0.5.5909)
+    sorbet-runtime (0.5.5909)
+    sorbet-static (0.5.5909-universal-darwin-14)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -292,6 +299,7 @@ DEPENDENCIES
   fast_jsonapi
   fast_xs
   foreman
+  jwt
   listen (~> 3.2)
   lograge
   multi_json
@@ -305,12 +313,15 @@ DEPENDENCIES
   puma (~> 4.1)
   rack-cors
   rails (~> 6.0.3, >= 6.0.3.2)
+  roda
   rspec
   rspec-rails
   rubocop
   seed-fu (~> 2.3)
   shoulda-matchers
   solargraph
+  sorbet
+  sorbet-runtime
   spring
   spring-watcher-listen (~> 2.0.0)
   valid_email2

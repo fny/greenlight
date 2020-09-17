@@ -7,7 +7,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.timestamp :password_set_at
       t.text :password_reset_token, index: { unique: true}
       t.timestamp :password_reset_sent_at
-      t.text :auth_token, index: { unique: true }, null: false
+      t.text :auth_token, index: { unique: true }
       t.timestamp :auth_token_set_at
       t.text :email, index: { unique: true}
       t.text :email_confirmation_token, index: { unique: true}
@@ -22,22 +22,17 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.timestamp :mobile_number_confirmed_at
       t.text :mobile_number_unconfirmed
       t.text :zip_code
-      t.integer :gender, limit: 2
-      t.text :ethnicity
       t.date :birth_date
       t.text :physician_name
       t.text :physician_phone_number
       t.timestamp :accepted_terms_at
-      t.timestamp :reviewed_at
-      t.timestamp :first_survey_at
-      t.timestamp :seen_at
+      t.timestamp :completed_welcome_at
+
       t.integer :sign_in_count, default: 0, null: false
       t.timestamp :current_sign_in_at
       t.timestamp :last_sign_in_at
       t.inet :current_sign_in_ip
       t.inet :last_sign_in_ip
-      t.text :current_user_agent
-      t.text :last_user_agent
 
       t.timestamps
     end

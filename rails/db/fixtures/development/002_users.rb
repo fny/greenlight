@@ -1,4 +1,6 @@
 require 'faker'
+require 'parallel'
+SeedFu.quiet = true
 
 Faker::Config.random = Random.new(42)
 
@@ -13,22 +15,47 @@ N_WIVES = N_HUSBANDS
 N_TEACHERS = (N_STUDENTS / 20).round
 N_STAFF = (N_TEACHERS / 4).round
 
-parents_children = []
-students = []
 
+
+ExternalId = Faker::UniqueGenerator.new(
+  ->{ Faker::DrivingLicence.uk_driving_licence[0..8] },
+1000)
+
+
+#
+# Helpers
+#
+
+def set_name_and_email(user, last_name = nil, gender = nil)
+  case gender
+  when :m
+    first_name = Faker::Name.male_first_name
+    last_name = last_name || Faker::Name.male_last_name
+  when :f
+    first_name = Faker::Name.female_first_name
+    last_name = last_name || Faker::Name.female_last_name
+  else
+    first_name = Faker::Name.first_name
+    last_name = last_name || Faker::Name.last_name
+  end
+
+  user[:first_name] = first_name
+  user[:last_name] = last_name
+  user[:email] = Faker::Internet.safe_email(name: "#{first_name} #{last_name} #{Faker::Number.unique.hexadecimal(digits: 4)}")
+  user
+end
 
 def build_user
-  {
+  user = {
     id: Faker::Internet.uuid,
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name,
-    email: Faker::Internet.unique.email,
     mobile_number: Faker::PhoneNumber.unique.cell_phone_in_e164
   }
+  set_name_and_email(user)
 end
 
 def build_parent_child(parent, child)
   {
+    id: Faker::Internet.uuid,
     parent_user_id: parent[:id],
     child_user_id: child[:id]
   }
@@ -36,6 +63,8 @@ end
 
 def build_location_account(location, user, role, title = nil)
   {
+    id: Faker::Internet.uuid,
+    external_id: ExternalId.call,
     location_id: location.id,
     user_id: user[:id],
     role: role,
@@ -54,6 +83,7 @@ end
 
 def build_cohort_user(cohort, user)
   {
+    id: Faker::Internet.uuid,
     cohort_id: cohort[:id],
     user_id: user[:id],
   }
@@ -65,9 +95,11 @@ def build_cohorts_users(users, percentages, cohorts)
   ns[-1] = users.size - ns[0..-2].inject(0, :+)
   users_cohorts = []
   cohorts.zip(ns).each do |cohort, n|
+    user_cohort = []
     users.pop(n).each do |user|
-      users_cohorts << build_cohort_user(cohort, user)
+      user_cohort << build_cohort_user(cohort, user)
     end
+    users_cohorts.push(user_cohort)
   end
   users_cohorts
 end
@@ -157,7 +189,16 @@ def assign_gl_statuses(users)
   [statuses, events]
 end
 
+#
+# Seeding
+#
+
+location = Location.find_by!(permalink: 'greenwood-lakes')
+
 puts "Building users"
+
+parents_children = []
+students = []
 
 teachers, staff, single_parents, husbands, wives = [
   N_TEACHERS, N_STAFF, N_SINGLE_PARENTS, N_HUSBANDS, N_WIVES
@@ -165,8 +206,8 @@ teachers, staff, single_parents, husbands, wives = [
 
 husbands.zip(wives).each do |h, w|
   s = build_user
-  h[:last_name] = w[:last_name]
-  s[:last_name] = h[:last_name]
+  set_name_and_email(h, :m)
+  set_name_and_email(w, :f, h[:last_name])
   students << s
   parents_children << build_parent_child(h, s)
   parents_children << build_parent_child(w, s)
@@ -188,9 +229,24 @@ end
 
 users = [teachers, staff, single_parents, husbands, wives, students].flatten
 
-puts "Building location accounts"
+puts "Building cohorts"
+soccer_team = build_cohort(location, 'Soccer Team', 'activities')
+football_team = build_cohort(location, 'Football Team', 'activities')
 
-location = Location.find_by!(permalink: 'greenwood-lakes')
+freshman = build_cohort(location, 'Freshman', 'grade')
+sophomore = build_cohort(location, 'Sophomore', 'grade')
+junior = build_cohort(location, 'Junior', 'grade')
+senior = build_cohort(location, 'Senior', 'grade')
+
+cohorts_users = []
+freshmen, sophomores, juniors, seniors = build_cohorts_users(students.shuffle, [30, 25, 24, 21], [freshman, sophomore, junior, senior])
+cohorts_users += [freshmen, sophomores, juniors, seniors]
+cohorts_users += build_cohorts_users(students.sample(100), [50, 50], [soccer_team, football_team])
+cohorts_users += build_cohorts_users(teachers.shuffle, [30, 25, 24, 21], [freshman, sophomore, junior, senior])
+cohorts_users = cohorts_users.flatten
+cohorts = [soccer_team, football_team, freshman, sophomore, junior, senior].flatten
+
+puts "Building location accounts"
 
 location_accounts = []
 
@@ -216,34 +272,41 @@ staff.each { |s|
   ].sample)
 }
 
-students.each { |s|
-  location_accounts << build_location_account(location, s, 'student')
-}
+{
+  'Freshman' => freshmen,
+  'Sophomore' => sophomores,
+  'Junior' => juniors,
+  'Senior' => seniors
+}.each do |title, group|
+  group.each do |s|
+    # s is actual a cohorts_users record
+    location_accounts << build_location_account(location, { id: s[:user_id] } , 'student', title)
+  end
+end
 
-puts "Building cohorts"
-soccer_team = build_cohort(location, 'Soccer Team', 'activities')
-football_team = build_cohort(location, 'Football Team', 'activities')
-
-freshman = build_cohort(location, 'Freshman', 'grade')
-sophomore = build_cohort(location, 'Sophomore', 'grade')
-junior = build_cohort(location, 'Junior', 'grade')
-senior = build_cohort(location, 'Senior', 'grade')
-
-cohorts_users = []
-cohorts_users += build_cohorts_users(students.shuffle, [30, 25, 24, 21], [freshman, sophomore, junior, senior])
-cohorts_users += build_cohorts_users(students.sample(100), [50, 50], [soccer_team, football_team])
-cohorts_users += build_cohorts_users(teachers.shuffle, [30, 25, 24, 21], [freshman, sophomore, junior, senior])
-
-cohorts = [soccer_team, football_team, freshman, sophomore, junior, senior].flatten
-
-
-puts "Building Greenlight Statuses"
+puts "Building greenlight statuses"
 greenlight_statuses, medical_events = assign_gl_statuses([staff, teachers, students].flatten)
 
-User.seed(:id, users)
-ParentChild.seed(:parent_user_id, :child_user_id, parents_children)
-LocationAccount.seed(:user_id, :location_id, location_accounts)
-Cohort.seed(:name, :category, cohorts)
-CohortUser.seed(:cohort_id, :user_id, cohorts_users)
+puts "Seeding data"
+# Parallel.each([
+#   -> { User.seed(:id, :email, :mobile_number, users) },
+#   -> { Cohort.seed(:name, :category, cohorts) }
+# ]) { |x| x.call }
+
+# Parallel.each([
+#  -> { ParentChild.seed(:parent_user_id, :child_user_id, parents_children) },
+#  -> { LocationAccount.seed(:user_id, :location_id, location_accounts) },
+#  -> { CohortUser.seed(:cohort_id, :user_id, cohorts_users) },
+#  -> { GreenlightStatus.seed(:id, greenlight_statuses) },
+#  -> { MedicalEvent.seed(:id, medical_events) unless medical_events.empty? }
+# ]) { |x| x.call }
+
+User.seed(:id, :email, :mobile_number, users)
+Cohort.seed(:id, cohorts)
+ParentChild.seed(:id, parents_children)
+LocationAccount.seed(:id, location_accounts)
+CohortUser.seed(:id, cohorts_users)
 GreenlightStatus.seed(:id, greenlight_statuses)
-MedicalEvent.seed(:id, medical_events)
+MedicalEvent.seed(:id, medical_events) unless medical_events.empty?
+
+SeedFu.quiet = false

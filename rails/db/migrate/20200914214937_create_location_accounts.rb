@@ -1,6 +1,6 @@
 class CreateLocationAccounts < ActiveRecord::Migration[6.0]
   def change
-    create_table :location_accounts, id: false do |t|
+    create_table :location_accounts, id: :uuid do |t|
       t.references :user, null: false, foreign_key: { on_delete: :cascade }, type: :uuid
       t.references :location, null: false, foreign_key: { on_delete: :cascade }, type: :uuid
       t.text :external_id, index: { unique: true }

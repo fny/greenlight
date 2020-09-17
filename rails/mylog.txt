@@ -1,0 +1,18 @@
+=> Booting Puma
+=> Rails 6.0.3.3 application starting in development 
+=> Run `rails server --help` for more startup options
+[59555] Puma starting in cluster mode...
+[59555] * Version 4.3.6 (ruby 2.7.1-p83), codename: Mysterious Traveller
+[59555] * Min threads: 5, max threads: 5
+[59555] * Environment: development
+[59555] * Process workers: 2
+[59555] * Preloading application
+[59555] * Listening on tcp://127.0.0.1:3000
+[59555] * Listening on tcp://[::1]:3000
+[59555] Use Ctrl-C to stop
+[59555] - Worker 0 (pid: 59574) booted, phase: 0
+[59555] - Worker 1 (pid: 59575) booted, phase: 0
+[59555] - Gracefully shutting down workers...
+[59555] === puma shutdown: 2020-09-15 17:35:40 -0400 ===
+[59555] - Goodbye!
+Exiting

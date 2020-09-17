@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.index ["location_id"], name: "index_cohorts_on_location_id"
   end
 
-  create_table "cohorts_users", id: false, force: :cascade do |t|
+  create_table "cohorts_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.uuid "cohort_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.index ["user_id"], name: "index_greenlight_statuses_on_user_id"
   end
 
-  create_table "location_accounts", id: false, force: :cascade do |t|
+  create_table "location_accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.uuid "location_id", null: false
     t.text "external_id"
@@ -83,9 +83,11 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
   create_table "medical_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.text "event_type", null: false
+    t.uuid "created_by_id"
     t.datetime "occurred_at", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["created_by_id"], name: "index_medical_events_on_created_by_id"
     t.index ["event_type"], name: "index_medical_events_on_event_type"
     t.index ["user_id"], name: "index_medical_events_on_user_id"
   end
@@ -106,7 +108,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.datetime "password_set_at"
     t.text "password_reset_token"
     t.datetime "password_reset_sent_at"
-    t.text "auth_token", null: false
+    t.text "auth_token"
     t.datetime "auth_token_set_at"
     t.text "email"
     t.text "email_confirmation_token"
@@ -121,22 +123,16 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.datetime "mobile_number_confirmed_at"
     t.text "mobile_number_unconfirmed"
     t.text "zip_code"
-    t.integer "gender", limit: 2
-    t.text "ethnicity"
     t.date "birth_date"
     t.text "physician_name"
     t.text "physician_phone_number"
     t.datetime "accepted_terms_at"
-    t.datetime "reviewed_at"
-    t.datetime "first_survey_at"
-    t.datetime "seen_at"
+    t.datetime "completed_welcome_at"
     t.integer "sign_in_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
-    t.text "current_user_agent"
-    t.text "last_user_agent"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["auth_token"], name: "index_users_on_auth_token", unique: true
@@ -154,6 +150,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
   add_foreign_key "greenlight_statuses", "users", on_delete: :cascade
   add_foreign_key "location_accounts", "locations", on_delete: :cascade
   add_foreign_key "location_accounts", "users", on_delete: :cascade
+  add_foreign_key "medical_events", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "medical_events", "users", on_delete: :cascade
   add_foreign_key "parents_children", "users", column: "child_user_id", on_delete: :cascade
   add_foreign_key "parents_children", "users", column: "parent_user_id", on_delete: :cascade

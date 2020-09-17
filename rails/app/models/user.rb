@@ -4,26 +4,22 @@
 #
 #  id                                 :uuid             not null, primary key
 #  accepted_terms_at                  :datetime
-#  auth_token                         :text             not null
+#  auth_token                         :text
 #  auth_token_set_at                  :datetime
 #  birth_date                         :date
+#  completed_welcome_at               :datetime
 #  current_sign_in_at                 :datetime
 #  current_sign_in_ip                 :inet
-#  current_user_agent                 :text
 #  email                              :text
 #  email_confirmation_sent_at         :datetime
 #  email_confirmation_token           :text
 #  email_confirmed_at                 :datetime
 #  email_unconfirmed                  :text
-#  ethnicity                          :text
 #  first_name                         :text             not null
-#  first_survey_at                    :datetime
-#  gender                             :integer
 #  is_sms_gateway_emailable           :boolean
 #  last_name                          :text             not null
 #  last_sign_in_at                    :datetime
 #  last_sign_in_ip                    :inet
-#  last_user_agent                    :text
 #  mobile_carrier                     :text
 #  mobile_number                      :text
 #  mobile_number_confirmation_sent_at :datetime
@@ -36,8 +32,6 @@
 #  password_set_at                    :datetime
 #  physician_name                     :text
 #  physician_phone_number             :text
-#  reviewed_at                        :datetime
-#  seen_at                            :datetime
 #  sign_in_count                      :integer          default(0), not null
 #  zip_code                           :text
 #  created_at                         :datetime         not null
@@ -53,7 +47,7 @@
 #  index_users_on_password_reset_token              (password_reset_token) UNIQUE
 #
 class User < ApplicationRecord
-  
+
   has_many :parent_relationships, foreign_key: :child_user_id,
            class_name: 'ParentChild'
   has_many :children, through: :parent_relationships,
@@ -68,7 +62,18 @@ class User < ApplicationRecord
   has_many :location_accounts
   has_many :locations, through: :location_accounts
   has_many :cohorts, through: :cohort_user
-  
+
   has_secure_token :auth_token
   has_secure_password
+
+  def jwt!(expiry = 1.day.from_now)
+    regenerate_auth_token
+    save!
+    JSONWebToken.encode({ auth_token: token })
+  end
+
+  def reset_auth_token
+    regenerate_auth_token
+    auth_token_set_at = Time.now
+  end
 end
