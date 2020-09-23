@@ -1,4 +1,4 @@
-import { Model, attribute as attr, relationship,initialize, STRING, DATETIME } from './model'
+import { Model, attribute as attr, relationship,initialize, STRING, DATETIME, BOOLEAN } from './model'
 import { User } from './user'
 import moment from 'moment'
 
@@ -12,8 +12,8 @@ export enum GREENLIGHT_STATUSES {
 
 export class GreenlightStatus extends Model {
   static STATUSES = GREENLIGHT_STATUSES
-  static singular = 'greenlight-status'
-  static plural = 'greenlight-statuses'
+  static singular = 'greenlightStatus'
+  static plural = 'greenlightStatuses'
 
   constructor(data?: any) {
     super()
@@ -28,6 +28,9 @@ export class GreenlightStatus extends Model {
 
   @attr({ type: DATETIME })
   statusExpiresAt: moment.Moment | null = null
+
+  @attr({ type: BOOLEAN })
+  isOverride: boolean | null = null
 
   @attr({ type: STRING })
   reason: string = ''

@@ -11,12 +11,13 @@ export class LocationAccount extends Model {
     initialize(this, data)
   }
 
+  @attr({ type: STRING }) locationId: string | null = null
+  @attr({ type: STRING }) externalId: string | null = null
+  @attr({ type: STRING }) role: string | null = null
+  @attr({ type: STRING }) title: string | null = null
+  @attr({ type: STRING }) permissionLevel: string | null = null
+  @attr({ type: STRING }) attendanceStatus: string | null = null
 
-  @attr({ type: STRING }) name: string = ''
-  @attr({ type: STRING }) phoneNumber: string | null = null
-  @attr({ type: STRING }) website: string | null = null
-  @attr({ type: STRING }) email: string = ''
-  @attr({ type: STRING }) zipCode: string | null = null
 
   @relationship({ type: 'hasOne', model: 'location' })
   location: Location = new Location()

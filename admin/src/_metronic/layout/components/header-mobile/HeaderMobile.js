@@ -4,6 +4,7 @@ import objectPath from "object-path";
 import SVG from "react-inlinesvg";
 import {toAbsoluteUrl} from "../../../_helpers";
 import {useHtmlClassService} from "../../_core/MetronicLayout";
+import OnlineAwareLogo from "../../../../components/OnlineAwareLogo";
 
 export function HeaderMobile() {
   const uiService = useHtmlClassService();
@@ -29,7 +30,7 @@ export function HeaderMobile() {
         >
           {/*begin::Logo*/}
           <Link to="/">
-            <img alt="logo" src={layoutProps.headerLogo}/>
+            <OnlineAwareLogo />
           </Link>
           {/*end::Logo*/}
 

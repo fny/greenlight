@@ -6,7 +6,7 @@ import { ModalProgressBar } from "../../../../_metronic/_partials/controls";
 import * as actions from "../../../modules/ECommerce/_redux/products/productsActions";
 import { useProductsUIContext } from "../UsersUIContext";
 
-export function UserDeleteDialog({ id, show, onHide }) {
+export function ProductDeleteDialog({ id, show, onHide }) {
   // Products UI Context
   const productsUIContext = useProductsUIContext();
   const productsUIProps = useMemo(() => {

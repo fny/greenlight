@@ -1,4 +1,4 @@
-import { ModelRegistry } from './model'
+import { Model, ModelRegistry } from './model'
 import { User } from './user'
 import { GreenlightStatus } from './greenlightStatus'
 import { Location } from './location'
@@ -8,4 +8,4 @@ import { MedicalEvent } from './medicalEvent'
 
 ModelRegistry.register(User, GreenlightStatus, Location, LocationAccount, MedicalEvent)
 
-export { ModelRegistry, User, GreenlightStatus, Location, MedicalEvent }
+export { Model, ModelRegistry, User, GreenlightStatus, Location, MedicalEvent }

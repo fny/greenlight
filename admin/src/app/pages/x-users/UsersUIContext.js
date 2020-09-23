@@ -2,13 +2,13 @@ import React, { createContext, useContext, useState, useCallback } from "react";
 import { isEqual, isFunction } from "lodash";
 import { initialFilter } from "./UsersUIHelpers";
 
-const ProductsUIContext = createContext();
+const UsersUIContext = createContext();
 
 export function useProductsUIContext() {
-  return useContext(ProductsUIContext);
+  return useContext(UsersUIContext);
 }
 
-export const ProductsUIConsumer = ProductsUIContext.Consumer;
+export const ProductsUIConsumer = UsersUIContext.Consumer;
 
 export function ProductsUIProvider({ productsUIEvents, children }) {
   const [queryParams, setQueryParamsBase] = useState(initialFilter);
@@ -33,18 +33,12 @@ export function ProductsUIProvider({ productsUIEvents, children }) {
     ids,
     setIds,
     setQueryParams,
-    newProductButtonClick: productsUIEvents.newProductButtonClick,
-    openEditProductPage: productsUIEvents.openEditProductPage,
-    openDeleteProductDialog: productsUIEvents.openDeleteProductDialog,
-    openDeleteProductsDialog: productsUIEvents.openDeleteProductsDialog,
-    openFetchProductsDialog: productsUIEvents.openFetchProductsDialog,
-    openUpdateProductsStatusDialog:
-      productsUIEvents.openUpdateProductsStatusDialog,
+    ...productsUIEvents
   };
 
   return (
-    <ProductsUIContext.Provider value={value}>
+    <UsersUIContext.Provider value={value}>
       {children}
-    </ProductsUIContext.Provider>
+    </UsersUIContext.Provider>
   );
 }

@@ -1,6 +1,8 @@
-import React from "react";
+import React from 'react'
+import { SelectRowProps } from 'react-bootstrap-table-next'
+import { OnChangeEvent } from '../common/types';
 
-function SelectionCheckbox({ isSelected, onChange }) {
+function SelectionCheckbox({ isSelected, onChange }: { isSelected: boolean, onChange: OnChangeEvent}) {
   return (
     <>
       <input type="checkbox" style={{ display: "none" }} />
@@ -12,22 +14,22 @@ function SelectionCheckbox({ isSelected, onChange }) {
   );
 }
 
-function groupingItemOnSelect(props) {
-  const { ids, setIds, entityId } = props;
-  if (ids.some((id) => id === entityId)) {
-    setIds(ids.filter((id) => id !== entityId));
+function groupingItemOnSelect(props: any) {
+  const { ids, setIds, customerId } = props;
+  if (ids.some((id: string) => id === customerId)) {
+    setIds(ids.filter((id: string) => id !== customerId));
   } else {
     const newIds = [...ids];
-    newIds.push(entityId);
+    newIds.push(customerId);
     setIds(newIds);
   }
 }
 
-function groupingAllOnSelect(props) {
+function groupingAllOnSelect(props: any) {
   const { isSelected, setIds, entities } = props;
   if (!isSelected) {
-    const allIds = [];
-    entities.forEach((el) => allIds.push(el.id));
+    const allIds: string[] = [];
+    entities.forEach((el: any) => allIds.push(el.id));
     setIds(allIds);
   } else {
     setIds([]);
@@ -37,7 +39,7 @@ function groupingAllOnSelect(props) {
 }
 
 // check official documentations: https://react-bootstrap-table.github.io/react-bootstrap-table2/storybook/index.html?selectedKind=Row%20Selection&selectedStory=Custom%20Selection%20Column%20Header%20Style&full=0&addons=1&stories=1&panelRight=0&addonPanel=storybook%2Factions%2Factions-panel
-export function getSelectRow(props) {
+export function getSelectRow(props: any): SelectRowProps<any> {
   const { entities, ids, setIds } = props;
   return {
     mode: "checkbox",
@@ -54,9 +56,9 @@ export function getSelectRow(props) {
         />
       );
     },
-    selectionRenderer: ({ rowIndex }) => {
-      const isSelected = ids.some((el) => el === entities[rowIndex].id);
-      const props = { ids, setIds, entityId: entities[rowIndex].id };
+    selectionRenderer: ({ rowIndex }: { rowIndex: number }) => {
+      const isSelected = ids.some((id: string) => id === entities[rowIndex].id);
+      const props = { ids, setIds, customerId: entities[rowIndex].id };
       return (
         <SelectionCheckbox
           isSelected={isSelected}

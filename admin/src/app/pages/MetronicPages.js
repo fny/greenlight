@@ -4,6 +4,8 @@ import {LayoutSplashScreen, ContentRoute} from "../../_metronic/layout";
 import {BuilderPage} from "./MetronicBuilderPage";
 import {MyPage} from "./MetronicMyPage";
 import {DashboardPage} from "./DashboardPage";
+import UPage from './OldUsersPage'
+import UsersPage from "./users/UsersPage";
 
 const GoogleMaterialPage = lazy(() =>
   import("../modules/GoogleMaterialExamples/GoogleMaterialPage")
@@ -15,6 +17,7 @@ const ECommercePage = lazy(() =>
   import("../modules/ECommerce/pages/eCommercePage")
 );
 
+
 export default function BasePage() {
     // useEffect(() => {
     //   console.log('Base page');
@@ -22,7 +25,7 @@ export default function BasePage() {
     // https://reactjs.org/docs/hooks-reference.html#useeffect
 
     return (
-        <Suspense fallback={<LayoutSplashScreen/>}>
+        <Suspense>
             <Switch>
                 {
                     /* Redirect from root URL to /dashboard. */
@@ -34,6 +37,8 @@ export default function BasePage() {
                 <Route path="/google-material" component={GoogleMaterialPage}/>
                 <Route path="/react-bootstrap" component={ReactBootstrapPage}/>
                 <Route path="/e-commerce" component={ECommercePage}/>
+                <Route path="/u" component={UPage}/>
+                <ContentRoute path="/users" component={UsersPage} />
                 <Redirect to="error/error-v1"/>
             </Switch>
         </Suspense>

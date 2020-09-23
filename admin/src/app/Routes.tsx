@@ -14,10 +14,11 @@ import { Logout, AuthPage } from "./modules/Auth";
 import ErrorsPage from "./modules/ErrorsExamples/ErrorsPage";
 
 
-import { UsersPage } from "./pages/UsersPage"
-import { ProductEdit } from "./pages/users/user-edit/UserEdit"
-import { LayoutSplashScreen } from "../components/SplashScreen"
+// import { UsersPage } from "./pages/UsersPage"
+import { ProductEdit } from "./pages/x-users/user-edit/UserEdit"
+import { LayoutSplashScreen } from "../components/"
 import { ContentRoute } from "../components/ContentRoute"
+import UsersPage from './pages/users/UsersPage'
 
 export function Routes() {
     const {isAuthorized} = useSelector(
@@ -26,7 +27,7 @@ export function Routes() {
         }),
         shallowEqual
     );
-
+        
     return (
         <Switch>
             {!isAuthorized ? (
@@ -42,18 +43,15 @@ export function Routes() {
             <Route path="/error" component={ErrorsPage}/>
             <Route path="/logout" component={Logout}/>
 
+
             {!isAuthorized ? (
                 /*Redirect to `/auth` when user is not authorized*/
                 <Redirect to="/auth/login"/>
             ) : (
                 <Layout>
                     <BasePage />
-                    <ContentRoute path="/users" component={UsersPage} />
-                    <ContentRoute path="/users/new" component={ProductEdit} />
-                    <ContentRoute
-                      path="users/:id/edit"
-                      component={ProductEdit}
-                    />
+                    {/* <ContentRoute path="/users/new" component={ProductEdit} /> */}
+
                 </Layout>
             )}
         </Switch>

@@ -21,6 +21,7 @@ declare module 'reactn/default' {
     }
 
     export interface State {
+      isOnline: boolean,
       currentUser: User | null,
       location: Location | null
       users: User[],

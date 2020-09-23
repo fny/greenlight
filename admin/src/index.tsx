@@ -12,6 +12,9 @@ import * as _redux from "./redux";
 import store, { persistor } from "./redux/store";
 import App from "./app/App";
 
+import './common/GL'
+import './common/stores'
+
 //
 // Styles
 //
@@ -59,10 +62,20 @@ _redux.setupAxios(axios, store);
 
 // Set an initial global state directly:
 setGlobal({
+  authToken: null,
+  isOnline: true,
   currentUser: null,
-  location: null,
+  currentLocation: null,
   users: [],
-  lastSyncAt: null
+  lastSyncAt: null,
+
+  usersPage_error: null,
+  usersPage_isListLoading: false,
+  usersPage_areActionsLoading: false,
+  usersPage_usersCount: null,
+  usersPage_users: [],
+  usersPage_selectedIds: [],
+  userPage_userForEdit: null
 });
 
 

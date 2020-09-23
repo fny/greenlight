@@ -17,7 +17,7 @@ export const initialFilter = {
   sortOrder: "asc", // asc||desc
   sortField: "VINCode",
   pageNumber: 1,
-  pageSize: 10
+  pageSize: 50
 };
 export const AVAILABLE_COLORS = [
   "Red",

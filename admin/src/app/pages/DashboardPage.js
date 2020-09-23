@@ -6,7 +6,7 @@ import {
 import {useSubheader} from "../../_metronic/layout";
 
 export function DashboardPage() {
-  const suhbeader = useSubheader();
-  suhbeader.setTitle("Dashboard");
+  const subheader = useSubheader();
+  subheader.setTitle("Dashboard");
   return <Dashboard />;
 }
