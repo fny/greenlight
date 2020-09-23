@@ -1,58 +1,30 @@
-## Feature security documentation
+# README
 
-- [Micronaut Micronaut Security documentation](https://micronaut-projects.github.io/micronaut-security/latest/guide/index.html)
+This README would normally document whatever steps are necessary to get the
+application up and running.
 
-## Feature liquibase documentation
+Things you may want to cover:
 
-- [Micronaut Liquibase Database Migration documentation](https://micronaut-projects.github.io/micronaut-liquibase/latest/guide/index.html)
+* Ruby version
 
-- [https://www.liquibase.org/](https://www.liquibase.org/)
+* System dependencies
 
-## Feature hibernate-jpa documentation
+* Configuration
 
-- [Micronaut Hibernate JPA documentation](https://micronaut-projects.github.io/micronaut-sql/latest/guide/index.html#hibernate)
+* Database creation
 
-## Feature jdbc-hikari documentation
+* Database initialization
 
-- [Micronaut Hikari JDBC Connection Pool documentation](https://micronaut-projects.github.io/micronaut-sql/latest/guide/index.html#jdbc)
+* How to run the test suite
 
-## Feature acme documentation
+* Services (job queues, cache servers, search engines, etc.)
 
-- [Micronaut ACME documentation](https://micronaut-projects.github.io/micronaut-acme/latest/guide/index.html)
+* Deployment instructions
 
-## Feature management documentation
+* ...
 
-- [Micronaut Micronaut Management documentation](https://docs.micronaut.io/latest/guide/index.html#management)
+## TODO
 
-## Feature http-client documentation
+On Error, return the proper errors object
 
-- [Micronaut Micronaut HTTP Client documentation](https://docs.micronaut.io/latest/guide/index.html#httpClient)
-
-## Feature security-jwt documentation
-
-- [Micronaut Micronaut Security JWT documentation](https://micronaut-projects.github.io/micronaut-security/latest/guide/index.html)
-
-## Feature hibernate-validator documentation
-
-- [Micronaut Hibernate Validator documentation](https://micronaut-projects.github.io/micronaut-hibernate-validator/latest/guide/index.html)
-
-TODO:
-https://medium.com/@benlucchesi/https-medium-com-benlucchesi-micronaut-gorm-liquibase-an-implementation-guide-f607d559ca16
-
-
-```groovy
-package greenlight.factories
-
-import greenlight.entities.User
-import nl.topicus.overheid.javafactorybot.Factory
-import nl.topicus.overheid.javafactorybot.definition.Attribute
-
-class UserFactory extends Factory<User> {
-  Map<String, Attribute> attributes = [
-    firstName : value { faker.name().firstName() },
-    lastName : value { faker.name().lastName() },
-    email : value { "${get("firstName")}.${get("lastName")}@example.com".toLowerCase() },
-  ]
-}
-
-```
+Handle ERR_CONNECTION_REFUSED

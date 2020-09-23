@@ -1,6 +1,0 @@
-applicationType: default
-defaultPackage: greenlight
-testFramework: spock
-sourceLanguage: kotlin
-buildTool: gradle
-features: [acme, annotation-api, app-name, data, data-jpa, docker, file-watch, graalvm, gradle, hibernate-jpa, hibernate-validator, http-client, jdbc-hikari, kotlin, kotlin-application, kotlin-extension-functions, liquibase, log4j2, management, micrometer, micrometer-new-relic, netty-server, postgres, readme, security, security-annotations, security-jwt, shade, spock, testcontainers, yaml, micronaut-liquibase, liquibase]
