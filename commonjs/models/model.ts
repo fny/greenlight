@@ -1,7 +1,8 @@
-import * as uuid from 'uuid'
 import 'reflect-metadata'
 import moment from 'moment'
+import uuid from 'uuid'
 import { Schema, SchemaSettings } from '@orbit/data'
+import { ObjectMap, Record } from '../types'
 
 interface DataType {
   serialize?: Function,
@@ -82,22 +83,39 @@ class Registry {
     return null
   }
   orbitSchema() {
-    return buildOrbitSchema(this.models)
+    return buildOrbitSchema(this.models, true)
   }
 }
 
 export const ModelRegistry = new Registry()
 
 export class Model {
+  /** The singular name for this model */
   static singular: string
+
+  /** The plural name for this model */
   static plural: string
+  
+  /** All entities must have a UUID */
   id: string
 
+  /** Raw request data */
   _data: any
 
+  /** Raw relationship data */
+  _relationships: any
+
+  /** Anything that was included while populatiing the entity */
+  included: string[] = []
+
+  /** Raw user data */
+
   constructor(data?: any) {
-    this.id = uuid.v1()
-    // This is here to make the compiler happy
+    this.id = ''
+  }
+
+  setId() {
+    this.id = uuid.v4()
   }
 
   modelName() {
@@ -110,6 +128,10 @@ export class Model {
 
   attributeMetadata() {
     return getAttributes(Object.getPrototypeOf(this).constructor)
+  }
+
+  hasRelationship(name: string) {
+    return this.relationshipMetadata()[name] !== undefined
   }
 
   relationshipMetadata() {
@@ -134,10 +156,24 @@ export class Model {
 }
 
 export function initialize(record: Model,  data: any)  {
-  deserialize(Object.getPrototypeOf(record).constructor, data, record)
+  _deserialize(Object.getPrototypeOf(record).constructor, data, record)
 }
 
-function deserialize(model: typeof Model, data: any, this_?: Model) {
+export function deserializeJSONAPI<T extends Model>(record: Record): T {
+  const model = ModelRegistry.modelFor(record.type)
+  if (model === null) {
+    throw new Error(`No model found for type ${record.type}`)
+  }
+
+  const data = {
+    id: record.id,
+    ...record.attributes
+  }
+
+  return _deserialize(model, data) as T
+}
+
+function _deserialize(model: typeof Model, data: any, this_?: Model) {
   const record = this_ || new model()
   if (!data) return record
   record._data = data
@@ -244,11 +280,22 @@ function getRelationships(model: typeof Model): { [k: string]: AttributeDefiniti
   return Reflect.getMetadata(REL_METADATA_KEY, model.prototype)
 }
 
-function buildOrbitSchema(models: (typeof Model[]), inflections?: { [k: string]: string }) {
+function buildOrbitSchema(models: (typeof Model[]), overrideInflections?: boolean) {
+
+
   const schemaData: SchemaSettings = { models: {} }
-  if (inflections) {
-    schemaData.pluralize = (word: string) => inflections[word]
-    schemaData.singularize = (word: string) => inflections[word]
+  if (overrideInflections) {
+    const singularInflections: ObjectMap<string> = {}
+    const pluralInflections: ObjectMap<string> = {}
+    for (let model  of models) {
+      singularInflections[model.plural] = model.singular
+      singularInflections[model.singular] = model.singular
+      pluralInflections[model.singular] = model.plural
+      pluralInflections[model.plural] = model.plural
+    }
+
+    schemaData.pluralize = (word: string) => pluralInflections[word]
+    schemaData.singularize = (word: string) => singularInflections[word]
   }
 
   models.forEach(model => {
