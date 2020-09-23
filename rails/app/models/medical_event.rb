@@ -24,4 +24,6 @@
 class MedicalEvent < ApplicationRecord
   belongs_to :user
   belongs_to :created_by, class_name: 'User'
+  
+  scope :recently_created, -> { where(created_at: 20.days.ago.beginning_of_day..Time.zone.now.end_of_day) }
 end

@@ -23,7 +23,7 @@ class Location < ApplicationRecord
   has_many :cohorts
   has_many :users, through: :location_accounts
 
-  def self.find_bv_id_or_permalink(id)
+  def self.find_by_id_or_permalink(id)
     find_by(id: id) || find_by(permalink: id)
   end
 end

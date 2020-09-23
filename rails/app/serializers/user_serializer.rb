@@ -17,9 +17,12 @@
 #  email_unconfirmed                  :text
 #  first_name                         :text             not null
 #  is_sms_gateway_emailable           :boolean
+#  language                           :text             default("en"), not null
 #  last_name                          :text             not null
 #  last_sign_in_at                    :datetime
 #  last_sign_in_ip                    :inet
+#  magic_sign_in_sent_at              :datetime
+#  magic_sign_in_token                :text
 #  mobile_carrier                     :text
 #  mobile_number                      :text
 #  mobile_number_confirmation_sent_at :datetime
@@ -42,6 +45,7 @@
 #  index_users_on_auth_token                        (auth_token) UNIQUE
 #  index_users_on_email                             (email) UNIQUE
 #  index_users_on_email_confirmation_token          (email_confirmation_token) UNIQUE
+#  index_users_on_magic_sign_in_token               (magic_sign_in_token) UNIQUE
 #  index_users_on_mobile_number                     (mobile_number) UNIQUE
 #  index_users_on_mobile_number_confirmation_token  (mobile_number_confirmation_token)
 #  index_users_on_password_reset_token              (password_reset_token) UNIQUE
@@ -58,6 +62,9 @@ class UserSerializer < ApplicationSerializer
   attribute :completed_welcome_at
 
   has_many :location_accounts
+  has_one :last_greenlight_status, serializer: GreenlightStatusSerializer, record_type: 'greenlightStatus'
+
+  # has_many :parents
   # has_many :cohorts
   # has_many :greelight_statuses
   # has_many :medical_events

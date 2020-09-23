@@ -25,5 +25,7 @@
 #
 class GreenlightStatus < ApplicationRecord
   belongs_to :user
-  belongs_to :created_by, class_name: 'User'
+  belongs_to :created_by_user, class_name: 'User'
+  scope :submitted_today, -> { where(created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day) }
+  scope :recently_created, -> { where(created_at: 20.days.ago.beginning_of_day..Time.zone.now.end_of_day) }
 end

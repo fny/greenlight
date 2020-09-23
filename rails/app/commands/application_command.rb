@@ -1,4 +1,2 @@
-class ApplicationCommand
-  include ActiveAttr::Model
-
+class ApplicationCommand < Commands::Base
 end

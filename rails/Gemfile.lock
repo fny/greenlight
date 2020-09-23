@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/fny/jsonapi_errors_handler.git
+  revision: 1fa0b45e9e5a4651fef4d3a4f64587d8181873b4
+  specs:
+    jsonapi_errors_handler (0.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -93,6 +99,10 @@ GEM
     fabrication (2.21.1)
     faker (2.13.0)
       i18n (>= 1.6, < 2)
+    faraday (1.0.1)
+      multipart-post (>= 1.2, < 3)
+    faraday_middleware (1.0.0)
+      faraday (~> 1.0)
     fast_blank (1.0.0)
     fast_jsonapi (1.5)
       activesupport (>= 4.2)
@@ -101,6 +111,7 @@ GEM
     foreman (0.87.2)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    htmlentities (4.3.4)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     interception (0.5)
@@ -129,6 +140,7 @@ GEM
     minitest (5.14.2)
     msgpack (1.3.3)
     multi_json (1.15.0)
+    multipart-post (2.1.1)
     nio4r (2.5.3)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
@@ -140,6 +152,11 @@ GEM
       ast (~> 2.4.1)
     pg (1.2.3)
     phonelib (0.6.45)
+    plivo (4.11.0)
+      faraday (~> 1.0.1)
+      faraday_middleware (~> 1.0.0)
+      htmlentities
+      jwt
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -235,6 +252,10 @@ GEM
       activesupport (>= 3.1)
     shoulda-matchers (4.4.1)
       activesupport (>= 4.2.0)
+    skylight (4.3.1)
+      skylight-core (= 4.3.1)
+    skylight-core (4.3.1)
+      activesupport (>= 4.2.0)
     solargraph (0.39.15)
       backport (~> 1.1)
       benchmark
@@ -299,6 +320,7 @@ DEPENDENCIES
   fast_jsonapi
   fast_xs
   foreman
+  jsonapi_errors_handler!
   jwt
   listen (~> 3.2)
   lograge
@@ -307,6 +329,7 @@ DEPENDENCIES
   parallel_tests
   pg (>= 0.18, < 2.0)
   phonelib
+  plivo
   pry-rails
   pry-rescue
   pry-stack_explorer
@@ -319,6 +342,7 @@ DEPENDENCIES
   rubocop
   seed-fu (~> 2.3)
   shoulda-matchers
+  skylight
   solargraph
   sorbet
   sorbet-runtime

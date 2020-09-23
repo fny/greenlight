@@ -1,13 +1,12 @@
 module JSONWebToken
-  sig {params(name: Hash, DateTime).returns(String)}
   def encode(payload, expiration)
-    payload[:exp] = expiration
-    payload[:iat] = Time.now
+    payload[:exp] = expiration.to_i
+    payload[:iat] = Time.now.to_i
     JWT.encode(payload, Rails.application.secrets.secret_key_base, 'HS256')
   end
 
-  def decode(token)
-    decoded = JWT.decode(payload, Rails.application.secrets.secret_key_base, true, { algorithm: 'HS256' })
+  def decode(encoded)
+    decoded, options = JWT.decode(encoded, Rails.application.secrets.secret_key_base, true, { algorithm: 'HS256' })
     HashWithIndifferentAccess.new(decoded)
   end
 

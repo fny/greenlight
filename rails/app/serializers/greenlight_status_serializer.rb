@@ -25,6 +25,5 @@
 #
 class GreenlightStatusSerializer < ApplicationSerializer
   attributes :status, :status_set_at, :status_expires_at, :is_override
-
   has_one :created_by_user
 end

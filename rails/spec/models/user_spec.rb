@@ -17,9 +17,12 @@
 #  email_unconfirmed                  :text
 #  first_name                         :text             not null
 #  is_sms_gateway_emailable           :boolean
+#  language                           :text             default("en"), not null
 #  last_name                          :text             not null
 #  last_sign_in_at                    :datetime
 #  last_sign_in_ip                    :inet
+#  magic_sign_in_sent_at              :datetime
+#  magic_sign_in_token                :text
 #  mobile_carrier                     :text
 #  mobile_number                      :text
 #  mobile_number_confirmation_sent_at :datetime
@@ -42,6 +45,7 @@
 #  index_users_on_auth_token                        (auth_token) UNIQUE
 #  index_users_on_email                             (email) UNIQUE
 #  index_users_on_email_confirmation_token          (email_confirmation_token) UNIQUE
+#  index_users_on_magic_sign_in_token               (magic_sign_in_token) UNIQUE
 #  index_users_on_mobile_number                     (mobile_number) UNIQUE
 #  index_users_on_mobile_number_confirmation_token  (mobile_number_confirmation_token)
 #  index_users_on_password_reset_token              (password_reset_token) UNIQUE
@@ -49,17 +53,27 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  it "has proper relationships" do
+  it "has parent/child relationships" do
     parent = Fabricate(:user)
     child = Fabricate(:user)
-
     parent.children << child
 
     parent.save
 
-    
+    expect(User.find(parent.id).children.include?(child)).to eq(true)
+    expect(User.find(child.id).parents.include?(parent)).to eq(true)
+  end
+  
+  it "has todays greenlight status" do
+    user = Fabricate(:user)
+    gl_status = Fabricate.build(:greenlight_status)
+    gl_status.user = user
+    gl_status.created_by_user = user
+    gl_status.save
 
-    # expect(User.find(parent.id).children.include?(child)).to_be true
-    # expect(User.find(child.id).parents.include?(parent)).to_be true
+    status = GreenlightStatus.submitted_today.where(user: user).first
+    expect(status.status).to eq(gl_status.status)
+    expect(user.last_greenlight_status.status).to eq(gl_status.status)
+    expect(user.todays_greenlight_status.status).to eq(gl_status.status)
   end
 end

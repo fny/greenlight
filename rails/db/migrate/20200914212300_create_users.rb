@@ -7,6 +7,9 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.timestamp :password_set_at
       t.text :password_reset_token, index: { unique: true}
       t.timestamp :password_reset_sent_at
+      t.text :magic_sign_in_token, index: { unique: true }
+      t.timestamp :magic_sign_in_sent_at
+      
       t.text :auth_token, index: { unique: true }
       t.timestamp :auth_token_set_at
       t.text :email, index: { unique: true}
@@ -21,6 +24,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.timestamp :mobile_number_confirmation_sent_at
       t.timestamp :mobile_number_confirmed_at
       t.text :mobile_number_unconfirmed
+      t.text :language, default: 'en', null: false
       t.text :zip_code
       t.date :birth_date
       t.text :physician_name

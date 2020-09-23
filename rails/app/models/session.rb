@@ -1,52 +1,55 @@
 class Session
-  def self.for_user(user)
-    JSONWebToken.encode({ auth_token: user.auth_token })
-    MockSession.new(user)
+  def self.from_sign_in(user, remember_me: false)
+    new(user: user, expiration: remember_me ? 30.days.from_now : 1.day.from_now)
   end
 
-  def initialize(encoded)
-    return NullSession.new if encoded.blank?
-    encoded = encoded.sub('Beaerer', '').sub('beaerer', '').strip
-    begin
-      @decoded = JSONWebToken.decode(encoded)
-    rescue JWT::ExpiredSignature => e
-      @error = GLError.new(code: :jwt_expired, detail: e.message)
-    rescue JWT::DecodeError => e
-      @error = GLError.new(code: :jwt_not_decoded, detail: e.message)
-    rescue => e
-      @error = GLError.new(code: :jwt_invalid, detail: e.message)
+  attr_accessor :issued_at, :expiration, :user
+
+  def initialize(token: nil, user: nil, expiration: 1.day.from_now)
+    if token
+      token = token.sub('Bearer', '').sub('bearer', '').strip
+      decoded = JSONWebToken.decode(token)
+      @data = HashWithIndifferentAccess.new(decoded)
+      @issued_at = Time.at(@data[:iat])
+      @expiration = Time.at(@data[:exp])
+      @user = User.find_by!(auth_token: decoded[:auth_token])
+      return
     end
+
+    if !user
+      @data = HashWithIndifferentAccess.new
+    else
+      @data = HashWithIndifferentAccess.new(auth_token: user.auth_token)
+    end
+
+    @expiration = expiration
+    @issued_at = Time.now
   end
 
-  def invalid?
-    @error.present?
+  def [](key)
+    @data[key]
+  end
+
+  def []=(key, value)
+    @data[key] = value
+  end
+
+  def encoded
+    return nil if @data.empty?
+    JSONWebToken.encode(@data, @expiration)
+  end
+
+  def to_h
+    {
+      token: encoded
+    }
+  end
+
+  def to_json
+    to_h.to_json
   end
 
   def user
     return @user if defined?(@user)
-    @user = User.find_by(auth_token: @decoded['auth_token'])
-  end
-
-  class MockSession
-    def initialize(user)
-      @user = user
-    end
-
-    def valid?
-      true
-    end
-
-    def user
-      @user
-    end
-  end
-
-  class NullSession
-    def valid?
-      false
-    end
-    def user
-      nil
-    end
   end
 end

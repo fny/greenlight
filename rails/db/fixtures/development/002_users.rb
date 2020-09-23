@@ -1,8 +1,8 @@
 require 'faker'
-require 'parallel'
 SeedFu.quiet = true
 
 Faker::Config.random = Random.new(42)
+Faker::Config.locale = 'en-US'
 
 N_STUDENTS = 10000
 
@@ -158,9 +158,12 @@ def build_greenlight_statuses(user, status)
     statuses[-2][:status] = 'absent'
     statuses[-1][:status] = 'absent'
   end
+
   if status == 'unknown'
     statuses[-1][:status] = 'unknown'
   end
+
+  statuses = statuses.filter { |s| s[:status] != 'unknown' }
 
   [statuses, events]
 end

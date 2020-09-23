@@ -108,6 +108,8 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.datetime "password_set_at"
     t.text "password_reset_token"
     t.datetime "password_reset_sent_at"
+    t.text "magic_sign_in_token"
+    t.datetime "magic_sign_in_sent_at"
     t.text "auth_token"
     t.datetime "auth_token_set_at"
     t.text "email"
@@ -122,6 +124,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.datetime "mobile_number_confirmation_sent_at"
     t.datetime "mobile_number_confirmed_at"
     t.text "mobile_number_unconfirmed"
+    t.text "language", default: "en", null: false
     t.text "zip_code"
     t.date "birth_date"
     t.text "physician_name"
@@ -138,6 +141,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.index ["auth_token"], name: "index_users_on_auth_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["email_confirmation_token"], name: "index_users_on_email_confirmation_token", unique: true
+    t.index ["magic_sign_in_token"], name: "index_users_on_magic_sign_in_token", unique: true
     t.index ["mobile_number"], name: "index_users_on_mobile_number", unique: true
     t.index ["mobile_number_confirmation_token"], name: "index_users_on_mobile_number_confirmation_token"
     t.index ["password_reset_token"], name: "index_users_on_password_reset_token", unique: true
