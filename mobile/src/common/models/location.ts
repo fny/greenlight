@@ -1,4 +1,4 @@
-import { Model, attribute as attr, initialize, STRING } from './model'
+import { Model, attribute as attr, initialize, STRING } from './Model'
 
 export class Location extends Model {
   static singular = 'location'

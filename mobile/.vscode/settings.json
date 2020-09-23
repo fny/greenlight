@@ -1,0 +1,32 @@
+{
+    "workbench.colorCustomizations": {
+      "activityBar.activeBackground": "#004343",
+      "activityBar.activeBorder": "#bf00bf",
+      "activityBar.background": "#004343",
+      "activityBar.foreground": "#e7e7e7",
+      "activityBar.inactiveForeground": "#e7e7e799",
+      "activityBarBadge.background": "#bf00bf",
+      "activityBarBadge.foreground": "#e7e7e7",
+      "statusBar.background": "#001010",
+      "statusBar.foreground": "#e7e7e7",
+      "statusBarItem.hoverBackground": "#004343",
+      "titleBar.activeBackground": "#001010",
+      "titleBar.activeForeground": "#e7e7e7",
+      "titleBar.inactiveBackground": "#00101099",
+      "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#001010",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "node_modules": true,
+        "src/locales/_build": true,
+        "src/locales/*/messages.js": true
+    },
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+  }
+}

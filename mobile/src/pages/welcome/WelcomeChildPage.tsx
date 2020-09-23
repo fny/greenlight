@@ -2,7 +2,7 @@ import { Case, When } from '../../components/Case'
 import React from 'reactn'
 import { Page, Navbar, Block, Link, List, ListItem, ListInput, Row, Col, Button } from 'framework7-react'
 
-import { User } from '../../common/models/user'
+import { User } from '../../common/models/User'
 import pluralize from 'pluralize'
 
 interface Props {}

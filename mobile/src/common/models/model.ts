@@ -1,7 +1,8 @@
-import * as uuid from 'uuid'
 import 'reflect-metadata'
 import moment from 'moment'
-import { Schema, SchemaSettings } from '@orbit/data'
+import { v4 as uuidv4 } from 'uuid'
+
+import { Record } from '../types'
 
 interface DataType {
   serialize?: Function,
@@ -48,6 +49,12 @@ export const BOOLEAN: DataType = {
   orbitType: 'boolean'
 }
 
+export const DATE: DataType = {
+  serialize: (x: string) => x,
+  deserialize: (x: string) => x,
+  orbitType: 'date',
+}
+
 // TODO: Date type
 
 export const DATETIME: DataType = {
@@ -58,12 +65,19 @@ export const DATETIME: DataType = {
 
 class Registry {
   models: typeof Model[]
+  inflections: { [k: string]: string }
+
   constructor() {
     this.models = []
+    this.inflections = {}
   }
 
   register(...models: (typeof Model)[]) {
-    models.forEach(m => this.models.push(m))
+    models.forEach(m => {
+      this.models.push(m)
+      this.inflections[m.singular] = m.singular
+      this.inflections[m.plural] = m.singular
+    })
   }
 
   modelFor(singularOrPlural: string) {
@@ -74,23 +88,43 @@ class Registry {
     }
     return null
   }
-  orbitSchema() {
-    return buildOrbitSchema(this.models)
-  }
 }
 
 export const ModelRegistry = new Registry()
 
 export class Model {
+  /** The singular name for this model */
   static singular: string
+
+  /** The plural name for this model */
   static plural: string
+  
+  /** All entities must have a UUID */
   id: string
 
+  /** Raw request data */
   _data: any
 
+  /** Raw relationship data */
+  _relationships: any
+
+  /** Anything that was included while populatiing the entity */
+  _included: string[] = []
+
+  /** Raw user data */
+
   constructor(data?: any) {
-    this.id = uuid.v1()
-    // This is here to make the compiler happy
+    this.id = ''
+  }
+
+  @attribute({ type: DATETIME })
+  createdAt: moment.Moment | null = null
+
+  @attribute({ type: DATETIME })
+  updatedAt: moment.Moment | null = null
+
+  setId() {
+    this.id = uuidv4()
   }
 
   modelName() {
@@ -103,6 +137,10 @@ export class Model {
 
   attributeMetadata() {
     return getAttributes(Object.getPrototypeOf(this).constructor)
+  }
+
+  hasRelationship(name: string) {
+    return this.relationshipMetadata()[name] !== undefined
   }
 
   relationshipMetadata() {
@@ -127,10 +165,24 @@ export class Model {
 }
 
 export function initialize(record: Model,  data: any)  {
-  deserialize(Object.getPrototypeOf(record).constructor, data, record)
+  _deserialize(Object.getPrototypeOf(record).constructor, data, record)
 }
 
-function deserialize(model: typeof Model, data: any, this_?: Model) {
+export function deserializeJSONAPI<T extends Model>(record: Record): T {
+  const model = ModelRegistry.modelFor(record.type)
+  if (model === null) {
+    throw new Error(`No model found for type ${record.type}`)
+  }
+
+  const data = {
+    id: record.id,
+    ...record.attributes
+  }
+
+  return _deserialize(model, data) as T
+}
+
+function _deserialize(model: typeof Model, data: any, this_?: Model) {
   const record = this_ || new model()
   if (!data) return record
   record._data = data
@@ -145,7 +197,7 @@ function deserialize(model: typeof Model, data: any, this_?: Model) {
       continue
     }
 
-    if (['_data'].includes(property)) {
+    if (property[0] === '_') {
       continue
     }
 
@@ -235,44 +287,4 @@ function getAttributes(model: typeof Model): { [k: string]: AttributeDefinition 
 
 function getRelationships(model: typeof Model): { [k: string]: AttributeDefinition } {
   return Reflect.getMetadata(REL_METADATA_KEY, model.prototype)
-}
-
-function buildOrbitSchema(models: (typeof Model)[]) {
-  const schemaData: SchemaSettings = { models: {} }
-
-  models.forEach(model => {
-    const attributes = {}
-    const relationships = {}
-
-    const attrDefinitions = getAttributes(model)
-    if (attrDefinitions) {
-      Object.keys(attrDefinitions).forEach(propertyKey => {
-        const definition = ((attrDefinitions as any)[propertyKey] as AttributeDefinition)
-          ; (attributes as any)[propertyKey] = { type: definition.type.orbitType }
-      })
-    }
-
-    const relDefinitions = getRelationships(model)
-
-    if (relDefinitions) {
-
-      Object.keys(relDefinitions).forEach(relationshipName => {
-        const rel = ((relDefinitions as any)[relationshipName] as RelationshipDefinition)
-          ; (relationships as any)[relationshipName] = {
-            type: rel.type,
-            model: rel.model
-          }
-        if (rel.inverse) {
-          (relationships as any)[relationshipName]['inverse'] = rel.inverse
-        }
-
-      })
-    }
-    if (!schemaData.models) return //  To make TS shut up
-    schemaData.models[model.singular] = {
-      attributes,
-      relationships
-    }
-  })
-  return new Schema(schemaData)
 }

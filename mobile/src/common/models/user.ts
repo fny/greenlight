@@ -1,8 +1,9 @@
-import { Model, attribute as attr, relationship, initialize, STRING, DATETIME } from './model'
+import { Model, attribute as attr, relationship, initialize, STRING, DATETIME, DATE } from './Model'
 import moment, { Moment } from 'moment'
-import { Location } from './location'
-import { GreenlightStatus } from './greenlightStatus'
-import { MedicalEvent, findLastEvent, hasEvent } from './medicalEvent'
+import { Location } from './Location'
+import { GreenlightStatus } from './GreenlightStatus'
+import { MedicalEvent, findLastEvent, hasEvent } from './MedicalEvent'
+import { LocationAccount } from './LocationAccount'
 
 export class User extends Model {
   static singular = 'user'
@@ -41,19 +42,23 @@ export class User extends Model {
   physicianName: string | null = null
 
   @attr({ type: STRING })
-  physicianPhone: string | null = null
+  physicianPhoneNumber: string | null = null
+
+  @attr({ type: STRING })
+  language: string | null = null
+
+  // TODO: Date type
+  @attr({ type: DATE })
+  birthDate: string | null = null
 
   @attr({ type: DATETIME })
-  passwordSetAt: moment.Moment | null = null
+  acceptedTermsAt: moment.Moment | null = null
 
   @attr({ type: DATETIME })
-  reviewedAt: moment.Moment | null = null
+  completedWelcomeAt: moment.Moment | null = null
 
-  @attr({ type: DATETIME })
-  firstSurveyAt: moment.Moment | null = null
-
-  @relationship({ type: 'hasOne', model: 'user' })
-  reviewedBy?: User
+  @relationship({ type: 'hasMany', model: 'locationAccount'})
+  locationAccounts: LocationAccount[] = []
 
   @relationship({ type: 'hasMany', model: 'location' })
   locations: Location[] = []
@@ -64,12 +69,20 @@ export class User extends Model {
   @relationship({ type: 'hasMany', model: 'user' })
   parents: User[] = []
 
-  @relationship({ type: 'hasMany', model: 'medical-event' })
+  @relationship({ type: 'hasMany', model: 'medicalEvent' })
   medicalEvents: MedicalEvent[] = []
 
-  @relationship({ type: 'hasMany', model: 'greenlight-status' })
+  @relationship({ type: 'hasMany', model: 'medicalEvent' })
+  recentMedicalEvents: MedicalEvent[] = []
+
+  @relationship({ type: 'hasMany', model: 'greenlightStatus' })
   greenlightStatuses: GreenlightStatus[] = []
 
+  @relationship({ type: 'hasMany', model: 'greenlightStatus' })
+  recentGreenlightStatuses: GreenlightStatus[] = []
+
+  @relationship({ type: 'hasOne', model: 'greenlightStatus' })
+  lastGreenlightStatus: GreenlightStatus | null = null
 
   shouldSubmitSurveys() {
     return this.locations.length > 0
@@ -83,7 +96,23 @@ export class User extends Model {
     return this.hasChildren()
   }
 
+  accountFor(location: Location | string) {
+    const locationId = typeof location === 'string' ? location : location.id
 
+    const foundAccounts = this.locationAccounts.filter(account => account.locationId === locationId)
+    if (foundAccounts.length === 0) { return null }
+    return foundAccounts[0]
+  }
+
+  roleFor(location: Location | string) {
+    const account = this.accountFor(location)
+    if (account === null) return 'unassigned'
+    return account.role
+  }
+
+  hasCompletedWelcome() {
+    return this.completedWelcomeAt !== null && this.completedWelcomeAt.isValid()
+  }
 
   greenlightStatus() {
     if (this.greenlightStatuses.length === 0) {

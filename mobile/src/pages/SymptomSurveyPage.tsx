@@ -1,9 +1,7 @@
-import React, { useState, getGlobal } from 'reactn'
-import { Row, Col, Page, Navbar, Link, Block, BlockTitle, Segmented, Button } from 'framework7-react'
-import fixtures from '../fixtures'
+import React from 'reactn'
+import { Page, Navbar, Block, Button } from 'framework7-react'
 import { Case, When } from '../components/Case'
 import './SymptomSurveyPage.css'
-import { User } from '../common/models/user'
 import YesNoButton from '../components/YesNoButton'
 
 

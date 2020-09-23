@@ -1,157 +1,95 @@
-import jwt_decode from 'jwt-decode';
-import Cookies from 'js-cookie'
-import moment from 'moment'
+import { User, Location, Model } from '../models'
+import { TokenDocument } from '../types';
+import { transformRecordDocument, responseStore, recordStore } from './stores'
+import axios, { AxiosResponse } from 'axios';
 
-const SESSION_COOKIE_NAME = '_gl_sess'
-const SESSION_REMEBER_ME_DAYS = 30
-const BASE_URL = "http://localhost:8080/api/v1"
+import { Session, NullSession } from './session'
+import { getGlobal } from 'reactn';
 
-// TODO: Implement timeout
-class Requestor {
-  baseURL: string
-  timeoutMs: number
+const BASE_URL = "http://localhost:3000/api/v1"
+const REMEBER_ME_DAYS = 30
 
-  constructor(baseURL: string, timeoutMs: number) {
-    this.baseURL = baseURL
-    this.timeoutMs = timeoutMs
-  }
+export const v1 = axios.create({
+  baseURL: BASE_URL,
+  timeout: 3000
+})
 
-  async post(path: string, data = {}) {
-    // Default options are marked with *
-    const response = await fetch(`${BASE_URL}/${path}`, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
-    });
-    return response.json(); // parses JSON response into native JavaScript objects
-  }
+export const stores = { recordStore, responseStore }
 
-  async delete(path: string, data = {}) {
-    // Default options are marked with *
-    const response = await fetch(`${BASE_URL}/${path}`, {
-      method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    });
-    return response.json(); // parses JSON response into native JavaScript objects
-  }
-}
-
-const v1 = new Requestor(BASE_URL, 1000)
-
-
-interface SessionJWT {
-  iat: number
-  exp: number
-  authToken: string
-}
-
-class NullToken {
-  isValid() {
-    return false
-  }
-  issueAt() {
-    return moment()
-  }
-  expiresAt() {
-    return moment()
-  }
-  isExpired() {
-    return true
-  }
-  headers() {
-    return {}
-  }
-}
-
-class SessionToken {
-  token: string
-  data: SessionJWT
-
-  static init() {
-    const sessionCookie = Cookies.get(SESSION_COOKIE_NAME)
-    if (sessionCookie) {
-      const token = new SessionToken(sessionCookie)
-      if (!token.isExpired()) {
-        return token
-      }
-    }
-    return new NullToken()
-  }
-
-  constructor(token: string) {
-    this.token = token
-    this.data = jwt_decode(token) as SessionJWT
-  }
-
-  isValid() {
-    return !this.isExpired()
-  }
-
-  issuedAt() {
-    return moment(this.data.iat * 1000)
-  }
-
-  expiresAt() {
-    return moment(this.data.exp * 1000)
-  }
-
-  isExpired() {
-    return this.expiresAt() < moment()
-  }
-
-  saveCookie(expiry?: number) {
-    if (expiry) {
-      Cookies.set(SESSION_COOKIE_NAME, this.token, { expires: expiry })
-    } else {
-      Cookies.set(SESSION_COOKIE_NAME, this.token)
-    }
-  }
-
-  headers() {
-    return { 'Authorization': `Bearer ${this.token}`}
-  }
-}
-
-export let session = SessionToken.init()
+export let session = Session.init()
 
 //
 // Authentication
 //
 
 export async function signIn(emailOrMobile: string, password: string, rememberMe: boolean) {
-  const response = await v1.post('auth/sign-in', {
-      emailOrMobile,
-      password,
-      rememberMe,
-      userAgent: navigator.userAgent
-    })
+  const data = (await v1.post<TokenDocument>('sessions', {
+    emailOrMobile,
+    password,
+    rememberMe,
+  })).data
+  
+  session = new Session(data.token)
+  getCurrentUser()
 
-
-  session = new SessionToken(response.data.token)
   if (rememberMe) {
-    session.saveCookie(SESSION_REMEBER_ME_DAYS)
+    session.saveCookie(REMEBER_ME_DAYS)
+  } else {
+    session.saveCookie()
+  } 
+}
+
+export async function magicSignIn(emailOrMobile: string, rememberMe: boolean) {
+  const data = (await v1.post<TokenDocument>('sessions', {
+    emailOrMobile,
+    rememberMe,
+  })).data
+}
+
+export async function signOut() {
+  const response = await v1.delete('sessions', { headers: session.headers() })
+  destroySession()
+  return response
+}
+
+export async function getCurrentUser() {
+ return await getResource<User>('/users/me') as User
+}
+
+export async function findUsersForLocation(location: string | Location) {
+  const locationId = typeof location === 'string' ? location : location.id
+  const path = `/locations/${locationId}/users`
+  return getResource<User>(path, true) as Promise<User[]>
+}
+
+export async function getResource<T extends Model>(path: string, cache: boolean = false) {
+  const responseTransform = (res: AxiosResponse<any>) => ( transformRecordDocument<T>(res.data) )
+  if (cache) {
+    if (responseStore.has(path)) {
+      return responseTransform(responseStore.get(path))
+    }
   }
+  const response = await v1.get(path, { headers: session.headers()})
+  if (cache) {
+    responseStore.set(path, response)
+  }
+  recordStore.loadRecordDocument(response.data)
+  return responseTransform(response)
 }
 
-export function signOut() {
-  return v1.delete('auth/sign-out', { headers: session.headers() })
+export function destroySession() {
+  session.removeCookie()
+  session = new NullSession()
+  responseStore.reset()
+  recordStore.reset()
 }
 
+export function isSignedIn() {
+  const currentUser: User | undefined = getGlobal().currentUser
+  return session.isValid() && currentUser !== null && currentUser !== undefined
+}
 
-export async function signInDemo(emailOrMobile: string, password: string, rememberMe: boolean) {
-
+export function currentUser() {
+  const user: User | undefined = getGlobal().currentUser
+  return user || null
 }

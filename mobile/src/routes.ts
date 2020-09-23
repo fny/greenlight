@@ -1,124 +1,138 @@
 
-import HomePage from './pages/HomePage'
-import NotFoundPage from './pages/NotFoundPage'
-import DashboardPage from './pages/DashboardPage'
-import SymptomSurveyPage from './pages/SymptomSurveyPage'
-import ThankYouPage from './pages/SymptomSurveyCompletePage'
-import SignInPage from './pages/SignInPage'
-import MagicSignInPage from './pages/MagicSignInPage'
-import RootPage from './pages/RootPage'
-import RegistrationPage from './pages/RegistrationPage'
-import ForgotPasswordPage from './pages/ForgotPasswordPage'
-import PasswordResetPage from './pages/PasswordResetPage'
+import NotFoundPage from 'src/pages/NotFoundPage'
+// import DashboardPage from 'src/pages/DashboardPage'
+import SymptomSurveyPage from 'src/pages/SymptomSurveyPage'
+import ThankYouPage from 'src/pages/SymptomSurveyCompletePage'
+import SignInPage from 'src/pages/SignInPage'
+import MagicSignInPage from 'src/pages/MagicSignInPage'
+import SplashPage from 'src/pages/SplashPage'
+import PasswordResetPage from 'src/pages/PasswordResetPage'
 
-import WelcomeParentPage from './pages/WelcomeParentPage'
-import WelcomeParentReviewChildPage from './pages/WelcomeParent/ReviewChildPage'
-import WelcomeParentReviewUserPage from './pages/WelcomeParent/ReviewUserPage'
-import WelcomeParentPasswordPage from './pages/WelcomeParent/PasswordPage'
+import WelcomePage from 'src/pages/welcome/WelcomePage'
+import WelcomeChildPage from 'src/pages/welcome/WelcomeChildPage'
+import WelcomeReviewPage from 'src/pages/welcome/WelcomeReviewPage'
+import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage'
 import { Router } from 'framework7/modules/router/router'
 
-
-import { session } from './common/api'
-import { resolve } from 'dns'
-
-type GLRoute = Router.RouteParameters & {
-  unauthenticated?: boolean
-}
+// import { isSignedIn } from 'src/common/api'
+// import { getGlobal } from 'reactn'
+// import { User } from 'src/common/models'
 
 export const paths = {
   rootPath: '/',
   signInPath: '/sign-in',
   magicSignInPath: '/magic-sign-in',
-  registrationPath: '/join',
   dashboardPath: '/dashboard',
-  passwordResetsPath: '/password-resets/:token',
-  forgotPasswordPath: '/forgot-password',
+  passwordResetPath: '/password-resets/:token',
+  passwordResetsNewPath: '/password-resets/new',
   welcomePath: '/welcome',
   welcomeReviewPath: '/welcome/review',
   welcomePasswordPath: '/welcome/password',
-  welcomeChildrenReviewPath: '/welcome/review/children/:id',
-  userSurveysPath: '/users/:id/surveys/new',
+  welcomeChildPath: '/welcome/children/:id',
+  userSurveysNewPath: '/users/:id/surveys/new',
   surveyThankYouPath: '/surveys/thank-you'
 }
 
-const routes: GLRoute[] = [
+// export const dynamicPaths = {
+//   userHomePath: () => {
+//     const user: User | null | undefined = getGlobal().currentUser
+//     if (user === null || user === undefined) return paths.rootPath
+//     if (user.hasCompletedWelcome()) {
+//       return paths.dashboardPath
+//     } else {
+//       return paths.welcomePath
+//     }
+//   }
+// }
+
+// const beforeEnter = {
+//   requireSignIn: function(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+//     resolve()
+//     return
+//     // if (isSignedIn()) {
+//     //   resolve()
+//     // } else {
+//     //   reject()
+//     //   this.navigate(paths.rootPath)
+//     // }
+//   },
+//   redirectHomeIfSignedIn: function(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+//     resolve()
+//     return
+//     // if (isSignedIn()) {
+//     //   reject()
+//     //   this.navigate(dynamicPaths.userHomePath())
+//     // } else {
+//     //   resolve()
+//     // }
+//   }
+// }
+
+
+const routes = [
   {
     path: paths.rootPath,
-    component: RootPage,
-    unauthenticated: true
+    component: SplashPage,
+    // beforeEnter: beforeEnter.redirectHomeIfSignedIn
   },
   {
     path: paths.welcomePath,
-    component: RootPage,
-    unauthenticated: true
+    component: WelcomePage,
+    // beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.signInPath,
     component: SignInPage,
-    unauthenticated: true
+    // beforeEnter: beforeEnter.redirectHomeIfSignedIn
   },
   {
     path: paths.magicSignInPath,
     component: MagicSignInPage,
-    unauthenticated: true
+    // beforeEnter: beforeEnter.redirectHomeIfSignedIn
   },
+  // {
+  //   path: paths.dashboardPath,
+  //   component: DashboardPage,
+  //   // beforeEnter: beforeEnter.requireSignIn
+  // },
   {
-    path: paths.registrationPath,
-    component: RegistrationPage,
-  },
-  {
-    path: paths.dashboardPath,
-    component: DashboardPage,
-  },
-  {
-    path: paths.passwordResetsPath,
-    component: PasswordResetPage,
-  },
-  {
-    path: paths.forgotPasswordPath,
-    component: ForgotPasswordPage,
+    path: paths.passwordResetsNewPath,
+    component: PasswordResetPage
   },
   {
     path: paths.welcomePath,
-    component: WelcomeParentPage,
+    component: WelcomePage,
+    // beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.welcomeReviewPath,
-    component: WelcomeParentReviewUserPage,
+    component: WelcomeReviewPage,
+    // beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.welcomePasswordPath,
-    component: WelcomeParentPasswordPage,
+    component: WelcomePasswordPage,
+    // beforeEnter: beforeEnter.requireSignIn
   },
   {
-    path: paths.welcomeChildrenReviewPath,
-    component: WelcomeParentReviewChildPage,
+    path: paths.welcomeChildPath,
+    component: WelcomeChildPage,
+    // beforeEnter: beforeEnter.requireSignIn
   },
   {
-    path: paths.userSurveysPath,
+    path: paths.userSurveysNewPath,
     component: SymptomSurveyPage,
+    // beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.surveyThankYouPath,
     component: ThankYouPage,
+    // beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: '(.*)',
-    component: NotFoundPage,
-    unauthenticated: true
+    component: NotFoundPage
   },
 ]
 
-const f7routes = routes.map(route => {
-    if (route.unauthenticated) {
-      return route as Router.RouteParameters
-    }
-    route.on = {
-      pageBeforeIn: (event, page) => {
-        page.router.navigate(paths.signInPath)
-      }
-    }
-    return route
-})
-
-export default f7routes
+export default routes

@@ -1,4 +1,4 @@
-import { Model, attribute as attr, initialize, DATETIME, STRING } from './model'
+import { Model, attribute as attr, initialize, DATETIME, STRING } from './Model'
 import moment, { Moment } from 'moment'
 
 enum MEDICAL_EVENTS {

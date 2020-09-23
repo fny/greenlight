@@ -17,7 +17,7 @@ import {
   ListItem,
 } from 'framework7-react'
 
-import EmailOrPhoneInput from '../components/EmailOrPhoneInput'
+import EmailOrPhoneListInput from '../components/EmailOrPhoneListInput'
 
 interface PasswordResetProps {}
 interface PasswordResetState {}

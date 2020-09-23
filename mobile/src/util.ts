@@ -1,10 +1,10 @@
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
-import { includes } from 'lodash'
-import { ObjectMap, NumberOrString } from './common/types'
 import qs from 'qs'
 
+import { getGlobal, setGlobal } from 'reactn'
+import { ObjectMap } from './common/types'
 
-const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 export function validEmail(email: string) {
   return EMAIL_REGEX.test(String(email).toLowerCase())
@@ -20,12 +20,29 @@ export function validPhoneNumber(phoneNumber: string) {
 
 export function timeOfDay(): 'morning' | 'afternoon' | 'evening' {
   const hours = (new Date()).getHours()
+  console.log(hours)
   if (hours < 12) {
     return 'morning'
-  } else if (hours < 5) {
+  } else if (hours < 17) {
     return 'afternoon'
   } else {
     return 'evening'
+  }
+}
+/**
+ * Toggles the current language between English and Spanish
+ */
+export function toggleLanguage() {
+  setGlobal({ language: getGlobal().language === 'en' ? 'es' : 'en'})
+}
+
+/**
+ * Builds a callable path that will resolve itslev given substitutions.
+ * @param path 
+ */
+export function buildPath(path: string) {
+  return (subsitutions?: any, query?: any): string => {
+    return resolvePath(path, subsitutions, query)
   }
 }
 
@@ -41,18 +58,24 @@ export function timeOfDay(): 'morning' | 'afternoon' | 'evening' {
  * @param subsitutions The array or object from which to fill :placeholders.
  * @param query An optional object to transform into a query string.
  */
-export function resolvePath(path: string, subsitutions: any, query?: any ) {
-  let re = /:([A-z0-9\-_]+)/g
+export function resolvePath(path: string, subsitutions?: any[] | ObjectMap<any> | null, query?: any ) {
+  const re = /:([A-z0-9\-_]+)/g
   const matches = path.match(re)
 
   const queryString = query ? `?${qs.stringify(query)}` : ''
 
   if (!matches) {
-    return path
+    // There are no subsitutions to be made
+    return `${path}${queryString}`
+  }
+  
+  if (!subsitutions) {
+    subsitutions = []
   }
 
   if (Array.isArray(subsitutions)) {
     if (matches.length !== subsitutions.length) {
+      // Not enough substituions were provided
       throw new Error(`Expected ${matches.length} subsitutions, but only got ${subsitutions.length}`)
     }
 
@@ -60,11 +83,13 @@ export function resolvePath(path: string, subsitutions: any, query?: any ) {
       path = path.replace(`:${matches[i]}`, String(subsitutions[i]))
     }
   } else {
-    if (matches.length !== Object.keys(subsitutions).length) {
-      throw new Error(`Expected ${matches.length} subsitutions, but only got ${Object.keys(subsitutions).length}`)
+    const subsitutionsKeys = Object.keys(subsitutions)
+    if (matches.length !== subsitutionsKeys.length) {
+      // Not enough substituions were provided
+      throw new Error(`Expected ${matches.length} subsitutions, but only got ${subsitutionsKeys.length}`)
     }
 
-    for (let match of matches) {
+    for (const match of matches) {
       path = path.replace(`:${match}`, String(subsitutions[match]))
     }
   }

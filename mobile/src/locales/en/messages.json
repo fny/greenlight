@@ -1,0 +1,15 @@
+{
+  "EmailOrPhoneListInput.email_or_phone_invalid": "Invalid email or mobile number.",
+  "EmailOrPhoneListInput.email_or_phone_missing": "Please enter your email or mobile number.",
+  "EmailOrPhoneListInput.email_or_phone_placeholder": "Email or mobile phone number",
+  "SignInPage.forgot_password": "Forgot password?",
+  "SignInPage.password_missing": "Please enter your password.",
+  "SignInPage.password_placeholder": "Password",
+  "SignInPage.remember_me": "Remember me",
+  "SignInPage.sign_in": "Sign In",
+  "SignInPage.title": "Sign In",
+  "SplashPage.choose_language": "En Español",
+  "SplashPage.magic_sign_in": "Magic Sign In",
+  "SplashPage.sign_in": "Sign In with Password",
+  "SplashPage.welcome": "Welcome to"
+}

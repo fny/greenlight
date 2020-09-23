@@ -17,7 +17,7 @@ import {
   ListItem,
 } from 'framework7-react'
 
-import EmailOrPhoneInput from '../components/EmailOrPhoneInput'
+import EmailOrPhoneListInput from '../components/EmailOrPhoneListInput'
 
 interface ForgotPasswordProps {}
 interface ForgotPasswordState {}
@@ -38,7 +38,7 @@ export default class ForgotPasswordPage extends React.Component<
             your password.
           </Block>
           <li>
-            <EmailOrPhoneInput value="" />
+            <EmailOrPhoneListInput value="" />
           </li>
           <Block>
             <Button outline fill>

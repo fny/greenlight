@@ -18,18 +18,16 @@ import {
   Icon,
   Sheet,
   PageContent
-} from "framework7-react";
+} from 'framework7-react'
 
-import { Case, When } from "../components/Case"
+import { Case, When } from 'src/components/Case'
 
-import pluralize from "pluralize"
-import { timeOfDay } from "../util";
-import { User } from '../common/models/user'
+import pluralize from 'pluralize'
+import { timeOfDay } from "src/util"
+import { User } from 'src/common/models/User'
 
 
 interface Props {}
-
-
 
 interface State {
   termsOpened: boolean
@@ -127,8 +125,7 @@ export default class WelcomeParentPage extends React.Component<Props, State> {
         <PageContent>
           <Block>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae
-              ducimus dolorum ipsa aliquid accusamus perferendis laboriosam...
+              TODO: Terms and conditions go here.
             </p>
           </Block>
         </PageContent>
@@ -136,4 +133,3 @@ export default class WelcomeParentPage extends React.Component<Props, State> {
     </Page>
   }
 }
-
