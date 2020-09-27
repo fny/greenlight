@@ -20,4 +20,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'GL'
   inflect.acronym 'JSON'
   inflect.acronym 'JSONAPI'
+  inflect.acronym 'SMS'
 end

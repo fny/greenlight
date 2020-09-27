@@ -52,3 +52,7 @@ body, #root {
   color: var(--gl-green);
   font-weight: bold;
 }
+
+.text-center {
+  text-align: center;
+}

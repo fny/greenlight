@@ -16,18 +16,27 @@ Location.seed(:permalink, {
   category: 'school'
 })
 
-User.seed(:id, [{
-  id: mark_id,
-  first_name: 'Mark',
-  last_name: 'Sendak',
-  password_digest: BCrypt::Password.create('password', cost: 5),
-  email: 'mark.sendak@duke.edu',
-  mobile_number: '+19163006448'
-}, {
-  id: aria_id,
-  first_name: 'Aria',
-  last_name: 'Sendak'
-}])
+User.seed(:id, [
+  {
+    id: mark_id,
+    first_name: 'Mark',
+    last_name: 'Sendak',
+    password_digest: BCrypt::Password.create('password', cost: 5),
+    email: 'mark.sendak@duke.edu',
+    mobile_number: '+19163006448'
+  }, {
+    id: aria_id,
+    first_name: 'Aria',
+    last_name: 'Sendak'
+  }, {
+    id: Faker::Internet.uuid,
+    first_name: 'Faraz',
+    last_name: 'Yashar',
+    password_digest: BCrypt::Password.create('password', cost: 5),
+    email: 'faraz.yashar@gmail.com',
+    mobile_number: '+13303332729'
+  }
+])
 
 LocationAccount.seed(:id, [{
   user_id: aria_id,

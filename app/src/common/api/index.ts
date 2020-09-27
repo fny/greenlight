@@ -1,12 +1,12 @@
 import { User, Location, Model } from '../models'
-import { TokenDocument } from '../types';
-import { transformRecordDocument, responseStore, recordStore } from './stores'
-import axios, { AxiosResponse } from 'axios';
+import { TokenResponse } from '../types'
+import { transformRecordResponse, responseStore, recordStore } from './stores'
+import axios, { AxiosResponse } from 'axios'
 
 import { Session, NullSession } from './session'
-import { getGlobal } from 'reactn';
+import { getGlobal } from 'reactn'
 
-const BASE_URL = "http://localhost:3000/api/v1"
+const BASE_URL = "http://api-dev.greenlightready.com/v1"
 const REMEBER_ME_DAYS = 30
 
 export const v1 = axios.create({
@@ -23,37 +23,50 @@ export let session = Session.init()
 //
 
 export async function signIn(emailOrMobile: string, password: string, rememberMe: boolean) {
-  const data = (await v1.post<TokenDocument>('sessions', {
+  const data = (await v1.post<TokenResponse>('sessions', {
     emailOrMobile,
     password,
     rememberMe,
   })).data
-  
-  session = new Session(data.token)
-  getCurrentUser()
-
-  if (rememberMe) {
-    session.saveCookie(REMEBER_ME_DAYS)
-  } else {
-    session.saveCookie()
-  } 
+  createSession(data, rememberMe)
+  return getCurrentUser()
 }
 
-export async function magicSignIn(emailOrMobile: string, rememberMe: boolean) {
-  const data = (await v1.post<TokenDocument>('sessions', {
+export async function createMagicSignIn(emailOrMobile: string, rememberMe: boolean) {
+  await v1.post<any>('/magic-sign-in', {
     emailOrMobile,
-    rememberMe,
+    rememberMe
+  })
+}
+
+export async function magicSignIn(token: string, rememberMe: boolean) {
+  const data = (await v1.post<TokenResponse>(`/magic-sign-in/${token}`, {
+    rememberMe: rememberMe
   })).data
+
+  createSession(data, rememberMe)
+  return getCurrentUser()
 }
 
 export async function signOut() {
-  const response = await v1.delete('sessions', { headers: session.headers() })
+  const response = await v1.delete('/sessions', { headers: session.headers() })
   destroySession()
   return response
 }
 
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<User> {
+  // TODO: getResource and getResources
  return await getResource<User>('/users/me') as User
+}
+
+// TODO clear blanks and format values
+export async function updateUser(user: User, updates: Partial<User>): Promise<User> {
+  await v1.patch(`/users/${user.  id}`, 
+    updates,
+    { headers: session.headers() }
+  )
+  // TODO: This should update the store instead.
+  return getCurrentUser()
 }
 
 export async function findUsersForLocation(location: string | Location) {
@@ -62,19 +75,29 @@ export async function findUsersForLocation(location: string | Location) {
   return getResource<User>(path, true) as Promise<User[]>
 }
 
-export async function getResource<T extends Model>(path: string, cache: boolean = false) {
-  const responseTransform = (res: AxiosResponse<any>) => ( transformRecordDocument<T>(res.data) )
+export async function getResource<T extends Model>(path: string, cache = false) {
+  const responseTransform = (res: AxiosResponse<any>) => ( transformRecordResponse<T>(res.data) )
   if (cache) {
     if (responseStore.has(path)) {
       return responseTransform(responseStore.get(path))
     }
   }
-  const response = await v1.get(path, { headers: session.headers()})
+
+  const response = await v1.get(path, { headers: session.headers() })
   if (cache) {
     responseStore.set(path, response)
   }
-  recordStore.loadRecordDocument(response.data)
+  recordStore.loadRecordResponse(response.data)
   return responseTransform(response)
+}
+
+function createSession(doc: TokenResponse, rememberMe: boolean) {
+  session = new Session(doc.token)
+  if (rememberMe) {
+    session.saveCookie(REMEBER_ME_DAYS)
+  } else {
+    session.saveCookie()
+  } 
 }
 
 export function destroySession() {

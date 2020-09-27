@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
     Page,
     Navbar,
@@ -14,7 +14,7 @@ import {
     Row,
     Col,
     Button
-} from 'framework7-react';
+} from 'framework7-react'
 
 export default () => (
   <Page>
@@ -66,4 +66,4 @@ export default () => (
       <ListItem link="/load-something-that-doesnt-exist/" title="Default Route (404)"></ListItem>
     </List>
   </Page>
-);
+)

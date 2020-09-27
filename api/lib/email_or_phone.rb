@@ -5,9 +5,9 @@ class EmailOrPhone
 
   def value
     if phone?
-      Phonelib.parse(value).full_e164
+      Phonelib.parse(@value, 'US').full_e164
     else
-      value
+      @value
     end
   end
 
@@ -16,10 +16,10 @@ class EmailOrPhone
   end
   
   def email?
-    value.include?('@')
+    @value.include?('@')
   end
 
   def phone?
-    Phonelib.valid_for_country?(value, 'US')
+    Phonelib.valid_for_country?(@value, 'US')
   end
 end

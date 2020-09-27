@@ -17,13 +17,11 @@ import './SignInPage.css'
 import { signIn } from 'src/common/api'
 import { i18n } from 'src/i18n'
 import { Trans, t } from '@lingui/macro'
-import { paths } from 'src/routes'
+import { paths, dynamicPaths } from 'src/routes'
 
 interface SignInState {
   emailOrMobile: string
-  emailOrMobileValid: boolean
   password: string
-  passwordValid: boolean
   rememberMe: boolean
 }
 
@@ -33,30 +31,33 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
 
   state: SignInState = {
     emailOrMobile: '',
-    emailOrMobileValid: false,
     password: '',
-    passwordValid: false,
     rememberMe: false
   }
 
-  isValid() {
-    return this.state.emailOrMobileValid && this.state.passwordValid
+  validate() {
+    const passwordValid = this.$f7.input.validateInputs('#sign-in-form')
+    const emailOrMobileValid = this.emailOrMobileRef.current?.validate(this.emailOrMobileRef.current?.state.value || '')
+    return passwordValid && emailOrMobileValid
   }
 
-  async signIn() {
-    // TODO: Fix this hack.
-    this.emailOrMobileRef.current?.validate(this.emailOrMobileRef.current?.state.value || '')
-    // TODO: This doesn't show text.
-    this.passwordRef.current?.onBlur()
-
-    if (!this.isValid()) return
+  // TODO: Reactor: Extract this pattern
+  async submit() {
+    if (!this.validate()) { 
+      return
+    }
+    this.$f7.dialog.preloader('Signing you in...')
     try {
-      await signIn(this.state.emailOrMobile, this.state.password, this.state.rememberMe)
-    } catch (e) {
-      const error = e.response.data
+      const user = await signIn(this.state.emailOrMobile, this.state.password, this.state.rememberMe)
+      this.$f7.dialog.close()
+      this.setGlobal({ currentUser: user })
+      this.$f7router.navigate(dynamicPaths.currentUserHomePath())
+    } catch (error) {
+      this.$f7.dialog.close()
       console.error(error)
+      // TODO: i18n
       this.$f7.dialog.alert('Username and password is incorrect', 'Sign In Failed')
-    } 
+    }
   }
 
   render() {
@@ -74,15 +75,12 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
           Greenlight<span>.</span>
         </div>
 
-        <List form>
+        <List form id="sign-in-form">
           <EmailOrPhoneListInput
             ref={this.emailOrMobileRef}
             value={this.state.emailOrMobile}
             onInput={(e) => {
               this.setState({ emailOrMobile: e.target.value })
-            }}
-            onValidate={(isValid: boolean) => {
-              this.setState({ emailOrMobileValid: isValid})
             }}
           />
           <ListInput
@@ -106,9 +104,6 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
                 `Please enter your password.`
               )
             }
-            onValidate={(isValid: boolean) => {
-              this.setState({passwordValid: isValid})
-            }}
           />
           <ListItem checkbox
             title={
@@ -117,12 +112,12 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
                 `Remember me`
               )
             }
-            onInput={e => {
-              this.setState({ rememberMe: e.target.value })
+            onChange={e => {
+              this.setState({ rememberMe: e.target.checked })
             }}
           />
           <Block>
-            <Button outline fill onClick={() => this.signIn() }>
+            <Button outline fill onClick={() => this.submit() }>
               <Trans id="SignInPage.sign_in">
                 Sign In
               </Trans>

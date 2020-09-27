@@ -1,21 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import React, { useGlobal, useState } from "reactn";
+import React from "reactn"
 
 import {
   Page,
-  Navbar,
   Block,
-  BlockTitle,
   Button,
-  List,
-  ListInput,
-  ListItem,
-  AccordionContent,
   Toolbar,
   Link,
   Row,
   Col,
-  Icon,
   Sheet,
   PageContent
 } from 'framework7-react'
@@ -23,24 +16,23 @@ import {
 import { Case, When } from 'src/components/Case'
 
 import pluralize from 'pluralize'
-import { timeOfDay } from "src/util"
+import { timeOfDay } from "src/common/util"
 import { User } from 'src/common/models/User'
+import { paths } from "src/routes"
 
-
-interface Props {}
 
 interface State {
   termsOpened: boolean
 }
 
-export default class WelcomeParentPage extends React.Component<Props, State> {
+export default class WelcomeParentPage extends React.Component<any, State> {
   state: State = {
     termsOpened: false
   }
 
   totalLocations() {
     const user: User = this.global.currentUser
-    return user.locations.length + user.children.map(x => x.locations.length).reduce((x, y) => x + y, 0)
+    return user.locations_TODO().length + user.children.map(x => x.locations_TODO().length).reduce((x, y) => x + y, 0)
   }
 
   whoDoYouFillSurveysFor() {
@@ -57,11 +49,13 @@ export default class WelcomeParentPage extends React.Component<Props, State> {
       your ${pluralize('child', user.children.length)}.`
     } else {
       // TODO: What if they have no locations or children?
-      return `This may have been due to an error. Please contact greenlight at help@greenlighted.org`
+      return `This may have been due to an error. Please contact greenlight at help@greenlightready.com`
     }
   }
 
   render() {
+    const user = this.global.currentUser
+    const locationCount = this.totalLocations() 
     return <Page>
       <Block>
         <h1>
@@ -71,15 +65,23 @@ export default class WelcomeParentPage extends React.Component<Props, State> {
             <When value="evening">Good Evening!</When>
           </Case>
         </h1>
-        <p>
-          You've been added by{' '}
-          {pluralize('locations', this.totalLocations(), true)} to Greenlight's
-          secure HIPAA and FERPA compliant COVID-19 monitoring platform.
-        </p>
-        <p>
-          {this.whoDoYouFillSurveysFor()} We will not share any data without your
-          permission.
-        </p>
+        <Case test={locationCount}>
+          <When value={0}>
+            Your account hasn't been configured properly. Please contact us at help@greenlightready.com.
+          </When>
+          <When>
+            <p>
+              Hi {user.firstName}! You've been added by{' '}
+              {pluralize('locations', this.totalLocations(), true)} to Greenlight's
+              secure HIPAA and FERPA compliant COVID-19 monitoring platform.
+            </p>
+            <p>
+              {this.whoDoYouFillSurveysFor()} We will not share any data without your
+              permission.
+            </p>
+          </When>
+        </Case>
+
         <img alt="Welcome to Greenlight!" src="/images/welcome-doctor.svg" />
         <p>
           By continuing, you accept Greenlight's{' '}
@@ -102,7 +104,7 @@ export default class WelcomeParentPage extends React.Component<Props, State> {
             <Button
               large
               fill
-              href="/welcome-parent/review"
+              href={paths.welcomeReviewPath}
             >
               Continue
             </Button>

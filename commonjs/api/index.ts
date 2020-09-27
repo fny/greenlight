@@ -148,10 +148,6 @@ export async function signIn(emailOrMobile: string, password: string, rememberMe
 }
 
 export function signOut() {
-  return v1.delete('auth/sign-out', { headers: session.headers() })
+  return v1.delete('/sessions', { headers: session.headers() })
 }
 
-
-export async function signInDemo(emailOrMobile: string, password: string, rememberMe: boolean) {
-
-}

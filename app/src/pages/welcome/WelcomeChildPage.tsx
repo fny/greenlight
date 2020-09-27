@@ -4,31 +4,37 @@ import { Page, Navbar, Block, Link, List, ListItem, ListInput, Row, Col, Button 
 
 import { User } from '../../common/models/User'
 import pluralize from 'pluralize'
+import { updateUser } from 'src/common/api'
+import { dynamicPaths } from 'src/routes'
+import { deleteBlanks } from 'src/common/util'
+import moment from 'moment'
 
-interface Props {}
-interface State {}
+interface State {
+  physicianName: string
+  physicianPhoneNumber: string
+  needsPhysician: boolean
+}
 
-export default class extends React.Component<Props, State> {
-
-  childId() {
+export default class extends React.Component<any, State> {
+  childIndex() {
     const rawId = this.$f7route.params['id']
-    if (!rawId) throw new Error("Child id missing");
+    if (!rawId) throw new Error("Child id missing")
     return parseInt(rawId)
   }
 
   child(): User {
-    return this.global.currentUser.children[this.childId() - 1]
+    return this.global.currentUser.sortedChildren()[this.childIndex()]
   }
 
   hasNextChild() {
-    return this.childId() < this.global.currentUser.children.length
+    return this.childIndex() < this.global.currentUser.children.length - 1
   }
 
   nextChild() {
     if (!this.hasNextChild()) {
       return null
     }
-    return this.global.currentUser.children[this.childId()]
+    return this.global.currentUser.children[this.childIndex()]
   }
 
   childCount() {
@@ -50,6 +56,27 @@ export default class extends React.Component<Props, State> {
     return names
   }
 
+  async submit() {
+    // TODO: Move delete blanks into update user
+    const attrs = deleteBlanks({
+      physicianName: this.state.physicianName, physicianPhoneNumber: this.state.physicianPhoneNumber, needsPhysician: this.state.needsPhysician,
+      completedWelcomeAt: moment().toISOString()
+    })
+    
+    this.$f7.dialog.preloader('Submitting changes...')
+    try {
+      const user = await updateUser(this.global.currentUser, attrs as Partial<User>)
+      this.setGlobal({ currentUser: user })
+      this.$f7.dialog.close()
+      this.$f7router.navigate(dynamicPaths.userSurveysNewIndexPath(0))
+    } catch (error) {
+      this.$f7.dialog.close()
+      console.error(error)
+      // TODO: i18n
+      this.$f7.dialog.alert('Something went wrong', 'Update Failed')
+    }
+  }
+
   render() {
     const user = this.global.currentUser
     const child = this.child()
@@ -64,10 +91,10 @@ export default class extends React.Component<Props, State> {
             <Block>
               We've found {pluralize('child', this.childCount(), true)}{' '}
               associated with you: {this.childrenNames()}. Let's take a moment
-              to review their information starting with {child.firstName}.
+              to review their information.
               <br />
               {/* TODO: Link to a page where users can remove students. */}
-              <Link>Is something wrong?</Link>
+              {/* <Link >Is something wrong?</Link> */}
             </Block>
           </When>
           {/* Last Child */}
@@ -84,22 +111,23 @@ export default class extends React.Component<Props, State> {
         </Case>
 
         <List noHairlines>
-          <ListItem footer="Update the schools Lisa will be attending.">
+          <ListItem footer={`Review the schools ${child.firstName} will be attending.`}>
             <div slot="title">
               <b>{child.firstName}'s Schools and Places</b>
             </div>
           </ListItem>
-          {child.locations.map((location) => (
+          {child.locations_TODO().map((location) => (
             <ListItem
-              title={location.name}
+              title={location.name || ''}
               smartSelect
               smartSelectParams={{ openIn: 'sheet' }}
             >
               <select name="mac-windows" defaultValue="attending">
                 <option value="in-person">In Person</option>
-                <option value="virtual">Virtual</option>
+                {/* TODO */}
+                {/* <option value="virtual">Virtual</option>
                 <option value="mixed">Mixed</option>
-                <option value="not-attending">Not Attending</option>
+                <option value="not-attending">Not Attending</option> */}
               </select>
             </ListItem>
           ))}
@@ -114,31 +142,39 @@ export default class extends React.Component<Props, State> {
             checkbox
             header="Don't have a primary care doctor?"
             title="Get help finding one"
-            name="demo-checkbox"
+            onChange={e => {
+              this.setState({ needsPhysician: e.target.checked })
+            }}
           />
           <ListInput
             label="Primary Care Doctor"
             placeholder={`${child.firstName}'s doctor's name`}
             type="text"
+            onInput={e => {
+              this.setState({ physicianName: e.target.value })
+            }}
           />
           <ListInput
             label="Primary Care Doctor Phone"
             placeholder={`${child.firstName}'s doctor's phone`}
             type="tel"
+            onInput={e => {
+              this.setState({ physicianPhoneNumber: e.target.value })
+            }}
           />
         </List>
         <Block>
           <Case test={this.hasNextChild()}>
             <When value={true}>
               <Button
-                href={`/welcome-parent/children/${this.childId() + 1}`}
+                href={dynamicPaths.welcomeChildIndexPath(this.childIndex() + 1)}
                 fill
               >
-                Continue to {this.nextChild()?.firstName}
+                Continue to {this.nextChild().firstName}
               </Button>
             </When>
             <When value={false}>
-              <Button fill href={`/welcome-parent/surveys/children/1`}>
+              <Button fill onClick={() => this.submit()}>
                 Continue
               </Button>
             </When>

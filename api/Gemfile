@@ -12,6 +12,10 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 4.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3', '>= 6.0.3.2'
+# Simple, efficient background processing for Ruby
+gem 'sidekiq', '< 7'
+# Enables to set jobs to be run in specified time
+gem 'sidekiq-cron', '1.2'
 
 #
 # Engines and Middlewares
@@ -21,6 +25,8 @@ gem 'rails', '~> 6.0.3', '>= 6.0.3.2'
 gem 'rack-cors'
 # The Routing Tree Web Toolking
 gem 'roda'
+# Add http authorization methods to Roda
+gem 'roda-http-auth'
 
 #
 # Performance
@@ -47,8 +53,12 @@ gem 'xorcist'
 gem 'active_attr'
 # Password encryption
 gem 'bcrypt', '~> 3.1.7'
+# Enumerated attributes
+gem 'enumerize'
 # Exception notifier
 gem 'exception_notification'
+# Simple, but flexible HTTP client library
+gem 'faraday'
 # A lightning fast JSON:API serializer for Ruby Objects.
 gem 'fast_jsonapi'
 # JSON web tokens
@@ -61,15 +71,16 @@ gem 'lograge'
 gem 'phonelib'
 # SMS API and Voice API platform
 gem 'plivo'
+# The express way to send email 
+gem 'pony'
 # Advanced seed data handling for Rails
 gem 'seed-fu', '~> 2.3'
+# Twilio Sendgrid Email API
+gem 'sendgrid-ruby'
 # Performance monitoring
 gem 'skylight'
-# Type safety
-gem 'sorbet-runtime'
 # Email validations
 gem 'valid_email2'
-
 
 group :development, :test do
   # Annotate Rails classes with schema and routes info
@@ -104,6 +115,8 @@ group :development do
   gem 'foreman', require: false
   # Listens for file modifications, used by Spring
   gem 'listen', '~> 3.2'
+  # Preview email in the default browser
+  # gem 'letter_opener', group: :development
   # A Ruby language server and code formatter
   gem 'rubocop', require: false
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
@@ -111,7 +124,4 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   # A Ruby language server
   gem 'solargraph', require: false
-
-
-  gem 'sorbet'
 end

@@ -10,6 +10,12 @@
  - glit-api-staging
  - glit-api-production
 
+## Short URLs
+
+ - glit.me/m/* redirects to app.greenlightready.com/go/*
+ - glit.me/a/* redirects to admin.greenlightready.com/go/*
+ - glit.me/* redirects to greenlightready.com/*
+
 ## Naming conventions
 
 ### React

@@ -1,6 +1,8 @@
 module Commands
   # Base class that all commands inherit from
   class Base
+    include ActiveAttr::Model
+    
     STATES = [
       # The command has not been run yet.
       :not_run,
@@ -17,8 +19,6 @@ module Commands
 
     # The result of #work
     attr_reader :result
-
-    include ActiveAttr::Model
 
     def self.title
       @title
@@ -95,7 +95,7 @@ module Commands
       @succeeded = true
       @result = work
     rescue CommandAborted
-      Rails.logger.debug("Aborted") if Rails.env.development?
+      Rails.logger.debug("Aborted command! #{self.errors.details}") if Rails.env.development?
       @succeeded = false
       nil
     rescue => error
@@ -164,16 +164,19 @@ module Commands
     end
 
     class Argument < OpenStruct
-      ACTIVE_ATTR_TYPECASTING = {
+      ACTIVE_ATTR_TYPE_MAP = {
+        decimal: BigDecimal,
         boolean: ActiveAttr::Typecasting::Boolean,
-        string: String,
-        file: Object,
-        text: String
+        date: Date,
+        datetime: DateTime,
+        float: Float,
+        object: Object,
+        string: String
       }
 
       # Returns the ActiveAttr type for the provided SimpleForm type
       def active_attr_type
-        ACTIVE_ATTR_TYPECASTING[type] || String
+        ACTIVE_ATTR_TYPE_MAP.fetch(type)
       end
 
     end

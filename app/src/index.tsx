@@ -21,9 +21,9 @@ import 'framework7-icons'
 
 import './index.css'
 
-import addReactNDevTools from 'reactn-devtools';
+import addReactNDevTools from 'reactn-devtools'
 import { getCurrentUser, session, destroySession } from './common/api'
-addReactNDevTools();
+addReactNDevTools()
 
 setGlobal({
   language: 'en'
@@ -42,9 +42,7 @@ if (session.isValid()) {
   getCurrentUser().then(user => {
     setGlobal({ currentUser: user })
     render()
-  }).catch(err => {
-    destroySession()
-  })
+  }).catch(console.error)
 } else {
   render()
 }

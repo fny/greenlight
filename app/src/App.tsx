@@ -1,5 +1,4 @@
 import React, { useGlobal } from 'reactn'
-import 'typeface-open-sans'
 
 import './App.css'
 

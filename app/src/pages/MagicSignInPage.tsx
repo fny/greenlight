@@ -5,6 +5,7 @@ import {
   Navbar,
   Block,
   Button,
+  ListItem
 } from 'framework7-react'
 
 import { Trans, t } from '@lingui/macro'
@@ -12,38 +13,46 @@ import { i18n } from 'src/i18n'
 
 import EmailOrPhoneListInput, { EmailOrPhoneInputTypes } from 'src/components/EmailOrPhoneListInput'
 import './MagicSignInPage.css'
-import { ObjectMap } from 'src/common/types'
+import { Dict } from 'src/common/types'
+import { createMagicSignIn } from 'src/common/api'
 
 interface State {
   emailOrMobile: string
-  emailOrMobileValid: boolean
   rememberMe: boolean
   submitted: boolean
 }
 
-export default class MagicSignInPage extends React.Component<ObjectMap<any>, State> {
+export default class MagicSignInPage extends React.Component<Dict<any>, State> {
   emailOrMobileRef = React.createRef<EmailOrPhoneListInput>()
   
   state: State = {
     emailOrMobile: '',
-    emailOrMobileValid: false,
     rememberMe: false,
     submitted: false
   }
 
-  submit() {
-    const input = this.emailOrMobileRef.current
-    if (!input) return
+  async submit() {
+    const input = this.emailOrMobileRef?.current
+    if (!input) {
+      console.error("Reference to input not created")
+      return
+    }
     const isValid = input.validate(input.state.value || '')
     if (!isValid) return
-    
-
-    
-    // Make request, return error if email is not found
-    // add notice that they should receive email/phone in a bit
-    // hide buttons
-    // new page
-    // add button to resend
+    try {
+      await createMagicSignIn(this.state.emailOrMobile, this.state.rememberMe)
+      if (this.state.emailOrMobile.includes('@')) {
+        // TODO: i18n
+        this.$f7.dialog.alert("You should receive an email shortly with a magic sign in link.", 'Magic Sign In Sent')
+      } else {
+        // TODO: i18n
+        this.$f7.dialog.alert("You should receive a text shortly with a magic sign in link.", 'Magic Sign In Sent')
+      }
+    } catch (e) {
+      console.error(e.response)
+      // TODO: i18n
+      this.$f7.dialog.alert("We couldn't set up a magic sign for that info.", 'Magic Sign In Failed')
+    }
   }
 
   render() {
@@ -59,11 +68,20 @@ export default class MagicSignInPage extends React.Component<ObjectMap<any>, Sta
               Enter your email or mobile number, and we'll send you a magic sign in link.
             </Trans>
           </Block>
-          <li>
-            <EmailOrPhoneListInput value="" ref={this.emailOrMobileRef} />
-          </li>
+          <EmailOrPhoneListInput 
+            value={this.state.emailOrMobile}
+            ref={this.emailOrMobileRef}
+            onInput={(e) => {
+              this.setState({ emailOrMobile: e.target.value })
+            }}
+          />
+          <ListItem checkbox title="Remember Me"
+            onInput={e => {
+              this.setState({ rememberMe: e.target.value })
+            }}
+          ></ListItem>
           <Block>
-            <Button outline fill onClick={this.submit}>
+            <Button outline fill onClick={() => { this.submit() }}>
               <Trans id="MagicSignInPage.request_magic_link">
                 Request Magic Link
               </Trans>
@@ -71,17 +89,6 @@ export default class MagicSignInPage extends React.Component<ObjectMap<any>, Sta
           </Block>
         </List>
       </Page>
-    )
-  }
-  signIn() {
-    const self = this
-    const app = self.$f7
-    const router = self.$f7router
-    app.dialog.alert(
-      `You should be recieving an email or text soon.`,
-      () => {
-        router.back()
-      }
     )
   }
 }

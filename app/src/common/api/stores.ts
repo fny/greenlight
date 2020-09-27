@@ -1,46 +1,62 @@
-import GL from '../GL'
-import axios, { AxiosResponse } from 'axios'
-import { ObjectMap, Record, RecordDocument, RecordRelationship } from '../types'
-import { Location, User, Model } from '../models'
+import { AxiosResponse } from 'axios'
+import { Dict, Record, RecordResponse, RecordRelationship, Entity } from '../types'
+import { Model } from '../models'
 import { deserializeJSONAPI } from '../models/Model'
+import { zip } from 'lodash'
+
+interface RecordStoreEntry {
+  record: Record
+  entity?: Model
+}
 
 class RecordStore {
-  data: ObjectMap<Record>
+  data: Dict<RecordStoreEntry>
+
   constructor() {
-    this.data = {} 
+    this.data = {}
   }
 
-  find(id: string): Record | undefined {
-    return this.data[id]
+  findRecord(id: string): Record | null {
+    return this.data[id]?.record
   }
 
-  findAll(ids: string[]) {
-    return ids.map(id => this.find(id))
+  findRecords(ids: string[]): Record[] {
+    const records: Record[] = []
+    for (const id of ids) {
+      const record = this.findRecord(id)
+      if (record !== null) records.push(record)
+    }
+    return records
   }
   
   findEntity<T extends Model>(id: string): T | null {
-    const found = this.find(id)
-    if (!found) { return null }
-    return deserializeJSONAPI<T>(found) 
+    let entity = this.data[id]?.entity
+    if (entity) { return entity as T }
+
+    const record = this.findRecord(id)
+    if (!record) { return null }
+    entity = deserializeJSONAPI<T>(record)
+    this.data[id].entity = entity
+    return entity as T
   }
 
   findEntities<T extends Model>(ids: string[]): T[] {
     const entities: T[] = []
-    ids.forEach(id => {
+    for (const id of ids) {
       const entity = this.findEntity<T>(id)
       if (entity !== null) entities.push(entity)
-    })
+    }
     return entities
   }
 
   load(records: Record | Record[]) {
     const recordsParsed = !Array.isArray(records) ? [records] : records
-    recordsParsed.forEach(r => { this.data[r.id] = r })
+    recordsParsed.forEach(r => { this.data[r.id] = { record: r } })
   }
 
-  loadRecordDocument(document: RecordDocument) {
-    if (document.data) this.load(document.data)
-    if (document.included) this.load(document.included)
+  loadRecordResponse(res: RecordResponse) {
+    if (res.included) this.load(res.included)
+    if (res.data) this.load(res.data)
   }
 
   reset() {
@@ -49,7 +65,7 @@ class RecordStore {
 }
 
 class ResponseStore {
-  data: ObjectMap<AxiosResponse<any>>
+  data: Dict<AxiosResponse<any>>
 
   constructor() {
     this.data = {}
@@ -73,8 +89,21 @@ class ResponseStore {
 export const recordStore = new RecordStore()
 export const responseStore = new ResponseStore()
 
+// TODO: Drop lodash zip in favor of this
+// Waiting on https://github.com/typescript-eslint/typescript-eslint/issues/2600
+//
+// export function zipTwo<X, Y>(xs: X[], ys: Y[]): [X , Y][] {
+//   const zipped: [X, Y][] = []
+//   for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
+//     zipped.push([xs[i], ys[i]])
+//   }
+//   return zipped
+// }
 
 export function transformRelationship<T extends Model>(entity: T, relationshipName: string, relationship: RecordRelationship) {
+  // Skip if we've already loaded the relationship
+  if (entity._included.includes(relationshipName)) return 
+
   if (!entity.hasRelationship(relationshipName)) {
     throw new Error(`Relationship ${relationshipName} not found on ${entity}`)
   }
@@ -86,39 +115,57 @@ export function transformRelationship<T extends Model>(entity: T, relationshipNa
 
   if (Array.isArray(relationship.data)) {
     const ids = relationship.data.map(d => d.id)
-    const found = recordStore.findEntities(ids)
-    if (found.length !== ids.length) {
-      console.error(`Expected ${ids.length} records, but only found ${found.length} in store.`)
+    const foundEntities = recordStore.findEntities(ids)
+    const foundRecords = recordStore.findRecords(ids)
+    if (foundRecords.length !== ids.length) {
+      throw `Expected ${ids.length} records, but only found ${foundRecords.length} in store.`
     } else {
       entity._included.push(relationshipName)
+    }
+    // Set relationship for records on the relationship
+    zip(foundEntities, foundRecords).forEach(([e, r]) => {
+      tranformRelationships(e as Model, r as Record)
+    })
+
+    ;(entity as any)[relationshipName] = foundEntities
+  } else {
+    const foundEntity = recordStore.findEntity(relationship.data.id)
+    const foundRecord = recordStore.findRecord(relationship.data.id)
+    if (foundEntity && foundRecord) { 
+      entity._included.push(relationshipName)
+    } else {
+      throw `Expected to find ${relationship.data.type} with id ${relationship.data.id} in store but didn't.`
     }
     
-    (entity as any)[relationshipName] = found
-  } else {
-    const found = recordStore.findEntity(relationship.data.id)
-    if (found) { 
-      entity._included.push(relationshipName)
-    } else {
-      console.error(`Expected to find ${relationship.data.type} with id ${relationship.data.id} in store but didn't.`)
-    }
-    (entity as any)[relationshipName] = found
+    // Set relationship for records on the relationship
+    tranformRelationships<any>(foundEntity, foundRecord)
+    ;(entity as any)[relationshipName] = foundEntity
+  }
+
+}
+
+function tranformRelationships<T extends Model>(entity: T, record: Record) {
+  if (!record.relationships) return
+  entity._relationships = record.relationships
+  for (const [rel, value] of Object.entries(record.relationships)) {
+    transformRelationship<T>(entity, rel, value)
   }
 }
 
+/**
+ * Transforms records from the API into entities
+ * 
+ * @param record the record to be transformed
+ */
 function transformRecord<T extends Model>(record: Record) {
   const entity: T = deserializeJSONAPI<T>(record)
-  if (record.relationships) {
-    entity._relationships = record.relationships
-    for (let [rel, value] of Object.entries(record.relationships)) {
-      transformRelationship<T>(entity, rel, value)
-    }
-  }
+  tranformRelationships(entity, record)
   return entity
 }
 
-export function transformRecordDocument<T extends Model>(doc: RecordDocument) {
-  if (!Array.isArray(doc.data)) {
-    return transformRecord<T>(doc.data)
+export function transformRecordResponse<T extends Model>(res: RecordResponse): T | T[] {
+  if (!Array.isArray(res.data)) {
+    return transformRecord<T>(res.data)
   }
-  return doc.data.map(data => transformRecord<T>(data))
+  return res.data.map(data => transformRecord<T>(data))
 }

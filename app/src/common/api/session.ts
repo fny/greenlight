@@ -1,7 +1,8 @@
-import jwt_decode from 'jwt-decode';
+import jwt_decode from 'jwt-decode'
 import Cookies from 'js-cookie'
 import moment from 'moment'
-import { ObjectMap } from '../types';
+import { Dict } from '../types'
+import env from 'src/common/env'
 
 const SESSION_COOKIE_NAME = '_gl_sess'
 
@@ -50,7 +51,6 @@ export class Session {
     this.data = jwt_decode(token) as SessionJWT
   }
 
-  
   isValid() {
     return !this.isExpired()
   }
@@ -67,19 +67,24 @@ export class Session {
     return this.expiresAt() < moment()
   }
 
-  saveCookie(expiry?: number) {
-    if (expiry) {
-      Cookies.set(SESSION_COOKIE_NAME, this.token, { expires: expiry })
+  saveCookie(expiration?: number) {
+    if (expiration) {
+      Cookies.set(SESSION_COOKIE_NAME, this.token, {
+        expires: expiration,
+        secure: env.isProduction()
+      })
     } else {
+    
       Cookies.set(SESSION_COOKIE_NAME, this.token)
     }
   }
   
   removeCookie() {
+  
     Cookies.remove(SESSION_COOKIE_NAME)
   }
 
-  headers(): ObjectMap<string> {
+  headers(): Dict<string> {
     return { 'Authorization': `Bearer ${this.token}`}
   }
 }

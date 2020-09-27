@@ -4,6 +4,7 @@ import { Location } from './Location'
 import { GreenlightStatus } from './GreenlightStatus'
 import { MedicalEvent, findLastEvent, hasEvent } from './MedicalEvent'
 import { LocationAccount } from './LocationAccount'
+import { conjungtify } from '../util'
 
 export class User extends Model {
   static singular = 'user'
@@ -15,10 +16,10 @@ export class User extends Model {
   }
 
   @attr({ type: STRING })
-  firstName: string = ''
+  firstName = ''
 
   @attr({ type: STRING })
-  lastName: string = ''
+  lastName = ''
 
   @attr({ type: STRING })
   email: string | null = null
@@ -46,6 +47,9 @@ export class User extends Model {
 
   @attr({ type: STRING })
   language: string | null = null
+
+  @attr({ type: STRING })
+  dailyReminderType: string | null = null
 
   // TODO: Date type
   @attr({ type: DATE })
@@ -84,16 +88,76 @@ export class User extends Model {
   @relationship({ type: 'hasOne', model: 'greenlightStatus' })
   lastGreenlightStatus: GreenlightStatus | null = null
 
-  shouldSubmitSurveys() {
-    return this.locations.length > 0
+  sortedChildren() {
+    return this.children.sort((a, b) => (a < b) ? 1 : -1)
+  }
+  
+  locations_TODO() {
+    return this.locationAccounts.map(la => la.location).filter(l => l !== null || l !== undefined)
   }
 
+  findChild(id: string) {
+    const found = this.children.filter(c => c.id === id)
+    if (found.length === 0) return null
+    return found[0]
+  }
+
+  // numChildren() {
+  //   return this.children.length
+  // }
+
+  // hasOneChild() {
+  //   return this.numChildren() == 1
+  // }
+
+  // hasManyChildren() {
+  //   return this.numChildren() > 1
+  // }
+
+  fullName() {
+    return `${this.firstName} ${this.lastName}`
+  }
+  
   hasChildren() {
     return this.children.length > 0
   }
 
+  hasLocationThatRequiresSurvey() {
+    return this.locationAccounts.length > 0
+  }
+
   isParent() {
     return this.hasChildren()
+  }
+  
+  // TODO: Rename, 
+  needsToSubmitOwnSurvey() {
+    return this.greenlightStatus().isUnknown() && this.hasLocationThatRequiresSurvey()
+  }
+
+  usersNeedingSurveys(): User[] {
+    const users = []
+    if (this.needsToSubmitOwnSurvey()) {
+      users.push(this)
+    }
+    for (const child of this.sortedChildren()) {
+      if (child.needsToSubmitOwnSurvey()) {
+        users.push(child)
+      }
+    }
+    return users
+  }
+
+  usersNeedingSurveysText(): string {
+    // TODO: i18n
+    return conjungtify(this.usersNeedingSurveys().map(u => 
+      u === this ? 'yourself' : u.firstName
+    ), 'and')
+  }
+
+
+  needsToSubmitSomeonesSurvey(): boolean {
+    return this.usersNeedingSurveys().length > 0
   }
 
   accountFor(location: Location | string) {

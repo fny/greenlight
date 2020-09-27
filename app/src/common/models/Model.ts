@@ -5,8 +5,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { Record } from '../types'
 
 interface DataType {
-  serialize?: Function,
-  deserialize?: Function,
+  serialize?: Function
+  deserialize?: Function
   orbitType: string
 }
 
@@ -81,7 +81,7 @@ class Registry {
   }
 
   modelFor(singularOrPlural: string) {
-    for (let model of this.models) {
+    for (const model of this.models) {
       if (model.singular === singularOrPlural || model.plural === singularOrPlural) {
         return model
       }
@@ -220,7 +220,7 @@ function _deserialize(model: typeof Model, data: any, this_?: Model) {
         if (!Array.isArray(value)) {
           throw new Error(`Expected Array for hasMany got ${debug(value)}`)
         }
-        ; (record as any)[property] = value.map(v => new model(v))
+         (record as any)[property] = value.map(v => new model(v))
       } else {
         const model = ModelRegistry.modelFor(relDef.model)
         if (!model) {
@@ -229,12 +229,12 @@ function _deserialize(model: typeof Model, data: any, this_?: Model) {
         if (Array.isArray(value)) {
           throw new Error(`Expected single object for hasOne got ${debug(value)}`)
         }
-        ; (record as any)[property] = new (model as any)(value)
+         (record as any)[property] = new (model as any)(value)
       }
       continue
     }
 
-    throw new Error(`No matching attribute or relationship: ${property}`)
+    throw new Error(`No matching attribute or relationship ${property} on type ${model.singular}`)
   }
   return record
 }
@@ -277,7 +277,7 @@ export function relationship(definiton: RelationshipDefinition) {
       (currAttributes as any)[key] = (attrDefinition as any)[key]
     })
     // Update the metadata
-    Reflect.defineMetadata(REL_METADATA_KEY, allMetadata, target);
+    Reflect.defineMetadata(REL_METADATA_KEY, allMetadata, target)
   }
 }
 

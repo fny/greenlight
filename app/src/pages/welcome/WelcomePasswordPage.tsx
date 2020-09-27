@@ -1,39 +1,83 @@
 import React from 'reactn'
-import { Page, Navbar, Block, List, ListInput, Button } from 'framework7-react'
+import { Page, Navbar, Block, List, ListInput, Button, Toggle, ListItem } from 'framework7-react'
 import { When, Case } from '../../components/Case'
+import { SyntheticEvent } from 'react'
+import { updateUser } from 'src/common/api'
+import { dynamicPaths } from 'src/routes'
+import { User } from 'src/common/models'
 
 
+interface State {
+  password: string
+  errorMessage: string | null
+  showErrorMessage: boolean
+  isPasswordHidden: boolean
+}
 
-interface Props {}
-interface State {}
+export default class extends React.Component<any, State> {
+  state: State = {
+    password: '',
+    errorMessage: null,
+    showErrorMessage: false,
+    isPasswordHidden: true
+  }
+  toggleReveal(e: SyntheticEvent) {
+    this.setState({ isPasswordHidden: !(e.target as any).checked })
+    // this.$f7.input.validateInputs('#WelcomePasswordPage-form')
+  }
+  async submit() {
+    if (this.state.password.length < 8) {
+      this.setState({ errorMessage: 'Password is too short.', showErrorMessage: true })
+      return
+    }
+    this.setState({ errorMessage: '', showErrorMessage: false })
+    this.$f7.input.validateInputs('#WelcomePasswordPage-form')
 
-export default class extends React.Component<Props, State> {
+    this.$f7.dialog.preloader('Submitting changes...')
+    try {
+      const user = await updateUser(this.global.currentUser, { password: this.state.password } as Partial<User>)
+      this.setGlobal({ currentUser: user })
+      this.$f7.dialog.close()
+      this.$f7router.navigate(dynamicPaths.afterWelcomePasswordPath())
+    } catch (error) {
+      this.$f7.dialog.close()
+      console.error(error)
+      // TODO: i18n
+      this.$f7.dialog.alert('Something went wrong', 'Update Failed')
+    }
+  }
+
   render() {
     return (
       <Page>
         <Navbar title="Set Your Password"></Navbar>
         <Block>
           <p>
-            You'll sign in with your email address or mobile number and this
-            password.
+            You can your email address or mobile number and this
+            password. It must be at least 8 characters long.
           </p>
         </Block>
         <Block>
-          <List noHairlines>
-            <ListInput
-              label="Password"
-              type="password"
-              placeholder="Password"
-              required
-              validate
-            />
-            <ListInput
-              label="Confirm Password"
-              type="password"
-              placeholder="Password"
-              required
-              validate
-            />
+          <List noHairlines form id="WelcomePasswordPage-form">
+          <ListInput
+            label="Password"
+            type={this.state.isPasswordHidden ? "password" : "text"} 
+            placeholder="Password"
+            value={this.state.password}
+            errorMessage={this.state.errorMessage || ''}
+            errorMessageForce={this.state.showErrorMessage}
+            onChange={(e) => {
+              this.setState({ password: e.target.value })
+            }}
+            required
+            validate
+          />
+
+          <ListItem>
+            <span>Reveal Password</span>
+            {/*  TODO: This color is off */}
+            <Toggle color="green" onChange={(e) => this.toggleReveal(e)} />
+          </ListItem>
           </List>
           <img
             alt="Greenlight gives security highest importance."
@@ -43,18 +87,17 @@ export default class extends React.Component<Props, State> {
           <Case test={this.global.currentUser.children.length > 0}>
             <When value={true}>
               <p>Next you'll review your children.</p>
-              <Button large fill href="/welcome-parent/children/1">
-                Continue
-              </Button>
+
             </When>
             <When value={false}>
               <p>Next you'll fill out your first survey!</p>
-
-              <Button large fill href="/welcome/users/me/surveys/new">
-                Continue
-              </Button>
             </When>
           </Case>
+
+          <Button large fill onClick={() => this.submit()}>
+            Continue
+          </Button>
+
         </Block>
       </Page>
     )

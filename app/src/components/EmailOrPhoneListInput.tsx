@@ -1,6 +1,6 @@
 import React from 'react'
 import { ListInput } from 'framework7-react'
-import { validEmail, validPhoneNumber } from 'src/util'
+import { validEmail, validPhone } from 'src/common/util'
 import { i18n } from 'src/i18n'
 import { t } from '@lingui/macro'
 
@@ -23,7 +23,7 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
     seenInput: false,
     errorMessage: '',
     errorMessageForce: false,
-    value: ''
+    value: String(this.props.value)
   }
 
   validate(value: string): boolean {
@@ -42,11 +42,11 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
       this.setState({ inputType: 'email' })
     }
 
-    if (validPhoneNumber(value)) {
+    if (validPhone(value)) {
       this.setState({ inputType: 'phone' })
     }
 
-    if (!validEmail(value) && !validPhoneNumber(value)) {
+    if (!validEmail(value) && !validPhone(value)) {
       this.setState({
         inputType: 'unknown',
         errorMessage: i18n._(
@@ -78,6 +78,8 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
         <ListInput
           ref={this.listInput}
           type="text"
+          value={this.state.value}
+          validateOnBlur
           onBlur={this.onBlur.bind(this)}
           onChange={this.onChange.bind(this)}
           errorMessage={this.state.errorMessage}

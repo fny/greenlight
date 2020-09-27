@@ -6,7 +6,7 @@ class Session
   attr_accessor :issued_at, :expiration, :user
 
   def initialize(token: nil, user: nil, expiration: 1.day.from_now)
-    if token
+    if token && token.downcase.include?('bearer')
       token = token.sub('Bearer', '').sub('bearer', '').strip
       decoded = JSONWebToken.decode(token)
       @data = HashWithIndifferentAccess.new(decoded)

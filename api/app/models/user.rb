@@ -10,15 +10,16 @@
 #  completed_welcome_at               :datetime
 #  current_sign_in_at                 :datetime
 #  current_sign_in_ip                 :inet
+#  daily_reminder_type                :text             default("text")
 #  email                              :text
 #  email_confirmation_sent_at         :datetime
 #  email_confirmation_token           :text
 #  email_confirmed_at                 :datetime
 #  email_unconfirmed                  :text
-#  first_name                         :text             not null
-#  is_sms_gateway_emailable           :boolean
+#  first_name                         :text             default("Greenlight User"), not null
+#  is_sms_emailable                   :boolean
 #  language                           :text             default("en"), not null
-#  last_name                          :text             not null
+#  last_name                          :text             default("Unknown"), not null
 #  last_sign_in_at                    :datetime
 #  last_sign_in_ip                    :inet
 #  magic_sign_in_sent_at              :datetime
@@ -30,8 +31,6 @@
 #  mobile_number_confirmed_at         :datetime
 #  mobile_number_unconfirmed          :text
 #  password_digest                    :text
-#  password_reset_sent_at             :datetime
-#  password_reset_token               :text
 #  password_set_at                    :datetime
 #  physician_name                     :text
 #  physician_phone_number             :text
@@ -48,9 +47,12 @@
 #  index_users_on_magic_sign_in_token               (magic_sign_in_token) UNIQUE
 #  index_users_on_mobile_number                     (mobile_number) UNIQUE
 #  index_users_on_mobile_number_confirmation_token  (mobile_number_confirmation_token)
-#  index_users_on_password_reset_token              (password_reset_token) UNIQUE
 #
 class User < ApplicationRecord
+  extend Enumerize
+
+  enumerize :daily_reminder_type, in: [:text, :email, :none]
+
   has_many :parent_relationships, foreign_key: :child_user_id,
            class_name: 'ParentChild'
   has_many :parents, through: :parent_relationships,
@@ -72,16 +74,15 @@ class User < ApplicationRecord
   has_many :recent_greenlight_statuses, -> { recently_created }, class_name: 'GreenlightStatus'
   has_many :recent_medical_events, -> { recently_created }, class_name: 'MedicalEvent'
 
-  
   has_secure_password
   has_secure_token :auth_token
   has_secure_token :magic_sign_in_token
 
   validates :language, inclusion: { in: %w[en es] }
   validates :email, 'valid_email_2/email': true, uniqueness: true, allow_nil: true
-  validates :mobile_number, phone: true, allow_nil: true, uniqueness: true
+  validates :mobile_number, phone: { countries: :us }, allow_nil: true, uniqueness: true
 
-  validates :password, length: { minimum: 8 }, exclusion: { in: InsecurePasswords::INSECURE_PASSWORDS }, allow_blank: true
+  validates :password, length: { minimum: 8 }, allow_blank: true
 
   validates :first_name, presence: true
   validates :first_name, presence: true
@@ -90,12 +91,20 @@ class User < ApplicationRecord
   before_save :format_mobile_number
 
   def self.find_by_email_or_mobile(value)
-    email_or_mobile = value.kind_of?(EmailOrMobile) ? value : EmailOrMobile.new(value)
+    email_or_mobile = value.kind_of?(EmailOrPhone) ? value : EmailOrPhone.new(value)
     if email_or_mobile.email?
       User.find_by(email: email_or_mobile.value)
     elsif email_or_mobile.phone?
       User.find_by(mobile_number: email_or_mobile.value)
     end
+  end
+
+  def full_name
+    "#{self.first_name} #{self.last_name}"
+  end
+
+  def name_with_email
+    "\"#{full_name}\" <#{email}>"
   end
 
   def save_sign_in!(ip)
@@ -114,9 +123,39 @@ class User < ApplicationRecord
 
   def reset_magic_sign_in_token!
     regenerate_magic_sign_in_token
-    self.magic_sign_in_token_set_at = Time.now
+    self.magic_sign_in_sent_at = Time.now
     save!
   end
+
+  def magic_sign_in_url(remember_me = false)
+    if remember_me
+      "#{Greenlight::SHORT_URL}/mgk/#{magic_sign_in_token}/y"
+    else
+      "#{Greenlight::SHORT_URL}/mgk/#{magic_sign_in_token}/n"
+    end
+  end
+
+  def parent_of?(child_user)
+    children.include?(child_user)
+  end
+
+  def child_of?(parent_user)
+    parents.include?(parent_user)
+  end
+
+  def authorized_to_view?(user)
+    parent_of?(user) || user == self
+  end
+
+  def authorized_to_edit?(user)
+    parent_of?(user) || user == self
+  end
+
+  def admin?
+    false
+  end
+
+  before_save :timestamp_password
 
   private
 
@@ -126,14 +165,13 @@ class User < ApplicationRecord
     end
   end
 
-  def format_mobile_number
-    self.mobile_number = Phonelib.parse(mobile_number).full_e164    
-  end
-
-  def magic_sign_in_link
-    if Rails.env.development?
-      'https://'
-    else
+  def timestamp_password
+    if password_digest_changed?
+      self.password_set_at = Time.now
     end
+  end
+    
+  def format_mobile_number
+    self.mobile_number = Phonelib.parse(mobile_number, 'US').full_e164    
   end
 end

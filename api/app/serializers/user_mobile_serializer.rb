@@ -6,6 +6,7 @@ class UserMobileSerializer < ApplicationSerializer
   attribute :first_name
   attribute :last_name
   attribute :email
+  # attribute :password_set_at
   # attribute :email_confirmation_sent_at
   # attribute :email_confirmed_at
   # attribute :email_unconfirmed

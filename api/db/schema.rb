@@ -102,12 +102,10 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.text "first_name", null: false
-    t.text "last_name", null: false
+    t.text "first_name", default: "Greenlight User", null: false
+    t.text "last_name", default: "Unknown", null: false
     t.text "password_digest"
     t.datetime "password_set_at"
-    t.text "password_reset_token"
-    t.datetime "password_reset_sent_at"
     t.text "magic_sign_in_token"
     t.datetime "magic_sign_in_sent_at"
     t.text "auth_token"
@@ -119,7 +117,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.text "email_unconfirmed"
     t.text "mobile_number"
     t.text "mobile_carrier"
-    t.boolean "is_sms_gateway_emailable"
+    t.boolean "is_sms_emailable"
     t.text "mobile_number_confirmation_token"
     t.datetime "mobile_number_confirmation_sent_at"
     t.datetime "mobile_number_confirmed_at"
@@ -129,6 +127,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.date "birth_date"
     t.text "physician_name"
     t.text "physician_phone_number"
+    t.text "daily_reminder_type", default: "text"
     t.datetime "accepted_terms_at"
     t.datetime "completed_welcome_at"
     t.integer "sign_in_count", default: 0, null: false
@@ -144,7 +143,6 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.index ["magic_sign_in_token"], name: "index_users_on_magic_sign_in_token", unique: true
     t.index ["mobile_number"], name: "index_users_on_mobile_number", unique: true
     t.index ["mobile_number_confirmation_token"], name: "index_users_on_mobile_number_confirmation_token"
-    t.index ["password_reset_token"], name: "index_users_on_password_reset_token", unique: true
   end
 
   add_foreign_key "cohorts", "locations", on_delete: :cascade

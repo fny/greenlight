@@ -1,34 +1,8 @@
-import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import qs from 'qs'
 
 import { getGlobal, setGlobal } from 'reactn'
-import { ObjectMap } from './common/types'
+import { Dict } from './common/types'
 
-const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-
-export function validEmail(email: string) {
-  return EMAIL_REGEX.test(String(email).toLowerCase())
-}
-
-export function validPhoneNumber(phoneNumber: string) {
-  const parsed = parsePhoneNumberFromString(phoneNumber, 'US')
-  if (!parsed) {
-    return false
-  }
-  return parsed.country === 'US' && parsed.isValid()
-}
-
-export function timeOfDay(): 'morning' | 'afternoon' | 'evening' {
-  const hours = (new Date()).getHours()
-  console.log(hours)
-  if (hours < 12) {
-    return 'morning'
-  } else if (hours < 17) {
-    return 'afternoon'
-  } else {
-    return 'evening'
-  }
-}
 /**
  * Toggles the current language between English and Spanish
  */
@@ -36,11 +10,13 @@ export function toggleLanguage() {
   setGlobal({ language: getGlobal().language === 'en' ? 'es' : 'en'})
 }
 
+type DynamicPath = (subsitutions?: any, query?: any) => string
+
 /**
  * Builds a callable path that will resolve itslev given substitutions.
  * @param path 
  */
-export function buildPath(path: string) {
+export function buildDynamicPath(path: string) {
   return (subsitutions?: any, query?: any): string => {
     return resolvePath(path, subsitutions, query)
   }
@@ -58,10 +34,9 @@ export function buildPath(path: string) {
  * @param subsitutions The array or object from which to fill :placeholders.
  * @param query An optional object to transform into a query string.
  */
-export function resolvePath(path: string, subsitutions?: any[] | ObjectMap<any> | null, query?: any ) {
-  const re = /:([A-z0-9\-_]+)/g
+export function resolvePath(path: string, subsitutions?: any[] | Dict<any> | null, query?: any ) {
+  const re = /:[A-z0-9\-_]+/g
   const matches = path.match(re)
-
   const queryString = query ? `?${qs.stringify(query)}` : ''
 
   if (!matches) {
@@ -73,6 +48,14 @@ export function resolvePath(path: string, subsitutions?: any[] | ObjectMap<any> 
     subsitutions = []
   }
 
+  if (subsitutions === undefined || subsitutions === null) {
+    throw new Error("No substitutions given.")
+  }
+
+  if (typeof subsitutions === 'string' || typeof subsitutions === 'number' || typeof subsitutions === 'boolean') {
+    subsitutions = [subsitutions]
+  }
+
   if (Array.isArray(subsitutions)) {
     if (matches.length !== subsitutions.length) {
       // Not enough substituions were provided
@@ -80,7 +63,7 @@ export function resolvePath(path: string, subsitutions?: any[] | ObjectMap<any> 
     }
 
     for (let i = 0; i < matches.length; i++) {
-      path = path.replace(`:${matches[i]}`, String(subsitutions[i]))
+      path = path.replace(`${matches[i]}`, String(subsitutions[i]))
     }
   } else {
     const subsitutionsKeys = Object.keys(subsitutions)
@@ -90,7 +73,11 @@ export function resolvePath(path: string, subsitutions?: any[] | ObjectMap<any> 
     }
 
     for (const match of matches) {
-      path = path.replace(`:${match}`, String(subsitutions[match]))
+      const subtitutionKey = match.replace(':', '')
+      if (!subsitutions[subtitutionKey]) {
+        throw new Error(`Missing key ${subtitutionKey} in substitutions: ${JSON.stringify(subsitutions)}`)
+      }
+      path = path.replace(`${match}`, String(subsitutions[subtitutionKey]))
     }
   }
 

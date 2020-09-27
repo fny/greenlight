@@ -10,15 +10,16 @@
 #  completed_welcome_at               :datetime
 #  current_sign_in_at                 :datetime
 #  current_sign_in_ip                 :inet
+#  daily_reminder_type                :text             default("text")
 #  email                              :text
 #  email_confirmation_sent_at         :datetime
 #  email_confirmation_token           :text
 #  email_confirmed_at                 :datetime
 #  email_unconfirmed                  :text
-#  first_name                         :text             not null
-#  is_sms_gateway_emailable           :boolean
+#  first_name                         :text             default("Greenlight User"), not null
+#  is_sms_emailable                   :boolean
 #  language                           :text             default("en"), not null
-#  last_name                          :text             not null
+#  last_name                          :text             default("Unknown"), not null
 #  last_sign_in_at                    :datetime
 #  last_sign_in_ip                    :inet
 #  magic_sign_in_sent_at              :datetime
@@ -30,8 +31,6 @@
 #  mobile_number_confirmed_at         :datetime
 #  mobile_number_unconfirmed          :text
 #  password_digest                    :text
-#  password_reset_sent_at             :datetime
-#  password_reset_token               :text
 #  password_set_at                    :datetime
 #  physician_name                     :text
 #  physician_phone_number             :text
@@ -48,7 +47,6 @@
 #  index_users_on_magic_sign_in_token               (magic_sign_in_token) UNIQUE
 #  index_users_on_mobile_number                     (mobile_number) UNIQUE
 #  index_users_on_mobile_number_confirmation_token  (mobile_number_confirmation_token)
-#  index_users_on_password_reset_token              (password_reset_token) UNIQUE
 #
 require 'rails_helper'
 

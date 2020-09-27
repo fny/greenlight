@@ -1,0 +1,64 @@
+- id: att
+  name: AT&T
+  host: txt.att.net
+- id: boost
+  name: Boost Mobile
+  host: sms.myboostmobile.com
+- id: cspire
+  name: C-Spire
+  host: cspire1.com
+- id: consumer
+  name: Consumer Cellular
+  host: mailmymobile.net
+- id: cricket
+  name: Cricket
+  host: sms.cricketwireless.net
+- id: google
+  name: Google Fi
+  host: msg.fi.google.com
+- id: metropcs
+  name: Metro PCS
+  host: mymetropcs.com
+- id: mint
+  name: Mint Mobile
+  host: mailmymobile.net
+- id: pageplus
+  name: Page Plus
+  host: vtext.com
+- id: redpocket
+  name: Red Pocket
+  host: vtext.com
+- id: republic
+  name: Republic Wireless
+  host: text.republicwireless.com
+- id: simple
+  name: Simple Mobile
+  host: smtext.com
+- id: sprint
+  name: Sprint
+  host: messaging.sprintpcs.com
+- id: tmobile
+  name: T-Mobile
+  host: tmomail.net
+- id: ting
+  name: Ting
+  host: message.ting.com
+- id: tractfone
+  name: Tracfone
+  host: mmst5.tracfone.com
+- id: uscellular
+  name: U.S. Cellular
+  host: email.uscc.net
+- id: verizon
+  name: Verizon
+  host: vtext.com
+- id: virigin
+  name: Virgin Mobile
+  host: vmobl.com
+- id: xfinity
+  name: Xfinity Mobile
+  host: vtext.com
+- id: other
+  name: Other
+  # This should never be called.
+  host: error.greenlightready.com
