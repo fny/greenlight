@@ -1,4 +1,8 @@
+import { t } from '@lingui/macro'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import { getGlobal } from 'reactn'
+import { i18n } from 'src/i18n'
+
 
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
@@ -31,15 +35,19 @@ export function timeOfDay(): 'morning' | 'afternoon' | 'evening' {
   }
 }
 
+export function esExclaim() {
+  getGlobal().language === 'es' ? '¡' : ''
+}
+
 export function greeting() {
   const time = timeOfDay()
   switch (time) {
     case "morning":
-      return "Good Morning"
+      return i18n._(t("util.good_morning")`Good morning`)
     case "afternoon":
-      return "Good Afternoon"
+      return i18n._(t("util.good_afternoon")`Good afternoon`)
     case "evening":
-      return "Good Afternoon"
+      return i18n._(t("util.good_evening")`Good evening`)
     default:
       throw new Error(`Unknown time of day ${time}`)
   }

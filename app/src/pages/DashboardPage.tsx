@@ -7,6 +7,8 @@ import If from 'src/components/If'
 import { dynamicPaths } from 'src/routes'
 import { Case, When } from 'src/components/Case'
 import colors from 'src/common/colors'
+import { i18n } from 'src/i18n'
+import { Trans, t } from '@lingui/macro'
 
 export default () => {
   const user: User = useGlobal('currentUser')[0]
@@ -28,15 +30,18 @@ export default () => {
       <If test={user.needsToSubmitSomeonesSurvey()}>
       <Link href={dynamicPaths.userSurveysNewIndexPath(0)}>
       <div className="GLCard">
-        <div className="GLCard-title">Submit Daily Check-In</div>
+        <div className="GLCard-title">
+          <Trans id="DashboardPage.submit_check_in">Submit Daily Check-In</Trans>
+          </div>
         <div className="GLCard-body" style={{color: colors.greenDark}}>
+          {/* RACHEL: skipped i18n */}
           How are you today? You still need to fill out surveys for {
             user.usersNeedingSurveysText()
           }
         </div>
         <div className="GLCard-action">
           <div style={{ width: '50%', display: 'inline-block' }}>
-            Go to Check-In
+            <Trans id="DashboardPage.go_to_check_in">Go to Check-In</Trans>
           </div>
           <div
             style={{
@@ -52,7 +57,9 @@ export default () => {
       </Link>
       </If>
 
-      <BlockTitle>Your Children</BlockTitle>
+      <BlockTitle>
+        <Trans id="DashboardPage.your_children">Your Children</Trans>
+      </BlockTitle>
       <List>
         {user.children.map((child) => (
           <ListItem
@@ -60,7 +67,7 @@ export default () => {
             accordionItem
             link="#"
             title={child.firstName}
-            after="Not Submitted"
+            after={i18n._(t('DashboardPage.not_submitted')`Not Submitted`)}
           >
             <div slot="media">
               <UserJDenticon user={child} size={29} />
@@ -73,7 +80,7 @@ export default () => {
                 ></ListItem> */}
                 <ListItem
                   link={dynamicPaths.userGreenlightPassPath(child.id)}
-                  title="Greenlight Pass"
+                  title={i18n._(t('DashboardPage.greenlight_pass')`Greenlight Pass`)}
                 ></ListItem>
                 {/* <ListItem
                   link={`/users/${child.id}/absence`}
@@ -88,34 +95,39 @@ export default () => {
           </ListItem>
         ))}
       </List>
-      <BlockTitle>Resources For You</BlockTitle>
+      <BlockTitle>
+        <Trans id="DashboardPage.resources_title">Resources For You</Trans>
+      </BlockTitle>
       <List>
         {/* https://www.communitycarenc.org/what-we-do/supporting-primary-care */}
         <ListItem
           external={true}
           link="tel:1-877-490-6642"
-          title="Contact COVID-19 Triage"
-          footer="Call 7AM-11PM any day"
+          title={i18n._(t('DashboardPage.triage_title')`Contact COVID-19 Triage`)}
+          footer={i18n._(t('DashboardPage.triage_footer')`Call 7AM-11PM any day`)}
         />
         <ListItem
           external={true}
           link="https://www.dcopublichealth.org/services/communicable-diseases/coronavirus-disease-2019/covid-19-testing"
           target={'_blank'}
-          title="Find Testing"
-          footer="Testing Sites Near You"
+          title={i18n._(t('DashboardPage.testing_title')`Find Testing`)}
+          footer={i18n._(t('DashboardPage.testing_footer')`Testing Sites Near You`)}
         />
         {/* https://ncchildcare.ncdhhs.gov/Portals/0/documents/pdf/P/Parent_and_Families_School_Age_Child_Care.pdf?ver=2020-08-26-122445-963 */}
         <ListItem
           external={true}
-          title="Child Care Hotline"
-          footer="Child care referrals for infants to age 12, available 8AM-5PM Mon-Fri"
+          title={i18n._(t('DashboardPage.childcare_title')`Child Care Hotline`)}
+          footer={i18n._(
+            t('DashboardPage.childcare_footer')
+            `Child care referrals for infants to age 12, available 8AM-5PM Mon-Fri`
+          )}
         ><Link href="tel:1-888-600-1685" /></ListItem>
         
         <ListItem
           external={true}
           link="mailto:"
-          title="More Resources"
-          footer="Additional Services to Help"
+          title={i18n._(t('DashboardPage.more_resources_title')`More Resources`)}
+          footer={i18n._(t('DashboardPage.more_resources_footer')`Additional Services to Help`)}
         ></ListItem>
       </List>
     </Page>

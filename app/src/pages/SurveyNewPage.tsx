@@ -3,9 +3,10 @@ import { Page, Navbar, Block, Button, Input, Row, Col, ListInput } from 'framewo
 import { Case, When } from '../components/Case'
 import './SurveyNewPage.css'
 import DatedYesNoButton from '../components/DatedYesNoButton'
-import { dynamicPaths, paths } from 'src/routes'
-import { Moment } from 'moment'
 import moment from 'moment'
+import { i18n } from '@lingui/core'
+import { Trans, t } from '@lingui/macro'
+
 
 interface SymptomButtonProps {
   title: string
@@ -142,71 +143,90 @@ export default class SurveyNewPage extends React.Component<any, SurveyState> {
     const submittingFor = this.submittingFor()
     return (
       <Page>
-        <Navbar title="Symptom Survey" backLink="Back"></Navbar>
+        <Navbar 
+          title={i18n._(t('SurveyNewPage.survey')`Symptom Survey`)} 
+          backLink={i18n._(t('SurveyNewPage.back')`Back`)}>
+        </Navbar>
         <Block>
           <div className="survey-title">
             {
               this.isSubmittingForSelf() ?
-              `Do you have any of these symptoms?`
+              <Trans id="SurveyNewPage.any_symptoms">
+                `Do you have any of these symptoms?`
+              </Trans>
               :
-              `Does ${submittingFor.firstName} have any of these symptoms?`
+              <Trans id="SurveyNewPage.any_symptoms_child">
+                `Does ${submittingFor.firstName} have any of these symptoms?`
+              </Trans>
             }
           </div>
         </Block>
         <div className="SymptomButtons">
           <SymptomButton
-            title="Fever"
+            title={i18n._(t('SurveyNewPage.fever')`Fever`)}
             image="fever"
             onClick={() => this.toggleSymptom('hasFever')}
             selected={this.state.hasFever}
           />
           <SymptomButton
-            title="Chills"
+            title={i18n._(t('SurveyNewPage.chills')`Chills`)}
             image="chills"
             onClick={() => this.toggleSymptom('hasChills')}
             selected={this.state.hasChills}
           />
           <SymptomButton
-            title="New Cough"
+            title={i18n._(t('SurveyNewPage.new_cough')`New Cough`)}
             image="cough"
             onClick={() => this.toggleSymptom('hasNewCough')}
             selected={this.state.hasNewCough}
           />
           <SymptomButton
-            title="Difficulty<br />Breathing"
+            title={i18n._(t('SurveyNewPage.difficulty_breathing')`Difficulty<br />Breathing`)}
             image="difficulty-breathing"
             onClick={() => this.toggleSymptom('hasDifficultyBreathing')}
             selected={this.state.hasDifficultyBreathing}
           />
           <SymptomButton
-            title="Loss of<br />Taste/Smell"
+            title={i18n._(t('SurveyNewPage.loss_of_smell')`Loss of<br />Taste/Smell`)}
             image="taste-smell"
             onClick={() => this.toggleSymptom('hasLossTasteSmell')}
             selected={this.state.hasLossTasteSmell}
           />
         </div>
         <Block>
-          <div className="survey-title">COVID Contact?</div>
+          <div className="survey-title">
+            <Trans id="SurveyNewPage.covid_contact_title">COVID Contact?</Trans>
+          </div>
             {
               this.isSubmittingForSelf() ?
-              `Have you had close contact—within 6 feet for at least 15
-              minutes—with someone diagnosed with COVID-19?`
+              <Trans id="SurveyNewPage.covid_contact">
+                `Have you had close contact—within 6 feet for at least 15
+                minutes—with someone diagnosed with COVID-19?`
+              </Trans>
               :
-              `Has ${submittingFor.firstName} had close contact—within 6 feet for at least 15
-              minutes—with someone diagnosed with COVID-19?`
+              <Trans id="SurveyNewPage.covid_contact_child">
+                `Has ${submittingFor.firstName} had close contact—within 6 feet for at least 15
+                minutes—with someone diagnosed with COVID-19?`
+              </Trans>
             }
           <br />
           <DatedYesNoButton
             setYesNo={(yesNo: boolean ) => this.setContacted(yesNo)}
             setDate={(date: Date) => this.setContactDate(date)}
           />
-          <div className="survey-title">COVID Diagnosis?</div>
+          <div className="survey-title">
+            <Trans id="SurveyNewPage.covid_diagnosis_title">COVID Diagnosis?</Trans>
+          </div>
             {
               this.isSubmittingForSelf() ?
-              `Have you been diagnosed with or tested positive for COVID-19?`
+              <Trans id="SurveyNewPage.covid_diagnosis">
+                `Have you been diagnosed with or tested positive for COVID-19?`
+              </Trans>
               :
-              `Has ${submittingFor.firstName} been diagnosed with or tested positive for
-              COVID-19?`
+              <Trans id="SurveyNewPage.covid_diagnosis_child">
+                `Has ${submittingFor.firstName} been diagnosed with or tested positive for
+                COVID-19?`
+              </Trans>
             }
           <DatedYesNoButton
             setYesNo={(yesNo: boolean ) => this.setDiagnosed(yesNo)}
@@ -222,14 +242,16 @@ export default class SurveyNewPage extends React.Component<any, SurveyState> {
                   () => this.submit()
                 }
               >
-                Continue to {this.nextChild()?.firstName}
+                <Trans id="SurveyNewPage.continue">
+                  Continue to {this.nextChild()?.firstName}
+                </Trans>
               </Button>
             </When>
             <When value={false}>
               <Button fill onClick={
                 () => this.submit()
               }>
-                Finish
+                <Trans id="SurveyNewPage.finish">Finish</Trans>
               </Button>
             </When>
           </Case>

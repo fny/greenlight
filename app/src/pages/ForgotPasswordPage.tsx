@@ -18,6 +18,7 @@ import {
 } from 'framework7-react'
 
 import EmailOrPhoneListInput from '../components/EmailOrPhoneListInput'
+import { Trans } from '@lingui/macro'
 
 interface ForgotPasswordProps {}
 interface ForgotPasswordState {}
@@ -34,8 +35,10 @@ export default class ForgotPasswordPage extends React.Component<
         <Navbar title="Forgot Password" backLink="Back"></Navbar>
         <List form>
           <Block>
-            Enter your email or mobile number, and we'll send you a link to reset
-            your password.
+            <Trans id="ForgotPasswordPage.instructions">
+              Enter your email or mobile number, and we'll send you a link to reset
+              your password.
+            </Trans>
           </Block>
           <li>
             <EmailOrPhoneListInput value="" />

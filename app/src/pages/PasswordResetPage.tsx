@@ -1,23 +1,15 @@
-import React, { useState, getGlobal } from 'reactn'
+import React from 'reactn'
 import {
   Page,
   List,
-  LoginScreenTitle,
   ListInput,
-  Row,
-  Col,
   Navbar,
-  Link,
   Block,
-  BlockTitle,
-  Segmented,
   Button,
-  ListButton,
-  BlockFooter,
-  ListItem,
 } from 'framework7-react'
 
-import EmailOrPhoneListInput from '../components/EmailOrPhoneListInput'
+import { i18n } from '@lingui/core'
+import { Trans, t } from '@lingui/macro'
 
 interface PasswordResetProps {}
 interface PasswordResetState {}
@@ -32,15 +24,36 @@ export default class PasswordResetPage extends React.Component<
   render() {
     return (
       <Page className="PasswordResetPage" noToolbar noSwipeback loginScreen>
-        <Navbar title="Password Reset" backLink="Back"></Navbar>
+        <Navbar 
+          title={i18n._(t('PasswordResetPage.reset')`Password Reset`)} 
+          backLink={i18n._(t('PasswordResetPage.back')`Back`)}>
+        </Navbar>
         <List form>
           <Block>Enter a new password.</Block>
           {/* TODO: Allow reveal of passwords */}
-          <ListInput type="password" placeholder="Password" />
-          <ListInput type="password" placeholder="Password confirmation" />
+          <ListInput 
+            type="password" 
+            placeholder={
+              i18n._(
+                t('PasswordResetPage.password_placeholder')
+                `Password`
+              )
+            }
+          />
+          <ListInput 
+            type="password" 
+            placeholder={
+              i18n._(
+                t('PasswordResetPage.password_confirmation')
+                `Password confirmation`
+              )
+            }
+          />
           <Block>
             <Button outline fill>
-              Request Reset
+              <Trans id="PasswordResetPage.request_reset">
+                Request Reset
+              </Trans>
             </Button>
           </Block>
         </List>
@@ -48,11 +61,13 @@ export default class PasswordResetPage extends React.Component<
     )
   }
   signIn() {
-    const self = this
-    const app = self.$f7
-    const router = self.$f7router
-    app.dialog.alert(`You should be recieving an email or text soon.`, () => {
-      router.back()
+    const app = this.$f7
+    const router = this.$f7router
+    app.dialog.alert(
+      i18n._(
+        t('PasswordResetPage.will_get_email')`You should be recieving an email or text soon.`
+      ), () => {
+        router.back()
     })
   }
 }

@@ -41,17 +41,27 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
     if (!isValid) return
     try {
       await createMagicSignIn(this.state.emailOrMobile, this.state.rememberMe)
+      const alertTitle = i18n._(t('MagicSignInPage.sign_in_sent')`Magic Sign In Sent`)
       if (this.state.emailOrMobile.includes('@')) {
-        // TODO: i18n
-        this.$f7.dialog.alert("You should receive an email shortly with a magic sign in link.", 'Magic Sign In Sent')
+        this.$f7.dialog.alert(
+          i18n._(
+            t('MagicSignInPage.will_get_email')
+            `You should receive an email shortly with a magic sign in link.`), 
+            alertTitle)
       } else {
-        // TODO: i18n
-        this.$f7.dialog.alert("You should receive a text shortly with a magic sign in link.", 'Magic Sign In Sent')
+        this.$f7.dialog.alert(
+          i18n._(
+            t('MagicSignInPage.will_get_text')
+            `You should receive a text shortly with a magic sign in link.`), 
+            alertTitle)
       }
     } catch (e) {
       console.error(e.response)
-      // TODO: i18n
-      this.$f7.dialog.alert("We couldn't set up a magic sign for that info.", 'Magic Sign In Failed')
+      this.$f7.dialog.alert(
+        i18n._(
+          t('MagicSignInPage.failed_setup')
+          `We couldn't set up a magic sign for that info.`),
+        i18n._(t('MagicSignInPage.sign_in_failed')`Magic Sign In Failed`))
     }
   }
 
@@ -75,7 +85,7 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
               this.setState({ emailOrMobile: e.target.value })
             }}
           />
-          <ListItem checkbox title="Remember Me"
+          <ListItem checkbox title={i18n._(t('MagicSignInPage.remember_me')`Remember Me`)}
             onInput={e => {
               this.setState({ rememberMe: e.target.value })
             }}
