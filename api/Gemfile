@@ -23,10 +23,7 @@ gem 'sidekiq-cron', '1.2'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
-# The Routing Tree Web Toolking
-gem 'roda'
-# Add http authorization methods to Roda
-gem 'roda-http-auth'
+gem 'sinatra'
 
 #
 # Performance
@@ -71,10 +68,12 @@ gem 'lograge'
 gem 'phonelib'
 # SMS API and Voice API platform
 gem 'plivo'
-# The express way to send email 
+# The express way to send email
 gem 'pony'
 # Advanced seed data handling for Rails
 gem 'seed-fu', '~> 2.3'
+
+gem 'self_control', :path => "vendor/gems/self_control"
 # Twilio Sendgrid Email API
 gem 'sendgrid-ruby'
 # Performance monitoring
@@ -116,7 +115,6 @@ group :development do
   # Listens for file modifications, used by Spring
   gem 'listen', '~> 3.2'
   # Preview email in the default browser
-  # gem 'letter_opener', group: :development
   # A Ruby language server and code formatter
   gem 'rubocop', require: false
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
@@ -124,4 +122,9 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   # A Ruby language server
   gem 'solargraph', require: false
+end
+
+group :test do
+  # Simple testing of Sidekiq jobs
+  gem 'rspec-sidekiq'
 end

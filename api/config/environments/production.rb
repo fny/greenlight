@@ -25,7 +25,7 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  # config.active_storage.service = :local
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
@@ -85,11 +85,21 @@ Rails.application.configure do
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
   # Lograge
-  config.lograge.enabled = true
-  config.lograge.custom_options = lambda do |event|
-    {
-      user_id: event.payload[:user_id],
-      ip_addr: event.payload[:ip_addr],
-      params: event.payload[:params].except(:controller, :action)
+  # config.lograge.enabled = true
+  # config.lograge.custom_options = lambda do |event|
+  #   {
+  #     user_id: event.payload[:user_id],
+  #     ip_addr: event.payload[:ip_addr],
+  #     params: event.payload[:params].except(:controller, :action)
+  #   }
+  Pony.options = {
+    via: :smtp,
+    via_options: {
+      address: 'smtp.sendgrid.net',
+      port: '587',
+      user_name: 'apikey',
+      password: Greenlight::SENDGRID_API_KEY,
+      authentication: :plain
     }
+  }
 end

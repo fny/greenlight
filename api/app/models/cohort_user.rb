@@ -1,12 +1,18 @@
+class CohortUser < ApplicationRecord
+  self.table_name = 'cohorts_users'
+  belongs_to :cohort
+  belongs_to :user
+end
+
 # == Schema Information
 #
 # Table name: cohorts_users
 #
-#  id         :uuid             not null, primary key
+#  id         :bigint           not null, primary key
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  cohort_id  :uuid             not null
-#  user_id    :uuid             not null
+#  cohort_id  :bigint           not null
+#  user_id    :bigint           not null
 #
 # Indexes
 #
@@ -18,8 +24,3 @@
 #  fk_rails_...  (cohort_id => cohorts.id) ON DELETE => cascade
 #  fk_rails_...  (user_id => users.id) ON DELETE => cascade
 #
-class CohortUser < ApplicationRecord
-  self.table_name = 'cohorts_users'
-  belongs_to :cohort
-  belongs_to :user
-end

@@ -1,66 +1,16 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id                                 :uuid             not null, primary key
-#  accepted_terms_at                  :datetime
-#  auth_token                         :text
-#  auth_token_set_at                  :datetime
-#  birth_date                         :date
-#  completed_welcome_at               :datetime
-#  current_sign_in_at                 :datetime
-#  current_sign_in_ip                 :inet
-#  daily_reminder_type                :text             default("text")
-#  email                              :text
-#  email_confirmation_sent_at         :datetime
-#  email_confirmation_token           :text
-#  email_confirmed_at                 :datetime
-#  email_unconfirmed                  :text
-#  first_name                         :text             default("Greenlight User"), not null
-#  is_sms_emailable                   :boolean
-#  language                           :text             default("en"), not null
-#  last_name                          :text             default("Unknown"), not null
-#  last_sign_in_at                    :datetime
-#  last_sign_in_ip                    :inet
-#  magic_sign_in_sent_at              :datetime
-#  magic_sign_in_token                :text
-#  mobile_carrier                     :text
-#  mobile_number                      :text
-#  mobile_number_confirmation_sent_at :datetime
-#  mobile_number_confirmation_token   :text
-#  mobile_number_confirmed_at         :datetime
-#  mobile_number_unconfirmed          :text
-#  password_digest                    :text
-#  password_set_at                    :datetime
-#  physician_name                     :text
-#  physician_phone_number             :text
-#  sign_in_count                      :integer          default(0), not null
-#  zip_code                           :text
-#  created_at                         :datetime         not null
-#  updated_at                         :datetime         not null
-#
-# Indexes
-#
-#  index_users_on_auth_token                        (auth_token) UNIQUE
-#  index_users_on_email                             (email) UNIQUE
-#  index_users_on_email_confirmation_token          (email_confirmation_token) UNIQUE
-#  index_users_on_magic_sign_in_token               (magic_sign_in_token) UNIQUE
-#  index_users_on_mobile_number                     (mobile_number) UNIQUE
-#  index_users_on_mobile_number_confirmation_token  (mobile_number_confirmation_token)
-#
 class User < ApplicationRecord
   extend Enumerize
 
   enumerize :daily_reminder_type, in: [:text, :email, :none]
 
-  has_many :parent_relationships, foreign_key: :child_user_id,
+  has_many :parent_relationships, foreign_key: :child_id,
            class_name: 'ParentChild'
   has_many :parents, through: :parent_relationships,
-           source: :parent_user
-  has_many :child_relationships, foreign_key: :parent_user_id,
+           source: :parent
+  has_many :child_relationships, foreign_key: :parent_id,
            class_name: 'ParentChild'
   has_many :children, through: :child_relationships,
-           source: :child_user
+           source: :child
 
   has_many :greenlight_statuses
   has_many :medical_events
@@ -68,17 +18,17 @@ class User < ApplicationRecord
   has_many :locations, through: :location_accounts
   has_many :cohorts, through: :cohort_user
 
-  has_one :todays_greenlight_status, -> { submitted_today }, class_name: 'GreenlightStatus'
-  has_one :last_greenlight_status, -> { order('created_at') }, class_name: 'GreenlightStatus'
+  has_one :todays_greenlight_status, -> { submitted_for_today }, class_name: 'GreenlightStatus'
+  has_one :last_greenlight_status, -> { order('created_at DESC') }, class_name: 'GreenlightStatus'
 
   has_many :recent_greenlight_statuses, -> { recently_created }, class_name: 'GreenlightStatus'
   has_many :recent_medical_events, -> { recently_created }, class_name: 'MedicalEvent'
 
-  has_secure_password
+  has_secure_password validations: false
   has_secure_token :auth_token
   has_secure_token :magic_sign_in_token
 
-  validates :language, inclusion: { in: %w[en es] }
+  validates :locale, inclusion: { in: GreenlightX::SUPPORTED_LOCALES }
   validates :email, 'valid_email_2/email': true, uniqueness: true, allow_nil: true
   validates :mobile_number, phone: { countries: :us }, allow_nil: true, uniqueness: true
 
@@ -86,7 +36,6 @@ class User < ApplicationRecord
 
   validates :first_name, presence: true
   validates :first_name, presence: true
-  validate :email_or_mobile_number_present
 
   before_save :format_mobile_number
 
@@ -97,6 +46,21 @@ class User < ApplicationRecord
     elsif email_or_mobile.phone?
       User.find_by(mobile_number: email_or_mobile.value)
     end
+  end
+
+  def inferred_greenlight_status
+    return todays_greenlight_status if todays_greenlight_status
+    if last_greenlight_status && !last_greenlight_status.expired?
+      return last_greenlight_status
+    end
+    GreenlightStatus.new(
+      user: self,
+      status: GreenlightStatus::UNKNOWN
+    )
+  end
+
+  def recent_cleared_override
+    greenlight_statuses.order('created_at DESC').where(is_override: true).where('submission_date >= ?', 14.days.ago).first
   end
 
   def full_name
@@ -151,11 +115,38 @@ class User < ApplicationRecord
     parent_of?(user) || user == self
   end
 
-  def admin?
-    false
+  def submitted_for_today?
+    last_greenlight_status.today?
+  end
+
+  def needs_to_sumbit_survey_for
+    submits_surveys_for.filter { |u| !u.submitted_for_today? }
+  end
+
+  def needs_to_sumbit_survey_for_text
+    needs_to_sumbit_survey_for.map(&:first_name).to_sentence
+  end
+
+  # PERF: N+1 query
+  def submits_surveys_for
+    people = []
+    if location_accounts.any?
+      people.push(self)
+    end
+    children.each do |c|
+      if c.location_accounts.any?
+        people.push(self)
+      end
+    end
+  end
+
+  def submits_surveys_for_text
+    submits_surveys_for.map(&:first_name).to_sentence
   end
 
   before_save :timestamp_password
+
+
 
   private
 
@@ -170,8 +161,78 @@ class User < ApplicationRecord
       self.password_set_at = Time.now
     end
   end
-    
+
   def format_mobile_number
-    self.mobile_number = Phonelib.parse(mobile_number, 'US').full_e164    
+    return if mobile_number.blank?
+    parsed = Phonelib.parse(mobile_number, 'US').full_e164
+    parsed = nil if parsed.blank?
+    self.mobile_number = parsed
   end
 end
+
+# == Schema Information
+#
+# Table name: users
+#
+#  id                                 :bigint           not null, primary key
+#  accepted_terms_at                  :datetime
+#  auth_token                         :text
+#  auth_token_set_at                  :datetime
+#  birth_date                         :date
+#  completed_invite_at                :datetime
+#  current_sign_in_at                 :datetime
+#  current_sign_in_ip                 :inet
+#  daily_reminder_type                :text             default("text"), not null
+#  deleted_at                         :datetime
+#  email                              :text
+#  email_confirmation_sent_at         :datetime
+#  email_confirmation_token           :text
+#  email_confirmed_at                 :datetime
+#  email_unconfirmed                  :text
+#  first_name                         :text             default("Greenlight User"), not null
+#  invited_at                         :datetime
+#  is_sms_emailable                   :boolean
+#  last_name                          :text             default("Unknown"), not null
+#  last_sign_in_at                    :datetime
+#  last_sign_in_ip                    :inet
+#  locale                             :text             default("en"), not null
+#  magic_sign_in_sent_at              :datetime
+#  magic_sign_in_token                :text
+#  mobile_carrier                     :text
+#  mobile_number                      :text
+#  mobile_number_confirmation_sent_at :datetime
+#  mobile_number_confirmation_token   :text
+#  mobile_number_confirmed_at         :datetime
+#  mobile_number_unconfirmed          :text
+#  needs_physician                    :boolean          default(FALSE), not null
+#  password_digest                    :text
+#  password_set_at                    :datetime
+#  physician_name                     :text
+#  physician_phone_number             :text
+#  sign_in_count                      :integer          default(0), not null
+#  time_zone                          :text
+#  zip_code                           :text
+#  created_at                         :datetime         not null
+#  updated_at                         :datetime         not null
+#  created_by_id                      :bigint
+#  deleted_by_id                      :bigint
+#  updated_by_id                      :bigint
+#
+# Indexes
+#
+#  index_users_on_auth_token                        (auth_token) UNIQUE
+#  index_users_on_created_by_id                     (created_by_id)
+#  index_users_on_deleted_by_id                     (deleted_by_id)
+#  index_users_on_email                             (email) UNIQUE
+#  index_users_on_email_confirmation_token          (email_confirmation_token) UNIQUE
+#  index_users_on_magic_sign_in_token               (magic_sign_in_token) UNIQUE
+#  index_users_on_mobile_number                     (mobile_number) UNIQUE
+#  index_users_on_mobile_number_confirmation_token  (mobile_number_confirmation_token)
+#  index_users_on_updated_by_id                     (updated_by_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (created_by_id => users.id) ON DELETE => nullify
+#  fk_rails_...  (deleted_by_id => users.id) ON DELETE => nullify
+#  fk_rails_...  (updated_by_id => users.id) ON DELETE => nullify
+#

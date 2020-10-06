@@ -1,0 +1,18 @@
+Id,Day,Timestamp,Medical Events,Result,Expiration,Follow Up,Todays Status,Override,Error,Note
+0,0,10/31/20 8:00 AM,[],GreenlightStatus::CLEARED,10/31/20,11/1/20,GreenlightStatus::CLEARED,,,
+1,1,11/1/20 6:05 PM,[MedicalEvent::COVID_EXPOSURE],GreenlightStatus::RECOVERY,11/15/20,11/3/20,GreenlightStatus::RECOVERY,,,
+2,2,11/2/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+3,3,11/3/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+4,4,11/4/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+5,5,11/5/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+6,6,11/6/20 8:00 AM,[],GreenlightStatus::RECOVERY,11/15/20,11/7/20,GreenlightStatus::RECOVERY,,,
+7,7,11/7/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+8,8,11/8/20 8:00 AM,[MedicalEvent::COVID_TEST_NEGATIVE],GreenlightStatus::RECOVERY,11/15/20,11/9/20,GreenlightStatus::RECOVERY,,,Negative does not clear you
+9,9,11/9/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+10,10,11/10/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+11,11,11/11/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+12,12,11/12/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+13,13,11/13/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+14,14,11/14/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+15,15,11/15/20 8:00 AM,,,,,GreenlightStatus::RECOVERY,,,
+16,16,11/16/20 8:00 AM,,,,,GreenlightStatus::UNKNOWN,,,

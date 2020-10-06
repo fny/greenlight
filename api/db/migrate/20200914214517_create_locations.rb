@@ -1,6 +1,6 @@
 class CreateLocations < ActiveRecord::Migration[6.0]
   def change
-    create_table :locations, id: :uuid do |t|
+    create_table :locations do |t|
       t.text :name, null: false
       t.text :category, null: false
       t.text :permalink, index: { unique: true }, null: false

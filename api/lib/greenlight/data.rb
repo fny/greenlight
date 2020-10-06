@@ -1,5 +1,5 @@
 module Greenlight
-  module Data    
+  module Data
     def read_file(file)
       File.read(self.file_path(file))
     end

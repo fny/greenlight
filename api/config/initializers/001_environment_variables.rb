@@ -1,3 +1,5 @@
+# require 'lib/configurator'
+
 Configurator.new(Greenlight) do
   env :PLIVO_AUTH_ID, required: false
   env :PLIVO_AUTH_TOKEN, required: false
@@ -11,7 +13,7 @@ Configurator.new(Greenlight) do
   env :MAILGUN_SMTP_USERNAME
   env :MAILGUN_SMTP_PASSWORD
   env :SENDGRID_API_KEY
-  
+
   set :API_URL do
     if ENV.key?('API_URL')
       ENV.fetch('API_URL')
@@ -22,7 +24,7 @@ Configurator.new(Greenlight) do
     end
   end
 
-  set :API_URI do 
+  set :API_URI do
     URI(Greenlight::API_URL)
   end
 

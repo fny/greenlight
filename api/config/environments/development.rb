@@ -41,9 +41,24 @@ Rails.application.configure do
 
   config.hosts << "api-dev.greenlightready.com"
 
+  config.middleware.use PrettyJsonResponse
+
+  config.after_initialize do
+    ActiveRecord::Base.logger = Rails.logger.clone
+    ActiveRecord::Base.logger.level = Logger::INFO
+  end
+
   config.after_initialize do
     config.colorize_logging = true
     Bullet.enable = true
     Bullet.rails_logger = true
   end
+
+  Pony.options = {
+    via: :smtp,
+    via_options: {
+      address: 'localhost',
+      port: '1025'
+    }
+  }
 end

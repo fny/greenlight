@@ -3,11 +3,21 @@ class Session
     new(user: user, expiration: remember_me ? 30.days.from_now : 1.day.from_now)
   end
 
-  attr_accessor :issued_at, :expiration, :user
+  attr_accessor :issued_at, :expiration, :user, :token
 
   def initialize(token: nil, user: nil, expiration: 1.day.from_now)
-    if token && token.downcase.include?('bearer')
+    if token
+      # Tokens must have bearers
+      if !token.downcase.include?('bearer')
+        raise JSONAPI::Error.new(
+          code: 'invalid_auth_token',
+          detail: "Bearer was not provided",
+          status: 401,
+          source: { header: 'Authorization' },
+        )
+      end
       token = token.sub('Bearer', '').sub('bearer', '').strip
+      @token = token
       decoded = JSONWebToken.decode(token)
       @data = HashWithIndifferentAccess.new(decoded)
       @issued_at = Time.at(@data[:iat])
@@ -32,6 +42,10 @@ class Session
 
   def []=(key, value)
     @data[key] = value
+  end
+
+  def locale
+    user ? user.locale : :en
   end
 
   def encoded

@@ -1,6 +1,6 @@
 module JSONAPI
   module Errors
-    class JSONAPIError
+    class Wrapper
       # From JSON API v1:
       #
       # Error objects MUST be returned as an array keyed by errors in the top level

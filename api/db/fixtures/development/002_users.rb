@@ -4,7 +4,7 @@ SeedFu.quiet = true
 Faker::Config.random = Random.new(42)
 Faker::Config.locale = 'en-US'
 
-N_STUDENTS = 10000
+N_STUDENTS = 100
 
 N_SINGLE_PARENTS = (N_STUDENTS / 10).round
 N_MARRIED_PARENTS = N_STUDENTS - N_SINGLE_PARENTS
@@ -15,6 +15,15 @@ N_WIVES = N_HUSBANDS
 N_TEACHERS = (N_STUDENTS / 20).round
 N_STAFF = (N_TEACHERS / 4).round
 
+
+@location_id_seq = Location.id_seq
+@user_id_seq = User.id_seq
+@location_account_id_seq = LocationAccount.id_seq
+@parent_child_id_seq = ParentChild.id_seq
+@cohort_user_id_seq = CohortUser.id_seq
+@cohort_id_seq = Cohort.id_seq
+@greenlight_status_id_seq = MedicalEvent.id_seq
+@medical_event_id_seq = MedicalEvent.id_seq
 
 
 ExternalId = Faker::UniqueGenerator.new(
@@ -47,7 +56,7 @@ end
 
 def build_user
   user = {
-    id: Faker::Internet.uuid,
+    id: @user_id_seq.next(),
     mobile_number: Faker::PhoneNumber.unique.cell_phone_in_e164
   }
   set_name_and_email(user)
@@ -55,15 +64,15 @@ end
 
 def build_parent_child(parent, child)
   {
-    id: Faker::Internet.uuid,
-    parent_user_id: parent[:id],
-    child_user_id: child[:id]
+    id: @parent_child_id_seq.next(),
+    parent_id: parent[:id],
+    child_id: child[:id]
   }
 end
 
 def build_location_account(location, user, role, title = nil)
   {
-    id: Faker::Internet.uuid,
+    id: @location_account_id_seq.next(),
     external_id: ExternalId.call,
     location_id: location.id,
     user_id: user[:id],
@@ -74,7 +83,7 @@ end
 
 def build_cohort(location, name, category)
   {
-    id: Faker::Internet.uuid,
+    id: @cohort_id_seq.next(),
     location_id: location.id,
     name: name,
     category: category
@@ -83,7 +92,7 @@ end
 
 def build_cohort_user(cohort, user)
   {
-    id: Faker::Internet.uuid,
+    id: @cohort_user_id_seq.next(),
     cohort_id: cohort[:id],
     user_id: user[:id],
   }
@@ -104,33 +113,35 @@ def build_cohorts_users(users, percentages, cohorts)
   users_cohorts
 end
 
-def build_greenlight_status(user, set_at, expires_at, status = nil)
+def build_greenlight_status(user, submitted_at, expiration_date, status = nil)
   {
-    id: Faker::Internet.uuid,
+    id: @greenlight_status_id_seq.next(),
     user_id: user[:id],
-    status_set_at: set_at,
-    status_expires_at: expires_at,
-    status: status || ['green', 'green', 'green', 'green', 'green', 'green', 'green', 'absent', 'unknown'].sample
+    submission_date: submitted_at.to_date,
+    follow_up_date: submitted_at.to_date + 1.day,
+    expiration_date: expiration_date,
+    status: status || ['cleared', 'cleared', 'cleared', 'cleared', 'cleared', 'cleared', 'cleared', 'absent', 'unknown'].sample
   }
 end
 
 def event_for_status(status)
   case status
-  when 'yellow'
+  when 'pending'
     ['fever', 'new_cough', 'difficulty_breathing', 'fever', 'chills', 'taste_smell'].sample
-  when 'red'
+  when 'recovery'
     ['covid_test_positive', 'covid_diagnosis'].sample
   else
     'none'
   end
 end
 
-def build_medical_event(user, occurred_at, status)
+def build_medical_event(user, status, status_color)
   {
-    id: Faker::Internet.uuid,
+    id: @medical_event_id_seq.next(),
+    greenlight_status_id: status[:id],
     user_id: user[:id],
-    occurred_at: occurred_at,
-    event_type: event_for_status(status)
+    occurred_at: status[:started_at],
+    event_type: event_for_status(status_color)
   }
 end
 
@@ -143,14 +154,14 @@ def build_greenlight_statuses(user, status)
     build_greenlight_status(user, d, d + 1.day)
   }
   events = []
-  if status == 'red'
-    statuses[-3][:status] = 'yellow'
-    events << build_medical_event(user, statuses[-3][:status_set_at], 'yellow')
+  if status == 'recovery'
+    statuses[-3][:status] = 'pending'
+    events << build_medical_event(user, statuses[-3], 'pending')
 
-    statuses[-2][:status] = 'yellow'
-    events << build_medical_event(user, statuses[-2][:status_set_at], 'yellow')
-    statuses[-1][:status] = 'red'
-    events << build_medical_event(user, statuses[-1][:status_set_at], 'red')
+    statuses[-2][:status] = 'pending'
+    events << build_medical_event(user, statuses[-2], 'pending')
+    statuses[-1][:status] = 'recovery'
+    events << build_medical_event(user, statuses[-1], 'recovery')
   end
 
   if status == 'absent'
@@ -170,7 +181,7 @@ end
 
 def assign_gl_statuses(users)
   n = users.size
-  colors = %w[red  yellow absent unknown]
+  colors = %w[red  pending absent unknown]
   counts =   [0.5, 3,     4,     7].map { |x| x * 0.01 * users.size }
 
   statuses = []
@@ -185,7 +196,7 @@ def assign_gl_statuses(users)
   end
 
   users_to_assign.each do |u|
-    s, e = build_greenlight_statuses(u, 'green')
+    s, e = build_greenlight_statuses(u, 'cleared')
     statuses += s
     events += e
   end
@@ -291,18 +302,6 @@ puts "Building greenlight statuses"
 greenlight_statuses, medical_events = assign_gl_statuses([staff, teachers, students].flatten)
 
 puts "Seeding data"
-# Parallel.each([
-#   -> { User.seed(:id, :email, :mobile_number, users) },
-#   -> { Cohort.seed(:name, :category, cohorts) }
-# ]) { |x| x.call }
-
-# Parallel.each([
-#  -> { ParentChild.seed(:parent_user_id, :child_user_id, parents_children) },
-#  -> { LocationAccount.seed(:user_id, :location_id, location_accounts) },
-#  -> { CohortUser.seed(:cohort_id, :user_id, cohorts_users) },
-#  -> { GreenlightStatus.seed(:id, greenlight_statuses) },
-#  -> { MedicalEvent.seed(:id, medical_events) unless medical_events.empty? }
-# ]) { |x| x.call }
 
 User.seed(:id, :email, :mobile_number, users)
 Cohort.seed(:id, cohorts)

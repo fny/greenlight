@@ -1,0 +1,10 @@
+Id,Day,Timestamp,Medical Events,Result,Expiration,Follow Up,Todays Status,Override,Error,Note
+0,0,10/31/20 8:00 AM,,,,,GreenlightStatus::UNKNOWN,,,
+1,1,11/1/20 8:00 AM,[],GreenlightStatus::CLEARED,11/1/20,11/2/20,GreenlightStatus::CLEARED,,,
+2,1,11/1/20 12:00 PM,[],GreenlightStatus::CLEARED,11/1/20,11/2/20,GreenlightStatus::CLEARED,,TRUE,Trying to double submit
+3,1,11/1/20 6:05 PM,[],GreenlightStatus::CLEARED,11/2/20,11/3/20,GreenlightStatus::CLEARED,,,Submitting early for next day
+4,2,11/2/20 11:00 AM,[],GreenlightStatus::CLEARED,11/2/20,11/3/20,GreenlightStatus::CLEARED,,TRUE,Trying to double submit
+5,2,11/2/20 4:00 PM,,,,,GreenlightStatus::CLEARED,,,
+6,3,11/3/20 8:00 AM,,,,,GreenlightStatus::UNKNOWN,,,Checking status before submit
+7,3,11/3/20 6:05 PM,[],GreenlightStatus::CLEARED,11/4/20,11/5/20,GreenlightStatus::CLEARED,,,Submitting After Cutoff
+8,4,11/4/20 8:00 AM,,,,,GreenlightStatus::CLEARED,,,Submitting After Cutoff Lasts to Next day

@@ -1,11 +1,11 @@
 module JSONAPI
   module Errors
-    class NotFound < JSONAPIError
-      def initialize(message: nil)
+    class NotFound < Wrapper
+      def initialize(detail: nil, title: nil)
         super(
-          title: 'Record not Found',
+          title: title || 'Record not Found',
           status: 404,
-          detail: message || 'We could not find the object you were looking for.',
+          detail: detail || 'We could not find the object you were looking for.',
         )
       end
     end

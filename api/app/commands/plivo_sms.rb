@@ -1,5 +1,13 @@
 class PlivoSMS < ApplicationCommand
-  argument :from, default: '919-728-5377'
+  def self.deliveries
+    @@deliveries ||= []
+  end
+
+  def logger
+    @@logger ||= Logger.new("#{Rails.root}/log/sms.log")
+  end
+
+  argument :from, default: GreenlightX::PHONE_NUMBER
   argument :to
   argument :message
 
@@ -8,14 +16,16 @@ class PlivoSMS < ApplicationCommand
 
   def work
     client = Plivo::RestClient.new
-    if !Rails.env.production?
-      to = '330-333-2729'
+    if Rails.env.production?
+      response = client.messages.create(
+        Phonelib.parse(from, 'US').full_e164,
+        [Phonelib.parse(to, 'US').full_e164],
+        message
+      )
+      response
+    else
+      PlivoSMS.deliveries << { from: from, to: to, message: message }
+      logger.info("#{from} -> #{to}: #{message}")
     end
-    response = client.messages.create(
-      Phonelib.parse(from, 'US').full_e164,
-      [Phonelib.parse(to, 'US').full_e164],
-      message
-    )
-    response
   end
 end

@@ -1,8 +1,5 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
 Things you may want to cover:
 
 * Ruby version
@@ -36,3 +33,44 @@ curl -g "https://api.honeybadger.io/v1/deploys? \
   deploy[repository]=git@github.com:user/repo.git& \
   deploy[revision]=b6826b8& \
   api_key=1a49717c"
+
+
+## Yason API
+
+We'll be using this for version 2 of the API.
+
+Goals:
+
+ - Hypermedia sanity
+ - Add more flexibility than JSON API
+ - Add actions
+ - Allow for bulk operations
+ - Allow for remote/client sync
+ - Allow for conflict resolution
+ - Smaller payloads
+
+
+### "Primitive" Types
+
+ - Boolean:
+ - Password:
+ - Symbol:
+ - String:
+ - Integer:
+ - BigInt:
+ - Int64:
+ - Int32:
+ - Float:
+ - Double:
+ - Date:
+ - DateTime:
+ - Enum:
+ - Array:
+
+### Actions
+
+### Errors
+
+### Pagination Meta
+
+### Extensions

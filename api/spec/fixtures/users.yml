@@ -1,0 +1,6 @@
+marge:
+  id: 1
+  first_name: Marge
+  last_name: Simpson
+  email: marge@springfield.com
+  password_digest: BCrypt::Password.create('super_secret_password', cost: 5)

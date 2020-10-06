@@ -1,6 +1,6 @@
 module JSONAPI
   module Errors
-    class Forbidden < JSONAPIError
+    class Forbidden < Wrapper
       def initialize(message: nil)
         super(
           title: 'Forbidden request',

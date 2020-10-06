@@ -1,6 +1,6 @@
 module JSONAPI
   module Errors
-    class ActiveModelInvalid < JSONAPIError
+    class ActiveModelInvalid < Wrapper
       def initialize(errors: {})
         @errors = errors
         @status = 422
