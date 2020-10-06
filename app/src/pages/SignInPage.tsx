@@ -126,7 +126,7 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
         </List>
         <List>
           <BlockFooter>
-            <Link href={paths.passwordResetsNewPath}>
+            <Link href={paths.magicSignInPath}>
               <Trans id="SignInPage.forgot_password">
                 Forgot password?
               </Trans>

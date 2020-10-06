@@ -1,4 +1,5 @@
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import moment from 'moment'
 
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
@@ -53,7 +54,7 @@ export function haveEqualAttrs(a: any, b: any) {
 
   // If number of properties is different,
   // objects are not equivalent
-  if (aProps.length != bProps.length) {
+  if (aProps.length !== bProps.length) {
       return false
   }
 
@@ -82,7 +83,40 @@ export function deleteBlanks<T>(obj: T): Partial<T> {
   return obj
 }
 
+export function isEmptyType(data: any) {
+  return typeof data === null ||
+  typeof data === undefined
+}
+
+export function isPrimitiveType(data: any) {
+  return typeof data === 'string' || 
+    typeof data === 'number' ||
+    typeof data === 'boolean' ||
+    typeof data === 'bigint' ||
+    typeof data === 'symbol' ||
+    typeof data === null ||
+    typeof data === undefined
+}
+
+export function transformForAPI(data: any): any {
+  if (Array.isArray(data)) {
+    return data.map(transformForAPI)
+  }
+  if (isPrimitiveType(data)) {
+    return data
+  }
+  if (moment.isMoment(data)) {
+    return data.toISOString()
+  }
+  const transformed: any = {}
+  Object.keys(data).forEach(k => {
+    transformed[k] = transformForAPI(data[k])
+  })
+  return transformed
+}
+
 export function conjungtify(words: string[], conjunction: string) {
   const endPos = words.length - 1
+  if (endPos === 0) return words[0] // only one word
   return `${words.slice(0, endPos).join(', ')} ${conjunction} ${words[endPos]}`
 }

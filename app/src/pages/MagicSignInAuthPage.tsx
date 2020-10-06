@@ -64,7 +64,8 @@ export default class MagicSignInAuthPage extends React.Component<Dict<any>, Stat
         <Block>
           <Case test={this.state.hasReceivedResponse && !this.state.isSuccess}>
             <When value={true}>
-              That magic sign in link didn't work. Maybe <Link href={paths.rootPath}>try again?</Link>
+              That magic sign in link didn't work. It may have expired.
+              <Link href={paths.rootPath}>Try again?</Link>
             </When>
             <When value={false}>
               Signing in...

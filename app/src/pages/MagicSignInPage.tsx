@@ -11,7 +11,7 @@ import {
 import { Trans, t } from '@lingui/macro'
 import { i18n } from 'src/i18n'
 
-import EmailOrPhoneListInput, { EmailOrPhoneInputTypes } from 'src/components/EmailOrPhoneListInput'
+import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
 import './MagicSignInPage.css'
 import { Dict } from 'src/common/types'
 import { createMagicSignIn } from 'src/common/api'

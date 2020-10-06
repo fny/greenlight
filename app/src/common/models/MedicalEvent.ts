@@ -1,12 +1,12 @@
 import { Model, attribute as attr, initialize, DATETIME, STRING } from './Model'
 import moment, { Moment } from 'moment'
 
-enum MEDICAL_EVENTS {
+export enum MEDICAL_EVENTS {
   NONE = 'none',
   FEVER = 'fever',
   NEW_COUGH = 'new_cough',
   DIFFICULTY_BREATING = 'difficulty_breathing',
-  TASTE_SMELL = 'taste_smell',
+  LOST_TASTE_SMELL = 'lost_taste_smell',
   CHILLS = 'chills',
   COVID_EXPOSURE = 'covid_exposure',
   COVID_TEST = 'covid_test',
@@ -24,7 +24,7 @@ export class MedicalEvent extends Model {
   static SYMPTOMS = [
     MEDICAL_EVENTS.FEVER,
     MEDICAL_EVENTS.NEW_COUGH,
-    MEDICAL_EVENTS.TASTE_SMELL,
+    MEDICAL_EVENTS.LOST_TASTE_SMELL,
     MEDICAL_EVENTS.DIFFICULTY_BREATING,
     MEDICAL_EVENTS.CHILLS
   ]
@@ -38,7 +38,7 @@ export class MedicalEvent extends Model {
   eventType: MEDICAL_EVENTS = MEDICAL_EVENTS.NONE
 
   @attr({ type: DATETIME })
-  occuredAt: Moment = moment(null)
+  occurredAt: Moment = moment(null)
 
   @attr({ type: DATETIME })
   createdAt: Moment = moment(null)
@@ -52,7 +52,7 @@ export function findEvents(medicalEvents: MedicalEvent[], eventType: MEDICAL_EVE
   const start = moment().subtract(lookbackDays, 'day')
   const eventTypes = Array.isArray(eventType) ? eventType : [eventType]
   return medicalEvents
-    .filter(event => event.occuredAt >= start)
+    .filter(event => event.occurredAt >= start)
     .filter(event => eventTypes.includes(event.eventType))
 }
 

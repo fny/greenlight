@@ -19,24 +19,36 @@ import pluralize from 'pluralize'
 import { timeOfDay } from "src/common/util"
 import { User } from 'src/common/models/User'
 import { paths } from "src/routes"
+import { ReactNComponent } from "reactn/build/components"
+import { NoCurrentUserError } from "src/common/errors"
 
 
 interface State {
   termsOpened: boolean
+  currentUser: User
 }
 
-export default class WelcomeParentPage extends React.Component<any, State> {
-  state: State = {
-    termsOpened: false
+export default class WelcomeParentPage extends ReactNComponent<any, State> {
+  constructor(props: any) {
+    super(props)
+    
+    if (!this.global.currentUser) {
+      throw new NoCurrentUserError()
+    }
+    this.state =  {
+      termsOpened: false,
+      currentUser: this.global.currentUser
+    }
   }
 
+
   totalLocations() {
-    const user: User = this.global.currentUser
+    const user = this.state.currentUser
     return user.locations_TODO().length + user.children.map(x => x.locations_TODO().length).reduce((x, y) => x + y, 0)
   }
 
   whoDoYouFillSurveysFor() {
-    const user = this.global.currentUser
+    const user = this.state.currentUser
     const fillForSelf = user.locations.length > 0
     const fillForChildren = user.children.length > 0
     if (fillForSelf && fillForChildren) {
@@ -54,7 +66,7 @@ export default class WelcomeParentPage extends React.Component<any, State> {
   }
 
   render() {
-    const user = this.global.currentUser
+    const user = this.state.currentUser
     const locationCount = this.totalLocations() 
     return <Page>
       <Block>

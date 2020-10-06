@@ -1,10 +1,11 @@
-import { User, Location, Model } from '../models'
+import { User, Location, Model, MedicalEvent, GreenlightStatus } from '../models'
 import { TokenResponse } from '../types'
 import { transformRecordResponse, responseStore, recordStore } from './stores'
 import axios, { AxiosResponse } from 'axios'
 
 import { Session, NullSession } from './session'
 import { getGlobal } from 'reactn'
+import { transformForAPI } from '../util'
 
 const BASE_URL = "http://api-dev.greenlightready.com/v1"
 const REMEBER_ME_DAYS = 30
@@ -61,7 +62,7 @@ export async function getCurrentUser(): Promise<User> {
 
 // TODO clear blanks and format values
 export async function updateUser(user: User, updates: Partial<User>): Promise<User> {
-  await v1.patch(`/users/${user.  id}`, 
+  await v1.patch(`/users/${user.id}`, 
     updates,
     { headers: session.headers() }
   )
@@ -73,6 +74,16 @@ export async function findUsersForLocation(location: string | Location) {
   const locationId = typeof location === 'string' ? location : location.id
   const path = `/locations/${locationId}/users`
   return getResource<User>(path, true) as Promise<User[]>
+}
+
+export async function createSymptomSurvey(user: User, medicalEvents: Partial<MedicalEvent>[], greenlightStatus: Partial<GreenlightStatus>) {
+  const payload = {
+    medicalEvents,
+    greenlightStatus
+  }
+  await v1.post(`/users/${user.id}/symptom-surveys`, transformForAPI(payload), {
+    headers: session.headers()
+  })
 }
 
 export async function getResource<T extends Model>(path: string, cache = false) {
@@ -108,11 +119,10 @@ export function destroySession() {
 }
 
 export function isSignedIn() {
-  const currentUser: User | undefined = getGlobal().currentUser
+  const currentUser = getGlobal().currentUser
   return session.isValid() && currentUser !== null && currentUser !== undefined
 }
 
 export function currentUser() {
-  const user: User | undefined = getGlobal().currentUser
-  return user || null
+  return getGlobal().currentUser
 }

@@ -42,7 +42,17 @@ if (session.isValid()) {
   getCurrentUser().then(user => {
     setGlobal({ currentUser: user })
     render()
-  }).catch(console.error)
+  }).catch(err => {
+    if (err.response) {
+      if (err.code === 404) {
+        // User has been deleted clear the session
+        destroySession()
+      }
+      console.log(err)
+      console.log(err.response)
+    }
+    render()
+  })
 } else {
   render()
 }

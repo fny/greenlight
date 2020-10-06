@@ -8,14 +8,32 @@ import { updateUser } from 'src/common/api'
 import { dynamicPaths } from 'src/routes'
 import { deleteBlanks } from 'src/common/util'
 import moment from 'moment'
+import { ReactNComponent } from 'reactn/build/components'
+import { NoCurrentUserError } from 'src/common/errors'
 
 interface State {
   physicianName: string
   physicianPhoneNumber: string
   needsPhysician: boolean
+  currentUser: User
 }
 
-export default class extends React.Component<any, State> {
+export default class extends ReactNComponent<any, State> {
+
+  constructor(props: any) {
+    super(props)
+    
+    if (!this.global.currentUser) {
+      throw new NoCurrentUserError()
+    }
+    this.state =  {
+      physicianName: '',
+      physicianPhoneNumber: '',
+      needsPhysician: false,
+      currentUser: this.global.currentUser
+    }
+  }
+
   childIndex() {
     const rawId = this.$f7route.params['id']
     if (!rawId) throw new Error("Child id missing")
@@ -23,26 +41,26 @@ export default class extends React.Component<any, State> {
   }
 
   child(): User {
-    return this.global.currentUser.sortedChildren()[this.childIndex()]
+    return this.state.currentUser.sortedChildren()[this.childIndex()]
   }
 
   hasNextChild() {
-    return this.childIndex() < this.global.currentUser.children.length - 1
+    return this.childIndex() < this.state.currentUser.children.length - 1
   }
 
   nextChild() {
     if (!this.hasNextChild()) {
       return null
     }
-    return this.global.currentUser.children[this.childIndex()]
+    return this.state.currentUser.children[this.childIndex()]
   }
 
   childCount() {
-    return this.global.currentUser.children.length
+    return this.state.currentUser.children.length
   }
 
   childrenNames() {
-    const children = this.global.currentUser.children
+    const children = this.state.currentUser.children
     let names = ''
     for (let i = 0; i < children.length; i++) {
       names += children[i].firstName
@@ -60,12 +78,12 @@ export default class extends React.Component<any, State> {
     // TODO: Move delete blanks into update user
     const attrs = deleteBlanks({
       physicianName: this.state.physicianName, physicianPhoneNumber: this.state.physicianPhoneNumber, needsPhysician: this.state.needsPhysician,
-      completedWelcomeAt: moment().toISOString()
+      completedInviteAt: moment().toISOString()
     })
     
     this.$f7.dialog.preloader('Submitting changes...')
     try {
-      const user = await updateUser(this.global.currentUser, attrs as Partial<User>)
+      const user = await updateUser(this.state.currentUser, attrs as Partial<User>)
       this.setGlobal({ currentUser: user })
       this.$f7.dialog.close()
       this.$f7router.navigate(dynamicPaths.userSurveysNewIndexPath(0))
@@ -78,7 +96,7 @@ export default class extends React.Component<any, State> {
   }
 
   render() {
-    const user = this.global.currentUser
+    const user = this.state.currentUser
     const child = this.child()
 
     return (
@@ -166,12 +184,13 @@ export default class extends React.Component<any, State> {
         <Block>
           <Case test={this.hasNextChild()}>
             <When value={true}>
-              <Button
+              {/* TODO: FIXME DELAYED EVALUATION BUG */}
+              {this.hasNextChild() && <Button
                 href={dynamicPaths.welcomeChildIndexPath(this.childIndex() + 1)}
                 fill
               >
-                Continue to {this.nextChild().firstName}
-              </Button>
+                Continue to {this.nextChild()?.firstName}
+              </Button>}
             </When>
             <When value={false}>
               <Button fill onClick={() => this.submit()}>

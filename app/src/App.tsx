@@ -1,4 +1,4 @@
-import React, { useGlobal } from 'reactn'
+import React, { createProvider, useGlobal } from 'reactn'
 
 import './App.css'
 
@@ -9,6 +9,8 @@ import { Framework7Params } from 'framework7/components/app/app-class'
 
 import { I18nProvider } from '@lingui/react'
 import { i18n } from './i18n'
+import { Provider } from './providers'
+import { ErrorBoundary } from './ErrorBoundary'
 
 export default function () {
   const [ global, ] =  useGlobal()
@@ -27,15 +29,15 @@ export default function () {
 
 
   return (
-    <I18nProvider language={global.language} i18n={i18n}>
-      <App params={f7params} className="App">
-        {/* Statusbar */}
-        {/* <Statusbar /> */}
-
-
-        {/* Main View */}
-        <View id="main-view" url="/" main className="safe-areas" />
-      </App>
-    </I18nProvider>
+    <ErrorBoundary>
+      <Provider>
+        <I18nProvider language={global.language} i18n={i18n}>
+          
+          <App params={f7params} className="App">
+            <View id="main-view" url="/" main className="safe-areas" />
+          </App>
+        </I18nProvider>
+      </Provider>
+    </ErrorBoundary>
   )
 }

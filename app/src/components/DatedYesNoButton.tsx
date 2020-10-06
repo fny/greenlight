@@ -9,8 +9,7 @@ import {
 import moment, { Moment } from 'moment'
 
 interface Props {
-  errorMessage?: string | null
-  errorMessageForce?: boolean
+  showErrors?: boolean
   setYesNo: (yesNo: boolean) => void
   setDate: (date: Date) => void
 }
@@ -27,11 +26,15 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
   }
 
   errorMessage() {
-    if (this.state.yesNo === 'null') {
+    if (!this.props.showErrors) {
+      return
+    }
+    if (this.state.yesNo === null) {
       return 'Please choose yes or no.'
     }
-    if (this.state.yesNo === 'null') {
-      return 'Please choose yes or no.'
+
+    if (this.state.yesNo === true && this.state.date === null) {
+      return 'Please set the date.'
     }
   }
 
@@ -73,18 +76,17 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
                 this.setState({ date: d[0] })
                 this.props.setDate(d[0])
               }}
-              errorMessageForce={this.props.errorMessageForce}
-              errorMessage={this.props.errorMessage || ''}
               type="datepicker"
               placeholder="Select date"
               readonly
             />
           </List>
         </Col>
+        <p style={{marginTop: '-10px', color: 'var(--f7-input-error-text-color)'}}>
+          {this.errorMessage() && <span>{this.errorMessage()}</span> }
+        </p>
       </Row>
-      <p className="input-invalid" style={{marginTop: '-10px', color: 'var(--f7-input-error-text-color)'}}>
-        {this.errorMessage() && <span>{this.errorMessage()}</span> }
-      </p>
+
       </>
     )
   }

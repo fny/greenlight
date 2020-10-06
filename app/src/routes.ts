@@ -17,7 +17,6 @@ import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage'
 import SurveyNewPage from 'src/pages/SurveyNewPage'
 import SurveyThankYouPage from 'src/pages/SurveyThankYouPage'
 
-import { Router } from 'framework7/modules/router/router'
 
 // import { isSignedIn } from 'src/common/api'
 import { getGlobal } from 'reactn'
@@ -25,11 +24,11 @@ import { User } from 'src/common/models'
 import MagicSignInAuthPage from './pages/MagicSignInAuthPage'
 import { buildDynamicPath, resolvePath } from './util'
 import GiphysPage from './pages/GiphysPage'
-import { clone } from 'lodash'
 import UserGreenlightPassPage from './pages/UserGreenlightPassPage'
+import DebugPage from './pages/DebugPage'
 
 export const paths = {
-  rootPath: '/',
+rootPath: '/',
   signInPath: '/sign-in',
   magicSignInPath: '/magic-sign-in',
   magicSignInAuthPath: '/mgk/:token/:remember',
@@ -42,11 +41,11 @@ export const paths = {
   welcomeChildPath: '/welcome/children/:id',
   userSurveysNewPath: '/users/:id/surveys/new',
   userGreenlightPassPath: '/users/:id/greenlight-pass',
-  surveysThankYouPath: '/surveys/thank-you'
+  surveysThankYouPath: '/surveys/thank-you/:status'
 }
 
 type PathsDynamized = {
-  [k in (keyof typeof paths)]: (subsitutions?: any, query?: any) => string
+  [k in (keyof typeof paths)]: (substitutions?: any, query?: any) => string
 }
 
 const pathsDynamized = {} as PathsDynamized
@@ -193,6 +192,10 @@ const routes = [
   {
     path: '/giphys-on-deck',
     component: GiphysPage
+  },
+  {
+    path: '/debug',
+    component: DebugPage
   },
   {
     path: '(.*)',

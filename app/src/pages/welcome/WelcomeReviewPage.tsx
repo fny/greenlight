@@ -9,6 +9,8 @@ import { updateUser } from 'src/common/api'
 import logger from 'src/common/logger'
 import { languageData } from 'src/locales/es/messages'
 import { paths } from 'src/routes'
+import { ReactNComponent } from 'reactn/build/components'
+import { NoCurrentUserError } from 'src/common/errors'
 
 interface State {
   originalEmail: string | null
@@ -16,19 +18,32 @@ interface State {
   updatedUser: User
   // textOrEmailAlerts: 'text' | 'email'
   showMobileNumberError: boolean
+  currentUser: User
 }
 
-export default class ReviewUserPage extends React.Component<any, State> {
-  state: State = {
-    originalEmail: this.global.currentUser.email,
-    originalPhone: formatPhone(this.global.currentUser.phone),
-    updatedUser: (() => {
-      const user = clone(this.global.currentUser)
-      user.mobileNumber = formatPhone(user.mobileNumber)
-      return user
-    })(),
-    showMobileNumberError: false
+export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
+
+  constructor(props: any) {
+    super(props)
+
+    if (!this.global.currentUser) {
+      throw new NoCurrentUserError()
+    }
+
+    this.state = {
+      originalEmail: this.global.currentUser.email,
+      originalPhone: formatPhone(this.global.currentUser.mobileNumber),
+      updatedUser: (() => {
+        const user = clone(this.global.currentUser)
+        user.mobileNumber = formatPhone(user.mobileNumber)
+        return user
+      })(),
+      showMobileNumberError: false,
+      currentUser: this.global.currentUser
+    }
+  
   }
+  
 
   validate() {
     return this.$f7.input.validateInputs('#WelcomeReviewPage-form')
@@ -46,7 +61,7 @@ export default class ReviewUserPage extends React.Component<any, State> {
     if (!this.validate()) { 
       return
     }
-    const userAttrs = this.extractUpdateAttrs(this.global.currentUser)
+    const userAttrs = this.extractUpdateAttrs(this.state.currentUser)
     const updatedUserAttrs = this.extractUpdateAttrs(this.state.updatedUser)
     
     if (haveEqualAttrs(userAttrs, updatedUserAttrs)) {
@@ -56,7 +71,7 @@ export default class ReviewUserPage extends React.Component<any, State> {
 
     this.$f7.dialog.preloader('Submitting changes...')
     try {
-      const user = await updateUser(this.global.currentUser, updatedUserAttrs)
+      const user = await updateUser(this.state.currentUser, updatedUserAttrs)
       this.setGlobal({ currentUser: user })
       this.$f7.dialog.close()
       this.$f7router.navigate(paths.welcomePasswordPath)

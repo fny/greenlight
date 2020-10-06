@@ -5,6 +5,8 @@ import { SyntheticEvent } from 'react'
 import { updateUser } from 'src/common/api'
 import { dynamicPaths } from 'src/routes'
 import { User } from 'src/common/models'
+import { ReactNComponent } from 'reactn/build/components'
+import { NoCurrentUserError } from 'src/common/errors'
 
 
 interface State {
@@ -12,15 +14,27 @@ interface State {
   errorMessage: string | null
   showErrorMessage: boolean
   isPasswordHidden: boolean
+  currentUser: User
 }
 
-export default class extends React.Component<any, State> {
-  state: State = {
-    password: '',
-    errorMessage: null,
-    showErrorMessage: false,
-    isPasswordHidden: true
+export default class extends ReactNComponent<any, State> {
+  constructor(props: any) {
+    super(props)
+    
+    if (!this.global.currentUser) {
+      throw new NoCurrentUserError()
+    }
+
+    this.state = {
+      password: '',
+      errorMessage: null,
+      showErrorMessage: false,
+      isPasswordHidden: true,
+      currentUser: this.global.currentUser
+    }
+  
   }
+
   toggleReveal(e: SyntheticEvent) {
     this.setState({ isPasswordHidden: !(e.target as any).checked })
     // this.$f7.input.validateInputs('#WelcomePasswordPage-form')
@@ -35,7 +49,7 @@ export default class extends React.Component<any, State> {
 
     this.$f7.dialog.preloader('Submitting changes...')
     try {
-      const user = await updateUser(this.global.currentUser, { password: this.state.password } as Partial<User>)
+      const user = await updateUser(this.state.currentUser, { password: this.state.password } as Partial<User>)
       this.setGlobal({ currentUser: user })
       this.$f7.dialog.close()
       this.$f7router.navigate(dynamicPaths.afterWelcomePasswordPath())
@@ -84,7 +98,7 @@ export default class extends React.Component<any, State> {
             src="/images/welcome-secure.svg"
           />
 
-          <Case test={this.global.currentUser.children.length > 0}>
+          <Case test={this.state.currentUser.children.length > 0}>
             <When value={true}>
               <p>Next you'll review your children.</p>
 

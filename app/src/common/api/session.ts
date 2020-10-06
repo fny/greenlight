@@ -4,7 +4,7 @@ import moment from 'moment'
 import { Dict } from '../types'
 import env from 'src/common/env'
 
-const SESSION_COOKIE_NAME = '_gl_sess'
+const SESSION_COOKIE_NAME = '_gl_sess_beta'
 
 interface SessionJWT {
   iat: number
@@ -13,6 +13,8 @@ interface SessionJWT {
 }
 
 export class NullSession {
+  token = { token: '' }
+
   isValid() {
     return false
   }
@@ -28,7 +30,9 @@ export class NullSession {
   headers() {
     return {}
   }
-  removeCookie() {}
+  removeCookie() {
+    return undefined
+  }
 }
 
 export class Session {
