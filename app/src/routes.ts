@@ -40,7 +40,7 @@ rootPath: '/',
   welcomePasswordPath: '/welcome/password',
   welcomeChildPath: '/welcome/children/:id',
   userSurveysNewPath: '/users/:id/surveys/new',
-  userGreenlightPassPath: '/users/:id/greenlight-pass',
+  userGreenlightPassPath: '/users/:userId/greenlight-pass',
   surveysThankYouPath: '/surveys/thank-you/:status'
 }
 

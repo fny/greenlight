@@ -26,7 +26,7 @@ export function Case({ test, children }: Props) {
       return <></>
   }
   if (matches.length > 1) {
-    console.error(`<Case /> statement matched multiple children: ${test}`)
+    console.log(`<Case /> statement matched multiple children: ${test}`)
   }
   return <>{matches[0]}</>
 }

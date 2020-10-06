@@ -91,9 +91,18 @@ export class User extends Model {
   sortedChildren() {
     return this.children.sort((a, b) => (a < b) ? 1 : -1)
   }
-  
+
   locations_TODO() {
     return this.locationAccounts.map(la => la.location).filter(l => l !== null || l !== undefined)
+  }
+
+  /**
+   * Locations a user has accounts with along with accounts through children
+   */
+  affiliatedLocations() {
+    const childLocations = this.children.map(x => x.locations_TODO()
+    const myLocations = this.locations_TODO()
+    myLocations
   }
 
   findChild(id: string) {
@@ -117,7 +126,7 @@ export class User extends Model {
   fullName() {
     return `${this.firstName} ${this.lastName}`
   }
-  
+
   hasChildren() {
     return this.children.length > 0
   }
@@ -129,8 +138,8 @@ export class User extends Model {
   isParent() {
     return this.hasChildren()
   }
-  
-  // TODO: Rename, 
+
+  // TODO: Rename,
   needsToSubmitOwnSurvey() {
     return this.greenlightStatus().isUnknown() && this.hasLocationThatRequiresSurvey()
   }
@@ -150,7 +159,7 @@ export class User extends Model {
 
   usersNeedingSurveysText(): string {
     // TODO: i18n
-    return conjungtify(this.usersNeedingSurveys().map(u => 
+    return conjungtify(this.usersNeedingSurveys().map(u =>
       u === this ? 'yourself' : u.firstName
     ), 'and')
   }

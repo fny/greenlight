@@ -31,18 +31,18 @@ export default class MagicSignInAuthPage extends React.Component<Dict<any>, Stat
   async authorize() {
     const token = this.$f7route.params['token']
     const rememberMe = this.$f7route.params['remember'] === 'y'
-    
+
     if (!token) return
 
     this.$f7.dialog.preloader('Signing in...')
-    
+
     try {
       const user = await magicSignIn(token, rememberMe)
       this.setState({hasReceivedResponse: true, isSuccess: true})
       this.$f7.dialog.close()
       this.setGlobal({ currentUser: user })
       this.$f7router.navigate(dynamicPaths.currentUserHomePath())
-      
+
     } catch (error) {
       console.error(error)
       this.setState({hasReceivedResponse: true, isSuccess: false})
@@ -64,11 +64,19 @@ export default class MagicSignInAuthPage extends React.Component<Dict<any>, Stat
         <Block>
           <Case test={this.state.hasReceivedResponse && !this.state.isSuccess}>
             <When value={true}>
-              That magic sign in link didn't work. It may have expired.
-              <Link href={paths.rootPath}>Try again?</Link>
+              <Trans id="SignInAuthPage.magic_link_failed">
+                That magic sign in link didn't work. It may have expired.
+              </Trans>
+              <Link href={paths.rootPath}>
+                <Trans id="SignInAuthPage.try_again">
+                  Try again?
+                </Trans>
+              </Link>
             </When>
             <When value={false}>
-              Signing in...
+              <Trans id="SignInAuthPage.signing_in">
+                Signing in...
+              </Trans>
             </When>
           </Case>
         </Block>

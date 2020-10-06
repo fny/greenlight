@@ -11,6 +11,9 @@ import moment from 'moment'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/common/errors'
 
+import { i18n } from '@lingui/core'
+import { Trans, t } from '@lingui/macro'
+
 interface State {
   physicianName: string
   physicianPhoneNumber: string
@@ -22,7 +25,7 @@ export default class extends ReactNComponent<any, State> {
 
   constructor(props: any) {
     super(props)
-    
+
     if (!this.global.currentUser) {
       throw new NoCurrentUserError()
     }
@@ -80,8 +83,10 @@ export default class extends ReactNComponent<any, State> {
       physicianName: this.state.physicianName, physicianPhoneNumber: this.state.physicianPhoneNumber, needsPhysician: this.state.needsPhysician,
       completedInviteAt: moment().toISOString()
     })
-    
-    this.$f7.dialog.preloader('Submitting changes...')
+
+    this.$f7.dialog.preloader(
+      i18n._(t('WelcomeChildPage.submitting_changes')`Submitting changes...`)
+    )
     try {
       const user = await updateUser(this.state.currentUser, attrs as Partial<User>)
       this.setGlobal({ currentUser: user })
@@ -91,7 +96,10 @@ export default class extends ReactNComponent<any, State> {
       this.$f7.dialog.close()
       console.error(error)
       // TODO: i18n
-      this.$f7.dialog.alert('Something went wrong', 'Update Failed')
+      this.$f7.dialog.alert(
+        i18n._(t('WelcomeChildPage.somethings_wrong')`Something went wrong`),
+        i18n._(t('WelcomeChildPage.update_failed')`Update Failed`)
+      )
     }
   }
 
@@ -101,37 +109,56 @@ export default class extends ReactNComponent<any, State> {
 
     return (
       <Page>
-        <Navbar title={`Review ${child.firstName}'s Info`} backLink></Navbar>
+        <Navbar
+          title={i18n._(t('WelcomeChildPage.review_child_title')
+          `Review ${child.firstName}'s Info`)}
+          backLink>
+        </Navbar>
 
         <Case test={true}>
           {/* First Child */}
-          <When value={user.children[0] === child}>
+          <When value={user.sortedChildren()[0] === child}>
             <Block>
-              We've found {pluralize('child', this.childCount(), true)}{' '}
-              associated with you: {this.childrenNames()}. Let's take a moment
-              to review their information.
+              <Trans id="WelcomeChildPage.review_children">
+                We've found {pluralize('child', this.childCount(), true)}{' '}
+                associated with you: {this.childrenNames()}. Let's take a moment
+                to review their information.
               <br />
+              </Trans>
               {/* TODO: Link to a page where users can remove students. */}
               {/* <Link >Is something wrong?</Link> */}
             </Block>
           </When>
           {/* Last Child */}
-          <When value={user.children[user.children.length - 1] === child}>
+          <When value={user.sortedChildren()[user.children.length - 1] === child}>
             <Block>
-              Take a moment to review {child.firstName}'s information.
+              <Trans id="WelcomeChildPage.review_child_last">
+                Finally, take a moment to review {child.firstName}'s information.
+              </Trans>
             </Block>
           </When>
           <When value={true}>
             <Block>
-              Finally, take a moment to review {child.firstName}'s information.
+              <Trans id="WelcomeChildPage.review_child">
+              Take a moment to review {child.firstName}'s information.
+              </Trans>
             </Block>
           </When>
         </Case>
 
         <List noHairlines>
-          <ListItem footer={`Review the schools ${child.firstName} will be attending.`}>
+          <ListItem
+            footer={i18n._(
+              t('WelcomeChildPage.review_schools')
+              `Review the schools ${child.firstName} will be attending.`)
+            }
+          >
             <div slot="title">
-              <b>{child.firstName}'s Schools and Places</b>
+              <b>
+                <Trans id="WelcomeChildPage.review_schools_title">
+                  {child.firstName}'s Schools and Places
+                </Trans>
+              </b>
             </div>
           </ListItem>
           {child.locations_TODO().map((location) => (
@@ -141,7 +168,9 @@ export default class extends ReactNComponent<any, State> {
               smartSelectParams={{ openIn: 'sheet' }}
             >
               <select name="mac-windows" defaultValue="attending">
-                <option value="in-person">In Person</option>
+                <option value="in-person">
+                  <Trans id="WelcomeChildPage.in_person">In Person</Trans>
+                </option>
                 {/* TODO */}
                 {/* <option value="virtual">Virtual</option>
                 <option value="mixed">Mixed</option>
@@ -151,30 +180,37 @@ export default class extends ReactNComponent<any, State> {
           ))}
         </List>
         <List noHairlines>
-          <ListItem footer="Who is Lisa's primary care doctor?">
+          <ListItem
+            footer={i18n._(
+              t('WelcomeChildPage.doctor_footer')
+              `Who is ${child.firstName}'s primary care doctor?`)}>
             <div slot="title">
-              <b>{child.firstName}'s Primary Care (Optional)</b>
+              <b>
+                <Trans id="WelcomeChildPage.doctor_title">
+                  {child.firstName}'s Primary Care (Optional)
+                </Trans>
+              </b>
             </div>
           </ListItem>
           <ListItem
             checkbox
-            header="Don't have a primary care doctor?"
-            title="Get help finding one"
+            header={i18n._(t('WelcomeChildPage.no_doctor')`Don't have a primary care doctor?`)}
+            title={i18n._(t('WelcomeChildPage.find_doctor')`Get help finding one`)}
             onChange={e => {
               this.setState({ needsPhysician: e.target.checked })
             }}
           />
           <ListInput
-            label="Primary Care Doctor"
-            placeholder={`${child.firstName}'s doctor's name`}
+            label={i18n._(t('WelcomeChildPage.doctor_name_label')`Primary Care Doctor`)}
+            placeholder={i18n._(t('WelcomeChildPage.doctor_name_placeholder')`${child.firstName}'s doctor's name`)}
             type="text"
             onInput={e => {
               this.setState({ physicianName: e.target.value })
             }}
           />
           <ListInput
-            label="Primary Care Doctor Phone"
-            placeholder={`${child.firstName}'s doctor's phone`}
+            label={i18n._(t('WelcomeChildPage.doctor_phone_label')`Primary Care Doctor Phone`)}
+            placeholder={i18n._(t('WelcomeChildPage.doctor_phone_placeholder')`${child.firstName}'s doctor's phone`)}
             type="tel"
             onInput={e => {
               this.setState({ physicianPhoneNumber: e.target.value })
@@ -189,12 +225,16 @@ export default class extends ReactNComponent<any, State> {
                 href={dynamicPaths.welcomeChildIndexPath(this.childIndex() + 1)}
                 fill
               >
-                Continue to {this.nextChild()?.firstName}
+                <Trans id="WelcomeChildPage.continue_to_child">
+                  Continue to {this.nextChild()?.firstName}
+                </Trans>
               </Button>}
             </When>
             <When value={false}>
               <Button fill onClick={() => this.submit()}>
-                Continue
+                <Trans id="WelcomeChildPage.continue">
+                  Continue
+                </Trans>
               </Button>
             </When>
           </Case>

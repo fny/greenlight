@@ -22,9 +22,9 @@ export default () => (
       </p>
     </Block>
 
-      <Block>
+    <Block>
       <p>
-        <Trans id="API.sessions.invalid_email">
+        <Trans id="API.greenlight_status.invalid_email">
           No account was found for the email you provided.
         </Trans>
         <Trans id="API.sessions.invalid_phone">
@@ -35,6 +35,6 @@ export default () => (
         </Trans>
       </p>
     </Block>
-    
+
   </Page>
 )

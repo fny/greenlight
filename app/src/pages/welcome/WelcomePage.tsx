@@ -16,12 +16,13 @@ import {
 import { Case, When } from 'src/components/Case'
 
 import pluralize from 'pluralize'
-import { timeOfDay } from "src/common/util"
+import { esExclaim, greeting } from "src/common/util"
 import { User } from 'src/common/models/User'
 import { paths } from "src/routes"
 import { ReactNComponent } from "reactn/build/components"
 import { NoCurrentUserError } from "src/common/errors"
 
+import { Trans } from '@lingui/macro'
 
 interface State {
   termsOpened: boolean
@@ -31,7 +32,7 @@ interface State {
 export default class WelcomeParentPage extends ReactNComponent<any, State> {
   constructor(props: any) {
     super(props)
-    
+
     if (!this.global.currentUser) {
       throw new NoCurrentUserError()
     }
@@ -48,6 +49,7 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
   }
 
   whoDoYouFillSurveysFor() {
+    // TODO: Rachel skipped this i18n
     const user = this.state.currentUser
     const fillForSelf = user.locations.length > 0
     const fillForChildren = user.children.length > 0
@@ -67,50 +69,52 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
 
   render() {
     const user = this.state.currentUser
-    const locationCount = this.totalLocations() 
+    const locationCount = this.totalLocations()
     return <Page>
       <Block>
-        <h1>
-          <Case test={timeOfDay()}>
-            <When value="morning">Good Morning!</When>
-            <When value="afternoon">Good Afternoon!</When>
-            <When value="evening">Good Evening!</When>
-          </Case>
-        </h1>
+        <h1>{esExclaim()}{greeting()}!</h1>
         <Case test={locationCount}>
           <When value={0}>
-            Your account hasn't been configured properly. Please contact us at help@greenlightready.com.
+            <Trans id="WelcomePage.account_misconfigured">
+              Your account hasn't been configured properly. Please contact us at help@greenlightready.com.
+            </Trans>
           </When>
           <When>
             <p>
-              Hi {user.firstName}! You've been added by{' '}
-              {pluralize('locations', this.totalLocations(), true)} to Greenlight's
-              secure HIPAA and FERPA compliant COVID-19 monitoring platform.
+              <Trans id="WelcomePage.welcome">
+                Hi {user.firstName}! You've been added by{' '}
+                {pluralize('locations', this.totalLocations(), true)} to Greenlight's
+                secure HIPAA and FERPA compliant COVID-19 monitoring platform.
+              </Trans>
             </p>
             <p>
-              {this.whoDoYouFillSurveysFor()} We will not share any data without your
-              permission.
+              <Trans id="WelcomePage.instructions">
+                {this.whoDoYouFillSurveysFor()} We will not share any data without your
+                permission.
+              </Trans>
             </p>
           </When>
         </Case>
 
         <img alt="Welcome to Greenlight!" src="/images/welcome-doctor.svg" />
         <p>
-          By continuing, you accept Greenlight's{' '}
-          <Link
-            onClick={() => {
-              this.setState({ termsOpened: true })
-            }}
-          >
-            Terms and Conditions
-          </Link>
-          .
+          <Trans id="WelcomePage.terms_and_conditions">
+            By continuing, you accept Greenlight's{' '}
+            <Link
+              onClick={() => {
+                this.setState({ termsOpened: true })
+              }}
+            >
+              Terms and Conditions
+            </Link>
+            .
+          </Trans>
         </p>
       </Block>
       <Block>
         <Row tag="p">
           <Col tag="span">
-            <Button large href="/">Sign Out</Button>
+            <Button large href="/"><Trans id="WelcomePage.sign_out">Sign Out</Trans></Button>
           </Col>
           <Col tag="span">
             <Button
@@ -118,7 +122,7 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
               fill
               href={paths.welcomeReviewPath}
             >
-              Continue
+              <Trans id="WelcomePage.continue">Continue</Trans>
             </Button>
           </Col>
         </Row>
@@ -132,14 +136,14 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
         <Toolbar>
           <div className="left"></div>
           <div className="right">
-            <Link sheetClose>Close</Link>
+            <Link sheetClose><Trans id="WelcomePage.close">Close</Trans></Link>
           </div>
         </Toolbar>
         {/*  Scrollable sheet content */}
         <PageContent>
           <Block>
             <p>
-              TODO: Terms and conditions go here.
+              {/* TODO: Terms and conditions go here. */}
             </p>
           </Block>
         </PageContent>

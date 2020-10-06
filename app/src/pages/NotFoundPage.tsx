@@ -1,12 +1,13 @@
-import React from 'react';
-import { Page, Navbar, Block } from 'framework7-react';
+import React from 'react'
+import { Page, Navbar, Block } from 'framework7-react'
+import { Trans } from '@lingui/macro'
 
 export default () => (
   <Page>
     <Navbar title="Not found" backLink="Back" />
     <Block strong>
-      <p>Sorry</p>
-      <p>Requested content not found.</p>
+      <p><Trans id="NotFoundPage.sorry">Sorry</Trans></p>
+      <p><Trans id="NotFoundPage.not_found">Requested content not found.</Trans></p>
     </Block>
   </Page>
-);
+)
