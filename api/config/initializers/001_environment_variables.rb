@@ -8,10 +8,6 @@ Configurator.new(Greenlight) do
   env :SHORT_URL
   env :APP_URL
   env :ADMIN_URL
-  env :MAILGUN_API_KEY
-  env :MAILGUN_DOMAIN
-  env :MAILGUN_SMTP_USERNAME
-  env :MAILGUN_SMTP_PASSWORD
   env :SENDGRID_API_KEY
 
   set :API_URL do
