@@ -1,12 +1,19 @@
 import { Model, attribute as attr, relationship,initialize, STRING, DATETIME, BOOLEAN } from './Model'
 import { User } from './User'
-import moment from 'moment'
 import colors from '../colors'
+import { today, tomorrow } from '../util'
+import CutoffTime from '../misc/CutoffTime'
+import { i18n } from '@lingui/core'
+import { t } from '@lingui/macro'
+
+import { DateTime }  from 'luxon'
+
+export const CUTOFF_TIME = new CutoffTime('2020-10-08 18:00')
 
 export enum GREENLIGHT_STATUSES {
   CLEARED = 'cleared',
   PENDING = 'pending',
-  RECOVERING = 'recovering',
+  RECOVERY = 'recovery',
   ABSENT = 'absent',
   UNKNOWN = 'unknown'
 }
@@ -14,7 +21,7 @@ export enum GREENLIGHT_STATUSES {
 export const GREENLIGHT_COLORS = {
   cleared: { name: 'green', hex:  colors.green },
   pending: { name: 'yellow', hex: colors.yellow },
-  recovering: { name: 'pink', hex: colors.pink },
+  recovery: { name: 'pink', hex: colors.pink },
   absent: { name: 'blue', hex: colors.blue },
   unknown: { name: 'gray', hex: colors.gray },
 }
@@ -23,6 +30,10 @@ export class GreenlightStatus extends Model {
   static STATUSES = GREENLIGHT_STATUSES
   static singular = 'greenlightStatus'
   static plural = 'greenlightStatuses'
+
+  static newUnknown(): GreenlightStatus {
+    return new GreenlightStatus({ status: GreenlightStatus.STATUSES.UNKNOWN })
+  }
 
   constructor(data?: any) {
     super()
@@ -33,13 +44,16 @@ export class GreenlightStatus extends Model {
   status: GREENLIGHT_STATUSES = GREENLIGHT_STATUSES.UNKNOWN
 
   @attr({ type: DATETIME })
-  statusSetAt: moment.Moment | null = null
+  submissionDate: DateTime = DateTime.fromISO('')
 
   @attr({ type: DATETIME })
-  statusExpiresAt: moment.Moment | null = null
+  expirationDate: DateTime = DateTime.fromISO('')
+
+  @attr({ type: DATETIME })
+  followUpDate: DateTime = DateTime.fromISO('')
 
   @attr({ type: BOOLEAN })
-  isOverride: boolean | null = null
+  isOverride = false
 
   @attr({ type: STRING })
   reason = ''
@@ -47,31 +61,63 @@ export class GreenlightStatus extends Model {
   @relationship({ type: 'hasOne', model: 'user' })
   user?: User
 
-  colorName() {
+  /** Name of the color corresponding to the status */
+  colorName(): string {
     return GREENLIGHT_COLORS[this.status].name
   }
 
-  colorHex() {
+  /** Hex code of the color corresponding to the status */
+  colorHex(): string {
     return GREENLIGHT_COLORS[this.status].hex
   }
 
-  isUnknown() {
+  isUnknown(): boolean {
     return this.status === GREENLIGHT_STATUSES.UNKNOWN
   }
 
-  isAbsent() {
+  isAbsent(): boolean {
     return this.status === GREENLIGHT_STATUSES.ABSENT
   }
 
-  isCleared() {
+  isCleared(): boolean {
     return this.status === GREENLIGHT_STATUSES.CLEARED
   }
 
-  isPending() {
+  isPending(): boolean {
     return this.status === GREENLIGHT_STATUSES.PENDING
   }
 
-  isRecovering() {
-    return this.status === GREENLIGHT_STATUSES.RECOVERING
+  isRecovering(): boolean {
+    return this.status === GREENLIGHT_STATUSES.RECOVERY
+  }
+
+  isValidForDate(date: Moment): boolean {
+    return date.isSameOrAfter(this.submissionDate) && date.isSameOrBefore(this.expirationDate) &&  date.isBefore(this.followUpDate)
+  }
+
+  isValidForToday(): boolean {
+    if (this.isUnknown()) return false
+    return this.isValidForDate(today())
+  }
+
+  isValidForTomorrow(): boolean {
+    if (this.isUnknown()) return false
+    return this.isValidForDate(tomorrow())
+  }
+
+  title(): string {
+    if (this.status === GREENLIGHT_STATUSES.CLEARED) {
+      return i18n._(t('GreenlightStatus.cleared')`Cleared`)
+    }
+    if (this.status === GREENLIGHT_STATUSES.PENDING) {
+      return i18n._(t('GreenlightStatus.pending')`Pending`)
+    }
+    if (this.status === GREENLIGHT_STATUSES.RECOVERY) {
+      return i18n._(t('GreenlightStatus.recovery')`Recovery`)
+    }
+    if (this.status === GREENLIGHT_STATUSES.ABSENT) {
+      return i18n._(t('GreenlightStatus.absent')`Absent`)
+    }
+    return i18n._(t('GreenlightStatus.not_submitted')`Not Submitted`)
   }
 }

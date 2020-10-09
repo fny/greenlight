@@ -1,8 +1,8 @@
-import 'reflect-metadata'
-import moment from 'moment'
-import { v4 as uuidv4 } from 'uuid'
+/* eslint-disable @typescript-eslint/ban-types */
 
-import { Record } from '../types'
+import 'reflect-metadata'
+import { DateTime } from 'luxon'
+import { EntityId, Record } from '../types'
 
 interface DataType {
   serialize?: Function
@@ -50,16 +50,14 @@ export const BOOLEAN: DataType = {
 }
 
 export const DATE: DataType = {
-  serialize: (x: string) => x,
-  deserialize: (x: string) => x,
+  serialize: (x: DateTime) => x.toFormat('yyyy-MM-dd'),
+  deserialize: (x: string) => DateTime.fromISO(x),
   orbitType: 'date',
 }
 
-// TODO: Date type
-
 export const DATETIME: DataType = {
-  serialize: (x: moment.Moment) => x.format(),
-  deserialize: moment,
+  serialize: (x: DateTime) => x.toFormat('yyyy-MM-dd'),
+  deserialize: (x: string) => DateTime.fromISO(x),
   orbitType: 'date-time'
 }
 
@@ -98,7 +96,7 @@ export class Model {
 
   /** The plural name for this model */
   static plural: string
-  
+
   /** All entities must have a UUID */
   id: string
 
@@ -118,13 +116,13 @@ export class Model {
   }
 
   @attribute({ type: DATETIME })
-  createdAt: moment.Moment | null = null
+  createdAt: DateTime = DateTime.fromISO('')
 
   @attribute({ type: DATETIME })
-  updatedAt: moment.Moment | null = null
+  updatedAt: DateTime = DateTime.fromISO('')
 
-  setId() {
-    this.id = uuidv4()
+  uuid(): EntityId {
+    return `${this.modelName()}-${this.id}`
   }
 
   modelName() {
@@ -168,7 +166,7 @@ export function initialize(record: Model,  data: any)  {
   _deserialize(Object.getPrototypeOf(record).constructor, data, record)
 }
 
-export function deserializeJSONAPI<T extends Model>(record: Record): T {
+export function deserializeJSONAPI<T extends Model>(record: Record<T>): T {
   const model = ModelRegistry.modelFor(record.type)
   if (model === null) {
     throw new Error(`No model found for type ${record.type}`)

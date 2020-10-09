@@ -1,11 +1,11 @@
 import { User, Location, Model, MedicalEvent, GreenlightStatus } from '../models'
-import { TokenResponse } from '../types'
+import { RecordResponse, TokenResponse } from '../types'
 import { transformRecordResponse, responseStore, recordStore } from './stores'
 import axios, { AxiosResponse } from 'axios'
 
 import { Session, NullSession } from './session'
 import { getGlobal } from 'reactn'
-import { transformForAPI } from '../util'
+import { assertNotArray, assertNotUndefined, transformForAPI } from '../util'
 
 const BASE_URL = "http://api-dev.greenlightready.com/v1"
 const REMEBER_ME_DAYS = 30
@@ -51,7 +51,13 @@ export async function magicSignIn(token: string, rememberMe: boolean) {
 
 export async function signOut() {
   const response = await v1.delete('/sessions', { headers: session.headers() })
-  destroySession()
+  try {
+    destroySession()
+  } catch(err) {
+    console.error(err)
+  }
+
+  (window.location as any) = '/'
   return response
 }
 
@@ -62,7 +68,7 @@ export async function getCurrentUser(): Promise<User> {
 
 // TODO clear blanks and format values
 export async function updateUser(user: User, updates: Partial<User>): Promise<User> {
-  await v1.patch(`/users/${user.id}`, 
+  await v1.patch(`/users/${user.id}`,
     updates,
     { headers: session.headers() }
   )
@@ -76,14 +82,19 @@ export async function findUsersForLocation(location: string | Location) {
   return getResource<User>(path, true) as Promise<User[]>
 }
 
-export async function createSymptomSurvey(user: User, medicalEvents: Partial<MedicalEvent>[], greenlightStatus: Partial<GreenlightStatus>) {
+export async function createSymptomSurvey(user: User, medicalEvents: Partial<MedicalEvent>[]): Promise<string | null> {
   const payload = {
-    medicalEvents,
-    greenlightStatus
+    medicalEvents
   }
-  await v1.post(`/users/${user.id}/symptom-surveys`, transformForAPI(payload), {
+  const response = await v1.post<RecordResponse<GreenlightStatus>>(`/users/${user.id}/symptom-surveys`, transformForAPI(payload), {
     headers: session.headers()
   })
+  const record = response.data.data
+
+  assertNotArray(record)
+  assertNotUndefined(record.attributes)
+
+  return record.attributes.status || null
 }
 
 export async function getResource<T extends Model>(path: string, cache = false) {
@@ -108,7 +119,7 @@ function createSession(doc: TokenResponse, rememberMe: boolean) {
     session.saveCookie(REMEBER_ME_DAYS)
   } else {
     session.saveCookie()
-  } 
+  }
 }
 
 export function destroySession() {

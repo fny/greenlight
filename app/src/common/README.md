@@ -1,5 +1,5 @@
 # Requirements
 
 ```
-yarn add uuid reflect-metadata moment jwt-decode js-cookie axios
+yarn add uuid reflect-metadata jwt-decode js-cookie axios
 ```

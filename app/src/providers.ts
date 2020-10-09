@@ -3,12 +3,12 @@ import { User } from './common/models'
 
 interface InitialState {
   currentUser: User | null
-  language: string
+  locale: string
 }
 
 const INITIAL_STATE: InitialState =  {
   currentUser: null,
-  language: 'en'
+  locale: 'en'
 }
 
 export const Provider = createProvider(INITIAL_STATE)

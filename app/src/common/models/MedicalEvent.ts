@@ -1,11 +1,11 @@
 import { Model, attribute as attr, initialize, DATETIME, STRING } from './Model'
-import moment, { Moment } from 'moment'
+import { DateTime } from 'luxon'
 
 export enum MEDICAL_EVENTS {
   NONE = 'none',
   FEVER = 'fever',
   NEW_COUGH = 'new_cough',
-  DIFFICULTY_BREATING = 'difficulty_breathing',
+  DIFFICULTY_BREATHING = 'difficulty_breathing',
   LOST_TASTE_SMELL = 'lost_taste_smell',
   CHILLS = 'chills',
   COVID_EXPOSURE = 'covid_exposure',
@@ -25,7 +25,7 @@ export class MedicalEvent extends Model {
     MEDICAL_EVENTS.FEVER,
     MEDICAL_EVENTS.NEW_COUGH,
     MEDICAL_EVENTS.LOST_TASTE_SMELL,
-    MEDICAL_EVENTS.DIFFICULTY_BREATING,
+    MEDICAL_EVENTS.DIFFICULTY_BREATHING,
     MEDICAL_EVENTS.CHILLS
   ]
 
@@ -38,10 +38,10 @@ export class MedicalEvent extends Model {
   eventType: MEDICAL_EVENTS = MEDICAL_EVENTS.NONE
 
   @attr({ type: DATETIME })
-  occurredAt: Moment = moment(null)
+  occurredAt: DateTime = DateTime.fromISO('')
 
   @attr({ type: DATETIME })
-  createdAt: Moment = moment(null)
+  createdAt: DateTime = DateTime.fromISO('')
 }
 
 export function hasEvent(medicalEvents: MedicalEvent[], eventType: MEDICAL_EVENTS | MEDICAL_EVENTS[], lookbackDays: number) {

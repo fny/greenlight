@@ -1,7 +1,8 @@
 import { t } from '@lingui/macro'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
-import moment from 'moment'
+import { DateTime } from 'luxon'
+
 import { getGlobal } from 'reactn'
 import { i18n } from 'src/i18n'
 
@@ -37,7 +38,7 @@ export function timeOfDay(): 'morning' | 'afternoon' | 'evening' {
 }
 
 export function esExclaim() {
-  getGlobal().language === 'es' ? '¡' : ''
+  return getGlobal().locale === 'es' ? '¡' : ''
 }
 
 export function greeting() {
@@ -113,8 +114,8 @@ export function transformForAPI(data: any): any {
   if (isPrimitiveType(data)) {
     return data
   }
-  if (moment.isMoment(data)) {
-    return data.toISOString()
+  if (DateTime.isDateTime(data)) {
+    return data.toISO()
   }
   const transformed: any = {}
   Object.keys(data).forEach(k => {
@@ -123,8 +124,85 @@ export function transformForAPI(data: any): any {
   return transformed
 }
 
-export function conjungtify(words: string[], conjunction: string) {
-  const endPos = words.length - 1
-  if (endPos === 0) return words[0] // only one word
-  return `${words.slice(0, endPos).join(', ')} ${conjunction} ${words[endPos]}`
+export function joinWords(words: string[], twoWordsConnector?: string, lastWordConnector?: string, wordsConnector?: string): string {
+  const twoWordsConnector_ = twoWordsConnector || i18n._(t('util.two_words_connector')` and `)
+  const lastWordConnector_ = lastWordConnector || i18n._(t('util.last_word_connector')`, and `)
+  const wordsConnector_ = wordsConnector || i18n._(t('util.words_connector')`, `)
+
+  if (words.length === 0) {
+    return ''
+  } else if (words.length === 1) {
+    return `${words[0]}`
+  } else if (words.length === 2) {
+    return `${words[0]}${twoWordsConnector_}${words[1]}`
+  } else {
+    return `${words.slice(0, -1).join(wordsConnector_)}${lastWordConnector_}${words[words.length - 1]}`
+  }
+}
+
+/**
+ * Pings the given url and waits for a response by checking for a HEAD reponse.
+ *
+ * @param url URL to ping
+ * @param timeout Time to wait for a response in ms
+ */
+export function ping(url: string, timeout: number): Promise<boolean> {
+  return new Promise(resolve => {
+    const isOnline = () => resolve(true)
+    const isOffline = () => resolve(false)
+
+    const xhr = new XMLHttpRequest()
+
+    xhr.onerror = isOffline
+    xhr.ontimeout = isOffline
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === xhr.HEADERS_RECEIVED) {
+        if (xhr.status) {
+          isOnline()
+        } else {
+          isOffline()
+        }
+      }
+    }
+
+    xhr.open('HEAD', url)
+    xhr.timeout = timeout
+    xhr.send()
+  })
+}
+
+/**
+ * HACK: This is a hack to force the TypeScript compiler to recognize that a single
+ * object is expected from a union type.
+ *
+ * @param obj
+ */
+export function assertNotArray<T>(obj: T | T[]): asserts obj is T {
+  if (Array.isArray(obj)) {
+    throw new Error(`Expected single object but received array ${obj}`)
+  }
+}
+
+/**
+ * HACK: This is a hack to force the TypeScript compiler to recognize that a single
+ * object is expected from a union type.
+ *
+ * @param obj
+ */
+export function assertNotUndefined<T>(obj: T | undefined): asserts obj is T {
+  if (obj === undefined) {
+    throw new Error(`Expected value but got undefined ${obj}`)
+  }
+}
+
+export function yesterday(): DateTime {
+  return today().minus({ days: 1 })
+}
+
+export function today(): DateTime {
+  return DateTime.local().startOf('day')
+}
+
+export function tomorrow(): DateTime {
+  return today().plus({ days: 1 })
 }

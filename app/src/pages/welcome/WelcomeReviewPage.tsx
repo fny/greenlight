@@ -44,9 +44,9 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
       showMobileNumberError: false,
       currentUser: this.global.currentUser
     }
-  
+
   }
-  
+
 
   validate() {
     return this.$f7.input.validateInputs('#WelcomeReviewPage-form')
@@ -55,18 +55,18 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
     return deleteBlanks({
       firstName: user.firstName,
       lastName: user.lastName,
-      language: user.language,
+      locale: user.locale,
       dailyReminderType: user.dailyReminderType
     })
   }
   // TODO: Reactor: Extract this pattern
   async submit() {
-    if (!this.validate()) { 
+    if (!this.validate()) {
       return
     }
     const userAttrs = this.extractUpdateAttrs(this.state.currentUser)
     const updatedUserAttrs = this.extractUpdateAttrs(this.state.updatedUser)
-    
+
     if (haveEqualAttrs(userAttrs, updatedUserAttrs)) {
       this.$f7router.navigate(paths.welcomePasswordPath)
       return
@@ -90,15 +90,15 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
 
   render() {
     const updatedUser = this.state.updatedUser
-    updatedUser.language = this.global.language
+    updatedUser.locale = this.global.locale
     // const isDifferentEmail = updatedUser.email !== this.state.originalEmail
     // const isDifferentMobileNumber =
     //   updatedUser.mobileNumber !== this.state.originalEmail
     return (
       <Page>
-        <Navbar 
-          title={i18n._(t('WelcomeReviewPage.review_info')`Review Your Info`)} 
-          backLink={true} 
+        <Navbar
+          title={i18n._(t('WelcomeReviewPage.review_info')`Review Your Info`)}
+          backLink={true}
         />
         <Block>
           <p>
@@ -150,10 +150,10 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
           <ListInput
             label={i18n._(t('WelcomeReviewPage.language_label')`Language`)}
             type="select"
-            defaultValue={this.global.language}
+            defaultValue={this.global.locale}
             placeholder={i18n._(t('WelcomeReviewPage.language_placeholder')`Please choose...`)}
             onChange={e => {
-              updatedUser.language = e.target.value
+              updatedUser.locale = e.target.value
               this.setState({ updatedUser })
             }}
           >
@@ -195,12 +195,12 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
                 `Can't be changed at this time.`)
             }
             errorMessageForce={this.state.showMobileNumberError}
-            
+
             // info={
             //   isDifferentMobileNumber
             //     ? "We'll need to verify this new phone number later."
             //     : undefined
-            // } 
+            // }
             onInput={(e) => {
               updatedUser.mobileNumber = (e.target.value as string) || ''
               this.setState({ updatedUser })
@@ -209,7 +209,7 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             validate
           />
 
-          
+
 
           <Block>
             <p><Trans id="WelcomeReviewPage.next_password">Next you'll set your password.</Trans></p>
@@ -217,7 +217,7 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
               Continue
             </Button>
             {/* TOOD: HACK: Preload password image. */}
-            <img 
+            <img
               alt={i18n._(
                 t('WelcomeReviewPage.security_alt_text')
                 `Greenlight gives security the highest importance.`)}

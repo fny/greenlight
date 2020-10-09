@@ -15,14 +15,14 @@ import {
 
 import { Case, When } from 'src/components/Case'
 
-import pluralize from 'pluralize'
 import { esExclaim, greeting } from "src/common/util"
 import { User } from 'src/common/models/User'
 import { paths } from "src/routes"
 import { ReactNComponent } from "reactn/build/components"
 import { NoCurrentUserError } from "src/common/errors"
 
-import { Trans } from '@lingui/macro'
+import { Plural, Trans } from '@lingui/macro'
+import { signOut } from "src/common/api"
 
 interface State {
   termsOpened: boolean
@@ -45,25 +45,33 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
 
   totalLocations() {
     const user = this.state.currentUser
-    return user.locations_TODO().length + user.children.map(x => x.locations_TODO().length).reduce((x, y) => x + y, 0)
+    return user.locations__HACK().length + user.children.map(x => x.locations__HACK().length).reduce((x, y) => x + y, 0)
   }
 
   whoDoYouFillSurveysFor() {
-    // TODO: Rachel skipped this i18n
     const user = this.state.currentUser
-    const fillForSelf = user.locations.length > 0
+    const fillForSelf = user.locationAccounts.length > 0
     const fillForChildren = user.children.length > 0
     if (fillForSelf && fillForChildren) {
-      return `Every day you'll need to fill out symptom surveys for
-      you and your ${pluralize('child', user.children.length)}.`
+      return <Trans id="WelcomePage.fill_for_self_and_children">
+        Every day you'll need to fill out symptom surveys for
+        you and your <Plural value={user.children.length} one="child" other="children" />.
+      </Trans>
     } else if (fillForSelf) {
-      return `Every day you'll need to fill out symptom surveys for yourself.`
+      return <Trans id="WelcomePage.fill_for_self">
+        Every day you'll need to fill out symptom surveys for yourself.
+      </Trans>
     } else if (fillForChildren) {
-      return `Every day you'll need to fill out symptom surveys for
-      your ${pluralize('child', user.children.length)}.`
+      return <Trans id="WelcomePage.fill_children">
+      Every day you'll need to fill out symptom surveys for your
+        <Plural value={user.children.length} one="child" other="children" />.
+      </Trans>
     } else {
-      // TODO: What if they have no locations or children?
-      return `This may have been due to an error. Please contact greenlight at help@greenlightready.com`
+      // TODO: What do we do in the case that the user is not associated with anything over the long run?
+      return  <Trans id="WelcomePage.fill_for_no_one_error">
+        It looks like your account has not been set up properly.
+        Please contact greenlight at help@greenlightready.com.
+      </Trans>
     }
   }
 
@@ -81,10 +89,11 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
           </When>
           <When>
             <p>
+              {/* TODO: i18n */}
               <Trans id="WelcomePage.welcome">
-                Hi {user.firstName}! You've been added by{' '}
-                {pluralize('locations', this.totalLocations(), true)} to Greenlight's
-                secure HIPAA and FERPA compliant COVID-19 monitoring platform.
+                Hi {user.firstName}! You've been added
+                by <Plural value={this.totalLocations()} one="# location" other="# locations" />
+                secure COVID-19 monitoring platform.
               </Trans>
             </p>
             <p>
@@ -114,7 +123,7 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
       <Block>
         <Row tag="p">
           <Col tag="span">
-            <Button large href="/"><Trans id="WelcomePage.sign_out">Sign Out</Trans></Button>
+            <Button large onClick={() => signOut()}><Trans id="WelcomePage.sign_out">Sign Out</Trans></Button>
           </Col>
           <Col tag="span">
             <Button
@@ -142,9 +151,8 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
         {/*  Scrollable sheet content */}
         <PageContent>
           <Block>
-            <p>
-              {/* TODO: Terms and conditions go here. */}
-            </p>
+            {/* TODO: Host this elsewhere. */}
+            <iframe src="/terms.html" />
           </Block>
         </PageContent>
       </Sheet>

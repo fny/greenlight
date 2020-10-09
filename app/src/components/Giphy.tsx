@@ -1,15 +1,15 @@
 import React from 'react'
 import { Dict } from 'src/common/types'
-import moment from 'moment'
+import { DateTime } from 'luxon'
 
 export const giphySchedule: Dict<string> = {
-  '9/26/20': '22YOkQog92fpS',
-  '9/27/20': 'tSaApE2vVQKE8',
-  '9/28/20': 'i34oXbluCO0G4',
-  '9/29/20': '10A0XQ5AOSrJao',
-  '9/30/20': 'BZiSRzmpLYKiKo0yyf',
-  '10/1/20': 'Xw6yFn7frR3Y4',
-  '10/2/20': 'cdNSp4L5vCU7aQrYnV'
+  '10/09/2020': '22YOkQog92fpS',
+  '10/10/2020': 'tSaApE2vVQKE8',
+  '10/11/2020': 'i34oXbluCO0G4',
+  '10/12/2020': '10A0XQ5AOSrJao',
+  '10/13/2020': 'BZiSRzmpLYKiKo0yyf',
+  '10/14/2020': 'Xw6yFn7frR3Y4',
+  '10/15/2020': 'cdNSp4L5vCU7aQrYnV'
 }
 
 export function giphyEmbedURL(id: string) {
@@ -30,7 +30,7 @@ interface Props {
 }
 
 export default function Giphy({ id, mode }: Props) {
-  if (mode === 'gif') { 
+  if (mode === 'gif') {
     return <img src={giphyGifURL(id)} alt="Funny image" style={{width:'100%'}} />
   }
   if (mode === 'embed') {
@@ -52,6 +52,6 @@ function randomGiphyId() {
 }
 
 export function GiphyForToday({ mode }: { mode?: 'embed' | 'gif' | 'video' }) {
-  const id = giphySchedule[moment().format('M/DD/YY')] || randomGiphyId()
+  const id = giphySchedule[DateTime.local().toLocaleString(DateTime.DATE_SHORT)] || randomGiphyId()
   return <Giphy id={id} mode={mode} />
 }

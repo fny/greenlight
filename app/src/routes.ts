@@ -13,12 +13,9 @@ import WelcomeChildPage from 'src/pages/welcome/WelcomeChildPage'
 import WelcomeReviewPage from 'src/pages/welcome/WelcomeReviewPage'
 import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage'
 
-// TODO: Rename User survey
 import SurveyNewPage from 'src/pages/SurveyNewPage'
 import SurveyThankYouPage from 'src/pages/SurveyThankYouPage'
 
-
-// import { isSignedIn } from 'src/common/api'
 import { getGlobal } from 'reactn'
 import { User } from 'src/common/models'
 import MagicSignInAuthPage from './pages/MagicSignInAuthPage'
@@ -26,9 +23,11 @@ import { buildDynamicPath, resolvePath } from './util'
 import GiphysPage from './pages/GiphysPage'
 import UserGreenlightPassPage from './pages/UserGreenlightPassPage'
 import DebugPage from './pages/DebugPage'
+import { isSignedIn } from './common/api'
+import { Router } from 'framework7/modules/router/router'
 
 export const paths = {
-rootPath: '/',
+  rootPath: '/',
   signInPath: '/sign-in',
   magicSignInPath: '/magic-sign-in',
   magicSignInAuthPath: '/mgk/:token/:remember',
@@ -41,7 +40,7 @@ rootPath: '/',
   welcomeChildPath: '/welcome/children/:id',
   userSurveysNewPath: '/users/:id/surveys/new',
   userGreenlightPassPath: '/users/:userId/greenlight-pass',
-  surveysThankYouPath: '/surveys/thank-you/:status'
+  surveysThankYouPath: '/surveys/thank-you'
 }
 
 type PathsDynamized = {
@@ -97,55 +96,53 @@ export const dynamicPaths = {
   ...pathsDynamized
 }
 
-// const beforeEnter = {
-//   requireSignIn: function(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
-//     resolve()
-//     return
-//     // if (isSignedIn()) {
-//     //   resolve()
-//     // } else {
-//     //   reject()
-//     //   this.navigate(paths.rootPath)
-//     // }
-//   },
-//   redirectHomeIfSignedIn: function(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
-//     resolve()
-//     return
-//     // if (isSignedIn()) {
-//     //   reject()
-//     //   this.navigate(dynamicPaths.userHomePath())
-//     // } else {
-//     //   resolve()
-//     // }
-//   }
-// }
+const beforeEnter = {
+  requireSignIn: function(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+
+    if (isSignedIn()) {
+      resolve()
+    } else {
+      resolve()
+
+      this.navigate(paths.rootPath)
+    }
+  },
+  redirectHomeIfSignedIn: function(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+    if (isSignedIn()) {
+      reject()
+      this.navigate(dynamicPaths.currentUserHomePath())
+    } else {
+      resolve()
+    }
+  }
+}
 
 
 const routes = [
   {
     path: paths.rootPath,
     component: SplashPage,
-    // beforeEnter: beforeEnter.redirectHomeIfSignedIn
+    beforeEnter: beforeEnter.redirectHomeIfSignedIn
   },
   {
     path: paths.welcomePath,
     component: WelcomePage,
-    // beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.signInPath,
     component: SignInPage,
-    // beforeEnter: beforeEnter.redirectHomeIfSignedIn
+    beforeEnter: beforeEnter.redirectHomeIfSignedIn
   },
   {
     path: paths.magicSignInPath,
     component: MagicSignInPage,
-    // beforeEnter: beforeEnter.redirectHomeIfSignedIn
+    beforeEnter: beforeEnter.redirectHomeIfSignedIn
   },
   {
     path: paths.dashboardPath,
     component: DashboardPage,
-    // beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.passwordResetsNewPath,
@@ -158,32 +155,32 @@ const routes = [
   {
     path: paths.welcomePath,
     component: WelcomePage,
-    // beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.welcomeReviewPath,
     component: WelcomeReviewPage,
-    // beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.welcomePasswordPath,
     component: WelcomePasswordPage,
-    // beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.welcomeChildPath,
     component: WelcomeChildPage,
-    // beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.userSurveysNewPath,
     component: SurveyNewPage,
-    // beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.surveysThankYouPath,
     component: SurveyThankYouPage,
-    // beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn
   },
   {
     path: paths.userGreenlightPassPath,

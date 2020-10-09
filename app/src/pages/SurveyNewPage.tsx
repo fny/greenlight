@@ -3,14 +3,14 @@ import { Page, Navbar, Block, Button, Input, Row, Col, ListInput } from 'framewo
 import { Case, When } from '../components/Case'
 import './SurveyNewPage.css'
 import DatedYesNoButton from '../components/DatedYesNoButton'
-import { dynamicPaths } from 'src/routes'
+import { dynamicPaths, paths } from 'src/routes'
 import { MEDICAL_EVENTS } from 'src/common/models/MedicalEvent'
-import { GREENLIGHT_STATUSES } from 'src/common/models/GreenlightStatus'
+import { CUTOFF_TIME, GREENLIGHT_STATUSES } from 'src/common/models/GreenlightStatus'
 import { createSymptomSurvey } from 'src/common/api'
 import { User } from 'src/common/models'
 import { NoCurrentUserError } from 'src/common/errors'
 import { ReactNComponent } from 'reactn/build/components'
-import moment from 'moment'
+import { DateTime } from 'luxon'
 import { i18n } from '@lingui/core'
 import { Trans, t } from '@lingui/macro'
 
@@ -48,9 +48,9 @@ interface SurveyState {
   hasDifficultyBreathing: boolean
   hasLossTasteSmell: boolean
   hadDiagnosis: boolean | null
-  diagnosisDate: moment.Moment | null
+  diagnosisDate: DateTime | null
   hadContact: boolean | null
-  contactDate: moment.Moment | null
+  contactDate: DateTime | null
   diagnosisError?: string | null
   submitClicked?: boolean
   showConfirmation: boolean
@@ -87,88 +87,50 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     }
   }
 
-  serialize() {
+  medicalEvents() {
     const events = []
-    const status = {
-      statusSetAt: moment(),
-      statusExpiresAt: moment(null),
-      reason: '',
-      status: GREENLIGHT_STATUSES.UNKNOWN
-    }
     if (this.state.hasFever) {
-      events.push({ eventType: MEDICAL_EVENTS.FEVER })
+      events.push({
+        eventType: MEDICAL_EVENTS.FEVER,
+        occurredAt: DateTime.local()
+      })
     }
     if (this.state.hasChills) {
-      events.push({ eventType: MEDICAL_EVENTS.CHILLS })
+      events.push({
+        eventType: MEDICAL_EVENTS.CHILLS,
+        occurredAt: DateTime.local()
+      })
     }
     if (this.state.hasNewCough) {
-      events.push({ eventType: MEDICAL_EVENTS.NEW_COUGH })
+      events.push({
+        eventType: MEDICAL_EVENTS.NEW_COUGH,
+        occurredAt: DateTime.local()
+      })
     }
     if (this.state.hasDifficultyBreathing) {
-      events.push({ eventType: MEDICAL_EVENTS.DIFFICULTY_BREATING })
+      events.push({
+        eventType: MEDICAL_EVENTS.DIFFICULTY_BREATHING,
+        occurredAt: DateTime.local()
+      })
     }
     if (this.state.hasLossTasteSmell) {
-      events.push({ eventType: MEDICAL_EVENTS.LOST_TASTE_SMELL })
+      events.push({
+        eventType: MEDICAL_EVENTS.LOST_TASTE_SMELL,
+        occurredAt: DateTime.local()
+      })
     }
     if (this.state.hadDiagnosis && this.state.diagnosisDate) {
       events.push({ eventType: MEDICAL_EVENTS.COVID_DIAGNOSIS,
-        occurredAt: moment(this.state.diagnosisDate)
+        occurredAt: DateTime.local(this.state.diagnosisDate)
       })
     }
     if (this.state.hadContact && this.state.contactDate) {
       events.push({ eventType: MEDICAL_EVENTS.COVID_EXPOSURE,
-        occurredAt: moment(this.state.contactDate)
+        occurredAt: DateTime.local(this.state.contactDate)
       })
     }
-    const symptomatic = this.state.hasFever || this.state.hasChills || this.state.hasDifficultyBreathing  || this.state.hasLossTasteSmell || this.state.hasNewCough
-
-    // Asymptomatic
-    if (!symptomatic && !this.state.hadContact && !this.state.hadDiagnosis) {
-      status.status = GREENLIGHT_STATUSES.CLEARED
-      status.statusExpiresAt = status.statusSetAt.add(1, 'day')
-      return { medicalEvents: events, greenlightStatus: status }
-    }
-
-    // Contact
-    if (this.state.hadContact) {
-      status.status = GREENLIGHT_STATUSES.RECOVERING
-      status.statusExpiresAt = status.statusSetAt.add(14, 'day')
-      status.reason = 'diagnosis'
-      return { medicalEvents: events, greenlightStatus: status }
-    }
-
-    // Diagnosis
-    if (this.state.hadDiagnosis && symptomatic) {
-      status.statusExpiresAt = this.state.diagnosisDate?.add(10, 'day') || status.statusSetAt.add(10, 'day')
-
-      if (status.statusExpiresAt < status.statusSetAt && !this.state.hasFever) {
-        status.status = GREENLIGHT_STATUSES.CLEARED
-        status.statusExpiresAt = status.statusSetAt.add(1, 'day')
-        status.reason = 'diagnosed, beyond 10 days, no fever'
-        return { medicalEvents: events, greenlightStatus: status }
-      }
-
-      if (status.statusExpiresAt < status.statusSetAt && this.state.hasFever) {
-        status.status = GREENLIGHT_STATUSES.RECOVERING
-        status.statusExpiresAt = status.statusSetAt.add(1, 'day')
-        status.reason = 'diagnosed, beyond 10 days, has fever'
-        return { medicalEvents: events, greenlightStatus: status }
-      }
-
-      status.status = GREENLIGHT_STATUSES.RECOVERING
-      status.reason = 'diagnosis'
-      return { medicalEvents: events, greenlightStatus: status }
-    }
-
-    // Symptomatic
-    if (symptomatic) {
-      status.status = GREENLIGHT_STATUSES.RECOVERING
-      status.statusExpiresAt = status.statusSetAt.add(10, 'day')
-      status.reason = 'symptomatic'
-      return { medicalEvents: events, greenlightStatus: status }
-    }
-
-    throw new Error(`Unhandled case: symptomatic ${symptomatic}, contact ${this.state.hadContact}, diagnosis ${this.state.hadDiagnosis}`)
+    console.log(events)
+    return events
   }
 
   index() {
@@ -178,7 +140,11 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
   }
 
   submittingFor() {
-    return this.state.currentUser.usersNeedingSurveys()[this.index()]
+    if (CUTOFF_TIME.isAfter(DateTime.local())) {
+      return this.state.currentUser.allUsersNotSubmitted()[this.index()]
+    } else {
+      return this.state.currentUser.allUsersNotSubmittedForTomorrow()[this.index()]
+    }
   }
 
   submittingBy() {
@@ -226,14 +192,14 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
   setDiagnosisDate(date: Date) {
     this.setState({
       showConfirmation: false,
-      diagnosisDate: moment(date),
+      diagnosisDate: DateTime.fromJSDate(date),
     })
   }
 
   setContactDate(date: Date) {
     this.setState({
       showConfirmation: false,
-      contactDate: moment(date),
+      contactDate: DateTime.fromJSDate(date),
     })
   }
 
@@ -258,17 +224,24 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       this.setState({ showConfirmation: false })
       return
     }
-    const { medicalEvents, greenlightStatus } = this.serialize()
+    const medicalEvents = this.medicalEvents()
 
     // TODO: i18n
     this.$f7.dialog.preloader('Submitting...')
     try {
-      await createSymptomSurvey(this.submittingFor(), medicalEvents, greenlightStatus)
+      const status = await createSymptomSurvey(this.submittingFor(), medicalEvents)
+      if (!status) {
+        throw "This should never happen, but status was somehow nil."
+      }
       this.$f7.dialog.close()
-      this.$f7router.navigate(dynamicPaths.surveysThankYouPath(greenlightStatus.status))
+      this.$f7router.navigate(paths.surveysThankYouPath)
     } catch (error) {
+      if (!error.response) {
+        throw error
+      }
+
       if (error.response.status == 422) {
-        this.$f7router.navigate('/dashboard')
+        this.$f7router.navigate(paths.dashboardPath)
       }
 
       this.$f7.dialog.close()
@@ -289,7 +262,6 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       this.state.hadDiagnosis === true &&
       !this.state.diagnosisDate
     ]
-    console.log(errors)
     return !errors.includes(true)
   }
 
@@ -312,11 +284,11 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
             {
               this.isSubmittingForSelf() ?
               <Trans id="SurveyNewPage.any_symptoms">
-                `Do you have any of these symptoms?`
+                Do you have any of these symptoms?
               </Trans>
               :
               <Trans id="SurveyNewPage.any_symptoms_child">
-                `Does ${submittingFor.firstName} have any of these symptoms?`
+                Does {submittingFor.firstName} have any of these symptoms?
               </Trans>
             }
           </div>
@@ -360,13 +332,13 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
             {
               this.isSubmittingForSelf() ?
               <Trans id="SurveyNewPage.covid_contact">
-                `Have you had close contact—within 6 feet for at least 15
-                minutes—with someone diagnosed with COVID-19?`
+                Have you had close contact—within 6 feet for at least 15
+                minutes—with someone diagnosed with COVID-19?
               </Trans>
               :
               <Trans id="SurveyNewPage.covid_contact_child">
-                `Has ${submittingFor.firstName} had close contact—within 6 feet for at least 15
-                minutes—with someone diagnosed with COVID-19?`
+                Has {submittingFor.firstName} had close contact—within 6 feet for at least 15
+                minutes—with someone diagnosed with COVID-19?
               </Trans>
             }
           <br />
@@ -381,12 +353,12 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
             {
               this.isSubmittingForSelf() ?
               <Trans id="SurveyNewPage.covid_diagnosis">
-                `Have you been diagnosed with or tested positive for COVID-19?`
+                Have you been diagnosed with or tested positive for COVID-19?
               </Trans>
               :
               <Trans id="SurveyNewPage.covid_diagnosis_child">
-                `Has ${submittingFor.firstName} been diagnosed with or tested positive for
-                COVID-19?`
+                Has {submittingFor.firstName} been diagnosed with or tested positive for
+                COVID-19?
               </Trans>
             }
           <DatedYesNoButton

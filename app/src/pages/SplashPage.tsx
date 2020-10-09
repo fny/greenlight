@@ -8,7 +8,7 @@ import {
 import { Trans } from '@lingui/macro'
 
 import './SplashPage.css'
-import { toggleLanguage } from '../util'
+import { toggleLocale } from '../util'
 
 export default class SplashPage extends React.Component<{}, {}> {
   render() {
@@ -34,7 +34,7 @@ export default class SplashPage extends React.Component<{}, {}> {
             </Trans>
           </Button>
 
-          <Button outline onClick={toggleLanguage}>
+          <Button outline onClick={toggleLocale}>
             <Trans id="SplashPage.choose_language">
               En Español
             </Trans>

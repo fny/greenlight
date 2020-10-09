@@ -26,7 +26,7 @@ import { getCurrentUser, session, destroySession } from './common/api'
 addReactNDevTools()
 
 setGlobal({
-  language: 'en'
+  locale: 'en'
 })
 
 

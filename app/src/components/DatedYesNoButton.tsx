@@ -6,7 +6,8 @@ import {
   Segmented,
   Button, ListInput, List
 } from 'framework7-react'
-import moment, { Moment } from 'moment'
+
+import { DateTime } from 'luxon'
 
 interface Props {
   showErrors?: boolean
@@ -64,8 +65,8 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
             <ListInput
               label="When?"
               calendarParams={{
-                minDate: moment().subtract(14, 'days').toDate(),
-                maxDate: moment().toDate(),
+                minDate: DateTime.local().minus({ 'days': 14 }).toJSDate(),
+                maxDate: DateTime.local().toJSDate(),
                 monthPicker: false,
                 yearPicker: false,
                 closeOnSelect: true,

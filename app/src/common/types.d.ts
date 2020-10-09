@@ -8,42 +8,6 @@ export type OnChangeEvent = ((event: React.ChangeEvent<HTMLInputElement>) => voi
 // Json API Related
 //
 
-export interface LinkObject {
-    href: string
-    meta?: Dict<any>
-}
-
-export type Link = string | LinkObject;
-
-export interface RecordPointer {
-  type: string
-  id: string
-}
-
-export interface RecordHasOneRelationship {
-  data?: RecordPointer | null
-  links?: Dict<Link>
-  meta?: Dict<any>
-}
-
-export interface RecordHasManyRelationship {
-  data?: RecordPointer[]
-  links?: Dict<Link>
-  meta?: Dict<any>
-}
-
-export type RecordRelationship =
-  | RecordHasOneRelationship
-  | RecordHasManyRelationship;
-
-export interface RecordFields {
-  keys?: Dict<string>
-  attributes?: Dict<any>
-  relationships?: Dict<RecordRelationship>
-  links?: Dict<Link>
-  meta?: Dict<any>
-}
-
 export interface Record extends RecordFields, RecordPointer {}
 
 export interface UninitializedRecord extends RecordFields {
@@ -79,23 +43,23 @@ export type RecordRelationship =
   | RecordHasOneRelationship
   | RecordHasManyRelationship;
 
-export interface RecordFields {
+export interface RecordFields<T> {
   keys?: Dict<string>
-  attributes?: Dict<any>
+  attributes?: Partial<T>
   relationships?: Dict<RecordRelationship>
   links?: Dict<Link>
   meta?: Dict<any>
 }
 
-export interface Record extends RecordFields, RecordPointer {}
+export interface Record<T> extends RecordFields<T>, RecordPointer {}
 
 export interface UninitializedRecord extends RecordFields {
   type: string
   id?: string
 }
-  
-export interface RecordResponse {
-  data: Record | Record[]
+
+export interface RecordResponse<T> {
+  data: Record<T> | Record<T>[]
   included?: Record[]
   links?: Dict<Link>
   meta?: Dict<any>
@@ -119,3 +83,5 @@ export interface TokenResponse {
 }
 
 export type Entity<T extends Model> = new() => T
+
+type EntityId = string

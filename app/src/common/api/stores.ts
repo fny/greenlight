@@ -1,11 +1,11 @@
 import { AxiosResponse } from 'axios'
-import { Dict, Record, RecordResponse, RecordRelationship, Entity } from '../types'
+import { Dict, Record, RecordResponse, RecordRelationship, RecordPointer, EntityId } from '../types'
 import { Model } from '../models'
 import { deserializeJSONAPI } from '../models/Model'
 import { zip } from 'lodash'
 
 interface RecordStoreEntry {
-  record: Record
+  record: Record<any>
   entity?: Model
 }
 
@@ -16,20 +16,20 @@ class RecordStore {
     this.data = {}
   }
 
-  findRecord(id: string): Record | null {
+  findRecord(id: EntityId): Record<any> | null {
     return this.data[id]?.record
   }
 
-  findRecords(ids: string[]): Record[] {
-    const records: Record[] = []
+  findRecords(ids: EntityId[]): Record<any>[] {
+    const records: Record<any>[] = []
     for (const id of ids) {
       const record = this.findRecord(id)
       if (record !== null) records.push(record)
     }
     return records
   }
-  
-  findEntity<T extends Model>(id: string): T | null {
+
+  findEntity<T extends Model>(id: EntityId): T | null {
     let entity = this.data[id]?.entity
     if (entity) { return entity as T }
 
@@ -40,7 +40,7 @@ class RecordStore {
     return entity as T
   }
 
-  findEntities<T extends Model>(ids: string[]): T[] {
+  findEntities<T extends Model>(ids: EntityId[]): T[] {
     const entities: T[] = []
     for (const id of ids) {
       const entity = this.findEntity<T>(id)
@@ -49,18 +49,18 @@ class RecordStore {
     return entities
   }
 
-  load(records: Record | Record[]) {
+  load(records: Record<any> | Record<any>[]) {
     const recordsParsed = !Array.isArray(records) ? [records] : records
-    recordsParsed.forEach(r => { this.data[r.id] = { record: r } })
+    recordsParsed.forEach(r => { this.data[uuid(r)] = { record: r } })
   }
 
-  loadRecordResponse(res: RecordResponse) {
+  loadRecordResponse(res: RecordResponse<any>) {
     if (res.included) this.load(res.included)
     if (res.data) this.load(res.data)
   }
 
   reset() {
-    this.data = {} 
+    this.data = {}
   }
 }
 
@@ -70,7 +70,7 @@ class ResponseStore {
   constructor() {
     this.data = {}
   }
-  
+
   has(key: string) {
     return key in this.data
   }
@@ -82,7 +82,7 @@ class ResponseStore {
     this.data[key] = value
   }
   reset() {
-    this.data = {} 
+    this.data = {}
   }
 }
 
@@ -102,7 +102,7 @@ export const responseStore = new ResponseStore()
 
 export function transformRelationship<T extends Model>(entity: T, relationshipName: string, relationship: RecordRelationship) {
   // Skip if we've already loaded the relationship
-  if (entity._included.includes(relationshipName)) return 
+  if (entity._included.includes(relationshipName)) return
 
   if (!entity.hasRelationship(relationshipName)) {
     throw new Error(`Relationship ${relationshipName} not found on ${entity}`)
@@ -114,7 +114,7 @@ export function transformRelationship<T extends Model>(entity: T, relationshipNa
   }
 
   if (Array.isArray(relationship.data)) {
-    const ids = relationship.data.map(d => d.id)
+    const ids = relationship.data.map(d => uuid(d))
     const foundEntities = recordStore.findEntities(ids)
     const foundRecords = recordStore.findRecords(ids)
     if (foundRecords.length !== ids.length) {
@@ -124,19 +124,19 @@ export function transformRelationship<T extends Model>(entity: T, relationshipNa
     }
     // Set relationship for records on the relationship
     zip(foundEntities, foundRecords).forEach(([e, r]) => {
-      tranformRelationships(e as Model, r as Record)
+      tranformRelationships(e as Model, r as Record<any>)
     })
 
     ;(entity as any)[relationshipName] = foundEntities
   } else {
-    const foundEntity = recordStore.findEntity(relationship.data.id)
-    const foundRecord = recordStore.findRecord(relationship.data.id)
-    if (foundEntity && foundRecord) { 
+    const foundEntity = recordStore.findEntity(uuid(relationship.data))
+    const foundRecord = recordStore.findRecord(uuid(relationship.data))
+    if (foundEntity && foundRecord) {
       entity._included.push(relationshipName)
     } else {
       throw `Expected to find ${relationship.data.type} with id ${relationship.data.id} in store but didn't.`
     }
-    
+
     // Set relationship for records on the relationship
     tranformRelationships<any>(foundEntity, foundRecord)
     ;(entity as any)[relationshipName] = foundEntity
@@ -144,7 +144,7 @@ export function transformRelationship<T extends Model>(entity: T, relationshipNa
 
 }
 
-function tranformRelationships<T extends Model>(entity: T, record: Record) {
+function tranformRelationships<T extends Model>(entity: T, record: Record<any>) {
   if (!record.relationships) return
   entity._relationships = record.relationships
   for (const [rel, value] of Object.entries(record.relationships)) {
@@ -154,18 +154,22 @@ function tranformRelationships<T extends Model>(entity: T, record: Record) {
 
 /**
  * Transforms records from the API into entities
- * 
+ *
  * @param record the record to be transformed
  */
-function transformRecord<T extends Model>(record: Record) {
+function transformRecord<T extends Model>(record: Record<any>) {
   const entity: T = deserializeJSONAPI<T>(record)
   tranformRelationships(entity, record)
   return entity
 }
 
-export function transformRecordResponse<T extends Model>(res: RecordResponse): T | T[] {
+export function transformRecordResponse<T extends Model>(res: RecordResponse<T>): T | T[] {
   if (!Array.isArray(res.data)) {
     return transformRecord<T>(res.data)
   }
   return res.data.map(data => transformRecord<T>(data))
+}
+
+export function uuid(record: Record<any> | RecordPointer): EntityId {
+  return `${record.type}-${record.id}`
 }

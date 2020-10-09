@@ -43,7 +43,7 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
 
   // TODO: Reactor: Extract this pattern
   async submit() {
-    if (!this.validate()) { 
+    if (!this.validate()) {
       return
     }
     this.$f7.dialog.preloader('Signing you in...')
@@ -62,7 +62,7 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
 
   render() {
     return (
-      <Page className="SignInPage" noToolbar noSwipeback loginScreen>
+      <Page className="SignInPage" noToolbar>
 
         <Navbar title={
           i18n._(
@@ -70,7 +70,7 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
             `Sign In`
           )} backLink="Back">
         </Navbar>
-        
+
         <div className="greenlight-logo">
           Greenlight<span>.</span>
         </div>

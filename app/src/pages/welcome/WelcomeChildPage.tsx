@@ -3,16 +3,15 @@ import React from 'reactn'
 import { Page, Navbar, Block, Link, List, ListItem, ListInput, Row, Col, Button } from 'framework7-react'
 
 import { User } from '../../common/models/User'
-import pluralize from 'pluralize'
 import { updateUser } from 'src/common/api'
 import { dynamicPaths } from 'src/routes'
 import { deleteBlanks } from 'src/common/util'
-import moment from 'moment'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/common/errors'
 
+import { DateTime } from 'luxon'
 import { i18n } from '@lingui/core'
-import { Trans, t } from '@lingui/macro'
+import { Trans, t, Plural } from '@lingui/macro'
 
 interface State {
   physicianName: string
@@ -81,7 +80,7 @@ export default class extends ReactNComponent<any, State> {
     // TODO: Move delete blanks into update user
     const attrs = deleteBlanks({
       physicianName: this.state.physicianName, physicianPhoneNumber: this.state.physicianPhoneNumber, needsPhysician: this.state.needsPhysician,
-      completedInviteAt: moment().toISOString()
+      completedInviteAt: DateTime.local().toISO()
     })
 
     this.$f7.dialog.preloader(
@@ -120,7 +119,7 @@ export default class extends ReactNComponent<any, State> {
           <When value={user.sortedChildren()[0] === child}>
             <Block>
               <Trans id="WelcomeChildPage.review_children">
-                We've found {pluralize('child', this.childCount(), true)}{' '}
+                We've found <Plural value={this.childCount()} one="child" other="children" />
                 associated with you: {this.childrenNames()}. Let's take a moment
                 to review their information.
               <br />
@@ -161,15 +160,16 @@ export default class extends ReactNComponent<any, State> {
               </b>
             </div>
           </ListItem>
-          {child.locations_TODO().map((location) => (
+          {child.locations__HACK().map((location) => (
             <ListItem
+              key={location.id}
               title={location.name || ''}
               smartSelect
               smartSelectParams={{ openIn: 'sheet' }}
             >
               <select name="mac-windows" defaultValue="attending">
                 <option value="in-person">
-                  <Trans id="WelcomeChildPage.in_person">In Person</Trans>
+                  {i18n._(t('WelcomeChildPage.in_person')`In Person`)}
                 </option>
                 {/* TODO */}
                 {/* <option value="virtual">Virtual</option>

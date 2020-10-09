@@ -14,7 +14,7 @@ import { ErrorBoundary } from './ErrorBoundary'
 
 export default function () {
   const [ global, ] =  useGlobal()
-  
+
   // Framework7 parameters here
   const f7params: Framework7Params = {
     id: 'com.greenlightready.mobile', // App bundle ID
@@ -31,8 +31,7 @@ export default function () {
   return (
     <ErrorBoundary>
       <Provider>
-        <I18nProvider language={global.language} i18n={i18n}>
-          
+        <I18nProvider language={global.locale} i18n={i18n}>
           <App params={f7params} className="App">
             <View id="main-view" url="/" main className="safe-areas" />
           </App>

@@ -1,28 +1,41 @@
 import jwt_decode from 'jwt-decode'
 import Cookies from 'js-cookie'
-import moment from 'moment'
+import { DateTime } from 'luxon'
 import { Dict } from '../types'
 import env from 'src/common/env'
 
 const SESSION_COOKIE_NAME = '_gl_sess_beta'
 
+interface SessionInterface {
+  isValid(): boolean
+  issuedAt(): DateTime
+  expiresAt(): DateTime
+  isExpired(): boolean
+  headers(): Dict<string>
+  removeCookie(): void
+  userId(): number | null
+}
+
 interface SessionJWT {
   iat: number
   exp: number
-  authToken: string
+  auth_token: string
+  user_id: number
 }
 
-export class NullSession {
+export class NullSession implements SessionInterface {
   token = { token: '' }
-
+  userId() {
+    return null
+  }
   isValid() {
     return false
   }
-  issueAt() {
-    return moment()
+  issuedAt() {
+    return DateTime.local()
   }
   expiresAt() {
-    return moment()
+    return DateTime.local()
   }
   isExpired() {
     return true
@@ -35,7 +48,7 @@ export class NullSession {
   }
 }
 
-export class Session {
+export class Session implements SessionInterface {
   token: string
   data: SessionJWT
 
@@ -60,15 +73,19 @@ export class Session {
   }
 
   issuedAt() {
-    return moment(this.data.iat * 1000)
+    return DateTime.fromSeconds(this.data.iat)
   }
 
   expiresAt() {
-    return moment(this.data.exp * 1000)
+    return DateTime.fromSeconds(this.data.exp)
   }
 
   isExpired() {
-    return this.expiresAt() < moment()
+    return this.expiresAt() < DateTime.local()
+  }
+
+  userId() {
+    return this.data.user_id
   }
 
   saveCookie(expiration?: number) {
@@ -78,13 +95,13 @@ export class Session {
         secure: env.isProduction()
       })
     } else {
-    
+
       Cookies.set(SESSION_COOKIE_NAME, this.token)
     }
   }
-  
+
   removeCookie() {
-  
+
     Cookies.remove(SESSION_COOKIE_NAME)
   }
 

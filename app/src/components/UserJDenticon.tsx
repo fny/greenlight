@@ -3,7 +3,7 @@ import * as jdenticon from 'jdenticon'
 import { User } from '../common/models/User'
 import { GREENLIGHT_STATUSES } from  '../common/models/GreenlightStatus'
 const configs: { [k in GREENLIGHT_STATUSES]: jdenticon.JdenticonConfig } = {
-  recovering: {
+  recovery: {
     hues: [328],
     lightness: {
       color: [0.5, 1],

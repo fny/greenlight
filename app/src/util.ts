@@ -1,20 +1,20 @@
 import qs from 'qs'
 
-import React, { getGlobal, setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { Dict } from './common/types'
 
 /**
- * Toggles the current language between English and Spanish
+ * Toggles the current locale between English and Spanish
  */
-export function toggleLanguage() {
-  setGlobal({ language: getGlobal().language === 'en' ? 'es' : 'en'})
+export function toggleLocale() {
+  setGlobal({ locale: getGlobal().locale === 'en' ? 'es' : 'en' })
 }
 
 type DynamicPath = (substitutions?: any, query?: any) => string
 
 /**
  * Builds a callable path that will resolve itslev given substitutions.
- * @param path 
+ * @param path
  */
 export function buildDynamicPath(path: string): DynamicPath {
   return (substitutions?: any, query?: any): string => {
@@ -43,7 +43,7 @@ export function resolvePath(path: string, substitutions?: any[] | Dict<any> | nu
     // There are no substitutions to be made
     return `${path}${queryString}`
   }
-  
+
   if (substitutions === undefined || substitutions === null) {
     throw new Error("No substitutions given.")
   }
@@ -79,4 +79,3 @@ export function resolvePath(path: string, substitutions?: any[] | Dict<any> | nu
 
   return `${path}${queryString}`
 }
-
