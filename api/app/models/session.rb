@@ -29,7 +29,7 @@ class Session
     if !user
       @data = HashWithIndifferentAccess.new
     else
-      @data = HashWithIndifferentAccess.new(auth_token: user.auth_token)
+      @data = HashWithIndifferentAccess.new(auth_token: user.auth_token, user_id: user.id)
     end
 
     @expiration = expiration
@@ -55,7 +55,7 @@ class Session
 
   def to_h
     {
-      token: encoded
+      token: encoded,
     }
   end
 

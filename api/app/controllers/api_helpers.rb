@@ -1,4 +1,8 @@
 module APIHelpers
+  UnauthorizedError = Class.new(StandardError)
+  NotFoundError = Class.new(StandardError)
+  ForbiddenError = Class.new(StandardError)
+
   def parse_request(request)
     HashWithIndifferentAccess.new(camelize_obj(JSON.parse(request.body.read)))
   end

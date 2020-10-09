@@ -71,6 +71,10 @@ class User < ApplicationRecord
     "\"#{full_name}\" <#{email}>"
   end
 
+  def time_zone
+    'America/New_York'
+  end
+
   def save_sign_in!(ip)
     self.last_sign_in_ip = self.current_sign_in_ip
     self.current_sign_in_ip = ip

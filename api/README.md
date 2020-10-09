@@ -20,6 +20,12 @@ Things you may want to cover:
 
 * ...
 
+## Tags
+
+ - TODO: Things that need to be done
+ - FIXME: Things that really need to be fixed
+ - HACK: A quick and dirty thing that needs to be done better
+
 ## TODO
 
 On Error, return the proper errors object
@@ -68,6 +74,36 @@ Goals:
  - Array:
 
 ### Actions
+
+Based on HTTP verbs:
+
+POST /resource => createResource
+Creates a resource and updates the locale store
+
+GET /resource => readResource
+Fetches a resource and updates the local store
+
+PATCH /resource => updateResource
+Updates a resource and updates the local store
+
+DELETE /resource => deleteResource
+Performs a soft delete of the resource at first and queues a delete to occur far into the future giving clients time to delete data
+
+Writer actions:
+
+POST /records/action
+POST /records/:id/action
+
+Reader actions:
+
+GET /records/action
+
+
+It should be well known if an endpoint retuns a single value or not
+
+
+### Camel Casing
+
 
 ### Errors
 

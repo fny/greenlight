@@ -37,7 +37,7 @@ class GreenlightStatus < ApplicationRecord
   scope :submitted_for_today, -> { where('submission_date <= ?', Time.zone.today).where('follow_up_date > ?', Time.zone.today) }
   scope :submitted_for_cuttoff, -> { where('submission_date <= ?', DAILY_CUT_OFF.round(Time.now) ).where('follow_up_date > ?', DAILY_CUT_OFF.round(Time.now)) }
   scope :recently_created, -> { where(created_at: 20.days.ago.beginning_of_day..Time.zone.now.end_of_day) }
-
+  scope :not_expired, -> { where('expiration_date <= ?', Time.current.to_date) }
   has_many :medical_events
 
   before_validation :assign_associated_users_to_medical_events

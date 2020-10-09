@@ -1,12 +1,3 @@
-
-# TODO Move these into a helper
-UnauthorizedError = Class.new(StandardError)
-NotFoundError = Class.new(StandardError)
-ForbiddenError = Class.new(StandardError)
-
-require 'sidekiq/web'
-require 'sidekiq/cron/web'
-
 class APIController < Sinatra::Base
   include APIHelpers
   SUCCESS = {success: true}.to_json
@@ -15,8 +6,17 @@ class APIController < Sinatra::Base
   set :show_exceptions, false
 
   before do
+    content_type 'application/json'
     @session = Session.new(token: request.env['HTTP_AUTHORIZATION'])
+    if current_user
+      Time.zone = current_user.time_zone
+      I18n.locale = current_user.locale
+    else
+      Time.zone = 'America/New_York'
+      I18n.locale = 'en'
+    end
   end
+
 
   # mount Sidekiq::Web, at: '/sidekiq'
 
@@ -32,6 +32,10 @@ class APIController < Sinatra::Base
   get '/temp_invite' do
     Location.find_by(permalink: 'greenlight').invite_users_now
     SUCCESS
+  end
+
+  get '/v1/ping' do
+    'pong'
   end
 
   post '/v1/sessions' do
@@ -50,11 +54,12 @@ class APIController < Sinatra::Base
     if current_user
       current_user.reset_auth_token!
     end
+    SUCCESS
   end
 
-  post '/v1/magic-sign-in/:token' do
+  post '/v1/magic-sign-in/:token' do |token|
     user = User.find_by!(magic_sign_in_token: token)
-    user.save_sign_in!(r.ip)
+    user.save_sign_in!(request.ip)
     @session = Session.from_sign_in(user, remember_me: request_json[:remember_me])
     @session.to_json
   end
@@ -75,11 +80,16 @@ class APIController < Sinatra::Base
     raise ForbiddenError unless current_user.authorized_to_view?(user)
 
     includes = [
-      :locations, :location_accounts, :recent_medical_events, :recent_greenlight_statuses, :greenlight_statuses, :last_greenlight_status,
+      # For the User
+      :location_accounts,
       :'location_accounts.location',
+      :last_greenlight_status,
       :children,
-      :'children.locations', :'children.location_accounts', :'children.recent_medical_events', :'children.recent_greenlight_statuses',
-      :'children.location_accounts.location', :'children.greenlight_statuses', :'children.last_greenlight_status'
+
+      # For the Children
+      :'children.location_accounts',
+      :'children.location_accounts.location',
+      :'children.last_greenlight_status'
     ]
     MobileUserSerializer.new(
       user, include: includes
@@ -101,6 +111,7 @@ class APIController < Sinatra::Base
     end
   end
 
+  # On success responds with a greenlight status
   post '/v1/users/:user_id/symptom-surveys' do |user_id|
     require_auth!
     user = lookup_user(user_id)

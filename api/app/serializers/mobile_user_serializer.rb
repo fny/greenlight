@@ -21,18 +21,16 @@ class MobileUserSerializer < ApplicationSerializer
   attribute :accepted_terms_at
   attribute :completed_invite_at
 
-  attribute :language
+  attribute :locale
   attribute :zip_code
   attribute :birth_date
   attribute :physician_name
   attribute :physician_phone_number
 
   has_one :last_greenlight_status, serializer: GreenlightStatusSerializer, record_type: 'greenlightStatus'
-  has_many :children, serializer: UserSerializer, record_type: 'user'
 
-  has_many :locations
+  has_many :children, serializer: MobileUserSerializer, record_type: 'user'
+
   has_many :location_accounts
 
-  has_many :recent_medical_events, serializer: MedicalEventSerializer, record_type: 'medicalEvent'
-  has_many :recent_greenlight_statuses, serializer: GreenlightStatusSerializer, record_type: 'greenlightStatus'
 end
