@@ -1,9 +1,3 @@
-GIT
-  remote: https://github.com/fny/jsonapi_errors_handler.git
-  revision: 1fa0b45e9e5a4651fef4d3a4f64587d8181873b4
-  specs:
-    jsonapi_errors_handler (0.2.0)
-
 PATH
   remote: vendor/gems/self_control
   specs:
@@ -356,7 +350,6 @@ DEPENDENCIES
   fast_jsonapi
   fast_xs
   foreman
-  jsonapi_errors_handler!
   jwt
   listen (~> 3.2)
   lograge

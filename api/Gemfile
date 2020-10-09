@@ -60,8 +60,6 @@ gem 'faraday'
 gem 'fast_jsonapi'
 # JSON web tokens
 gem 'jwt'
-# Return JSON API errors
-gem 'jsonapi_errors_handler', git: 'https://github.com/fny/jsonapi_errors_handler.git'
 # Tame Rails' default policy to log everything
 gem 'lograge'
 # Phone validations
