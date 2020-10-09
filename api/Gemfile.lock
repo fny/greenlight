@@ -233,10 +233,6 @@ GEM
     reverse_markdown (2.0.0)
       nokogiri
     rexml (3.2.4)
-    roda (3.36.0)
-      rack
-    roda-http-auth (0.2.0)
-      roda (>= 2.0, < 4.0)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -377,8 +373,6 @@ DEPENDENCIES
   puma (~> 4.1)
   rack-cors
   rails (~> 6.0.3, >= 6.0.3.2)
-  roda
-  roda-http-auth
   rspec
   rspec-rails
   rspec-sidekiq
