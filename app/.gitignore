@@ -1,6 +1,6 @@
 src/locales/_build/
 src/locales/**/*.js
-
+build
 #
 # Node.gitignore
 #
