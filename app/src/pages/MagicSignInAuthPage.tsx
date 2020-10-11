@@ -1,17 +1,15 @@
 import React from 'reactn'
 import {
   Page,
-  List,
   Navbar,
   Block,
-  Button,
-  ListItem, Link
+  Link
 } from 'framework7-react'
 
 import { Case, When } from 'src/components/Case'
 
-import { Trans, t, defineMessage } from '@lingui/macro'
-import { i18n, MyTrans } from 'src/i18n'
+import { defineMessage } from '@lingui/macro'
+import { MyTrans } from 'src/i18n'
 
 import { Dict } from 'src/common/types'
 import { magicSignIn } from 'src/common/api'
