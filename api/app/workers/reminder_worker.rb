@@ -1,4 +1,4 @@
-class InviteWorker < ApplicationWorker
+class ReminderWorker < ApplicationWorker
   def html_template
     Erubi::Engine.new(<<~HTML
       <h2>Check In with Greenlight</h2>
