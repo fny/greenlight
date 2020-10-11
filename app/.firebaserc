@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "greenlight-18424"
+  },
+  "targets": {
+    "greenlight-18424": {
+      "hosting": {
+        "staging": [
+          "glit-app-staging"
+        ]
+      }
+    }
+  }
+}

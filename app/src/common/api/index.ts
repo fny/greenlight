@@ -6,8 +6,9 @@ import axios, { AxiosResponse } from 'axios'
 import { Session, NullSession } from './session'
 import { getGlobal, setGlobal } from 'reactn'
 import { assertNotArray, assertNotUndefined, transformForAPI } from '../util'
+import env from '../env'
 
-const BASE_URL = "http://api-dev.greenlightready.com/v1"
+const BASE_URL = `${env.API_URL}/v1`
 const REMEBER_ME_DAYS = 30
 
 export const v1 = axios.create({
