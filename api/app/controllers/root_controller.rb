@@ -5,6 +5,10 @@ module RootController
       { howdy: developer_message }.to_json
     end
 
+    get '/xnp9q8g7nvx9wmq197b0' do
+      raise "This error should show up in notifications and the logs."
+    end
+
     get '/temp_remind' do
       Location.find_by(permalink: 'greenlight').remind_users_now
       SUCCESS
