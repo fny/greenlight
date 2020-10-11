@@ -54,6 +54,8 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'enumerize'
 # Exception notifier
 gem 'exception_notification'
+# Library for generating fake data
+gem 'faker'
 # Simple, but flexible HTTP client library
 gem 'faraday'
 # A lightning fast JSON:API serializer for Ruby Objects.
@@ -72,7 +74,7 @@ gem 'plivo'
 gem 'pony'
 # Advanced seed data handling for Rails
 gem 'seed-fu', '~> 2.3'
-
+# Control flow tracing.
 gem 'self_control', :path => "vendor/gems/self_control"
 # Twilio Sendgrid Email API
 gem 'sendgrid-ruby'
@@ -90,8 +92,6 @@ group :development, :test do
   gem 'dotenv-rails'
   # Object generation framework
   gem 'fabrication'
-  # Library for generating fake data
-  gem 'faker'
   # `rails c` alternative and runtime developer console
   gem 'pry-rails'
   # Launch a pry session when a test fails
