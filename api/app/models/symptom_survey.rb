@@ -31,7 +31,7 @@ class SymptomSurvey
 
   def medical_events_present
     if self.medical_events.nil?
-      errors.add(:medical_events, :presence)
+      errors.add(:medical_events, :blank)
     end
   end
 

@@ -18,10 +18,11 @@ RSpec.describe User, type: :model do
   it "has todays greenlight status" do
     gl_status = Fabricate.build(:greenlight_status)
     gl_status.user = user
-    gl_status.created_by_user = user
+    gl_status.created_by = user
     gl_status.save
 
-    status = GreenlightStatus.submitted_today.where(user: user).first
+    status = GreenlightStatus.submitted_for_today.where(user: user).first
+    expect(status).not_to eq(nil)
     expect(status.status).to eq(gl_status.status)
     expect(user.last_greenlight_status.status).to eq(gl_status.status)
     expect(user.todays_greenlight_status.status).to eq(gl_status.status)

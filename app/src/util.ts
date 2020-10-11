@@ -1,14 +1,10 @@
+import { defineMessage } from '@lingui/macro'
+import { DateTime } from 'luxon'
 import qs from 'qs'
 
 import { getGlobal, setGlobal } from 'reactn'
-import { Dict } from './common/types'
-
-/**
- * Toggles the current locale between English and Spanish
- */
-export function toggleLocale() {
-  setGlobal({ locale: getGlobal().locale === 'en' ? 'es' : 'en' })
-}
+import { Dict } from 'src/common/types'
+import { timeOfDay } from 'src/common/util'
 
 type DynamicPath = (substitutions?: any, query?: any) => string
 
@@ -78,4 +74,56 @@ export function resolvePath(path: string, substitutions?: any[] | Dict<any> | nu
   }
 
   return `${path}${queryString}`
+}
+
+
+
+export function esExclaim() {
+  return getGlobal().locale === 'es' ? '¡' : ''
+}
+
+export function greeting() {
+  const time = timeOfDay()
+  switch (time) {
+    case "morning":
+      return getGlobal().i18n._(defineMessage({id: "util.good_morning", message: "Good morning"}))
+    case "afternoon":
+      return getGlobal().i18n._(defineMessage({id: "util.good_afternoon", message: "Good afternoon"}))
+    case "evening":
+      return getGlobal().i18n._(defineMessage({id: "util.good_evening", message: "Good evening"}))
+    default:
+      throw new Error(`Unknown time of day ${time}`)
+  }
+}
+
+/**
+ * joinWords(['apple', 'banana', 'mango']) # => 'apple, banana, and mango'
+ *
+ * @param words
+ * @param twoWordsConnector
+ * @param lastWordConnector
+ * @param wordsConnector
+ */
+export function joinWords(words: string[], conjunction?: string): string {
+  let twoWordsConnector
+  let lastWordConnector
+
+  if (conjunction === 'or') {
+    twoWordsConnector = getGlobal().i18n._(defineMessage({id: 'util.two_words_or', message: ` or `}))
+    lastWordConnector = getGlobal().i18n._(defineMessage({id: 'util.last_word_or', message: `, or `}))
+  } else {
+    twoWordsConnector = getGlobal().i18n._(defineMessage({id: 'util.two_words_and', message: ` and `}))
+    lastWordConnector = getGlobal().i18n._(defineMessage({id: 'util.last_word_and', message: `, and `}))
+  }
+
+  const wordsConnector = getGlobal().i18n._(defineMessage({id: 'util.words_connector', message: `, `}))
+  if (words.length === 0) {
+    return ''
+  } else if (words.length === 1) {
+    return `${words[0]}`
+  } else if (words.length === 2) {
+    return `${words[0]}${twoWordsConnector}${words[1]}`
+  } else {
+    return `${words.slice(0, -1).join(wordsConnector)}${lastWordConnector}${words[words.length - 1]}`
+  }
 }

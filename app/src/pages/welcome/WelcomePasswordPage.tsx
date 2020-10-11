@@ -8,8 +8,8 @@ import { User } from 'src/common/models'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/common/errors'
 
-import { i18n } from '@lingui/core'
-import { Trans, t } from '@lingui/macro'
+import { Trans, t, defineMessage } from '@lingui/macro'
+import { MyTrans } from 'src/i18n'
 
 
 interface State {
@@ -23,7 +23,7 @@ interface State {
 export default class extends ReactNComponent<any, State> {
   constructor(props: any) {
     super(props)
-    
+
     if (!this.global.currentUser) {
       throw new NoCurrentUserError()
     }
@@ -35,7 +35,7 @@ export default class extends ReactNComponent<any, State> {
       isPasswordHidden: true,
       currentUser: this.global.currentUser
     }
-  
+
   }
 
   toggleReveal(e: SyntheticEvent) {
@@ -44,15 +44,15 @@ export default class extends ReactNComponent<any, State> {
   }
   async submit() {
     if (this.state.password.length < 8) {
-      this.setState({ 
-        errorMessage: i18n._(t("WelcomePasswordPage.short_password")`Password is too short.`), 
+      this.setState({
+        errorMessage: this.global.i18n._(defineMessage({ id: "WelcomePasswordPage.short_password", message: "Password is too short." })),
         showErrorMessage: true })
       return
     }
     this.setState({ errorMessage: '', showErrorMessage: false })
     this.$f7.input.validateInputs('#WelcomePasswordPage-form')
 
-    this.$f7.dialog.preloader(i18n._(t('WelcomePasswordPage.submitting_changes')`Submitting changes...`))
+    this.$f7.dialog.preloader(this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.submitting_changes', message: "Submitting changes..." })))
     try {
       const user = await updateUser(this.state.currentUser, { password: this.state.password } as Partial<User>)
       this.setGlobal({ currentUser: user })
@@ -62,29 +62,29 @@ export default class extends ReactNComponent<any, State> {
       this.$f7.dialog.close()
       console.error(error)
       this.$f7.dialog.alert(
-        i18n._(t('WelcomePasswordPage.somethings_wrong')`Something went wrong`),
-        i18n._(t('WelcomePasswordPage.update_failed')`Update Failed`))
+        this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.somethings_wrong', message: "Something went wrong" })),
+        this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.update_failed', message: "Update Failed" })))
     }
   }
 
   render() {
     return (
       <Page>
-        <Navbar title={i18n._(t('WelcomePasswordPage.set_password')`Set Your Password`)}></Navbar>
+        <Navbar title={this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.set_password', message: "Set Your Password" }))}></Navbar>
         <Block>
           <p>
-            <Trans id="WelcomePasswordPage.set_password_instructions">
+            <MyTrans id="WelcomePasswordPage.set_password_instructions">
               You can sign in with your email address or mobile number and this
               password. It must be at least 8 characters long.
-            </Trans>
+            </MyTrans>
           </p>
         </Block>
         <Block>
           <List noHairlines form id="WelcomePasswordPage-form">
           <ListInput
-            label={i18n._(t('WelcomePasswordPage.password_label')`Password`)}
-            type={this.state.isPasswordHidden ? "password" : "text"} 
-            placeholder={i18n._(t('WelcomePasswordPage.password_placeholder')`Password`)}
+            label={this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.password_label', message: "Password" }))}
+            type={this.state.isPasswordHidden ? "password" : "text"}
+            placeholder={this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.password_placeholder', message: "Password" }))}
             value={this.state.password}
             errorMessage={this.state.errorMessage || ''}
             errorMessageForce={this.state.showErrorMessage}
@@ -96,38 +96,37 @@ export default class extends ReactNComponent<any, State> {
           />
 
           <ListItem>
-            <span>Reveal Password</span>
+            <span><MyTrans id="WelcomePassword.reveal_password">Reveal Password</MyTrans></span>
             {/*  TODO: This color is off */}
             <Toggle color="green" onChange={(e) => this.toggleReveal(e)} />
           </ListItem>
           </List>
           <img
-            alt={i18n._(
-              t('WelcomePasswordPage.security_alt_text')
-              `Greenlight gives security the highest importance.`)}
+            alt={this.global.i18n._(
+              defineMessage({ id: 'WelcomePasswordPage.security_alt_text', message: "Greenlight gives security the highest importance." }))}
             src="/images/welcome-secure.svg"
           />
 
           <Case test={this.state.currentUser.children.length > 0}>
             <When value={true}>
               <p>
-                <Trans id="WelcomePasswordPage.next_children">
+                <MyTrans id="WelcomePasswordPage.next_children">
                   Next you'll review your children.
-                </Trans>
+                </MyTrans>
               </p>
 
             </When>
             <When value={false}>
               <p>
-                <Trans id="WelcomePasswordPage.next_survey">
+                <MyTrans id="WelcomePasswordPage.next_survey">
                 Next you'll fill out your first survey!
-                </Trans>
+                </MyTrans>
               </p>
             </When>
           </Case>
 
           <Button large fill onClick={() => this.submit()}>
-            <Trans id="WelcomePasswordPage.continue">Continue</Trans>
+            <MyTrans id="WelcomePasswordPage.continue">Continue</MyTrans>
           </Button>
 
         </Block>

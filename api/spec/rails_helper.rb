@@ -63,6 +63,15 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
   config.include ActiveSupport::Testing::TimeHelpers
+
+  config.before(:suite) do
+    # zone = ActiveSupport::TimeZone.all.sample
+    # $stdout.puts("[Random TZ] Setting timezone: #{zone}")
+    # Time.zone = zone
+  end
+  config.before do
+    Mail::TestMailer.deliveries.clear
+  end
 end
 
 Shoulda::Matchers.configure do |config|
@@ -73,3 +82,5 @@ Shoulda::Matchers.configure do |config|
 end
 
 Pony.override_options = { :via => :test }
+
+

@@ -70,7 +70,8 @@ type Props = {
   size: number
 }
 
-const JDenticon = ({ user, size }: Props) => {
+
+const UserJDenticon = ({ user, size }: Props) => {
   jdenticon.configure(configs[user.greenlightStatus().status])
   return (
     <div
@@ -95,4 +96,4 @@ const JDenticon = ({ user, size }: Props) => {
   )
 }
 
-export default JDenticon
+export default UserJDenticon

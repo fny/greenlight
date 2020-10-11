@@ -1,7 +1,11 @@
 {
-   "localeDir": "src/locales/",
-   "srcPathDirs": ["src/"],
-   "format": "minimal",
-   "sourceLocale": "en",
-   "fallbackLocale": "en"
+   "catalogs": [{
+    "path": "<rootDir>/locales/{locale}/messages",
+    "include": ["<rootDir>"],
+  }],
+  "rootDir": "./src",
+  "locales": ["en", "es"],
+  "format": "minimal",
+  "sourceLocale": "en",
+  "fallbackLocale": "en",
 }

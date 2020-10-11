@@ -14,11 +14,11 @@ class InviteWorker < ApplicationWorker
           Click Here to Sign In and Submit your Survey
         </a>
       </p>
-      <p>Ejoy your day,<br />
+      <p>Enjoy your day,<br />
       The Greenlight Team
       </p>
       HTML
-    ).src 
+    ).src
   end
 
   def sms_template

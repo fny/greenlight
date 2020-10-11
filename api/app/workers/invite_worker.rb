@@ -1,18 +1,18 @@
 class InviteWorker < ApplicationWorker
+  # TODO: Make invites locations specific
   def html_template
     # TODO: Generalize
     Erubi::Engine.new(<<~HTML
-      <h2>Welcome to Greenlight</h2>
+      <h2>Welcome to Greenlight / Bienvenido a Greenlight</h2>
       <p>
         Hi <%= user.first_name %>,
       </p>
       <p>
-        We're working with W.G. Pearson Center to create
-        a safe and health space for learning and teachers, and
-        we need your help too!
+        We're working with W.G. Pearson Center to create a safe and healthy space for learning,
+        and we need your help too!
       </p>
       <p>
-        Every day, you will be submitting symptom surveys
+        Every day, you will be submitting symptoms surveys
         for <%= user.submits_surveys_for_text %> through Greenlight.
       </p>
       <p style="font-weight:bold">
@@ -24,8 +24,28 @@ class InviteWorker < ApplicationWorker
       <p>Stay safe out there,<br />
       The Greenlight Team
       </p>
+      <hr />
+
+      <p>
+        Hola <%= user.first_name %>,
+      </p>
+      <p>
+        Estamos trabajando con W.G. Pearson Center para crear un espacio seguro y saludable para el aprendizaje, y también necesitamos su ayuda.
+      </p>
+      <p>
+        Cada día, enviará encuestas de síntomas a través de Greenlight para sus hijos o para usted mismo si es maestro o miembro del personal.
+      </p>
+      <p style="font-weight:bold">
+        <a href="<%= user.magic_sign_in_url(false) %>">
+          Haga clic aquí para iniciar sesión y revisar su cuenta
+        </a>
+      </p>
+      <p>Gracias por su ayuda y avísenos si tiene preguntas.</p>
+      <p>Mantente a salvo,<br />
+      El Equipo Greenlight
+      </p>
       HTML
-    ).src 
+    ).src
   end
 
   def sms_template
@@ -44,7 +64,7 @@ class InviteWorker < ApplicationWorker
       if user.email?
         SendGridEmail.new(
           to: user.name_with_email,
-          subject: user.invited_at.blank? ? "✨ Welcome to Greenlight!" : '✨ REMINDER: Welcome to Greenlight!',
+          subject: user.invited_at.blank? ? "✨ Welcome to Greenlight! / Bienvenido a Greenlight" : '✨ REMINDER: Welcome to Greenlight! / Bienvenido a Greenlight',
           html: eval(html_template),
           text: eval(sms_template),
         ).run

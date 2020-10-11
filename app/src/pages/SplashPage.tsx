@@ -8,36 +8,36 @@ import {
 import { Trans } from '@lingui/macro'
 
 import './SplashPage.css'
-import { toggleLocale } from '../util'
+import { MyTrans, toggleLocale } from 'src/i18n'
 
-export default class SplashPage extends React.Component<{}, {}> {
+export default class SplashPage extends React.Component<any, any> {
   render() {
     return (
       <Page className="SplashPage" noToolbar noNavbar noSwipeback loginScreen>
         <Block>
           <div className="welcome">
-            <Trans id="SplashPage.welcome">Welcome to</Trans>
+            <MyTrans id="SplashPage.welcome">Welcome to</MyTrans>
           </div>
           <div className="logo">
             Greenlight<span>.</span>
           </div>
 
           <Button outline href="/sign-in">
-            <Trans id="SplashPage.sign_in">
+            <MyTrans id="SplashPage.sign_in">
               Sign In with Password
-            </Trans>
+            </MyTrans>
           </Button>
 
           <Button outline href="/magic-sign-in">
-            <Trans id="SplashPage.magic_sign_in">
+            <MyTrans id="SplashPage.magic_sign_in">
               Magic Sign In
-            </Trans>
+            </MyTrans>
           </Button>
 
-          <Button outline onClick={toggleLocale}>
-            <Trans id="SplashPage.choose_language">
+          <Button outline onClick={() => toggleLocale()}>
+            <MyTrans id="SplashPage.choose_language">
               En Español
-            </Trans>
+            </MyTrans>
           </Button>
         </Block>
       </Page>

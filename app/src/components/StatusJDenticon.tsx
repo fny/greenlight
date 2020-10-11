@@ -81,7 +81,7 @@ const StatusJDenticon = ({ date, status, size }: Props) => {
         // border: '1px solid #00000022',
         borderRadius: `${size}px`,
         background: `url(data:image/svg+xml;base64,${btoa(
-          jdenticon.toSvg(date.format('YYYYMMDD'), size)
+          jdenticon.toSvg(date.toLocaleString(DateTime.DATE_SHORT), size)
         )})`,
         backgroundPosition: 'center',
         height: `${size}px`,
@@ -93,7 +93,7 @@ const StatusJDenticon = ({ date, status, size }: Props) => {
         color: 'var(--gl-color-dark)'
       }}
     >
-      {date.format('MM/DD/YY')}
+      {date.toLocaleString(DateTime.DATE_SHORT)}
     </div>
   )
 }

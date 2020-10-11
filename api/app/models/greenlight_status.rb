@@ -25,9 +25,11 @@ class GreenlightStatus < ApplicationRecord
     'pending_needs_diagnosis',
     'recovery_covid_exposure',
     'recovery_asymptomatic_covid_exposure',
+    'recovery_from_diagnosis',
     'recovery_not_covid_has_fever',
-    'recovery_diagnosed_asymptomatic'
-  ]
+    'recovery_diagnosed_asymptomatic',
+    'recovery_return_tomorrow'
+]
 
   extend Enumerize
   enumerize :status, in: STATUSES

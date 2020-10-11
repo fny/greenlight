@@ -1,8 +1,7 @@
-import React from 'react'
+import React from 'reactn'
 import { ListInput } from 'framework7-react'
 import { validEmail, validPhone } from 'src/common/util'
-import { i18n } from 'src/i18n'
-import { t } from '@lingui/macro'
+import { defineMessage } from '@lingui/macro'
 
 export type EmailOrPhoneInputTypes = 'email' | 'phone' | 'blank' | 'unknown'
 
@@ -30,9 +29,8 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
     if (value === '') {
       this.setState({
         inputType: 'blank',
-        errorMessage: i18n._(
-          t('EmailOrPhoneListInput.email_or_phone_missing')
-          `Please enter your email or mobile number.`,
+        errorMessage: this.global.i18n._(
+          defineMessage({id: 'EmailOrPhoneListInput.email_or_phone_missing', message: 'Please enter your email or mobile number.' }),
         )
       })
       this.setState({ errorMessageForce: true })
@@ -49,9 +47,8 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
     if (!validEmail(value) && !validPhone(value)) {
       this.setState({
         inputType: 'unknown',
-        errorMessage: i18n._(
-        t('EmailOrPhoneListInput.email_or_phone_invalid')
-          `Invalid email or mobile number.`,
+        errorMessage: this.global.i18n._(
+          defineMessage({id: 'EmailOrPhoneListInput.email_or_phone_invalid', message: 'Invalid email or mobile number.'}),
         )
       })
       this.setState({ errorMessageForce: true })
@@ -85,10 +82,9 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
           errorMessage={this.state.errorMessage}
           errorMessageForce={this.state.errorMessageForce}
           placeholder={
-            i18n._(
-              t('EmailOrPhoneListInput.email_or_phone_placeholder')
-                `Email or mobile phone number`,
-              )
+            this.global.i18n._(
+              defineMessage({id: 'EmailOrPhoneListInput.email_or_phone_placeholder', message: 'Email or mobile phone number.'}),
+            )
           }
           onInput={this.props.onInput}
         />

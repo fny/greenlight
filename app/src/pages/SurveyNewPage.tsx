@@ -1,18 +1,19 @@
 import React from 'reactn'
-import { Page, Navbar, Block, Button, Input, Row, Col, ListInput } from 'framework7-react'
+import { Page, Navbar, Block, Button, Input, Row, Col, ListInput, Preloader } from 'framework7-react'
 import { Case, When } from '../components/Case'
 import './SurveyNewPage.css'
 import DatedYesNoButton from '../components/DatedYesNoButton'
-import { dynamicPaths, paths } from 'src/routes'
+import { paths } from 'src/routes'
 import { MEDICAL_EVENTS } from 'src/common/models/MedicalEvent'
-import { CUTOFF_TIME, GREENLIGHT_STATUSES } from 'src/common/models/GreenlightStatus'
-import { createSymptomSurvey } from 'src/common/api'
+import { CUTOFF_TIME } from 'src/common/models/GreenlightStatus'
+import { createSymptomSurvey, getCurrentUser, getUser, reloadCurrentUser } from 'src/common/api'
 import { User } from 'src/common/models'
 import { NoCurrentUserError } from 'src/common/errors'
 import { ReactNComponent } from 'reactn/build/components'
 import { DateTime } from 'luxon'
-import { i18n } from '@lingui/core'
-import { Trans, t } from '@lingui/macro'
+import { Trans, defineMessage } from '@lingui/macro'
+import { MyTrans } from 'src/i18n'
+import { assertNotNull } from 'src/common/util'
 
 
 interface SymptomButtonProps {
@@ -42,6 +43,7 @@ interface SurveyProps {
 }
 
 interface SurveyState {
+  isLoaded: boolean
   hasFever: boolean
   hasChills: boolean
   hasNewCough: boolean
@@ -54,7 +56,7 @@ interface SurveyState {
   diagnosisError?: string | null
   submitClicked?: boolean
   showConfirmation: boolean
-  currentUser: User
+  targetUser: User | null
 }
 
 type Symptoms =
@@ -65,14 +67,30 @@ type Symptoms =
   | "hasLossTasteSmell"
 
 export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveyState> {
+  isSequence = false
+  currentUser: User
+
   constructor(props: SurveyProps) {
     super(props)
-
     if (!this.global.currentUser) {
       throw new NoCurrentUserError()
     }
 
+    this.currentUser = this.global.currentUser
+
+    const userId = this.$f7route.params['userId']
+    if (!userId) { throw "userId missing in url" }
+
+    if (userId === 'seq') {
+      this.isSequence = true
+    } else {
+      getUser(userId).then(user => {
+        this.setState({ targetUser: user, isLoaded: true })
+      })
+    }
+
     this.state = {
+      isLoaded: this.isSequence,
       hasFever: false,
       hasChills: false,
       hasNewCough: false,
@@ -83,8 +101,12 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       contactDate: null,
       hadContact: null,
       showConfirmation: false,
-      currentUser: this.global.currentUser
+      targetUser: null
     }
+  }
+
+  redirect() {
+    return this.$f7route.query['redirect'] || null
   }
 
   medicalEvents() {
@@ -121,58 +143,41 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     }
     if (this.state.hadDiagnosis && this.state.diagnosisDate) {
       events.push({ eventType: MEDICAL_EVENTS.COVID_DIAGNOSIS,
-        occurredAt: DateTime.local(this.state.diagnosisDate)
+        occurredAt: this.state.diagnosisDate
       })
     }
     if (this.state.hadContact && this.state.contactDate) {
       events.push({ eventType: MEDICAL_EVENTS.COVID_EXPOSURE,
-        occurredAt: DateTime.local(this.state.contactDate)
+        occurredAt: this.state.contactDate
       })
     }
-    console.log(events)
     return events
   }
 
-  index() {
-    const rawId = this.$f7route.params['id']
-    if (!rawId) throw new Error('User id missing')
-    return parseInt(rawId)
-  }
-
-  submittingFor() {
-    if (CUTOFF_TIME.isAfter(DateTime.local())) {
-      return this.state.currentUser.allUsersNotSubmitted()[this.index()]
-    } else {
-      return this.state.currentUser.allUsersNotSubmittedForTomorrow()[this.index()]
+  submittingFor(): User | null {
+    if (this.isSequence) {
+      if (CUTOFF_TIME.isAfter(DateTime.local())) {
+        return this.currentUser.usersNotSubmitted()[0] || null
+      } else {
+        return this.currentUser.usersNotSubmittedForTomorrow()[0] || null
+      }
     }
+    return this.state.targetUser
   }
 
-  submittingBy() {
-    return this.state.currentUser
+  isSubmittingForSelf(): boolean {
+    return this.submittingFor() == this.currentUser
   }
 
-  isSubmittingForSelf() {
-    return this.submittingFor() == this.state.currentUser
+  hasNextUser(): boolean {
+    if (!this.isSequence) return false
+    return this.currentUser.usersNotSubmitted().length > 1
   }
 
-  isSubmittingForChild() {
-    if (this.isSubmittingForSelf()) return false
-    return true
-  }
+  nextUser(): User | null {
+    if (!this.isSequence) return null
+    return this.currentUser.usersNotSubmitted()[1] || null
 
-  hasNextChild() {
-    return this.index() + 1 < (this.state.currentUser.children.length || 0)
-  }
-
-  nextChild() {
-    if (!this.hasNextChild()) {
-      return null
-    }
-    return this.state.currentUser.children[this.index() + 1]
-  }
-
-  childCount() {
-    return this.state.currentUser.children.length
   }
 
   setContacted(yesNo: boolean) {
@@ -226,28 +231,50 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     }
     const medicalEvents = this.medicalEvents()
 
-    // TODO: i18n
-    this.$f7.dialog.preloader('Submitting...')
+    this.$f7.dialog.preloader(
+      this.global.i18n._(defineMessage({ id: 'SurveyNewPage.submitting', message: "Submitting..." }))
+    )
+    const redirect = this.redirect()
     try {
-      const status = await createSymptomSurvey(this.submittingFor(), medicalEvents)
+      // TODO: This should load the data
+      const target = this.submittingFor()
+      assertNotNull(target)
+      const status = await createSymptomSurvey(target, medicalEvents)
       if (!status) {
         throw "This should never happen, but status was somehow nil."
       }
+      const user = await reloadCurrentUser() // Reload data
       this.$f7.dialog.close()
-      this.$f7router.navigate(paths.surveysThankYouPath)
+
+      if (redirect) {
+        this.$f7router.navigate(redirect, {reloadCurrent: true, ignoreCache: true })
+      } else if (this.isSequence && user.usersNotSubmitted().length > 0) {
+        this.$f7router.refreshPage()
+      } else {
+        this.$f7router.navigate(paths.surveysThankYouPath)
+      }
+
     } catch (error) {
       if (!error.response) {
         throw error
       }
 
       if (error.response.status == 422) {
-        this.$f7router.navigate(paths.dashboardPath)
+        if (redirect) {
+          this.$f7router.navigate(redirect, { reloadCurrent: true, ignoreCache: true })
+        } else {
+          this.$f7router.navigate(paths.dashboardPath)
+        }
+
       }
 
       this.$f7.dialog.close()
       console.error(error)
-      // TODO: i18n
-      this.$f7.dialog.alert('Something went wrong. Maybe someone already submitted?', 'Submission Failed')
+      // TODO: Make errors smarter
+      this.$f7.dialog.alert(
+        this.global.i18n._(defineMessage({ id: 'SurveyNewPage.submission_failed_message', message: "Something went wrong. Maybe someone already submitted?" })),
+        this.global.i18n._(defineMessage({ id: 'SurveyNewPage.submission_failed_title', message: "Submission Failed" }))
+      )
     }
   }
 
@@ -266,60 +293,84 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
   }
 
   render() {
-    const user = this.state.currentUser
+    const user = this.currentUser
     if (!user) {
       // TODO: Flash message
       this.$f7router.navigate('/')
       return
     }
     const submittingFor = this.submittingFor()
+
+    if (submittingFor === null) {
+      return <Page>
+        <Navbar title="Already submitted for today." backLink={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.back', message: "Back" }))} />
+        <Block>
+          All surveys have already been submitted for today. Please check back later!
+        </Block>
+      </Page>
+    }
+
+    if (!submittingFor.greenlightStatus().isUnknown()) {
+      return <Page>
+        <Navbar title="Already submitted for today." backLink={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.back', message: "Back" }))} />
+        <Block>
+          Survey has been submitted for today.
+        </Block>
+      </Page>
+    }
+
     return (
       <Page>
         <Navbar
-          title={i18n._(t('SurveyNewPage.survey')`Symptom Survey`)}
-          backLink={i18n._(t('SurveyNewPage.back')`Back`)}>
+          title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.survey', message: `Symptom Survey: ${submittingFor.fullName()}` }))}
+          backLink={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.back', message: "Back" }))}>
         </Navbar>
+
+
+        {
+          this.state.isLoaded ?
+          <>
         <Block>
           <div className="survey-title">
             {
               this.isSubmittingForSelf() ?
-              <Trans id="SurveyNewPage.any_symptoms">
+              <MyTrans id="SurveyNewPage.any_symptoms">
                 Do you have any of these symptoms?
-              </Trans>
+              </MyTrans>
               :
-              <Trans id="SurveyNewPage.any_symptoms_child">
-                Does {submittingFor.firstName} have any of these symptoms?
-              </Trans>
+              <MyTrans id="SurveyNewPage.any_symptoms_child">
+                Does {submittingFor?.firstName} have any of these symptoms?
+              </MyTrans>
             }
           </div>
         </Block>
         <div className="SymptomButtons">
           <SymptomButton
-            title={i18n._(t('SurveyNewPage.fever')`Fever`)}
+            title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.fever', message: "Fever" }))}
             image="fever"
             onClick={() => this.toggleSymptom('hasFever')}
             selected={this.state.hasFever}
           />
           <SymptomButton
-            title={i18n._(t('SurveyNewPage.chills')`Chills`)}
+            title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.chills', message: "Chills" }))}
             image="chills"
             onClick={() => this.toggleSymptom('hasChills')}
             selected={this.state.hasChills}
           />
           <SymptomButton
-            title={i18n._(t('SurveyNewPage.new_cough')`New Cough`)}
+            title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.new_cough', message: "New Cough" }))}
             image="cough"
             onClick={() => this.toggleSymptom('hasNewCough')}
             selected={this.state.hasNewCough}
           />
           <SymptomButton
-            title={i18n._(t('SurveyNewPage.difficulty_breathing')`Difficulty<br />Breathing`)}
+            title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.difficulty_breathing', message: "Difficulty<br />Breathing" }))}
             image="difficulty-breathing"
             onClick={() => this.toggleSymptom('hasDifficultyBreathing')}
             selected={this.state.hasDifficultyBreathing}
           />
           <SymptomButton
-            title={i18n._(t('SurveyNewPage.loss_of_smell')`Loss of<br />Taste/Smell`)}
+            title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.loss_of_smell', message: "Loss of<br />Taste/Smell" }))}
             image="taste-smell"
             onClick={() => this.toggleSymptom('hasLossTasteSmell')}
             selected={this.state.hasLossTasteSmell}
@@ -327,19 +378,19 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
         </div>
         <Block style={{marginTop: 0}}>
           <div className="survey-title">
-            <Trans id="SurveyNewPage.covid_contact_title">COVID Contact?</Trans>
+            <MyTrans id="SurveyNewPage.covid_contact_title">COVID Contact?</MyTrans>
           </div>
             {
               this.isSubmittingForSelf() ?
-              <Trans id="SurveyNewPage.covid_contact">
+              <MyTrans id="SurveyNewPage.covid_contact">
                 Have you had close contact—within 6 feet for at least 15
                 minutes—with someone diagnosed with COVID-19?
-              </Trans>
+              </MyTrans>
               :
-              <Trans id="SurveyNewPage.covid_contact_child">
-                Has {submittingFor.firstName} had close contact—within 6 feet for at least 15
+              <MyTrans id="SurveyNewPage.covid_contact_child">
+                Has {submittingFor?.firstName} had close contact—within 6 feet for at least 15
                 minutes—with someone diagnosed with COVID-19?
-              </Trans>
+              </MyTrans>
             }
           <br />
           <DatedYesNoButton
@@ -348,18 +399,18 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
             showErrors={this.state.submitClicked}
           />
           <div className="survey-title">
-            <Trans id="SurveyNewPage.covid_diagnosis_title">COVID Diagnosis?</Trans>
+            <MyTrans id="SurveyNewPage.covid_diagnosis_title">COVID Diagnosis?</MyTrans>
           </div>
             {
               this.isSubmittingForSelf() ?
-              <Trans id="SurveyNewPage.covid_diagnosis">
+              <MyTrans id="SurveyNewPage.covid_diagnosis">
                 Have you been diagnosed with or tested positive for COVID-19?
-              </Trans>
+              </MyTrans>
               :
-              <Trans id="SurveyNewPage.covid_diagnosis_child">
-                Has {submittingFor.firstName} been diagnosed with or tested positive for
+              <MyTrans id="SurveyNewPage.covid_diagnosis_child">
+                Has {submittingFor?.firstName} been diagnosed with or tested positive for
                 COVID-19?
-              </Trans>
+              </MyTrans>
             }
           <DatedYesNoButton
             setYesNo={(yesNo: boolean ) => this.setDiagnosed(yesNo)}
@@ -370,23 +421,23 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
 
           <br />
           {!this.state.showConfirmation &&
-          <Case test={this.hasNextChild()}>
+          <Case test={this.hasNextUser()}>
             <When value={true}>
               <Button
                 fill onClick={
                   () => this.submit1()
                 }
               >
-                <Trans id="SurveyNewPage.continue">
-                  Continue to {this.nextChild()?.firstName}
-                </Trans>
+                <MyTrans id="SurveyNewPage.continue">
+                  Continue to {this.nextUser()?.firstName}
+                </MyTrans>
               </Button>
             </When>
             <When value={false}>
               <Button fill onClick={
                 () => this.submit1()
               }>
-                <Trans id="SurveyNewPage.finish">Finish</Trans>
+                <MyTrans id="SurveyNewPage.finish">Finish</MyTrans>
               </Button>
             </When>
           </Case>}
@@ -394,11 +445,16 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
             <Button fill onClick={
               () => this.submit2()
             }>
-              <Trans id="SurveyNewPage.confirmation">Are you sure?</Trans>
+              <MyTrans id="SurveyNewPage.confirmation">Are you sure?</MyTrans>
             </Button>
           }
         </Block>
+        </>
+        :
+        <Preloader />
+        }
       </Page>
+
     )
   }
 }

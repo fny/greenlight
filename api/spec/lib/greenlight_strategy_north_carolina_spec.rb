@@ -4,21 +4,30 @@ require 'fixtures/greenlight_status_scenarios/greenlight_status_scenario'
 
 # Scenario shape
 
-scenarios = %w[ no_issues covid_exposure_asymptomatic covid_exposure_asymptomatic_after_cutoff ].map { |s| GreenlightStatusScenario.new(s) }
+scenarios = %w[ no_issues covid_exposure_asymptomatic covid_exposure_asymptomatic_after_cutoff ].map do |s|
+  GreenlightStatusScenario.new(s)
+end
 
 GreenlightStrategyNorthCarolinaState = Struct.new(:prev_events, :prev_statuses)
 
 RSpec.describe GreenlightStrategyNorthCarolina, order: :defined do
-  scenarios.each do |scenario|
+  @time_zone = ActiveSupport::TimeZone.all.map { |x| x.tzinfo.name }.sample
 
-    describe "scenario #{scenario.id}" do
+  scenarios.each do |scenario|
+    describe "scenario #{scenario.id} #{@time_zone}" do
       before(:context) {
         @state = GreenlightStrategyNorthCarolinaState.new([], [])
-      }
-      let (:user) { Fabricate(:user) }
 
+      }
+      let (:user) { Fabricate(:user, time_zone: @time_zone) }
+      let! (:prev_time_zone) { Time.zone }
       before(:each) {
-        user.greenlight_statuses.create!(@state.prev_statuses.map { |x| x[:user] = user; x[:created_by] = user; x   })
+        user.greenlight_statuses.create!(@state.prev_statuses.map { |x| x[:user] = user; x[:created_by] = user; x  })
+        Time.zone = user.time_zone
+      }
+
+      after(:each) {
+        Time.zone = prev_time_zone
       }
 
       scenario.rows.each do |row|

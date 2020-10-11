@@ -3,10 +3,10 @@ import { User } from './User'
 import colors from '../colors'
 import { today, tomorrow } from '../util'
 import CutoffTime from '../misc/CutoffTime'
-import { i18n } from '@lingui/core'
-import { t } from '@lingui/macro'
+import { defineMessage } from '@lingui/macro'
 
 import { DateTime }  from 'luxon'
+import { getGlobal } from 'reactn'
 
 export const CUTOFF_TIME = new CutoffTime('2020-10-08 18:00')
 
@@ -17,6 +17,18 @@ export enum GREENLIGHT_STATUSES {
   ABSENT = 'absent',
   UNKNOWN = 'unknown'
 }
+
+export type REASONS = 'cleared'
+  | 'cleared_alternative_diagnosis'
+  | 'cleared_with_symptom_improvement'
+  | 'pending_needs_diagnosis'
+  | 'recovery_covid_exposure'
+  | 'recovery_asymptomatic_covid_exposure'
+  | 'recovery_from_diagnosis'
+  | 'recovery_not_covid_has_fever'
+  | 'recovery_diagnosed_asymptomatic'
+  | 'recovery_return_tomorrow'
+
 
 export const GREENLIGHT_COLORS = {
   cleared: { name: 'green', hex:  colors.green },
@@ -91,8 +103,8 @@ export class GreenlightStatus extends Model {
     return this.status === GREENLIGHT_STATUSES.RECOVERY
   }
 
-  isValidForDate(date: Moment): boolean {
-    return date.isSameOrAfter(this.submissionDate) && date.isSameOrBefore(this.expirationDate) &&  date.isBefore(this.followUpDate)
+  isValidForDate(date: DateTime): boolean {
+    return date >= this.submissionDate && date <= this.expirationDate &&  date < this.followUpDate
   }
 
   isValidForToday(): boolean {
@@ -105,19 +117,21 @@ export class GreenlightStatus extends Model {
     return this.isValidForDate(tomorrow())
   }
 
+  // TODO: Move out
   title(): string {
     if (this.status === GREENLIGHT_STATUSES.CLEARED) {
-      return i18n._(t('GreenlightStatus.cleared')`Cleared`)
+      return getGlobal().i18n._(defineMessage({ id: 'GreenlightStatus.cleared', message: "Cleared"}))
     }
     if (this.status === GREENLIGHT_STATUSES.PENDING) {
-      return i18n._(t('GreenlightStatus.pending')`Pending`)
+      return getGlobal().i18n._(defineMessage({ id: 'GreenlightStatus.pending', message: "Pending"}))
     }
     if (this.status === GREENLIGHT_STATUSES.RECOVERY) {
-      return i18n._(t('GreenlightStatus.recovery')`Recovery`)
+      return getGlobal().i18n._(defineMessage({ id: 'GreenlightStatus.recovery', message: "Recovery"}))
     }
     if (this.status === GREENLIGHT_STATUSES.ABSENT) {
-      return i18n._(t('GreenlightStatus.absent')`Absent`)
+      return getGlobal().i18n._(defineMessage({ id: 'GreenlightStatus.absent', message: "Absent"}))
     }
-    return i18n._(t('GreenlightStatus.not_submitted')`Not Submitted`)
+    return getGlobal().i18n._(defineMessage({ id: 'GreenlightStatus.not_submitted', message: "Not Submitted"}))
   }
 }
+

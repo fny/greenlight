@@ -23,10 +23,12 @@ import './index.css'
 
 import addReactNDevTools from 'reactn-devtools'
 import { getCurrentUser, session, destroySession } from './common/api'
+import { i18n, myI18n } from './i18n'
 addReactNDevTools()
 
 setGlobal({
-  locale: 'en'
+  locale: 'en',
+  i18n: myI18n
 })
 
 
@@ -40,7 +42,7 @@ function render() {
 if (session.isValid()) {
   console.debug('Valid session.')
   getCurrentUser().then(user => {
-    setGlobal({ currentUser: user })
+    setGlobal({ currentUser: user, locale: user.locale })
     render()
   }).catch(err => {
     if (err.response) {
@@ -48,8 +50,8 @@ if (session.isValid()) {
         // User has been deleted clear the session
         destroySession()
       }
-      console.log(err)
-      console.log(err.response)
+      console.error(err)
+      console.error(err.response)
     }
     render()
   })

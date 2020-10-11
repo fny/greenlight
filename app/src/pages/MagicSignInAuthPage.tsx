@@ -10,8 +10,8 @@ import {
 
 import { Case, When } from 'src/components/Case'
 
-import { Trans, t } from '@lingui/macro'
-import { i18n } from 'src/i18n'
+import { Trans, t, defineMessage } from '@lingui/macro'
+import { i18n, MyTrans } from 'src/i18n'
 
 import { Dict } from 'src/common/types'
 import { magicSignIn } from 'src/common/api'
@@ -47,8 +47,6 @@ export default class MagicSignInAuthPage extends React.Component<Dict<any>, Stat
       console.error(error)
       this.setState({hasReceivedResponse: true, isSuccess: false})
       this.$f7.dialog.close()
-      // TODO: i18n
-      // this.$f7.dialog.alert('Magic sign in is invalid', 'Sign In Failed')
     }
   }
 
@@ -59,24 +57,24 @@ export default class MagicSignInAuthPage extends React.Component<Dict<any>, Stat
   render() {
     return (
       <Page className="MagicSignInAuthPage" noToolbar noSwipeback loginScreen>
-        <Navbar title={i18n._(t('MagicSignInAuthPage.title')`Magic Sign In`)} backLink="Back"></Navbar>
+        <Navbar title={this.global.i18n._(defineMessage({id: 'MagicSignInAuthPage.title', message: `Magic Sign In`}))} backLink="Back"></Navbar>
 
         <Block>
           <Case test={this.state.hasReceivedResponse && !this.state.isSuccess}>
             <When value={true}>
-              <Trans id="SignInAuthPage.magic_link_failed">
+              <MyTrans id="SignInAuthPage.magic_link_failed">
                 That magic sign in link didn't work. It may have expired.
-              </Trans>
+              </MyTrans>
               <Link href={paths.rootPath}>
-                <Trans id="SignInAuthPage.try_again">
+                <MyTrans id="SignInAuthPage.try_again">
                   Try again?
-                </Trans>
+                </MyTrans>
               </Link>
             </When>
             <When value={false}>
-              <Trans id="SignInAuthPage.signing_in">
+              <MyTrans id="SignInAuthPage.signing_in">
                 Signing in...
-              </Trans>
+              </MyTrans>
             </When>
           </Case>
         </Block>

@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import { Dict, Record, RecordResponse, RecordRelationship, RecordPointer, EntityId } from '../types'
 import { Model } from '../models'
 import { deserializeJSONAPI } from '../models/Model'
-import { zip } from 'lodash'
+import { zipTwo } from '../util'
 
 interface RecordStoreEntry {
   record: Record<any>
@@ -89,16 +89,6 @@ class ResponseStore {
 export const recordStore = new RecordStore()
 export const responseStore = new ResponseStore()
 
-// TODO: Drop lodash zip in favor of this
-// Waiting on https://github.com/typescript-eslint/typescript-eslint/issues/2600
-//
-// export function zipTwo<X, Y>(xs: X[], ys: Y[]): [X , Y][] {
-//   const zipped: [X, Y][] = []
-//   for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
-//     zipped.push([xs[i], ys[i]])
-//   }
-//   return zipped
-// }
 
 export function transformRelationship<T extends Model>(entity: T, relationshipName: string, relationship: RecordRelationship) {
   // Skip if we've already loaded the relationship
@@ -123,7 +113,7 @@ export function transformRelationship<T extends Model>(entity: T, relationshipNa
       entity._included.push(relationshipName)
     }
     // Set relationship for records on the relationship
-    zip(foundEntities, foundRecords).forEach(([e, r]) => {
+    zipTwo(foundEntities, foundRecords).forEach(([e, r]) => {
       tranformRelationships(e as Model, r as Record<any>)
     })
 

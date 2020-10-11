@@ -62,6 +62,8 @@ gem 'fast_jsonapi'
 gem 'jwt'
 # Tame Rails' default policy to log everything
 gem 'lograge'
+# ActiveSupport::Memoizable with a few enhancements
+gem 'memoist'
 # Phone validations
 gem 'phonelib'
 # SMS API and Voice API platform

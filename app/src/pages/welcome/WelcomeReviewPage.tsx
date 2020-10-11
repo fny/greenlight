@@ -1,4 +1,4 @@
-import React, { useDebugValue } from 'reactn'
+import React from 'reactn'
 
 import { clone } from 'lodash'
 import { Page, Navbar, Block, Button, List, ListInput } from 'framework7-react'
@@ -6,14 +6,13 @@ import { Page, Navbar, Block, Button, List, ListInput } from 'framework7-react'
 import { User } from '../../common/models/User'
 import { formatPhone, haveEqualAttrs, deleteBlanks } from 'src/common/util'
 import { updateUser } from 'src/common/api'
-import logger from 'src/common/logger'
-import { languageData } from 'src/locales/es/messages'
 import { paths } from 'src/routes'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/common/errors'
 
-import { i18n } from '@lingui/core'
-import { Trans, t } from '@lingui/macro'
+
+import { Trans, t, defineMessage } from '@lingui/macro'
+import { MyTrans, toggleLocale } from 'src/i18n'
 
 interface State {
   originalEmail: string | null
@@ -72,7 +71,7 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
       return
     }
 
-    this.$f7.dialog.preloader(i18n._(t('WelcomeReviewPage.submitting_changes')`Submitting changes...`))
+    this.$f7.dialog.preloader(this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.submitting_changes', message: "Submitting changes..." })))
     try {
       const user = await updateUser(this.state.currentUser, updatedUserAttrs)
       this.setGlobal({ currentUser: user })
@@ -81,10 +80,10 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
     } catch (error) {
       this.$f7.dialog.close()
       console.error(error)
-      // TODO: i18n
+      // TODO: make errors smarter
       this.$f7.dialog.alert(
-        i18n._(t('WelcomeReviewPage.somethings_wrong')`Something went wrong`),
-        i18n._(t('WelcomeReviewPage.update_failed')`Update Failed`))
+        this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.somethings_wrong', message: "Something went wrong" })),
+        this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.update_failed', message: "Update Failed" })))
     }
   }
 
@@ -96,24 +95,24 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
     //   updatedUser.mobileNumber !== this.state.originalEmail
     return (
       <Page>
-        <Navbar
-          title={i18n._(t('WelcomeReviewPage.review_info')`Review Your Info`)}
+          <Navbar
+          title={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.review_info', message: "Review Your Info" }))}
           backLink={true}
         />
         <Block>
           <p>
-            <Trans id="WelcomeReviewPage.info_on_file">
+            <MyTrans id="WelcomeReviewPage.info_on_file">
               Here is the information we have on file for you. Feel free to make
               any changes.
-            </Trans>
+            </MyTrans>
           </p>
         </Block>
 
         <List noHairlinesMd form id="WelcomeReviewPage-form">
           <ListInput
-            label={i18n._(t('WelcomeReviewPage.first_name_label')`First Name`)}
+            label={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.first_name_label', message: "First Name" }))}
             type="text"
-            placeholder={i18n._(t('WelcomeReviewPage.first_name_placeholder')`Your first name`)}
+            placeholder={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.first_name_placeholder', message: "Your first name" }))}
             value={updatedUser.firstName}
             onChange={(e) => {
               updatedUser.firstName = (e.target.value as string) || ''
@@ -123,9 +122,9 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             required
           />
           <ListInput
-            label={i18n._(t('WelcomeReviewPage.last_name_label')`Last Name`)}
+            label={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.last_name_label', message: "Last Name" }))}
             type="text"
-            placeholder={i18n._(t('WelcomeReviewPage.last_name_placeholder')`Your last name`)}
+            placeholder={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.last_name_placeholder', message: "Your last name" }))}
             value={updatedUser.lastName}
             onChange={(e) => {
               updatedUser.lastName = (e.target.value as string) || ''
@@ -135,36 +134,45 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             required
           />
           <ListInput
-            label={i18n._(t('WelcomeReviewPage.reminders_label')`Recieve Reminders By`)}
+            label={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.reminders_label', message: "Receive Reminders By" }))}
             type="select"
             defaultValue="text"
-            placeholder={i18n._(t('WelcomeReviewPage.reminders_placeholder')`Please choose...`)}
+            placeholder={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.reminders_placeholder', message: "Please choose..." }))}
             onChange={e => {
               updatedUser.dailyReminderType = e.target.value
               this.setState({ updatedUser })
             }}
           >
-            <option value="text">Text Message</option>
-            <option value="email">Email</option>
+            <option value="text">
+              {this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.text_message', message: "Text Message" }))}
+            </option>
+            <option value="email">
+              {this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.email', message: "Email" }))}
+            </option>
           </ListInput>
           <ListInput
-            label={i18n._(t('WelcomeReviewPage.language_label')`Language`)}
+            label={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.language_label', message: "Language" }))}
             type="select"
             defaultValue={this.global.locale}
-            placeholder={i18n._(t('WelcomeReviewPage.language_placeholder')`Please choose...`)}
+            placeholder={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.language_placeholder', message: "Please choose..." }))}
             onChange={e => {
+              toggleLocale()
               updatedUser.locale = e.target.value
               this.setState({ updatedUser })
             }}
           >
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
+            <option value="en">
+              {this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.english', message: "English" }))}
+            </option>
+            <option value="es">
+              {this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.spanish', message: "Español" }))}
+            </option>
           </ListInput>
           <ListInput
             disabled
-            label={i18n._(t('WelcomeReviewPage.email_label')`Email`)}
+            label={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.email_label', message: "Email" }))}
             type="email"
-            placeholder={i18n._(t('WelcomeReviewPage.email_placeholder')`Your email`)}
+            placeholder={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.email_placeholder', message: "Your email" }))}
             value={updatedUser.email || ''}
             // info={
             //   isDifferentEmail
@@ -172,9 +180,8 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             //     : undefined
             // }
             info={
-              i18n._(
-                t('WelcomeReviewPage.email_failed_to_change')
-                `Can't be changed at this time.`)
+              this.global.i18n._(
+                defineMessage({ id: 'WelcomeReviewPage.email_failed_to_change', message: "Can't be changed at this time." }))
             }
             onChange={(e) => {
               updatedUser.email = (e.target.value as string) || ''
@@ -185,14 +192,13 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
           />
           <ListInput
             disabled
-            label={i18n._(t('WelcomeReviewPage.phone_label')`Mobile Number`)}
+            label={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.phone_label', message: "Mobile Number" }))}
             type="tel"
-            placeholder={i18n._(t('WelcomeReviewPage.phone_placeholder')`Your mobile number`)}
+            placeholder={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.phone_placeholder', message: "Your mobile number" }))}
             value={updatedUser.mobileNumber || ''}
             info={
-              i18n._(
-                t('WelcomeReviewPage.phone_failed_to_change')
-                `Can't be changed at this time.`)
+              this.global.i18n._(
+                defineMessage({ id: 'WelcomeReviewPage.phone_failed_to_change', message: "Can't be changed at this time." }))
             }
             errorMessageForce={this.state.showMobileNumberError}
 
@@ -212,15 +218,13 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
 
 
           <Block>
-            <p><Trans id="WelcomeReviewPage.next_password">Next you'll set your password.</Trans></p>
+            <p><MyTrans id="WelcomeReviewPage.next_password">Next you'll set your password.</MyTrans></p>
             <Button onClick={() => this.submit()} fill>
-              Continue
+              <MyTrans id="WelcomeReviewPage.continue">Continue</MyTrans>
             </Button>
             {/* TOOD: HACK: Preload password image. */}
             <img
-              alt={i18n._(
-                t('WelcomeReviewPage.security_alt_text')
-                `Greenlight gives security the highest importance.`)}
+              alt={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.security_alt_text', message: "Greenlight gives security the highest importance." }))}
               src="/images/welcome-secure.svg" style={{display: 'none'}}></img>
           </Block>
         </List>

@@ -6,7 +6,6 @@ import DashboardPage from 'src/pages/DashboardPage'
 import SplashPage from 'src/pages/SplashPage'
 import SignInPage from 'src/pages/SignInPage'
 import MagicSignInPage from 'src/pages/MagicSignInPage'
-import PasswordResetPage from 'src/pages/PasswordResetPage'
 
 import WelcomePage from 'src/pages/welcome/WelcomePage'
 import WelcomeChildPage from 'src/pages/welcome/WelcomeChildPage'
@@ -25,6 +24,8 @@ import UserGreenlightPassPage from './pages/UserGreenlightPassPage'
 import DebugPage from './pages/DebugPage'
 import { isSignedIn } from './common/api'
 import { Router } from 'framework7/modules/router/router'
+import AdminUsersPage from './pages/admin/AdminUsersPage'
+import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage'
 
 export const paths = {
   rootPath: '/',
@@ -32,15 +33,17 @@ export const paths = {
   magicSignInPath: '/magic-sign-in',
   magicSignInAuthPath: '/mgk/:token/:remember',
   dashboardPath: '/dashboard',
-  passwordResetPath: '/password-resets/:token',
-  passwordResetsNewPath: '/password-resets/new',
   welcomePath: '/welcome',
   welcomeReviewPath: '/welcome/review',
   welcomePasswordPath: '/welcome/password',
+  welcomeSurveyPath: '/welcome/survey',
   welcomeChildPath: '/welcome/children/:id',
-  userSurveysNewPath: '/users/:id/surveys/new',
+  userSurveysNewPath: '/users/:userId/surveys/new',
+  userSeqSurveysNewPath: '/users/seq/surveys/new',
   userGreenlightPassPath: '/users/:userId/greenlight-pass',
-  surveysThankYouPath: '/surveys/thank-you'
+  surveysThankYouPath: '/surveys/thank-you',
+  // TODO naming
+  adminUsersPath: '/admin/locations/:locationId/users'
 }
 
 type PathsDynamized = {
@@ -70,7 +73,7 @@ export const dynamicPaths = {
     if (user.hasChildren()) {
       return dynamicPaths.welcomeChildIndexPath(0)
     } else {
-      return dynamicPaths.userSurveysNewIndexPath(0)
+      return paths.welcomeSurveyPath
     }
   },
   welcomeChildIndexPath: (index: number): string => {
@@ -145,10 +148,6 @@ const routes = [
     beforeEnter: beforeEnter.requireSignIn
   },
   {
-    path: paths.passwordResetsNewPath,
-    component: PasswordResetPage
-  },
-  {
     path: paths.magicSignInAuthPath,
     component: MagicSignInAuthPage
   },
@@ -165,6 +164,11 @@ const routes = [
   {
     path: paths.welcomePasswordPath,
     component: WelcomePasswordPage,
+    beforeEnter: beforeEnter.requireSignIn
+  },
+  {
+    path: paths.welcomeSurveyPath,
+    component: WelcomeSurveyPage,
     beforeEnter: beforeEnter.requireSignIn
   },
   {
@@ -185,6 +189,10 @@ const routes = [
   {
     path: paths.userGreenlightPassPath,
     component: UserGreenlightPassPage
+  },
+  {
+    path: paths.adminUsersPath,
+    component: AdminUsersPage
   },
   {
     path: '/giphys-on-deck',

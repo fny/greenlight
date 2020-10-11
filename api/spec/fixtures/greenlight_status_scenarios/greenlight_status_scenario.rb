@@ -1,7 +1,7 @@
 require 'csv'
 class GreenlightStatusScenario
   attr_reader :rows, :id
-  include Enumerable
+  attr_accessor :time_zone
 
   def initialize(id)
     @id = id
@@ -33,7 +33,7 @@ class GreenlightStatusScenario
     end
 
     def timestamp
-      Time.strptime(@row.fetch('Timestamp'), '%m/%d/%y %I:%M %p')
+      Time.zone.strptime(@row.fetch('Timestamp'), '%m/%d/%y %I:%M %p')
     end
 
     def medical_events
@@ -52,11 +52,11 @@ class GreenlightStatusScenario
     end
 
     def expiration_date
-      Date.strptime(@row.fetch('Expiration'), '%m/%d/%y')
+      Time.zone.strptime(@row.fetch('Expiration'), '%m/%d/%y').to_date
     end
 
     def follow_up_date
-      Date.strptime(@row.fetch('Follow Up'), '%m/%d/%y')
+      Time.zone.strptime(@row.fetch('Follow Up'), '%m/%d/%y').to_date
     end
 
     def todays_status

@@ -4,11 +4,19 @@ import { Location } from './Location'
 import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
 import { MedicalEvent } from './MedicalEvent'
 import { LocationAccount } from './LocationAccount'
-import { joinWords, today } from '../util'
+
+// TODO: These are app specific and need to be moved out
+import { joinWords } from 'src/util'
 
 export class User extends Model {
   static singular = 'user'
   static plural = 'users'
+
+  static reversedNameSort(u1: User, u2: User): number {
+    if (u1.reversedName() > u2.reversedName()) return 1
+    if (u1.reversedName() < u2.reversedName()) return -1
+    return 0
+  }
 
   constructor(data?: any) {
     super()
@@ -46,7 +54,7 @@ export class User extends Model {
   physicianPhoneNumber: string | null = null
 
   @attr({ type: STRING })
-  locale: string | null = null
+  locale: 'en' | 'es' | null = null
 
   @attr({ type: STRING })
   dailyReminderType: string | null = null
@@ -78,6 +86,9 @@ export class User extends Model {
   @relationship({ type: 'hasOne', model: 'greenlightStatus' })
   lastGreenlightStatus: GreenlightStatus | null = null
 
+  reversedName() {
+    return `${this.lastName}, ${this.firstName}`
+  }
 
   sortedChildren() {
     return this.children.sort((a, b) => (a.id < b.id) ? 1 : -1)
@@ -93,13 +104,35 @@ export class User extends Model {
   }
 
   /** Does this user have any children? */
-  hasChildren() {
+  hasChildren(): boolean {
     return this.children.length > 0
   }
 
   /** Is this user a parent? */
-  isParent() {
+  isParent(): boolean {
     return this.hasChildren()
+  }
+
+  // HACK
+  isAdmin(): boolean {
+    return ['faraz.yashar@gmail.com',
+    'josephbwebb@gmail.com',
+    'mark.sendak@duke.edu',
+    'april.warren@studentudurham.org',
+    'amy.salo@studentudurham.org',
+    'cameron.phillips@studentudurham.org',
+    'daniela.sanchez@studentudurham.org',
+    'ray.starn@studentudurham.org',
+    'kellane.kornegay@studentudurham.org',
+    'feyth.scott@studentudurham.org',
+    'madelyn.srochi@studentudurham.org',
+    'bryanna.ray@studentudurham.org',
+    'emmanuel.lee@studentudurham.org'].includes(this.email || '')
+  }
+
+  // HACK
+  adminLocation__HACK() {
+    return this.locationAccounts[0]?.locationId
   }
 
   /** Has the user completed the welcome sequence? */
@@ -110,7 +143,9 @@ export class User extends Model {
   /** The users current greenlight status */
   greenlightStatus(): GreenlightStatus {
     if (!this.lastGreenlightStatus || !this.lastGreenlightStatus.isValidForToday()) {
-      return GreenlightStatus.newUnknown()
+      const status = GreenlightStatus.newUnknown()
+      status.user = this
+      return status
     }
     return this.lastGreenlightStatus
   }
@@ -127,15 +162,12 @@ export class User extends Model {
 
   /** Is this user cleared? */
   isCleared(): boolean {
-    if (this.hasNotSubmittedOwnSurvey()) {
-      return this.greenlightStatus().isCleared()
-    }
-    return true
+    return this.greenlightStatus().isCleared()
   }
 
   /** This inclues this user */
-  areAllUsersCleared(): boolean {
-    return this.allUsersNotSubmitted().map(u => u.isCleared()).every(x => x === true)
+  areUsersCleared(): boolean {
+    return this.usersExpectedToSubmit().map(u => u.isCleared()).every(x => x === true)
   }
 
   //
@@ -154,9 +186,9 @@ export class User extends Model {
 
   /**
    * All of the users associated with this user
-   * who haven't submitted a survey yet.
+   * who haven't submitted a survey yet for today
    */
-  allUsersNotSubmitted(): User[] {
+  usersNotSubmitted(): User[] {
     const users = []
     for (const child of this.sortedChildren()) {
       if (child.hasNotSubmittedOwnSurvey()) {
@@ -169,7 +201,7 @@ export class User extends Model {
     return users
   }
 
-  allUsersNotSubmittedForTomorrow(): User[] {
+  usersNotSubmittedForTomorrow(): User[] {
     const users = []
     for (const child of this.sortedChildren()) {
       if (child.hasNotSubmittedOwnSurveyForTomorrow()) {
@@ -185,8 +217,8 @@ export class User extends Model {
   /**
    * The names of all the users needing to submit surveys
    */
-  allUsersNotSubmittedText(): string {
-    return joinWords(this.allUsersNotSubmitted().map(u =>
+  usersNotSubmittedText(): string {
+    return joinWords(this.usersNotSubmitted().map(u =>
       u === this ? this.yourself__HACK() : u.firstName
     ))
   }
@@ -194,22 +226,26 @@ export class User extends Model {
   /**
    * The names of all the users needing to submit surveys
    */
-  allUsersNotSubmittedForTomorrowText(): string {
-    return joinWords(this.allUsersNotSubmittedForTomorrow().map(u =>
+  usersNotSubmittedForTomorrowText(): string {
+    return joinWords(this.usersNotSubmittedForTomorrow().map(u =>
       u === this ? this.yourself__HACK() : u.firstName
     ))
   }
 
   showSubmissionPanelForToday(): boolean {
-    return this.allUsersNotSubmitted().length > 0 && CUTOFF_TIME.isAfter(DateTime.local())
+    return this.usersNotSubmitted().length > 0 && CUTOFF_TIME.isAfter(DateTime.local())
   }
 
   showSubmissionPanelForTomorrow(): boolean {
-    return this.allUsersNotSubmittedForTomorrow().length > 0 && CUTOFF_TIME.isBefore(DateTime.local())
+    return this.usersNotSubmittedForTomorrow().length > 0 && CUTOFF_TIME.isBefore(DateTime.local())
   }
 
   yourself__HACK() {
     return this.locale === 'en' ? 'yourself' : 'ti mismo'
+  }
+
+  you__HACK() {
+    return this.locale === 'en' ? 'you' : 'tu'
   }
 
   hasLocationThatRequiresSurvey() {
@@ -217,6 +253,21 @@ export class User extends Model {
   }
 
   needsToSubmitSomeonesSurvey(): boolean {
-    return this.allUsersNotSubmitted().length > 0
+    return this.usersNotSubmitted().length > 0
+  }
+
+  usersExpectedToSubmit() {
+    const users: User[] = []
+
+    if (this.hasLocationThatRequiresSurvey()) {
+      users.push(this)
+    }
+
+    for (const child of this.children) {
+      if (child.hasLocationThatRequiresSurvey()) {
+        users.push(child)
+      }
+    }
+    return users
   }
 }

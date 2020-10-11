@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'reactn'
 
 import {
   Row,
@@ -8,6 +8,8 @@ import {
 } from 'framework7-react'
 
 import { DateTime } from 'luxon'
+import { MyTrans } from 'src/i18n'
+import { defineMessage } from '@lingui/macro'
 
 interface Props {
   showErrors?: boolean
@@ -31,11 +33,11 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
       return
     }
     if (this.state.yesNo === null) {
-      return 'Please choose yes or no.'
+      return <MyTrans id="DatedYesNoButton.yes_no_missing">Please choose yes or no.</MyTrans>
     }
 
     if (this.state.yesNo === true && this.state.date === null) {
-      return 'Please set the date.'
+      return <MyTrans id="DatedYesNoButton.date_missing">Please set the date.</MyTrans>
     }
   }
 
@@ -45,8 +47,12 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
       <Row>
         <Col width="50">
           <Segmented tag="p">
-            <Button outline fill={this.state.yesNo === true} onClick={() => this.setState({ yesNo: true})}>
-              Yes
+            <Button outline fill={this.state.yesNo === true} onClick={() => {
+              this.setState({ yesNo: true})
+              this.props.setYesNo(true)
+            }
+            }>
+              <MyTrans id="DatedYesNoButton.yes">Yes</MyTrans>
             </Button>
             <Button
               outline
@@ -56,7 +62,7 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
                 this.props.setYesNo(false)
               }}
             >
-              No
+              <MyTrans id="DatedYesNoButton.no">No</MyTrans>
             </Button>
           </Segmented>
         </Col>
@@ -78,7 +84,7 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
                 this.props.setDate(d[0])
               }}
               type="datepicker"
-              placeholder="Select date"
+              placeholder={this.global.i18n._(defineMessage({id: 'DatedYesNoButton.select_date', message: 'Select date'}))}
               readonly
             />
           </List>

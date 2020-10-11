@@ -4,7 +4,7 @@ import { DateTime } from 'luxon'
 type DateTimeable = string | number | Date | DateTime
 
 function secondsSinceMidnight(time: DateTime) {
-  return time.diff(time.startOf('day')).seconds
+  return time.diff(time.startOf('day'), 'seconds').seconds
 }
 
 function toDateTime(dt: DateTimeable): DateTime {

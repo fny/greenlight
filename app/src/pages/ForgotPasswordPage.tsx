@@ -19,6 +19,7 @@ import {
 
 import EmailOrPhoneListInput from '../components/EmailOrPhoneListInput'
 import { Trans } from '@lingui/macro'
+import { MyTrans } from 'src/i18n'
 
 interface ForgotPasswordProps {}
 interface ForgotPasswordState {}
@@ -35,10 +36,10 @@ export default class ForgotPasswordPage extends React.Component<
         <Navbar title="Forgot Password" backLink="Back"></Navbar>
         <List form>
           <Block>
-            <Trans id="ForgotPasswordPage.instructions">
+            <MyTrans id="ForgotPasswordPage.instructions">
               Enter your email or mobile number, and we'll send you a link to reset
               your password.
-            </Trans>
+            </MyTrans>
           </Block>
           <li>
             <EmailOrPhoneListInput value="" />
@@ -53,9 +54,8 @@ export default class ForgotPasswordPage extends React.Component<
     )
   }
   signIn() {
-    const self = this
-    const app = self.$f7
-    const router = self.$f7router
+    const app = this.$f7
+    const router = this.$f7router
     app.dialog.alert(`You should be recieving an email or text soon.`, () => {
       router.back()
     })

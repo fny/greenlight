@@ -49,7 +49,7 @@ export function hasEvent(medicalEvents: MedicalEvent[], eventType: MEDICAL_EVENT
 }
 
 export function findEvents(medicalEvents: MedicalEvent[], eventType: MEDICAL_EVENTS | MEDICAL_EVENTS[], lookbackDays: number) {
-  const start = moment().subtract(lookbackDays, 'day')
+  const start = DateTime.local().minus({ days: lookbackDays })
   const eventTypes = Array.isArray(eventType) ? eventType : [eventType]
   return medicalEvents
     .filter(event => event.occurredAt >= start)

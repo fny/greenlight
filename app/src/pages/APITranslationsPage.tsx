@@ -1,6 +1,7 @@
 import React from 'react'
 import { Page, Navbar, Block, BlockTitle } from 'framework7-react'
 import { Trans } from '@lingui/macro'
+import { MyTrans } from 'src/i18n'
 /**
  * This page exists to enumerate translations for api errors.
  */
@@ -10,29 +11,29 @@ export default () => (
     <BlockTitle>Sessions</BlockTitle>
     <Block>
       <p>
-        <Trans id="API.sessions.invalid_email">
+        <MyTrans id="API.sessions.invalid_email">
           No account was found for the email you provided.
-        </Trans>
-        <Trans id="API.sessions.invalid_phone">
+        </MyTrans>
+        <MyTrans id="API.sessions.invalid_phone">
           No account was found for the phone number you provided.
-        </Trans>
-        <Trans id="API.sessions.invalid_password">
+        </MyTrans>
+        <MyTrans id="API.sessions.invalid_password">
           That password is incorrect. Please try again.
-        </Trans>
+        </MyTrans>
       </p>
     </Block>
 
     <Block>
       <p>
-        <Trans id="API.greenlight_status.invalid_email">
+        <MyTrans id="API.greenlight_status.invalid_email">
           No account was found for the email you provided.
-        </Trans>
-        <Trans id="API.sessions.invalid_phone">
+        </MyTrans>
+        <MyTrans id="API.sessions.invalid_phone">
           No account was found for the phone number you provided.
-        </Trans>
-        <Trans id="API.sessions.invalid_password">
+        </MyTrans>
+        <MyTrans id="API.sessions.invalid_password">
           That password is incorrect. Please try again.
-        </Trans>
+        </MyTrans>
       </p>
     </Block>
 

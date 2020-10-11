@@ -1,10 +1,9 @@
-import { t } from '@lingui/macro'
+import { defineMessage } from '@lingui/macro'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 import { DateTime } from 'luxon'
 
 import { getGlobal } from 'reactn'
-import { i18n } from 'src/i18n'
 
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
@@ -45,11 +44,11 @@ export function greeting() {
   const time = timeOfDay()
   switch (time) {
     case "morning":
-      return i18n._(t("util.good_morning")`Good morning`)
+      return getGlobal().i18n._(defineMessage({id: "util.good_morning", message: "Good morning"}))
     case "afternoon":
-      return i18n._(t("util.good_afternoon")`Good afternoon`)
+      return getGlobal().i18n._(defineMessage({id: "util.good_afternoon", message: "Good afternoon"}))
     case "evening":
-      return i18n._(t("util.good_evening")`Good evening`)
+      return getGlobal().i18n._(defineMessage({id: "util.good_evening", message: "Good evening"}))
     default:
       throw new Error(`Unknown time of day ${time}`)
   }
@@ -125,9 +124,9 @@ export function transformForAPI(data: any): any {
 }
 
 export function joinWords(words: string[], twoWordsConnector?: string, lastWordConnector?: string, wordsConnector?: string): string {
-  const twoWordsConnector_ = twoWordsConnector || i18n._(t('util.two_words_connector')` and `)
-  const lastWordConnector_ = lastWordConnector || i18n._(t('util.last_word_connector')`, and `)
-  const wordsConnector_ = wordsConnector || i18n._(t('util.words_connector')`, `)
+  const twoWordsConnector_ = twoWordsConnector || getGlobal().i18n._(defineMessage({id: 'util.two_words_connector', message: ` and `}))
+  const lastWordConnector_ = lastWordConnector || getGlobal().i18n._(defineMessage({id: 'util.last_word_connector', message: `, and `}))
+  const wordsConnector_ = wordsConnector || getGlobal().i18n._(defineMessage({id: 'util.words_connector', message: `, `}))
 
   if (words.length === 0) {
     return ''
@@ -139,6 +138,19 @@ export function joinWords(words: string[], twoWordsConnector?: string, lastWordC
     return `${words.slice(0, -1).join(wordsConnector_)}${lastWordConnector_}${words[words.length - 1]}`
   }
 }
+
+export function yesterday(): DateTime {
+  return today().minus({ days: 1 })
+}
+
+export function today(): DateTime {
+  return DateTime.local().setZone('America/New_York').startOf('day')
+}
+
+export function tomorrow(): DateTime {
+  return today().plus({ days: 1 })
+}
+
 
 /**
  * Pings the given url and waits for a response by checking for a HEAD reponse.
@@ -183,6 +195,14 @@ export function assertNotArray<T>(obj: T | T[]): asserts obj is T {
   }
 }
 
+export function sortBy<T>(ary: T[], fn: (el: T) => any): T[] {
+  return ary.map(el => [fn(el), el] as [any, T]).sort((e1, e2) => {
+    if (e1[0] > e2[0]) return 1
+    if (e1[0] < e2[0]) return -1
+    return 0
+  }).map(x => x[1])
+}
+
 /**
  * HACK: This is a hack to force the TypeScript compiler to recognize that a single
  * object is expected from a union type.
@@ -195,14 +215,16 @@ export function assertNotUndefined<T>(obj: T | undefined): asserts obj is T {
   }
 }
 
-export function yesterday(): DateTime {
-  return today().minus({ days: 1 })
+export function assertNotNull<T>(obj: T | null): asserts obj is T {
+  if (obj === null) {
+    throw new Error(`Expected value but got undefined ${obj}`)
+  }
 }
 
-export function today(): DateTime {
-  return DateTime.local().startOf('day')
-}
-
-export function tomorrow(): DateTime {
-  return today().plus({ days: 1 })
+export function zipTwo<X, Y>(xs: X[], ys: Y[]): [X , Y][] {
+  const zipped: [X, Y][] = []
+  for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
+    zipped.push([xs[i], ys[i]])
+  }
+  return zipped
 }

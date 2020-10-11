@@ -1,7 +1,9 @@
-module APIHelpers
+module ApplicationHelpers
   UnauthorizedError = Class.new(StandardError)
   NotFoundError = Class.new(StandardError)
   ForbiddenError = Class.new(StandardError)
+  SUCCESS = {success: true}.to_json
+  FAILURE = {success: false}.to_json
 
   def parse_request(request)
     HashWithIndifferentAccess.new(camelize_obj(JSON.parse(request.body.read)))
@@ -34,19 +36,19 @@ module APIHelpers
   end
 
   def require_auth!
-    return if current_user
-    raise ::UnauthorizedError
+    return if current_user.persisted?
+    raise UnauthorizedError
   end
 
-  def require_admin!
-    return if current_user.admin?
+  def require_admin_at!(location)
+    return if current_user.admin_at?(location)
     # Users shouldn't know this exists
-    raise ::NotFoundError
+    raise NotFoundError
   end
 
   def current_user
     return @current_user if defined?(@current_user)
-    @current_user = @session.user
+    @current_user = @session.user || User.new
     @current_user
   end
 

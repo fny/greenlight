@@ -1,7 +1,23 @@
 class User < ApplicationRecord
   extend Enumerize
+  extend Memoist
 
   enumerize :daily_reminder_type, in: [:text, :email, :none]
+  enumerize :time_zone, in: ActiveSupport::TimeZone.all.map { |x| x.tzinfo.name }, default: 'America/New_York'
+
+  # [
+  #   'America/New_York',
+  #   'America/Chicago',
+  #   'America/Denver',
+  #   'America/Los_Angeles'
+  # ]
+
+  # in: {
+  #   eastern: 'America/New_York',
+  #   central: 'America/Chicago',
+  #   mountain: 'America/Denver',
+  #   pacific: 'America/Los_Angeles'
+  # }
 
   has_many :parent_relationships, foreign_key: :child_id,
            class_name: 'ParentChild'
@@ -38,6 +54,11 @@ class User < ApplicationRecord
   validates :first_name, presence: true
 
   before_save :format_mobile_number
+  before_save :timestamp_password
+
+  memoize def admin_at?(location)
+    location_accounts.where(location_id: location.id, permission_level: :admin).exists?
+  end
 
   def self.find_by_email_or_mobile(value)
     email_or_mobile = value.kind_of?(EmailOrPhone) ? value : EmailOrPhone.new(value)
@@ -69,10 +90,6 @@ class User < ApplicationRecord
 
   def name_with_email
     "\"#{full_name}\" <#{email}>"
-  end
-
-  def time_zone
-    'America/New_York'
   end
 
   def save_sign_in!(ip)
@@ -111,12 +128,31 @@ class User < ApplicationRecord
     parents.include?(parent_user)
   end
 
+  def admin?
+    %w[
+      faraz.yashar@gmail.com
+      josephbwebb@gmail.com
+      mark.sendak@duke.edu
+      april.warren@studentudurham.org
+      amy.salo@studentudurham.org
+      cameron.phillips@studentudurham.org
+      daniela.sanchez@studentudurham.org
+      ray.starn@studentudurham.org
+      kellane.kornegay@studentudurham.org
+      feyth.scott@studentudurham.org
+      madelyn.srochi@studentudurham.org
+      bryanna.ray@studentudurham.org
+      emmanuel.lee@studentudurham.org
+    ].include?(self.email)
+  end
+
+
   def authorized_to_view?(user)
-    parent_of?(user) || user == self
+    admin? || parent_of?(user) || user == self
   end
 
   def authorized_to_edit?(user)
-    parent_of?(user) || user == self
+    admin? || parent_of?(user) || user == self
   end
 
   def submitted_for_today?
@@ -148,9 +184,14 @@ class User < ApplicationRecord
     submits_surveys_for.map(&:first_name).to_sentence
   end
 
-  before_save :timestamp_password
-
-
+  def destroy_all_associated_statuses
+    ActiveRecord::Base.transaction do
+      greenlight_statuses.destroy_all
+      children.each do |child|
+        child.greenlight_statuses.destroy_all
+      end
+    end
+  end
 
   private
 

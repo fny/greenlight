@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@lingui/react": "^2.9.2",
+    "@lingui/core": "^3.0.0-16",
+    "@lingui/react": "^3.0.0-16",
     "axios": "^0.20.0",
     "framework7": "^5.7.11",
     "framework7-icons": "^3.0.1",
@@ -29,9 +30,8 @@
     "eject": "react-scripts eject",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "i18n-add-locale": "lingui add-locale",
-    "i18n-extract": "lingui extract",
-    "i18n-compile": "lingui compile",
-    "i18n-extract-en": "lingui en extract"
+    "i18n-extract": "lingui extract --clean --overwrite",
+    "i18n-compile": "lingui compile"
   },
   "browserslist": {
     "production": [
@@ -47,8 +47,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
-    "@lingui/cli": "^2.9.2",
-    "@lingui/macro": "^2.9.2",
+    "@lingui/cli": "^3.0.0-16",
+    "@lingui/macro": "^3.0.0-16",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -57,9 +57,6 @@
     "@types/js-cookie": "^2.2.6",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/jwt-decode": "^2.2.1",
-    "@types/lingui__core": "^2.7.0",
-    "@types/lingui__macro": "^2.7.3",
-    "@types/lingui__react": "^2.8.2",
     "@types/lodash": "^4.14.160",
     "@types/luxon": "^1.25.0",
     "@types/qs": "^6.9.4",
@@ -80,5 +77,9 @@
     "reactn-devtools": "^1.1.0",
     "redux": "^4.0.5",
     "typescript": "^4.0.2"
+  },
+  "resolutions": {
+    "**/@typescript-eslint/eslint-plugin": "^4.2.0",
+    "**/@typescript-eslint/parser": "^4.2.0"
   }
 }

@@ -4,6 +4,7 @@ class LocationAccount < ApplicationRecord
   belongs_to :location
 
   enumerize :role, in: [:student, :teacher, :staff]
+  enumerize :permission_level, in: [:none, :admin], default: :none
 end
 
 # == Schema Information

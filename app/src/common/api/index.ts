@@ -4,7 +4,7 @@ import { transformRecordResponse, responseStore, recordStore } from './stores'
 import axios, { AxiosResponse } from 'axios'
 
 import { Session, NullSession } from './session'
-import { getGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { assertNotArray, assertNotUndefined, transformForAPI } from '../util'
 
 const BASE_URL = "http://api-dev.greenlightready.com/v1"
@@ -62,8 +62,15 @@ export async function signOut() {
 }
 
 export async function getCurrentUser(): Promise<User> {
-  // TODO: getResource and getResources
- return await getResource<User>('/users/me') as User
+  const user = await getResource<User>('/users/me')
+  assertNotArray(user)
+  return user
+}
+
+export async function getUser(id: string): Promise<User> {
+  const user = await getResource<User>(`/users/${id}`)
+  assertNotArray(user)
+  return user
 }
 
 // TODO clear blanks and format values
@@ -76,8 +83,8 @@ export async function updateUser(user: User, updates: Partial<User>): Promise<Us
   return getCurrentUser()
 }
 
-export async function findUsersForLocation(location: string | Location) {
-  const locationId = typeof location === 'string' ? location : location.id
+export async function getUsersForLocation(location: number | string | Location) {
+  const locationId = location instanceof Location ? location.id : location
   const path = `/locations/${locationId}/users`
   return getResource<User>(path, true) as Promise<User[]>
 }
@@ -136,4 +143,11 @@ export function isSignedIn() {
 
 export function currentUser() {
   return getGlobal().currentUser
+}
+
+
+export async function reloadCurrentUser(): Promise<User> {
+  const user = await getCurrentUser()
+  setGlobal({ currentUser: user })
+  return user
 }

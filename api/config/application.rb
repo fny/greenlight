@@ -22,7 +22,7 @@ Bundler.require(*Rails.groups)
 module Greenlight
   class Application < Rails::Application
 
-    endpoint lambda { |env| APIController.call(env) }
+    endpoint lambda { |env| ApplicationController.call(env) }
 
 
     # Initialize configuration defaults for originally generated Rails version.

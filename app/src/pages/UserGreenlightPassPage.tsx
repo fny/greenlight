@@ -7,9 +7,9 @@ import './UserGreenlightPassPage.css'
 import StatusJDenticon from 'src/components/StatusJDenticon'
 import { Case, When } from 'src/components/Case'
 
-import { i18n } from '@lingui/core'
-import { Trans, t } from '@lingui/macro'
+import { defineMessage } from '@lingui/macro'
 import { DateTime } from 'luxon'
+import { MyTrans } from 'src/i18n'
 
 export default class UserGreenlightPassPage extends React.Component<any, any> {
 
@@ -29,8 +29,8 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
     return (
       <Page className="UserGreenlightPassPage">
         <Navbar
-          title={i18n._(t('UserGreenlightPassPage.pass_title')`Greenlight Pass`)}
-          backLink={i18n._(t('UserGreenlightPassPage.back')`Back`)}>
+          title={this.global.i18n._(defineMessage({ id: 'UserGreenlightPassPage.pass_title', message: "Greenlight Pass" }))}
+          backLink={this.global.i18n._(defineMessage({ id: 'UserGreenlightPassPage.back', message: "Back" }))}>
         </Navbar>
 
         <Block className="text-center">
@@ -39,16 +39,16 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
             <StatusJDenticon date={DateTime.local()} status={status.status} size={250} />
           </div>
           <p>
-            <Case test={status.createdAt !== null}>
+            <Case test={status.createdAt.isValid}>
               <When value={true}>
-                <Trans id="UserGreenlightPassPage.submitted">
+                <MyTrans id="UserGreenlightPassPage.submitted">
                   Submitted at {status.createdAt.toLocaleString(DateTime.TIME_SIMPLE)}.
-                </Trans>
+                </MyTrans>
               </When>
               <When value={false}>
-                <Trans id="UserGreenlightPassPage.not_submitted">
+                <MyTrans id="UserGreenlightPassPage.not_submitted">
                   Status has not been submitted for today.
-                </Trans>
+                </MyTrans>
               </When>
             </Case>
           </p>

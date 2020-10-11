@@ -15,9 +15,9 @@ import {
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
 import './SignInPage.css'
 import { signIn } from 'src/common/api'
-import { i18n } from 'src/i18n'
-import { Trans, t } from '@lingui/macro'
+import { Trans, defineMessage } from '@lingui/macro'
 import { paths, dynamicPaths } from 'src/routes'
+import { MyTrans } from 'src/i18n'
 
 interface SignInState {
   emailOrMobile: string
@@ -41,12 +41,15 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
     return passwordValid && emailOrMobileValid
   }
 
-  // TODO: Reactor: Extract this pattern
+  // TODO: Refactor: Extract this pattern
+  // TODO: Improve error messages
   async submit() {
     if (!this.validate()) {
       return
     }
-    this.$f7.dialog.preloader('Signing you in...')
+    this.$f7.dialog.preloader(
+      this.global.i18n._(defineMessage({ id: 'SignInPage.signing_you_in', message: "Signing you in..." }))
+    )
     try {
       const user = await signIn(this.state.emailOrMobile, this.state.password, this.state.rememberMe)
       this.$f7.dialog.close()
@@ -55,8 +58,10 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
     } catch (error) {
       this.$f7.dialog.close()
       console.error(error)
-      // TODO: i18n
-      this.$f7.dialog.alert('Username and password is incorrect', 'Sign In Failed')
+      this.$f7.dialog.alert(
+        this.global.i18n._(defineMessage({ id: 'SignInPage.credentials_incorrect', message: "The credentials your provided are incorrect." })),
+        this.global.i18n._(defineMessage({ id: 'SignInPage.sign_in_failed', message: "Sign In Failed" }))
+      )
     }
   }
 
@@ -65,13 +70,12 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
       <Page className="SignInPage" noToolbar>
 
         <Navbar title={
-          i18n._(
-            t('SignInPage.title')
-            `Sign In`
+          this.global.i18n._(
+            defineMessage({ id: 'SignInPage.title', message: "Sign In" })
           )} backLink="Back">
         </Navbar>
 
-        <div className="greenlight-logo">
+        <div style={{marginTop: '20px'}}className="greenlight-logo">
           Greenlight<span>.</span>
         </div>
 
@@ -87,9 +91,8 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
             type="password"
             ref={this.passwordRef}
             placeholder={
-              i18n._(
-                t('SignInPage.password_placeholder')
-                `Password`
+              this.global.i18n._(
+                defineMessage({ id: 'SignInPage.password_placeholder', message: "Password" })
               )
             }
             validateOnBlur
@@ -99,17 +102,15 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
               this.setState({ password: e.target.value })
             }}
             errorMessage={
-              i18n._(
-                t('SignInPage.password_missing')
-                `Please enter your password.`
+              this.global.i18n._(
+                defineMessage({ id: 'SignInPage.password_missing', message: "Please enter your password." })
               )
             }
           />
           <ListItem checkbox
             title={
-              i18n._(
-                t('SignInPage.remember_me')
-                `Remember me`
+              this.global.i18n._(
+                defineMessage({ id: 'SignInPage.remember_me', message: "Remember me" })
               )
             }
             onChange={e => {
@@ -118,18 +119,18 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
           />
           <Block>
             <Button outline fill onClick={() => this.submit() }>
-              <Trans id="SignInPage.sign_in">
+              <MyTrans id="SignInPage.sign_in">
                 Sign In
-              </Trans>
+              </MyTrans>
             </Button>
           </Block>
         </List>
         <List>
           <BlockFooter>
             <Link href={paths.magicSignInPath}>
-              <Trans id="SignInPage.forgot_password">
+              <MyTrans id="SignInPage.forgot_password">
                 Forgot password?
-              </Trans>
+              </MyTrans>
             </Link>
           </BlockFooter>
         </List>

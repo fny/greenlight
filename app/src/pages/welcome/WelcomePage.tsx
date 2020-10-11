@@ -15,21 +15,22 @@ import {
 
 import { Case, When } from 'src/components/Case'
 
-import { esExclaim, greeting } from "src/common/util"
+import { esExclaim, greeting } from "src/util"
 import { User } from 'src/common/models/User'
 import { paths } from "src/routes"
 import { ReactNComponent } from "reactn/build/components"
 import { NoCurrentUserError } from "src/common/errors"
 
-import { Plural, Trans } from '@lingui/macro'
+import { plural, Trans } from '@lingui/macro'
 import { signOut } from "src/common/api"
+import { myPlural, MyTrans, toggleLocale } from "src/i18n"
 
 interface State {
   termsOpened: boolean
   currentUser: User
 }
 
-export default class WelcomeParentPage extends ReactNComponent<any, State> {
+export default class WelcomePage extends ReactNComponent<any, State> {
   constructor(props: any) {
     super(props)
 
@@ -53,25 +54,25 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
     const fillForSelf = user.locationAccounts.length > 0
     const fillForChildren = user.children.length > 0
     if (fillForSelf && fillForChildren) {
-      return <Trans id="WelcomePage.fill_for_self_and_children">
+      return <MyTrans id="WelcomePage.fill_for_self_and_children">
         Every day you'll need to fill out symptom surveys for
-        you and your <Plural value={user.children.length} one="child" other="children" />.
-      </Trans>
+        you and your {this.global.i18n._(myPlural('child', user.children.length))}.
+      </MyTrans>
     } else if (fillForSelf) {
-      return <Trans id="WelcomePage.fill_for_self">
+      return <MyTrans id="WelcomePage.fill_for_self">
         Every day you'll need to fill out symptom surveys for yourself.
-      </Trans>
+      </MyTrans>
     } else if (fillForChildren) {
-      return <Trans id="WelcomePage.fill_children">
+      return <MyTrans id="WelcomePage.fill_children">
       Every day you'll need to fill out symptom surveys for your
-        <Plural value={user.children.length} one="child" other="children" />.
-      </Trans>
+      {this.global.i18n._(myPlural('child', user.children.length))}.
+      </MyTrans>
     } else {
       // TODO: What do we do in the case that the user is not associated with anything over the long run?
-      return  <Trans id="WelcomePage.fill_for_no_one_error">
+      return  <MyTrans id="WelcomePage.fill_for_no_one_error">
         It looks like your account has not been set up properly.
         Please contact greenlight at help@greenlightready.com.
-      </Trans>
+      </MyTrans>
     }
   }
 
@@ -80,36 +81,42 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
     const locationCount = this.totalLocations()
     return <Page>
       <Block>
-        <h1>{esExclaim()}{greeting()}!</h1>
+        <h1>
+          {esExclaim()}{greeting()}! &nbsp;&nbsp;&nbsp;&nbsp;
+          <Link style={{fontSize: '12px'}} onClick={() => toggleLocale()}>
+            <MyTrans id="WelcomePage.toggle_locale">
+              En Español
+            </MyTrans>
+          </Link>
+        </h1>
+
+
         <Case test={locationCount}>
           <When value={0}>
-            <Trans id="WelcomePage.account_misconfigured">
+            <MyTrans id="WelcomePage.account_misconfigured">
               Your account hasn't been configured properly. Please contact us at help@greenlightready.com.
-            </Trans>
+            </MyTrans>
           </When>
           <When>
             <p>
-              {/* TODO: i18n */}
-              <Trans id="WelcomePage.welcome">
+              <MyTrans id="WelcomePage.welcome">
                 Hi {user.firstName}! You've been added
-                by <Plural value={this.totalLocations()} one="# location" other="# locations" />
-                secure COVID-19 monitoring platform.
-              </Trans>
+                by {this.global.i18n._(myPlural('location', this.totalLocations(), true))} to Greenlight's secure COVID-19 monitoring platform.
+              </MyTrans>
             </p>
             <p>
-              <Trans id="WelcomePage.instructions">
+              <MyTrans id="WelcomePage.instructions">
                 {this.whoDoYouFillSurveysFor()} We will not share any data without your
                 permission.
-              </Trans>
+              </MyTrans>
             </p>
           </When>
         </Case>
 
         <img alt="Welcome to Greenlight!" src="/images/welcome-doctor.svg" />
         <p>
-          <Trans id="WelcomePage.terms_and_conditions">
-            By continuing, you accept Greenlight's{' '}
-            <Link
+          <MyTrans id="WelcomePage.terms_and_conditions">
+            By continuing, you accept Greenlight's <Link
               onClick={() => {
                 this.setState({ termsOpened: true })
               }}
@@ -117,13 +124,13 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
               Terms and Conditions
             </Link>
             .
-          </Trans>
+          </MyTrans>
         </p>
       </Block>
       <Block>
         <Row tag="p">
           <Col tag="span">
-            <Button large onClick={() => signOut()}><Trans id="WelcomePage.sign_out">Sign Out</Trans></Button>
+            <Button large onClick={() => signOut()}><MyTrans id="WelcomePage.sign_out">Sign Out</MyTrans></Button>
           </Col>
           <Col tag="span">
             <Button
@@ -131,7 +138,7 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
               fill
               href={paths.welcomeReviewPath}
             >
-              <Trans id="WelcomePage.continue">Continue</Trans>
+              <MyTrans id="WelcomePage.continue">Continue</MyTrans>
             </Button>
           </Col>
         </Row>
@@ -145,15 +152,13 @@ export default class WelcomeParentPage extends ReactNComponent<any, State> {
         <Toolbar>
           <div className="left"></div>
           <div className="right">
-            <Link sheetClose><Trans id="WelcomePage.close">Close</Trans></Link>
+            <Link sheetClose><MyTrans id="WelcomePage.close">Close</MyTrans></Link>
           </div>
         </Toolbar>
         {/*  Scrollable sheet content */}
         <PageContent>
-          <Block>
             {/* TODO: Host this elsewhere. */}
-            <iframe src="/terms.html" />
-          </Block>
+            <iframe src="/terms.html" style={{width: '100%', border: 0, height: '90%' }}/>
         </PageContent>
       </Sheet>
     </Page>

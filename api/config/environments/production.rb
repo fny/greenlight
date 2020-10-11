@@ -98,7 +98,8 @@ Rails.application.configure do
       address: 'smtp.sendgrid.net',
       port: '587',
       user_name: 'apikey',
-      password: Greenlight::SENDGRID_API_KEY,
+      # TODO: Pull this from Greenlight::SENDGRID_API_KEY
+      password: ENV.fetch('SENDGRID_API_KEY'),
       authentication: :plain
     }
   }
