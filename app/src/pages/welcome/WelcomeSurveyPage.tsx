@@ -22,9 +22,10 @@ import { ReactNComponent } from "reactn/build/components"
 import { NoCurrentUserError } from "src/common/errors"
 
 import { defineMessage, plural, Trans } from '@lingui/macro'
-import { signOut } from "src/common/api"
+import { signOut, updateUser } from "src/common/api"
 import { myPlural, MyTrans, toggleLocale } from "src/i18n"
 import { Support } from "framework7"
+import { DateTime } from "luxon"
 
 interface State {
   termsOpened: boolean
@@ -40,6 +41,8 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
       throw new NoCurrentUserError()
     }
     this.user = this.global.currentUser
+
+    updateUser(this.user, {  completedInviteAt: DateTime.local()   })
   }
   render() {
 

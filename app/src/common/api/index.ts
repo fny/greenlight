@@ -76,8 +76,9 @@ export async function getUser(id: string): Promise<User> {
 
 // TODO clear blanks and format values
 export async function updateUser(user: User, updates: Partial<User>): Promise<User> {
+
   await v1.patch(`/users/${user.id}`,
-    updates,
+    transformForAPI(updates),
     { headers: session.headers() }
   )
   // TODO: This should update the store instead.

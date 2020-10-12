@@ -114,7 +114,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
         </If>
 
         <If test={user.showSubmissionPanelForTomorrow()}>
-          <Link href={dynamicPaths.userSurveysNewIndexPath(0)}>
+          <Link href={paths.userSeqSurveysNewPath}>
             <div className="GLCard">
               <div className="GLCard-title">
                 <MyTrans id="DashboardPage.submit_check_in">Submit Daily Check-In</MyTrans>

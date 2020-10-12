@@ -1,5 +1,6 @@
 import { MessageDescriptor, setupI18n } from '@lingui/core'
 import { MessageOptions } from '@lingui/core/cjs/i18n'
+import Cookies from 'js-cookie'
 import { isLength } from 'lodash'
 import { ReactElement } from 'react'
 import React from 'reactn'
@@ -26,7 +27,7 @@ export function isEmpty(obj: any) {
 
 export class MyI18n {
   catalogs = { en, es }
-  locale: 'en' | 'es' = 'en'
+  locale: 'en' | 'es' = getGlobal().locale || Cookies.get('_gl_locale') || 'en'
   current: Dict<any> = es.messages
 
   messages() {
@@ -80,10 +81,8 @@ export class MyI18n {
 export const myI18n = new MyI18n()
 
 export function toggleLocale() {
-  const newLocale = getGlobal().locale === 'en' ? 'es' : 'en'
-  const myi18n = getGlobal().i18n
-  myi18n.locale = newLocale
-  setGlobal({ locale: newLocale, i18n: myI18n })
+  Cookies.set('_gl_locale', getGlobal().locale === 'en' ? 'es' : 'en')
+  window.location.reload()
 }
 
 interface Props {

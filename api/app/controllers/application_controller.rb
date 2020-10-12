@@ -6,10 +6,14 @@ class ApplicationController < Sinatra::Base
   include UsersController
   include DebugController
 
+
   set :show_exceptions, false
 
   before do
     content_type 'application/json'
+
+    # @cookies = ActionDispatch::Cookies::CookieJar.build(request, request.cookies)
+
     @session = Session.new(token: request.env['HTTP_AUTHORIZATION'])
     if current_user
       Time.zone = current_user.time_zone
@@ -19,6 +23,10 @@ class ApplicationController < Sinatra::Base
       I18n.locale = 'en'
     end
   end
+
+  # after do
+  #   @cookies.write(response.headers)
+  # end
 
   error do
     e = env['sinatra.error']

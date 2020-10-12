@@ -310,14 +310,14 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       </Page>
     }
 
-    if (!submittingFor.greenlightStatus().isUnknown()) {
-      return <Page>
-        <Navbar title="Already submitted for today." backLink={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.back', message: "Back" }))} />
-        <Block>
-          Survey has been submitted for today.
-        </Block>
-      </Page>
-    }
+    // if (!submittingFor.greenlightStatus().isUnknown()) {
+    //   return <Page>
+    //     <Navbar title="Already submitted for today." backLink={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.back', message: "Back" }))} />
+    //     <Block>
+    //       Survey has been submitted for today.
+    //     </Block>
+    //   </Page>
+    // }
 
     return (
       <Page>

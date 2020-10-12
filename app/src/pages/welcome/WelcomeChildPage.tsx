@@ -79,15 +79,14 @@ export default class extends ReactNComponent<any, State> {
   async submit() {
     // TODO: Move delete blanks into update user
     const attrs = deleteBlanks({
-      physicianName: this.state.physicianName, physicianPhoneNumber: this.state.physicianPhoneNumber, needsPhysician: this.state.needsPhysician,
-      completedInviteAt: DateTime.local().toISO()
+      physicianName: this.state.physicianName, physicianPhoneNumber: this.state.physicianPhoneNumber, needsPhysician: this.state.needsPhysician
     })
 
     this.$f7.dialog.preloader(
       this.global.i18n._(defineMessage({id: 'WelcomeChildPage.submitting_changes', message: "Submitting changes..."}))
     )
     try {
-      const user = await updateUser(this.state.currentUser, attrs as Partial<User>)
+      const user = await updateUser(this.child(), attrs as Partial<User>)
       this.setGlobal({ currentUser: user })
       this.$f7.dialog.close()
 

@@ -23,7 +23,7 @@ class SendGridEmail < ApplicationCommand
     @pony_payload[:body] = self.text if self.text
     @pony_payload[:html_body] = self.html if self.html
     @pony_payload[:text_part_charset] = 'UTF-8'
-    @pony_payload
+    @pony_payload[:via] = :test if Rails.env.test?
   end
 
   def work

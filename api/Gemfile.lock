@@ -85,6 +85,9 @@ GEM
     concurrent-ruby (1.1.7)
     connection_pool (2.2.3)
     crass (1.0.6)
+    creek (2.5.2)
+      nokogiri (>= 1.10.0)
+      rubyzip (>= 1.0.0)
     debug_inspector (0.0.3)
     diff-lcs (1.4.4)
     dotenv (2.7.6)
@@ -266,6 +269,7 @@ GEM
     ruby-progressbar (1.10.1)
     ruby2_keywords (0.0.2)
     ruby_http_client (3.5.1)
+    rubyzip (2.3.0)
     seed-fu (2.3.9)
       activerecord (>= 3.1)
       activesupport (>= 3.1)
@@ -314,6 +318,8 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    strip_attributes (1.11.0)
+      activemodel (>= 3.0, < 7.0)
     thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -341,6 +347,7 @@ DEPENDENCIES
   bootsnap
   bullet (~> 6.1.0)
   byebug
+  creek
   dotenv-rails
   enumerize
   exception_notification
@@ -383,6 +390,7 @@ DEPENDENCIES
   solargraph
   spring
   spring-watcher-listen (~> 2.0.0)
+  strip_attributes
   valid_email2
   xorcist
 

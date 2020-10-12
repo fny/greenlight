@@ -50,6 +50,8 @@ gem 'xorcist'
 gem 'active_attr'
 # Password encryption
 gem 'bcrypt', '~> 3.1.7'
+# Streaming Spreadsheets
+gem 'creek'
 # Enumerated attributes
 gem 'enumerize'
 # Exception notifier
@@ -78,6 +80,10 @@ gem 'seed-fu', '~> 2.3'
 gem 'self_control', :path => "vendor/gems/self_control"
 # Twilio Sendgrid Email API
 gem 'sendgrid-ruby'
+
+# Automatically strips all attributes of leading and trailing
+gem 'strip_attributes'
+
 # Performance monitoring
 gem 'skylight'
 # Email validations

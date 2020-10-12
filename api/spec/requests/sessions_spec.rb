@@ -7,7 +7,7 @@ RSpec.describe "Session routes", type: :request do
       emailOrMobile: user.email,
       password: user.password,
       rememberMe: false
-    })
+    })e
     expect(response_json).to have_key(:token)
   end
 

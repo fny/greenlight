@@ -167,6 +167,13 @@ class User < ApplicationRecord
     needs_to_sumbit_survey_for.map(&:first_name).to_sentence
   end
 
+  def mobile_number=(value)
+    return if value.blank?
+    parsed = Phonelib.parse(mobile_number, 'US').full_e164
+    parsed = nil if parsed.blank?
+    self[:mobile_number] = parsed
+  end
+
   # PERF: N+1 query
   def submits_surveys_for
     people = []

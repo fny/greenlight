@@ -1,4 +1,4 @@
-class EmailOrPhone  
+class EmailOrPhone
   def initialize(value)
     @value = value.strip.downcase
   end
@@ -14,7 +14,7 @@ class EmailOrPhone
   def invalid?
     !email? && !phone?
   end
-  
+
   def email?
     @value.include?('@')
   end

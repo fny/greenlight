@@ -7,6 +7,9 @@
       "hosting": {
         "staging": [
           "glit-app-staging"
+        ],
+        "production": [
+          "glit-app-prod"
         ]
       }
     }

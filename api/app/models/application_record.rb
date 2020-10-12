@@ -1,8 +1,7 @@
 class ApplicationRecord < ActiveRecord::Base
+  strip_attributes
+
   self.abstract_class = true
-  # Sort records by date of creation instead of primary key
-  # since we use UUIDs
-  self.implicit_order_column = :created_at
 
   def self.last_id
     self.order('id asc').last&.id

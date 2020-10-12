@@ -1,5 +1,9 @@
 # require 'lib/configurator'
 
+if Rails.application.secrets.secret_key_base.nil?
+  raise MissingEnvironmentVariable.new(:SECRET_KEY_BASE)
+end
+
 Configurator.new(Greenlight) do
   env :PLIVO_AUTH_ID, required: false
   env :PLIVO_AUTH_TOKEN, required: false

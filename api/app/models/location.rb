@@ -3,8 +3,15 @@ class Location < ApplicationRecord
   has_many :cohorts
   has_many :users, through: :location_accounts
 
+  validates :phone_number, phone: { countries: :us }, allow_nil: true
+  before_save :format_phone_number
+
   def self.find_by_id_or_permalink(id)
     find_by(id: id) || find_by(permalink: id)
+  end
+
+  def self.find_by_id_or_permalink!(id)
+    self.find_by_id_or_permalink(id) || raise(ActiveRecord::RecordNotFound.new("Location could not be found by #{id}"))
   end
 
   def users_to_invite
@@ -57,6 +64,13 @@ class Location < ApplicationRecord
       end
     end
     users_to_notify
+  end
+
+  def format_phone_number
+    return if phone_number.blank?
+    parsed = Phonelib.parse(phone_number, 'US').full_e164
+    parsed = nil if parsed.blank?
+    self.phone_number = parsed
   end
 end
 

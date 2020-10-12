@@ -42,7 +42,7 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
             <Case test={status.createdAt.isValid}>
               <When value={true}>
                 <MyTrans id="UserGreenlightPassPage.submitted">
-                  Submitted at {status.createdAt.toLocaleString(DateTime.TIME_SIMPLE)}.
+                  Submitted at {status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}.
                 </MyTrans>
               </When>
               <When value={false}>

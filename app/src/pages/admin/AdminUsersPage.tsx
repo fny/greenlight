@@ -37,7 +37,7 @@ class UsersList extends React.Component<Props,any> {
       }
   >
     <div slot="media">
-      <UserJDenticon user={user} size={29} />
+      <UserJDenticon user={user} size={29} key={user.id} />
     </div>
     <AccordionContent key={user.id}>
       <List>
@@ -67,12 +67,12 @@ class UsersList extends React.Component<Props,any> {
     const grouped = this.groupByLetter()
     return <>
       <List className="searchbar-not-found">
-        <ListItem title="Nothing found" />
+        <ListItem key="none" title="Nothing found" />
       </List>
       <List className="search-list searchbar-found" contactsList>
         {
           sortBy(Object.entries(grouped), x => x[0]).map(([letter, users]) => (
-            <ListGroup>
+            <ListGroup key={letter}>
               <ListItem title={letter} groupTitle key={letter} />
               {sortBy(users, u => u.reversedName()).map(user => this.userItem(user))}
             </ListGroup>
@@ -130,7 +130,7 @@ export default class AdminUsersPage extends ReactNComponent<any, State> {
         </Subnavbar>
 
         <NavRight>
-            <Link onClick={() => this.$f7router.refreshPage()}>
+            <Link onClick={() => window.location.reload() }>
               <Icon f7="arrow_2_circlepath" />
             </Link>
           </NavRight>

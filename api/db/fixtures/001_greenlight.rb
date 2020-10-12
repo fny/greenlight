@@ -1,8 +1,3 @@
-require 'faker'
-
-Faker::Config.random = Random.new(24)
-
-
 location_id_seq = Location.id_seq
 user_id_seq = User.id_seq
 location_account_id_seq = LocationAccount.id_seq
@@ -28,7 +23,7 @@ parents = [
     mobile_number: '+19163006448',
     children: [%w[Aria Sendak]],
     is_teacher: false
-  },  
+  },
   {
     first_name: 'Faraz',
     last_name: 'Yashar',
