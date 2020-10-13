@@ -53,10 +53,12 @@ class StaffImport
     end
 
     def user
+      return @user if defined?(@user)
       email = @r[EMAIL]
       phone = @r[PHONE]
-      @user ||= User.where(email: email).or(User.where(mobile_number: phone)).first ||
-        User.new(first_name: @r[FIRST], last_name: @r[LAST], email: email, mobile_number: phone)
+      @user = User.where(email: email).or(User.where(mobile_number: phone)).first || User.new
+      @user.assign_attributes(first_name: @r[FIRST], last_name: @r[LAST], email: email, mobile_number: phone)
+      @user
     end
 
     def location_account

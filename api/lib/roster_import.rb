@@ -37,7 +37,11 @@ class RosterImport
       end
     end
   end
-
+  class RosterImport::Row
+    def child_id
+      @r[RosterImport::UID]
+    end
+  end
   class Row
     attr_reader :notes, :errors, :location, :raw_data
 
@@ -74,12 +78,13 @@ class RosterImport
       return @parent1 if defined?(@parent1)
       email = @r[P1EMAIL]
       phone = @r[P1PHONE]
-      @parent1 = User.where(email: email).or(User.where(mobile_number: EmailOrPhone.new(phone).value)).first ||
-        User.new(
-          first_name: @r[P1FIRST] || 'Greenlight User',
-          last_name: @r[P1LAST] || 'Unknown',
-          email: email,
-          mobile_number: phone)
+      @parent1 = User.where(email: email).or(User.where(mobile_number: EmailOrPhone.new(phone).value)).first || User.new
+      @parent1.assign_attributes(
+        first_name: @r[P1FIRST] || 'Greenlight User',
+        last_name: @r[P1LAST] || 'Unknown',
+        email: email,
+        mobile_number: phone)
+      @parent1
     end
 
     def process!
