@@ -56,6 +56,9 @@ class User < ApplicationRecord
   before_save :format_mobile_number
   before_save :timestamp_password
 
+  before_save { email.downcase! }
+
+
   memoize def admin_at?(location)
     location_accounts.where(location_id: location.id, permission_level: :admin).exists?
   end
