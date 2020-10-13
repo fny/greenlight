@@ -1,4 +1,10 @@
 class Configurator
+  class MissingEnvironmentVariable < StandardError
+    def initialize(var_name)
+      super("Expected #{var_name} to be set as an environment variable!")
+    end
+  end
+
   # target - the module/class on which to append the constants
   def initialize(target, &block)
     @target = target
@@ -18,11 +24,5 @@ class Configurator
       raise MissingEnvironmentVariable.new(name)
     end
     set(name, value)
-  end
-
-  class MissingEnvironmentVariable < StandardError
-    def initialize(var_name)
-      super("Expected #{var_name} to be set as an environment variable!")
-    end
   end
 end
