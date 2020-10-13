@@ -50,7 +50,7 @@ parents = [
   {
     first_name: 'Suresh',
     last_name: 'Balu',
-    email: 'suresh.balu@duke.edu',
+    email: 'suresh.balu@gmail.com',
     mobile_number: '+19195368305',
     children: [%w[Aidan Balu]],
     is_teacher: false
@@ -61,7 +61,13 @@ parents = [
     mobile_number: '+18473409377',
     children: [%w[Emmy Webb]],
     is_teacher: true
-  },
+  }, {
+    first_name: 'Kevin',
+    last_name: "O'Keefe",
+    mobile_number: '+17082121437',
+    children: [],
+    is_teacher: true
+  }
 ]
 
 def extract_keys(h, ks)
