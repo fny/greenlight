@@ -169,7 +169,7 @@ class User < ApplicationRecord
 
   def mobile_number=(value)
     return if value.blank?
-    parsed = Phonelib.parse(mobile_number, 'US').full_e164
+    parsed = Phonelib.parse(value, 'US').full_e164
     parsed = nil if parsed.blank?
     self[:mobile_number] = parsed
   end

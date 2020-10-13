@@ -62,7 +62,7 @@ class RosterImport
     end
 
     def child_location_account
-      @child_la ||= LocationAccount.find_by(external_id: child_id) || LocationAccount.new(
+      @child_la ||= LocationAccount.find_by(external_id: @r[UID]) || LocationAccount.new(
         external_id: @r[UID],
         location_id: @location.id,
         role: 'student',

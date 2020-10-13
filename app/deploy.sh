@@ -28,7 +28,7 @@ trap clean_up EXIT
 
 if [ "$env" == "production" ]; then
   yarn build
-  firebase target:apply hosting production glit-app-prod
+  firebase target:apply hosting production glit-app-production
 fi
 
 if [ "$env" == "staging" ]; then

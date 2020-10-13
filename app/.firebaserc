@@ -9,7 +9,7 @@
           "glit-app-staging"
         ],
         "production": [
-          "glit-app-prod"
+          "glit-app-production"
         ]
       }
     }
