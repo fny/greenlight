@@ -1,5 +1,5 @@
 class SendGridEmail < ApplicationCommand
-  argument :from, default: "Greenlight <no-reply@greenlightready.com>"
+  argument :from, default: "Greenlight <lucy@greenlightready.com>"
   argument :to
   argument :cc
   argument :bcc
