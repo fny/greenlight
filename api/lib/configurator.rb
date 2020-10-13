@@ -7,7 +7,8 @@ class Configurator
   end
 
   def set(name, value = nil, &block)
-    @constants[name] = value || block.call
+    @constants[name] = value
+    @constants[name] || block.call if block_given?
     @target.const_set(name, @constants[name])
   end
 
