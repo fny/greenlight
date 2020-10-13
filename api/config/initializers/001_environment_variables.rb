@@ -1,7 +1,7 @@
 # require 'lib/configurator'
 
 if Rails.application.secrets.secret_key_base.nil?
-  raise MissingEnvironmentVariable.new(:SECRET_KEY_BASE)
+  raise Configurator::MissingEnvironmentVariable.new(:SECRET_KEY_BASE)
 end
 
 Configurator.new(Greenlight) do
@@ -20,7 +20,7 @@ Configurator.new(Greenlight) do
     elsif ENV.key?('HEROKU_APP_NAME')
       "https://#{ENV.fetch('HEROKU_APP_NAME')}.herokuapp.com"
     else
-      raise MissingEnvironmentVariable.new(:API_URL)
+      raise Configurator::MissingEnvironmentVariable.new(:API_URL)
     end
   end
 
