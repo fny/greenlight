@@ -71,7 +71,6 @@ class StaffImport
     end
 
     def process!
-
       validate_required_fields_present
       return if @errors.any?
       if location_account.persisted?

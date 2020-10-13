@@ -9,7 +9,7 @@ class LocationImport
 
   def save_location!
     if @location.nil?
-      @location = Location.find_or_initialize_by(permalink: @permalink)
+      @location = Location.new
       @location.assign_attributes(JSON.parse(File.read(@location_path)))
       @location.save!
     end
@@ -26,5 +26,13 @@ class LocationImport
     @simport = StaffImport.new(@location, @staff_path)
     @simport.process_rows!
     true
+  end
+
+  def run!
+    ActiveRecord::Base.transaction do
+      save_location!
+      import_roster!
+      import_staff!
+    end
   end
 end

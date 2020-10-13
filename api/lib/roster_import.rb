@@ -92,7 +92,7 @@ class RosterImport
       return if @errors.any?
       if child_location_account.persisted?
         existing_user = child_location_account.user
-        if user.full_name == existing_user.full_name
+        if child.full_name == existing_user.full_name
           @notes.push("User found with external id #{child_location_account.external_id}")
         else
           @errors.push("Different user found with external id #{child_location_account.external_id} #{existing_user.full_name}")
