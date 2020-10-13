@@ -38,5 +38,7 @@ module Greenlight
     config.generators do |g|
       g.test_framework :rspec, fixture: true
     end
+
+    config.skylight.probes += %w(sinatra redis)
   end
 end

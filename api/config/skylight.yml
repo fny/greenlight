@@ -1,3 +1,4 @@
 ---
 # The authentication token for the application.
 authentication: gi2cSvjRdY6xzTQhwxWAmzGemeO898bLAkid5tOYSHw
+enable_sidekiq: true
