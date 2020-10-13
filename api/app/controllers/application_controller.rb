@@ -22,7 +22,14 @@ class ApplicationController < Sinatra::Base
       Time.zone = 'America/New_York'
       I18n.locale = 'en'
     end
+
+
+    request.env['exception_notifier.exception_data'] = {
+      current_user: current_user
+    }
   end
+
+
 
   # after do
   #   @cookies.write(response.headers)

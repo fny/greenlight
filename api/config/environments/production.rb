@@ -92,6 +92,11 @@ Rails.application.configure do
   #     ip_addr: event.payload[:ip_addr],
   #     params: event.payload[:params].except(:controller, :action)
   #   }
+
+  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+
   Pony.options = {
     via: :smtp,
     via_options: {
