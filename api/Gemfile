@@ -80,12 +80,11 @@ gem 'seed-fu', '~> 2.3'
 gem 'self_control', :path => "vendor/gems/self_control"
 # Twilio Sendgrid Email API
 gem 'sendgrid-ruby'
-
 # Automatically strips all attributes of leading and trailing
 gem 'strip_attributes'
-
 # Performance monitoring
 gem 'skylight'
+gem 'table_print', require: false
 # Email validations
 gem 'valid_email2'
 

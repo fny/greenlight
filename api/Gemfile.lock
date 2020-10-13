@@ -320,6 +320,7 @@ GEM
       sprockets (>= 3.0.0)
     strip_attributes (1.11.0)
       activemodel (>= 3.0, < 7.0)
+    table_print (1.5.7)
     thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -391,6 +392,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   strip_attributes
+  table_print
   valid_email2
   xorcist
 

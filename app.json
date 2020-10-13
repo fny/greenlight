@@ -1,8 +1,5 @@
 {
   "name": "Greenlight",
-  "scripts": {
-    "postdeploy": "bundle exec rake db:seed"
-  },
   "env": {
     "SECRET_TOKEN": {
       "description": "A secret key for verifying the integrity of signed cookies.",
@@ -11,6 +8,34 @@
     "WEB_CONCURRENCY": {
       "description": "The number of processes to run.",
       "value": "5"
+    },
+    "PLIVO_AUTH_ID": {
+      "value": "BLANK",
+      "description": "This value needs to be set manually."
+    },
+    "PLIVO_AUTH_TOKEN": {
+      "value": "BLANK",
+      "description": "This value needs to be set manually."
+    },
+    "SKYLIGHT_AUTHENTICATION": {
+      "value": "BLANK",
+      "description": "This value needs to be set manually."
+    },
+    "SHORT_URL": {
+      "value": "https://noop.greenlightready.com",
+      "description": "This value needs to be set manually."
+    },
+    "APP_URL": {
+      "value": "https://noop.greenlightready.com",
+      "description": "This value needs to be set manually."
+    },
+    "ADMIN_URL": {
+      "value": "https://noop.greenlightready.com",
+      "description": "This value needs to be set manually."
+    },
+    "SENDGRID_API_KEY": {
+      "value": "BLANK",
+      "description": "This value needs to be set manually."
     }
   },
   "formation": {
@@ -24,7 +49,10 @@
     }
   },
   "addons": [
-    "heroku-redis:hobby-dev",
+    {
+      "plan": "heroku-redis:hobby-dev",
+      "as": "REDIS_PERSISTENT"
+    },
     "heroku-postgresql:hobby-dev",
     "papertrail"
   ],
@@ -33,19 +61,7 @@
       "url": "https://github.com/heroku/heroku-buildpack-inline"
     },
     {
-      "url": "https://github.com/heroku/heroku-buildpack-nginx"
-    },
-    {
-      "url": "https://github.com/heroku/heroku-buildpack-nginx"
-    },
-    {
       "url": "https://github.com/heroku/heroku-buildpack-ruby"
-    },
-    {
-      "url": "https://github.com/heroku/heroku-buildpack-nodejs"
-    },
-    {
-      "url": "https://github.com/heroku/heroku-buildpack-pgbouncer"
     }
   ],
   "environments": {

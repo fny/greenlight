@@ -5,9 +5,9 @@ if Rails.application.secrets.secret_key_base.nil?
 end
 
 Configurator.new(Greenlight) do
-  env :PLIVO_AUTH_ID, required: false
-  env :PLIVO_AUTH_TOKEN, required: false
-  env :SKYLIGHT_AUTHENTICATION, required: false
+  env :PLIVO_AUTH_ID
+  env :PLIVO_AUTH_TOKEN
+  env :SKYLIGHT_AUTHENTICATION
   env :REDIS_PERSISTENT_URL
   env :SHORT_URL
   env :APP_URL
