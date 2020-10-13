@@ -2,12 +2,13 @@ require 'rails_helper'
 
 RSpec.describe "Session routes", type: :request do
   let(:user) { Fabricate(:user) }
+
   it "signs in with email" do
     post_json('/v1/sessions', body: {
       emailOrMobile: user.email,
       password: user.password,
       rememberMe: false
-    })e
+    })
     expect(response_json).to have_key(:token)
   end
 
