@@ -49,7 +49,6 @@
     }
   },
   "addons": [
-    "runtime-dyno-metadata",
     {
       "plan": "heroku-redis:hobby-dev",
       "as": "REDIS_PERSISTENT"
