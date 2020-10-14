@@ -19,7 +19,7 @@ module RootController
       SUCCESS
     end
 
-    get '/v1/ping' do
+    get '/ping' do
       'pong'
     end
   end
