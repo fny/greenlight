@@ -17,7 +17,6 @@ module UsersController
       raise ForbiddenError unless current_user.authorized_to_view?(user)
 
       # TODO: Mass assignment vulenrability
-      Rails.logger.debug(request_json)
       user.update_attributes(request_json)
 
       if user.save

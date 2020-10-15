@@ -27,7 +27,7 @@ module ApplicationHelpers
       raise ::NotFoundError if current_user.nil?
       current_user
     else
-      User.find_by!(id: id)
+      User.includes(:location_accounts).find_by!(id: id)
     end
   end
 

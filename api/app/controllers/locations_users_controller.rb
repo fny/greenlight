@@ -7,7 +7,7 @@ module LocationsUsersController
         return []
       end
       MobileLocationUserSerializer.new(
-        location.users, include: MobileUserSerializer::ADMIN_INCLUDES
+        location.users.includes(:location_accounts, :last_greenlight_status), include: MobileUserSerializer::ADMIN_INCLUDES
       ).serialized_json
     end
   end
