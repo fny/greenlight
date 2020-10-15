@@ -7,7 +7,7 @@ class ReminderWorker < ApplicationWorker
       </p>
       <p>
         Just reminding you to send out symptom surveys
-        for <%= user.needs_to_submit_survey_for %> through Greenlight.
+        for <%= user.needs_to_sumbit_survey_for %> through Greenlight.
       </p>
       <p style="font-weight:bold">
         <a href="<%= Greenlight::SHORT_URL %>">
@@ -33,9 +33,9 @@ class ReminderWorker < ApplicationWorker
     user = User.find_by!(id: user_id)
     user.reset_magic_sign_in_token!
 
-    if user.needs_to_sumbit_survey_for.empty?
-      return
-    end
+    # if user.needs_to_sumbit_survey_for.empty?
+    #   return
+    # end
     I18n.with_locale(user.locale) do
       if user.daily_reminder_type.email?
         SendGridEmail.new(
