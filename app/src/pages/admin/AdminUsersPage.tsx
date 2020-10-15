@@ -1,5 +1,5 @@
 import { defineMessage } from '@lingui/macro'
-import { AccordionContent, Block, Icon, Link, List, ListGroup, ListIndex, ListItem, Navbar, NavRight, Page, Preloader, Searchbar, Subnavbar } from 'framework7-react'
+import { AccordionContent, Block, Button, Icon, Link, List, ListGroup, ListIndex, ListItem, Navbar, NavRight, Page, Preloader, Searchbar, Subnavbar } from 'framework7-react'
 import React, { getGlobal, Suspense } from 'reactn'
 import { ReactNComponent } from 'reactn/build/components'
 import { currentUser, getUsersForLocation } from 'src/common/api'
@@ -16,6 +16,7 @@ interface Props {
   route: Router.Route
 }
 
+
 class UsersList extends React.Component<Props,any> {
   groupByLetter() {
     const grouped: Dict<User[]> = {}
@@ -26,6 +27,7 @@ class UsersList extends React.Component<Props,any> {
     }
     return grouped
   }
+
   userItem(user: User) {
     return <ListItem
       key={user.id}
@@ -34,8 +36,7 @@ class UsersList extends React.Component<Props,any> {
       title={user.reversedName()}
       after={
         user.greenlightStatus().title()
-      }
-  >
+      } >
     <div slot="media">
       <UserJDenticon user={user} size={29} key={user.id} />
     </div>
@@ -65,9 +66,23 @@ class UsersList extends React.Component<Props,any> {
 
   render() {
     const grouped = this.groupByLetter()
-    return <>
+    return <Page>
+      <Navbar title="Users" backLink="Back" backLinkUrl={paths.dashboardPath}>
+          <Subnavbar inner={false}>
+            <Searchbar
+              searchContainer=".search-list"
+              searchIn=".item-title"
+            ></Searchbar>
+        </Subnavbar>
+
+        <NavRight>
+            <Link onClick={() => window.location.reload()}>
+              <Icon f7="arrow_2_circlepath" />
+            </Link>
+          </NavRight>
+        </Navbar>
       <List className="searchbar-not-found">
-        <ListItem key="none" title="Nothing found" />
+        <ListItem key="blank" title="Nothing found" />
       </List>
       <List className="search-list searchbar-found" contactsList>
         {
@@ -79,13 +94,13 @@ class UsersList extends React.Component<Props,any> {
           ))
         }
       </List>
-    </>
+    </Page>
   }
-
 }
 
 interface State {
   users: User[]
+  isLoaded: boolean
 }
 
 export default class AdminUsersPage extends ReactNComponent<any, State> {
@@ -102,47 +117,26 @@ export default class AdminUsersPage extends ReactNComponent<any, State> {
     this.locationId = locatonId
 
     this.user = this.global.currentUser
-    this.fetchUsers()
     this.state = {
-      users: []
+      users: [],
+      isLoaded: false
     }
   }
 
   async fetchUsers() {
     const users = await getUsersForLocation(this.locationId)
-    this.setState({ users })
+    this.setState({ users, isLoaded: true })
   }
 
-  hasUsers() {
-    return this.state.users.length > 0
-  }
+  componentDidMount() {
+    this.$f7.preloader.show();
 
+    this.fetchUsers().finally(() => {
+      this.$f7.preloader.hide();
+    })
+  }
 
   render() {
-    if (this.hasUsers()) {
-      return <Page>
-       <Navbar title="Users" backLink="Back" backLinkUrl={paths.dashboardPath}>
-          <Subnavbar inner={false}>
-            <Searchbar
-              searchContainer=".search-list"
-              searchIn=".item-title"
-            ></Searchbar>
-        </Subnavbar>
-
-        <NavRight>
-            <Link onClick={() => window.location.reload() }>
-              <Icon f7="arrow_2_circlepath" />
-            </Link>
-          </NavRight>
-        </Navbar>
-        <UsersList users={this.state.users} route={this.$f7route} />
-      </Page>
-    }
-
-    return <Page>
-      <Block>
-        <Preloader />
-      </Block>
-    </Page>
+    return <UsersList users={this.state.users} route={this.$f7route} />
   }
 }
