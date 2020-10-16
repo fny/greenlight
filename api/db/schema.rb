@@ -150,7 +150,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_220500) do
     t.text "mobile_number_unconfirmed"
     t.text "locale", default: "en", null: false
     t.text "zip_code"
-    t.text "time_zone", default: "America/New_York"
+    t.text "time_zone"
     t.date "birth_date"
     t.text "physician_name"
     t.text "physician_phone_number"
