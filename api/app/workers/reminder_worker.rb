@@ -33,7 +33,7 @@ class ReminderWorker < ApplicationWorker
     user = User.find_by!(id: user_id)
     user.reset_magic_sign_in_token!
 
-    # if user.needs_to_sumbit_survey_for.empty?
+    # if user.needs_to_submit_survey_for.empty?
     #   return
     # end
     I18n.with_locale(user.locale) do

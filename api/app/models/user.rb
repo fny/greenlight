@@ -1,3 +1,12 @@
+# TODO: Incorporate these into this model.
+#
+# hasNotSubmittedOwnSurvey
+# hasNotSubmittedOwnSurveyForTomorrow
+# usersNotSubmitted
+# usersNotSubmittedForTomorrow
+# hasLocationThatRequiresSurvey
+# needsToSubmitSomeonesSurvey
+
 class User < ApplicationRecord
   extend Enumerize
   extend Memoist
@@ -161,12 +170,12 @@ class User < ApplicationRecord
     last_greenlight_status.today?
   end
 
-  def needs_to_sumbit_survey_for
+  def needs_to_submit_survey_for
     submits_surveys_for.filter { |u| !u.submitted_for_today? }
   end
 
-  def needs_to_sumbit_survey_for_text
-    needs_to_sumbit_survey_for.map(&:first_name).to_sentence
+  def needs_to_submit_survey_for_text
+    needs_to_submit_survey_for.map(&:first_name).to_sentence
   end
 
   def mobile_number=(value)
