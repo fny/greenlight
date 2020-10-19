@@ -27,21 +27,3 @@ class ScheduledReminderWorker < ApplicationWorker
     end
   end
 end
-
-# Sidekiq::Cron::Job.create(
-#   name: 'Greenlight Reminders',
-#   cron: 'every day at 3:33pm',
-#   class: 'ScheduledReminderWorker',
-#   args: [
-#     'greenlight'
-#   ]
-# )
-
-# Sidekiq::Cron::Job.create(
-#   name: 'WG Pearson Reminders',
-#   cron: 'every day at 7:00am',
-#   class: 'ScheduledReminderWorker',
-#   args: [
-#     'wg-pearson'
-#   ]
-# )
