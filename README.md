@@ -12,7 +12,7 @@
 
 ### Run project
  - cd app && npm start
- - cd api && raills s
+ - cd api && rails s
  - cd api && bundle exec sidekiq
 
 ## Short URLs
