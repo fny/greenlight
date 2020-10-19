@@ -19,7 +19,7 @@ class Location < ApplicationRecord
   end
 
   def users_to_remind
-    users_to_notify.filter { |u| !u.completed.invite_at.blank? && u.submitted_for_today? }
+    users_to_notify.filter { |u| !u.completed_invite_at.blank? && u.submitted_for_today? }
   end
 
   def remind_users
