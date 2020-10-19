@@ -1,12 +1,22 @@
 en:
+  greenlight_team: The Greenlight Team
   emails:
     magic_sign_in:
-      subject: "✨ Greenlight Magic Sign In"
+      subject: ✨ Greenlight Magic Sign In
       title: Use this link to access Greenlight
+      salutation:
       body: |
         You requested a magic link to sign in and here it is!
         Note that this link expires in 1 hour and can only be used once.
       action: Click Here to Sign In
+    reminder:
+      subject: ✨ Daily Greenlight Reminder
+      title: Check In with Greenlight
+      body: |
+        Just reminding you to send out symptom surveys
+        for %{people} through Greenlight for WG Pearson.
+      action: Click Here to Sign In and Submit your Survey
+      closing: Enjoy your day,
   texts:
-    magic_sign_in: "Greenlight Magic Sign In ✨ %{link}"
-
+    magic_sign_in: "Greenlight Magic Sign In: %{link}"
+    reminder: "Greenlight reminding you to send out your symptom surveys for WG Pearson!"

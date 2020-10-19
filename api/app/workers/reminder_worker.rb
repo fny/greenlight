@@ -1,21 +1,20 @@
 class ReminderWorker < ApplicationWorker
   def html_template
     Erubi::Engine.new(<<~HTML
-      <h2>Check In with Greenlight</h2>
+      <h2><%= I18n.t('emails.reminder.title') %></h2>
       <p>
-        Hi <%= user.first_name %>,
+        <%= I18n.t('emails.reminder.salutation', name: user.first_name) %>
       </p>
       <p>
-        Just reminding you to send out symptom surveys
-        for <%= user.needs_to_sumbit_survey_for %> through Greenlight.
+        <%= I18n.t('emails.reminder.body', users: user.needs_to_submit_survey_for) %>
       </p>
       <p style="font-weight:bold">
         <a href="<%= Greenlight::SHORT_URL %>">
-          Click Here to Sign In and Submit your Survey
+          <%= I18n.t('emails.reminder.action') %>
         </a>
       </p>
-      <p>Enjoy your day,<br />
-      The Greenlight Team
+      <p><%= I18n.t('emails.reminder.closing') %><br />
+      <%= I18n.t('greenlight_team') %>
       </p>
       HTML
     ).src
@@ -23,7 +22,7 @@ class ReminderWorker < ApplicationWorker
 
   def sms_template
     Erubi::Engine.new(<<~SMS
-    Greenlight reminding you to send out your symptom surveys!
+    <%= I18n.t('texts.reminder') %>
     <%= Greenlight::SHORT_URL %>
     SMS
     ).src
@@ -40,7 +39,7 @@ class ReminderWorker < ApplicationWorker
       if user.daily_reminder_type.email?
         SendGridEmail.new(
           to: user.name_with_email,
-          subject: "🚦 Greenlight Reminder!",
+          subject: I18n.t('emails.reminders.subject'),
           html: eval(html_template),
           text: eval(sms_template),
         ).run

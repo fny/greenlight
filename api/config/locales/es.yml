@@ -1,4 +1,5 @@
 es:
+  greenlight_team: El Equipo Greenlight
   emails:
     magic_sign_in:
       subject: "✨ Greenlight Iniciar Sesión con Magia"
@@ -7,5 +8,14 @@ es:
         Solicitaste un enlace mágico para iniciar sesión y aquí está.
         Este enlace caduca en 1 hora y solo se puede usar una vez.
       action: Clic Aquí para Ingresar
+    reminder:
+      subject: ✨ Recordatorio Diario para Greenlight
+      title: Enviar Encuesta a Greenlight
+      body: |
+        Recordándole que envíe encuestas de síntomas
+        para %{people} por Greenlight para WG Pearson.
+      action: Haga Clic Aquí para Iniciar Sesión y Enviar su Encuesta
+      closing: Disfruta tu día,
   texts:
-    magic_sign_in: "Greenlight Iniciar Sesión con Magia ✨ %{link}"
+    magic_sign_in: "Greenlight Iniciar Sesión con Magia: %{link}"
+    reminder: "Greenlight le recuerda que envíe sus encuestas de síntomas para WG Pearson!"
