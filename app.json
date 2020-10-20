@@ -25,6 +25,10 @@
       "value": "https://noop.greenlightready.com",
       "description": "This value needs to be set manually."
     },
+    "API_URL": {
+      "value": "https://noop.greenlightready.com",
+      "description": "This value needs to be set manually."
+    },
     "APP_URL": {
       "value": "https://noop.greenlightready.com",
       "description": "This value needs to be set manually."
