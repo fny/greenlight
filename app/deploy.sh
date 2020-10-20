@@ -40,16 +40,25 @@ confirmation() {
   done
 }
 
+assert_branch() {
+  branch=`git rev-parse --abbrev-ref HEAD`
+  if [ "$1" != "$branch" ]; then
+    echo "You need to be on the same branch as the deploy target!"
+    echo "Right now you're on the $branch branch but you're trying to deploy to $1"
+  fi
+}
+
 trap clean_up EXIT
 
-
 if [ "$env" == "production" ]; then
+  assert_branch $env
   confirmation $env
   yarn build
   firebase deploy --only hosting:production
 fi
 
 if [ "$env" == "staging" ]; then
+  assert_branch $env
   confirmation $env
   mv .env.production .env.production.bak
   cp .env.staging .env.production
@@ -58,8 +67,3 @@ if [ "$env" == "staging" ]; then
   rm .env.production
   mv .env.production.bak .env.production
 fi
-
-echo $env
-
-# yarn build
-# firebase deploy
