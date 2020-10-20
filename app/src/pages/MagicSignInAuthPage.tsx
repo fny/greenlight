@@ -55,7 +55,7 @@ export default class MagicSignInAuthPage extends React.Component<Dict<any>, Stat
   render() {
     return (
       <Page className="MagicSignInAuthPage" noToolbar noSwipeback loginScreen>
-        <Navbar title={this.global.i18n._(defineMessage({id: 'MagicSignInAuthPage.title', message: `Magic Sign In`}))} backLink="Back"></Navbar>
+        <Navbar title={this.global.i18n._(defineMessage({id: 'MagicSignInAuthPage.title', message: 'Magic Sign In'}))} backLink="Back"></Navbar>
 
         <Block>
           <Case test={this.state.hasReceivedResponse && !this.state.isSuccess}>

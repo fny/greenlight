@@ -25,10 +25,17 @@ export function isEmpty(obj: any) {
   return !Object.getOwnPropertyNames(obj).length
 }
 
+type Locales = 'en' | 'es'
+
+export function cookieLocale(): Locales {
+  const locale = Cookies.get('_gl_locale') || 'en'
+  console.log('THIS IS THE LOCALE', locale)
+  return locale as Locales
+}
+
 export class MyI18n {
   catalogs = { en, es }
-  locale: 'en' | 'es' = getGlobal().locale || Cookies.get('_gl_locale') || 'en'
-  current: Dict<any> = es.messages
+  locale: 'en' | 'es' = cookieLocale()
 
   messages() {
     return this.catalogs[this.locale].messages as any
@@ -36,28 +43,42 @@ export class MyI18n {
 
   _(message: string | MessageDescriptor) {
     const messageId = (typeof message === 'string') ? message : message.id || 'unknown'
-    let translated = this.messages()[messageId] || ''
-    if (translated === "" || translated === null) {
+    let translated = this.messages()[messageId]
+    if (translated === undefined) {
+      console.error(`Missing translation: ${message}`)
+    }
+
+    if (translated === null) {
+      console.error(`Translation unset: ${message}`)
+    }
+
+    if (translated === '') {
+      console.error(`Translation is empty string: ${message}`)
+    }
+
+    if ([undefined, null, ''].includes(translated)) {
       if (typeof message !== 'string' && message.message) {
         translated = message.message
       } else {
         translated = (this.catalogs['en'] as any)[messageId] || messageId
       }
     }
-    // TODO: SUPER HACK
-    if (Array.isArray(translated) && (typeof message !== 'string') && message.message) {
-      let m = message.message
-      let out = ''
-      for(const t of translated) {
-        if (!Array.isArray(t)) {
-          m = m.replace(t, '')
-        }
-      }
 
-      for(const t of translated) {
-        out += Array.isArray(t) ? m : t
+
+    if (Array.isArray(translated) && (typeof message !== 'string') && message.message) {
+      if (message.values) {
+        let out = ''
+        for(const t of translated) {
+          if (!Array.isArray(t)) {
+            out += t
+          } else {
+            out += message.values[t[0]]
+          }
+        }
+        return out
+      } else {
+        return 'translation_error'
       }
-      return out
     }
 
     return translated
@@ -81,7 +102,9 @@ export class MyI18n {
 export const myI18n = new MyI18n()
 
 export function toggleLocale() {
-  Cookies.set('_gl_locale', getGlobal().locale === 'en' ? 'es' : 'en')
+  const newLocale = cookieLocale() === 'en' ? 'es' : 'en'
+  Cookies.set('_gl_locale', newLocale)
+  setGlobal({ locale: newLocale })
   window.location.reload()
 }
 
@@ -90,49 +113,58 @@ interface Props {
   children?: React.ReactNode
 }
 
+
+// Compiled translations may be strings or arrays of string and arrays
 export class MyTrans extends React.Component<any, any>{
 
   render() {
 
     let compiledTranslation = this.global.i18n.__(this.props.id || this.props.children)
-    // console.log(this.global.i18n.locale, compiledTranslation)
+    console.log(this.global.i18n.locale, compiledTranslation)
+
+    // If the compiled translation matches the id, there's no valid translation
+    // in the messages, so return the component's children as a default.
     if (compiledTranslation === this.props.id) {
+      console.error(`Translation missing for id ${this.props.id}`)
       return this.props.children
     }
 
 
+    // If the compiled translation is a string...
     if (typeof compiledTranslation === 'string') {
+      // ...check if we need to make any nested substitutions "<0>Like this</0>"
       compiledTranslation = compiledTranslation.replace(/\<\/?\d+\>/g, '|').split('|')
+      // If its still a string, it's already been translated.
       if (typeof compiledTranslation === 'string') {
-        // console.log(compiledTranslation)
+        console.log(compiledTranslation)
         return compiledTranslation
       }
     }
 
     const children = React.Children.toArray(this.props.children)
 
+    // Compiled translation is an array we need to convert
     const processedChildren = (compiledTranslation as any[]).map((trans: any, i) => {
       if (typeof trans === 'string' && typeof children[i] === 'string') {
-        // console.log('string,string', trans, children[i])
+        console.log('string,string', trans, children[i])
         return trans
       }
 
       if (typeof trans === 'string' && typeof children[i] === 'object') {
-        // console.log('string,obj', trans, children[i])
-
+        console.log('string,obj', trans, children[i])
         return React.cloneElement(children[i] as ReactElement, {
           children: trans
         })
       } else {
         if (typeof children[i] === 'string') {
-          // console.log('string,?', trans, children[i])
+          console.log('string,?', trans, children[i])
           return children[i]
         }
         return children[i]
       }
     })
 
-    // console.log('result', processedChildren)
+    console.log('result', processedChildren)
 
     return React.createElement(React.Fragment, { children: processedChildren })
 

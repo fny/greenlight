@@ -109,14 +109,14 @@ export function joinWords(words: string[], conjunction?: string): string {
   let lastWordConnector
 
   if (conjunction === 'or') {
-    twoWordsConnector = getGlobal().i18n._(defineMessage({id: 'util.two_words_or', message: ` or `}))
-    lastWordConnector = getGlobal().i18n._(defineMessage({id: 'util.last_word_or', message: `, or `}))
+    twoWordsConnector = getGlobal().i18n._(defineMessage({id: 'util.two_words_or', message: ' or '}))
+    lastWordConnector = getGlobal().i18n._(defineMessage({id: 'util.last_word_or', message: ', or '}))
   } else {
-    twoWordsConnector = getGlobal().i18n._(defineMessage({id: 'util.two_words_and', message: ` and `}))
-    lastWordConnector = getGlobal().i18n._(defineMessage({id: 'util.last_word_and', message: `, and `}))
+    twoWordsConnector = getGlobal().i18n._(defineMessage({id: 'util.two_words_and', message: ' and '}))
+    lastWordConnector = getGlobal().i18n._(defineMessage({id: 'util.last_word_and', message: ', and '}))
   }
 
-  const wordsConnector = getGlobal().i18n._(defineMessage({id: 'util.words_connector', message: `, `}))
+  const wordsConnector = getGlobal().i18n._(defineMessage({id: 'util.words_connector', message: ', '}))
   if (words.length === 0) {
     return ''
   } else if (words.length === 1) {

@@ -11,7 +11,7 @@ import { User } from 'src/common/models'
 import { NoCurrentUserError } from 'src/common/errors'
 import { ReactNComponent } from 'reactn/build/components'
 import { DateTime } from 'luxon'
-import { Trans, defineMessage } from '@lingui/macro'
+import { Trans, defineMessage, t } from '@lingui/macro'
 import { MyTrans } from 'src/i18n'
 import { assertNotNull } from 'src/common/util'
 
@@ -322,7 +322,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     return (
       <Page>
         <Navbar
-          title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.survey', message: `Symptom Survey: ${submittingFor.fullName()}` }))}
+          title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.survey', message: t`Symptom Survey: ${submittingFor.fullName()}` }))}
           backLink={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.back', message: "Back" }))}>
         </Navbar>
 
