@@ -124,9 +124,9 @@ export function transformForAPI(data: any): any {
 }
 
 export function joinWords(words: string[], twoWordsConnector?: string, lastWordConnector?: string, wordsConnector?: string): string {
-  const twoWordsConnector_ = twoWordsConnector || getGlobal().i18n._(defineMessage({id: 'util.two_words_connector', message: ` and `}))
-  const lastWordConnector_ = lastWordConnector || getGlobal().i18n._(defineMessage({id: 'util.last_word_connector', message: `, and `}))
-  const wordsConnector_ = wordsConnector || getGlobal().i18n._(defineMessage({id: 'util.words_connector', message: `, `}))
+  const twoWordsConnector_ = twoWordsConnector || getGlobal().i18n._(defineMessage({id: 'util.two_words_connector', message: ' and '}))
+  const lastWordConnector_ = lastWordConnector || getGlobal().i18n._(defineMessage({id: 'util.last_word_connector', message: ', and '}))
+  const wordsConnector_ = wordsConnector || getGlobal().i18n._(defineMessage({id: 'util.words_connector', message: ', '}))
 
   if (words.length === 0) {
     return ''

@@ -2,7 +2,8 @@ import React from 'reactn'
 import {
   Page,
   Block,
-  Button
+  Button,
+  BlockFooter
 } from 'framework7-react'
 
 import { Trans } from '@lingui/macro'
@@ -40,6 +41,9 @@ export default class SplashPage extends React.Component<any, any> {
             </MyTrans>
           </Button>
         </Block>
+        <p className="copyright">
+          &copy;{(new Date()).getFullYear()} Greenlight Ready LLC
+        </p>
       </Page>
     )
   }

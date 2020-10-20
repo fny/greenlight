@@ -113,7 +113,7 @@ export default class extends ReactNComponent<any, State> {
     return (
       <Page>
         <Navbar
-          title={this.global.i18n._(defineMessage({id: 'WelcomeChildPage.review_child_title', message: `Review ${child.firstName}'s Info`}))}
+          title={this.global.i18n._(defineMessage({id: 'WelcomeChildPage.review_child_title', message: t`Review ${child.firstName}'s Info`}))}
           backLink>
         </Navbar>
 
@@ -149,7 +149,7 @@ export default class extends ReactNComponent<any, State> {
         <List noHairlines>
           <ListItem
             footer={this.global.i18n._(
-              defineMessage({ id: 'WelcomeChildPage.review_schools', message: `Review the schools ${child.firstName} will be attending.` })
+              defineMessage({ id: 'WelcomeChildPage.review_schools', message: t`Review the schools ${child.firstName} will be attending.` })
             )}
           >
             <div slot="title">
@@ -182,7 +182,7 @@ export default class extends ReactNComponent<any, State> {
         <List noHairlines>
           <ListItem
             footer={this.global.i18n._(
-              defineMessage({ id: 'WelcomeChildPage.doctor_footer', message: `Who is ${child.firstName}'s primary care doctor?` })
+              defineMessage({ id: 'WelcomeChildPage.doctor_footer', message: t`Who is ${child.firstName}'s primary care doctor?` })
             )}>
             <div slot="title">
               <b>
@@ -202,7 +202,7 @@ export default class extends ReactNComponent<any, State> {
           />
           <ListInput
             label={this.global.i18n._(defineMessage({id: 'WelcomeChildPage.doctor_name_label', message: "Primary Care Doctor"}))}
-            placeholder={this.global.i18n._(defineMessage({id: 'WelcomeChildPage.doctor_name_placeholder', message: `${child.firstName}'s doctor's name`}))}
+            placeholder={this.global.i18n._(defineMessage({id: 'WelcomeChildPage.doctor_name_placeholder', message: t`${child.firstName}'s doctor's name`}))}
             type="text"
             onInput={e => {
               this.setState({ physicianName: e.target.value })
@@ -210,7 +210,7 @@ export default class extends ReactNComponent<any, State> {
           />
           <ListInput
             label={this.global.i18n._(defineMessage({id: 'WelcomeChildPage.doctor_phone_label', message: "Primary Care Doctor Phone"}))}
-            placeholder={this.global.i18n._(defineMessage({id: 'WelcomeChildPage.doctor_phone_placeholder', message: `${child.firstName}'s doctor's phone`}))}
+            placeholder={this.global.i18n._(defineMessage({id: 'WelcomeChildPage.doctor_phone_placeholder', message: t`${child.firstName}'s doctor's phone`}))}
             type="tel"
             onInput={e => {
               this.setState({ physicianPhoneNumber: e.target.value })

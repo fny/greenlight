@@ -15,7 +15,7 @@ class Authentication < ApplicationCommand
     fail!(:email_or_mobile, :phone_not_found) if user.nil? && e_or_m.phone?
     fail!(:email_or_mobile, :email_not_found) if user.nil? && e_or_m.email?
 
-    if password == GreenlightX::FIXME_ADMIN_PASSWORD || user.authenticate(password.strip)
+    if password == user.authenticate(password.strip)
       user.save_sign_in!(ip_address)
       user
     else
