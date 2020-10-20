@@ -12,7 +12,7 @@ done
 
 [ -z $env ] && echo "You need to supply an environment" && exit
 
-clean_up () {
+clean_up() {
     ARG=$?
     echo "> clean_up"
     if test -f .env.production.bak; then
@@ -23,20 +23,38 @@ clean_up () {
     exit $ARG
 }
 
+confirmation() {
+  while true; do
+    read -r -p "This will deploy to $1. Are you sure? [y/n] " input
+
+    case $input in
+      [yY][eE][sS]|[yY])
+      echo "Deploying to $1"
+      break;;
+      [nN][oO]|[nN])
+      echo "Quitting..."
+      exit 0;;
+      *)
+      echo "Invalid input... Let's try that agiain!";;
+    esac
+  done
+}
+
 trap clean_up EXIT
 
 
 if [ "$env" == "production" ]; then
+  confirmation $env
   yarn build
-  firebase target:apply hosting production glit-app-production
+  firebase deploy --only hosting:production
 fi
 
 if [ "$env" == "staging" ]; then
+  confirmation $env
   mv .env.production .env.production.bak
-  mv .env.staging .env.production
+  cp .env.staging .env.production
   yarn build
-  firebase target:apply hosting staging glit-app-staging
-  mv .env.production .env.staging
+  firebase deploy --only hosting:staging
   rm .env.production
   mv .env.production.bak .env.production
 fi
