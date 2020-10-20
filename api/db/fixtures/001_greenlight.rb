@@ -31,6 +31,14 @@ parents = [
     mobile_number: '+13303332729',
     children: [],
     is_teacher: true
+  },
+  {
+    first_name: 'Daniel',
+    last_name: 'Song',
+    email: 'supearle0518@gmail.com',
+    mobile_number: '+19167985029',
+    children: [],
+    is_teacher: true
   },  {
     first_name: 'Chiquita',
     last_name: 'Banana',
@@ -64,6 +72,7 @@ parents = [
   }, {
     first_name: 'Kevin',
     last_name: "O'Keefe",
+    email: 'kevin@greenlightready.com',
     mobile_number: '+17082121437',
     children: [],
     is_teacher: true

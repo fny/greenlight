@@ -10,6 +10,11 @@
  - glit-api-staging
  - glit-api-production
 
+### Run project
+ - cd app && npm start
+ - cd api && rails s
+ - cd api && bundle exec sidekiq
+
 ## Short URLs
 
  - glit.me/m/* redirects to app.greenlightready.com/go/*
