@@ -2,6 +2,7 @@
   "name": "@greenlight/mobile",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "@lingui/core": "^3.0.0-16",
     "@lingui/react": "^3.0.0-16",
@@ -31,7 +32,11 @@
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "i18n-add-locale": "lingui add-locale",
     "i18n-extract": "lingui extract --clean --overwrite",
-    "i18n-compile": "lingui compile"
+    "i18n-compile": "lingui compile",
+    "build-cordova": "rm -rf ./cordova/www/* && npm run build && mv ./build/* ./cordova/www/ && rm -rf ./build",
+    "run-cordova-ios": "npm run build-cordova && cd cordova && cordova run ios",
+    "run-cordova-android": "npm run build-cordova && cd cordova && cordova run android",
+    "run-cordova-browser": "npm run build-cordova && cd cordova && cordova run browser"
   },
   "browserslist": {
     "production": [
@@ -69,6 +74,7 @@
     "babel-plugin-macros": "^2.8.0",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "cross-env": "^7.0.2",
     "eslint": "^6.0.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",

@@ -19,28 +19,38 @@ import { getCurrentUser, session, destroySession } from './common/api'
 Framework7.use(Framework7React)
 
 function render() {
-  ReactDOM.render(<App />,document.getElementById('root'))
+  ReactDOM.render(<App />, document.getElementById('root'))
 }
 
 // TODO: This is a mess...
-if (session.isValid()) {
-  console.debug('Valid session.')
-  getCurrentUser().then(user => {
-    setGlobal({ currentUser: user, locale: user.locale })
+function startApp() {
+  if (session.isValid()) {
+    console.debug('Valid session.')
+    getCurrentUser()
+      .then((user) => {
+        setGlobal({ currentUser: user, locale: user.locale })
+        render()
+      })
+      .catch((err) => {
+        if (err.response) {
+          if (err.code === 404) {
+            // User has been deleted clear the session
+            destroySession()
+          }
+          console.error(err)
+          console.error(err.response)
+        }
+        render()
+      })
+  } else {
     render()
-  }).catch(err => {
-    if (err.response) {
-      if (err.code === 404) {
-        // User has been deleted clear the session
-        destroySession()
-      }
-      console.error(err)
-      console.error(err.response)
-    }
-    render()
-  })
+  }
+}
+
+if ((window as any).cordova) {
+  document.addEventListener('deviceready', startApp, false)
 } else {
-  render()
+  startApp()
 }
 
 // If you want your app to work offline and load faster, you can change
