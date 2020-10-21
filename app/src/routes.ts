@@ -19,7 +19,7 @@ import { getGlobal } from 'reactn'
 import { User } from 'src/common/models'
 import MagicSignInAuthPage from './pages/MagicSignInAuthPage'
 import { buildDynamicPath, resolvePath } from './util'
-import GiphysPage from './pages/GiphysPage'
+import GiphySchedulePage from './pages/GiphySchedulePage'
 import UserGreenlightPassPage from './pages/UserGreenlightPassPage'
 import DebugPage from './pages/DebugPage'
 import { isSignedIn } from './common/api'
@@ -195,8 +195,8 @@ const routes = [
     component: AdminUsersPage
   },
   {
-    path: '/giphys-on-deck',
-    component: GiphysPage
+    path: '/giphy-schedule',
+    component: GiphySchedulePage
   },
   {
     path: '/debug',

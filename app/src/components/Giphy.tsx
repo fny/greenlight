@@ -1,16 +1,7 @@
 import React from 'react'
 import { Dict } from 'src/common/types'
 import { DateTime } from 'luxon'
-
-export const giphySchedule: Dict<string> = {
-  '10/11/2020': '22YOkQog92fpS',
-  '10/12/2020': 'tSaApE2vVQKE8',
-  '10/13/2020': 'i34oXbluCO0G4',
-  '10/14/2020': '10A0XQ5AOSrJao',
-  '10/15/2020': 'BZiSRzmpLYKiKo0yyf',
-  '10/16/2020': 'Xw6yFn7frR3Y4',
-  '10/17/2020': 'cdNSp4L5vCU7aQrYnV'
-}
+import giphySchedule from 'src/data/giphySchedule'
 
 export function giphyEmbedURL(id: string) {
   return `https://giphy.com/embed/${id}`
