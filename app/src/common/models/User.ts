@@ -127,6 +127,7 @@ export class User extends Model {
     'feyth.scott@studentudurham.org',
     'madelyn.srochi@studentudurham.org',
     'bryanna.ray@studentudurham.org',
+    'volunteer@dpsvmc.org',
     'emmanuel.lee@studentudurham.org'].includes(this.email || '')
   }
 
