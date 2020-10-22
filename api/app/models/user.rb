@@ -154,6 +154,7 @@ class User < ApplicationRecord
       madelyn.srochi@studentudurham.org
       bryanna.ray@studentudurham.org
       emmanuel.lee@studentudurham.org
+      volunteer@dpsvmc.org
     ].include?(self.email)
   end
 
