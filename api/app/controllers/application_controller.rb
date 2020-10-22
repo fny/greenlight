@@ -49,6 +49,7 @@ class ApplicationController < Sinatra::Base
   end
 
   error JSONAPI::Error do
+    e = env['sinatra.error']
     response.status = e.status
     e.to_json
   end
