@@ -29,12 +29,13 @@ export default function () {
     theme: 'auto', // Automatic theme detection
     // App routes
     routes,
-    view: {
-      pushState: true,
-      pushStateSeparator: "#"
-    },
+    // view: {
+    //   pushState: true,
+    //   pushStateSeparator: '#',
+    // },
   }
-  const [locale, ] = useGlobal('locale')
+  const [locale] = useGlobal('locale')
+
   return (
     <ErrorBoundary>
       <I18nProvider i18n={i18n}>

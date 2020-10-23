@@ -7,8 +7,12 @@ export default () => (
   <Page>
     <Navbar title="Not found" backLink="Back" />
     <Block strong>
-      <p><MyTrans id="NotFoundPage.sorry">Sorry</MyTrans></p>
-      <p><MyTrans id="NotFoundPage.not_found">Requested content not found.</MyTrans></p>
+      <p>
+        <MyTrans id="NotFoundPage.sorry">Sorry</MyTrans>
+      </p>
+      <p>
+        <MyTrans id="NotFoundPage.not_found">Requested content not found.</MyTrans>
+      </p>
     </Block>
   </Page>
 )
