@@ -1,6 +1,6 @@
 import React from 'reactn'
 import { Page, Navbar, Block, Chip } from 'framework7-react'
-import { stores } from 'src/common/api'
+import { store } from 'src/common/api'
 import { User } from 'src/common/models'
 
 import './UserGreenlightPassPage.css'
@@ -17,7 +17,7 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
     const userId = this.$f7route.params['userId']
 
     if (!userId) throw new Error("Missing user id")
-    const user = stores.recordStore.findEntity<User>(`user-${userId}`)
+    const user = store.findEntity<User>(`user-${userId}`)
     if (!user) throw new Error(`Could not finder user for id ${userId}`)
     return user
   }

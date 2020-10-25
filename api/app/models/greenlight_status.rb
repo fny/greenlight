@@ -85,19 +85,19 @@ end
 # Table name: greenlight_statuses
 #
 #  id              :bigint           not null, primary key
-#  deleted_at      :datetime
-#  expiration_date :date             not null
-#  follow_up_date  :date             not null
-#  is_override     :boolean          default(FALSE), not null
-#  logical_trace   :text
-#  reason          :text
+#  user_id         :bigint           not null
 #  status          :text             not null
 #  submission_date :date             not null
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
+#  expiration_date :date             not null
+#  follow_up_date  :date             not null
+#  reason          :text
+#  logical_trace   :text
+#  is_override     :boolean          default(FALSE), not null
 #  created_by_id   :bigint
 #  deleted_by_id   :bigint
-#  user_id         :bigint           not null
+#  deleted_at      :datetime
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
 #
 # Indexes
 #

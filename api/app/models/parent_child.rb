@@ -9,10 +9,10 @@ end
 # Table name: parents_children
 #
 #  id         :bigint           not null, primary key
+#  parent_id  :bigint           not null
+#  child_id   :bigint           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  child_id   :bigint           not null
-#  parent_id  :bigint           not null
 #
 # Indexes
 #

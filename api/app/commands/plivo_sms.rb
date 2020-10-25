@@ -1,31 +1,38 @@
 class PlivoSMS < ApplicationCommand
-  def self.deliveries
-    @@deliveries ||= []
-  end
-
-  def logger
-    @@logger ||= Logger.new("#{Rails.root}/log/sms.log")
-  end
-
-  argument :from, default: GreenlightX::PHONE_NUMBER
+  argument :from, default: Greenlight::PHONE_NUMBER
   argument :to
   argument :message
 
   validates :from, presence: true, phone: true
   validates :to, presence: true, phone: true
 
+  def self.deliveries
+    @deliveries ||= []
+  end
+
+  def self.test_deliver(from:, to:, message:)
+    logger.info("#{from} -> #{to}: #{message}")
+    self.deliveries << { from: from, to: to, message: message }
+  end
+
+  def self.client
+    return @client if defined?(@client)
+    @client = Plivo::RestClient.new
+  end
+
+  def logger
+    @logger ||= Logger.new(Rails.root.join('log', 'sms.log'))
+  end
+
   def work
-    client = Plivo::RestClient.new
     if Rails.env.production?
-      response = client.messages.create(
+      PlivoSMS.client.messages.create(
         Phonelib.parse(from, 'US').full_e164,
         [Phonelib.parse(to, 'US').full_e164],
         message
       )
-      response
     else
-      PlivoSMS.deliveries << { from: from, to: to, message: message }
-      logger.info("#{from} -> #{to}: #{message}")
+      PlivoSMS.test_deliver(from: from, to: to, message: message)
     end
   end
 end

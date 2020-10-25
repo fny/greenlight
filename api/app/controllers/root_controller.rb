@@ -9,18 +9,17 @@ module RootController
       raise "This error should show up in notifications and the logs."
     end
 
-    get '/temp_remind' do
-      Location.find_by(permalink: 'greenlight').remind_users_now
-      SUCCESS
-    end
-
-    get '/temp_invite' do
-      Location.find_by(permalink: 'greenlight').invite_users_now
-      SUCCESS
-    end
-
     get '/ping' do
       'pong'
+    end
+
+    get '/version' do
+      {
+        'release_created_at': ENV['HEROKU_RELEASE_CREATED_AT'],
+        'release_version': ENV['HEROKU_RELEASE_VERSION'],
+        'slug_commit': ENV['HEROKU_SLUG_COMMIT'],
+        'slug_description': ENV['HEROKU_SLUG_DESCRIPTION']
+      }.to_json
     end
   end
 end

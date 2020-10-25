@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+import { currentUser } from 'src/initializers/providers'
 import * as api from './api'
 import { ModelRegistry } from './models'
 import { CUTOFF_TIME } from './models/GreenlightStatus'
@@ -12,7 +13,7 @@ const GL: Dict<any> = {}
 
 GL.ModelRegistry = ModelRegistry
 GL.api = api
-GL.currentUser = api.currentUser
+GL.currentUser = currentUser
 
 GL.CUTOFF_TIME = CUTOFF_TIME
 GL.DateTime = DateTime

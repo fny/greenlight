@@ -6,7 +6,7 @@ import DatedYesNoButton from '../components/DatedYesNoButton'
 import { paths } from 'src/routes'
 import { MEDICAL_EVENTS } from 'src/common/models/MedicalEvent'
 import { CUTOFF_TIME } from 'src/common/models/GreenlightStatus'
-import { createSymptomSurvey, getCurrentUser, getUser, reloadCurrentUser } from 'src/common/api'
+import { createSymptomSurvey, getCurrentUser, getUser } from 'src/common/api'
 import { User } from 'src/common/models'
 import { NoCurrentUserError } from 'src/common/errors'
 import { ReactNComponent } from 'reactn/build/components'
@@ -14,6 +14,7 @@ import { DateTime } from 'luxon'
 import { Trans, defineMessage, t } from '@lingui/macro'
 import { MyTrans } from 'src/i18n'
 import { assertNotNull } from 'src/common/util'
+import { reloadCurrentUser } from 'src/initializers/providers'
 
 
 interface SymptomButtonProps {

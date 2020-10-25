@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+// TODO: Translate
 import React from "reactn"
 
 import {
@@ -22,7 +23,7 @@ import { ReactNComponent } from "reactn/build/components"
 import { NoCurrentUserError } from "src/common/errors"
 
 import { defineMessage, plural, Trans } from '@lingui/macro'
-import { signOut, updateUser } from "src/common/api"
+import { updateUser } from "src/common/api"
 import { myPlural, MyTrans, toggleLocale } from "src/i18n"
 import { Support } from "framework7"
 import { DateTime } from "luxon"
@@ -48,7 +49,7 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
 
     return <Page>
         <Navbar
-          title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.survey', message: "Symptom Survey" }))}
+          title="Symptom Surveys"
           backLink={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.back', message: "Back" }))}>
         </Navbar>
 

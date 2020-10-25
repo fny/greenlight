@@ -49,46 +49,22 @@ class RecordStore {
     return entities
   }
 
-  load(records: Record<any> | Record<any>[]) {
+  writeRecords(records: Record<any> | Record<any>[]) {
     const recordsParsed = !Array.isArray(records) ? [records] : records
     recordsParsed.forEach(r => { this.data[uuid(r)] = { record: r } })
   }
 
-  loadRecordResponse(res: RecordResponse<any>) {
-    if (res.included) this.load(res.included)
-    if (res.data) this.load(res.data)
+  writeRecordResponse(res: RecordResponse<any>) {
+    if (res.included) this.writeRecords(res.included)
+    if (res.data) this.writeRecords(res.data)
   }
 
-  reset() {
-    this.data = {}
-  }
-}
-
-class ResponseStore {
-  data: Dict<AxiosResponse<any>>
-
-  constructor() {
-    this.data = {}
-  }
-
-  has(key: string) {
-    return key in this.data
-  }
-
-  get(key: string) {
-    return this.data[key]
-  }
-  set(key: string, value: AxiosResponse<any>) {
-    this.data[key] = value
-  }
   reset() {
     this.data = {}
   }
 }
 
 export const recordStore = new RecordStore()
-export const responseStore = new ResponseStore()
-
 
 export function transformRelationship<T extends Model>(entity: T, relationshipName: string, relationship: RecordRelationship) {
   // Skip if we've already loaded the relationship

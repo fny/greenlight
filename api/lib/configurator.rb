@@ -12,7 +12,7 @@ class Configurator
     @target.const_set(name, @constants[name])
   end
 
-  def env(name, value = nil, required: true, default: nil)
+  def get(name, value = nil, required: true, default: nil)
     value = ENV[name.to_s] || default
     if value.blank? && required
       raise MissingEnvironmentVariable.new(name)

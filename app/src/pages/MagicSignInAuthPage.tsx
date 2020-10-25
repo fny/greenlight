@@ -12,7 +12,7 @@ import { defineMessage } from '@lingui/macro'
 import { MyTrans } from 'src/i18n'
 
 import { Dict } from 'src/common/types'
-import { magicSignIn } from 'src/common/api'
+import { getCurrentUser, magicSignIn } from 'src/common/api'
 import { dynamicPaths, paths } from 'src/routes'
 
 interface State {
@@ -35,8 +35,9 @@ export default class MagicSignInAuthPage extends React.Component<Dict<any>, Stat
     this.$f7.dialog.preloader('Signing in...')
 
     try {
-      const user = await magicSignIn(token, rememberMe)
-      this.setState({hasReceivedResponse: true, isSuccess: true})
+      await magicSignIn(token, rememberMe)
+      const user = await getCurrentUser()
+      this.setState({ hasReceivedResponse: true, isSuccess: true })
       this.$f7.dialog.close()
       this.setGlobal({ currentUser: user })
       this.$f7router.navigate(dynamicPaths.currentUserHomePath())

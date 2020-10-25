@@ -73,13 +73,8 @@ export interface JSONAPIError {
   detail: string
 }
 
-
 export interface ErrorReponse {
   errors?: JSONAPIError[]
-}
-
-export interface TokenResponse {
-  token: string
 }
 
 export type Entity<T extends Model> = new() => T

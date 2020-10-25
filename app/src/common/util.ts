@@ -183,17 +183,6 @@ export function ping(url: string, timeout: number): Promise<boolean> {
   })
 }
 
-/**
- * HACK: This is a hack to force the TypeScript compiler to recognize that a single
- * object is expected from a union type.
- *
- * @param obj
- */
-export function assertNotArray<T>(obj: T | T[]): asserts obj is T {
-  if (Array.isArray(obj)) {
-    throw new Error(`Expected single object but received array ${obj}`)
-  }
-}
 
 export function sortBy<T>(ary: T[], fn: (el: T) => any): T[] {
   return ary.map(el => [fn(el), el] as [any, T]).sort((e1, e2) => {
@@ -203,12 +192,34 @@ export function sortBy<T>(ary: T[], fn: (el: T) => any): T[] {
   }).map(x => x[1])
 }
 
-/**
- * HACK: This is a hack to force the TypeScript compiler to recognize that a single
- * object is expected from a union type.
- *
- * @param obj
- */
+
+export function zipTwo<X, Y>(xs: X[], ys: Y[]): [X , Y][] {
+  const zipped: [X, Y][] = []
+  for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
+    zipped.push([xs[i], ys[i]])
+  }
+  return zipped
+}
+
+
+//
+// Assertions
+//
+
+export function assertArray<T>(obj: T | T[]): asserts obj is T[] {
+  if (!Array.isArray(obj)) {
+    throw new Error(`Expected array but received single object ${obj}`)
+  }
+}
+
+
+export function assertNotArray<T>(obj: T | T[]): asserts obj is T {
+  if (Array.isArray(obj)) {
+    throw new Error(`Expected single object but received array ${obj}`)
+  }
+}
+
+
 export function assertNotUndefined<T>(obj: T | undefined): asserts obj is T {
   if (obj === undefined) {
     throw new Error(`Expected value but got undefined ${obj}`)
@@ -219,12 +230,4 @@ export function assertNotNull<T>(obj: T | null): asserts obj is T {
   if (obj === null) {
     throw new Error(`Expected value but got undefined ${obj}`)
   }
-}
-
-export function zipTwo<X, Y>(xs: X[], ys: Y[]): [X , Y][] {
-  const zipped: [X, Y][] = []
-  for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
-    zipped.push([xs[i], ys[i]])
-  }
-  return zipped
 }

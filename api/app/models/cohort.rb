@@ -8,15 +8,15 @@ end
 # Table name: cohorts
 #
 #  id            :bigint           not null, primary key
-#  category      :text             not null
-#  deleted_at    :datetime
 #  name          :text             not null
+#  category      :text             not null
+#  location_id   :bigint           not null
+#  created_by_id :bigint
+#  updated_by_id :bigint
+#  deleted_by_id :bigint
+#  deleted_at    :datetime
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  created_by_id :bigint
-#  deleted_by_id :bigint
-#  location_id   :bigint           not null
-#  updated_by_id :bigint
 #
 # Indexes
 #

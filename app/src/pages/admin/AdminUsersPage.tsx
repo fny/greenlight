@@ -1,13 +1,13 @@
 import { defineMessage } from '@lingui/macro'
-import { AccordionContent, Block, Button, Icon, Link, List, ListGroup, ListIndex, ListItem, Navbar, NavRight, Page, Preloader, Searchbar, Subnavbar } from 'framework7-react'
-import React, { getGlobal, Suspense } from 'reactn'
+import { AccordionContent, Icon, Link, List, ListGroup, ListItem, Navbar, NavRight, Page, Searchbar, Subnavbar } from 'framework7-react'
+import React, { getGlobal } from 'reactn'
 import { ReactNComponent } from 'reactn/build/components'
-import { currentUser, getUsersForLocation } from 'src/common/api'
+import { getUsersForLocation } from 'src/common/api'
 import { User } from 'src/common/models'
 import { Dict } from 'src/common/types'
 import UserJDenticon from 'src/components/UserJDenticon'
 import { dynamicPaths, paths } from 'src/routes'
-import { assertNotNull, assertNotUndefined, sortBy } from 'src/common/util'
+import { assertNotUndefined, sortBy } from 'src/common/util'
 import { NoCurrentUserError } from 'src/common/errors'
 import { Router } from 'framework7/modules/router/router'
 
@@ -129,10 +129,10 @@ export default class AdminUsersPage extends ReactNComponent<any, State> {
   }
 
   componentDidMount() {
-    this.$f7.preloader.show();
+    this.$f7.preloader.show()
 
     this.fetchUsers().finally(() => {
-      this.$f7.preloader.hide();
+      this.$f7.preloader.hide()
     })
   }
 
