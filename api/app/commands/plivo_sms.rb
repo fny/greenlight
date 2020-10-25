@@ -7,7 +7,7 @@ class PlivoSMS < ApplicationCommand
     @@logger ||= Logger.new("#{Rails.root}/log/sms.log")
   end
 
-  argument :from, default: GreenlightX::PHONE_NUMBER
+  argument :from, default: Greenlight::PHONE_NUMBER
   argument :to
   argument :message
 

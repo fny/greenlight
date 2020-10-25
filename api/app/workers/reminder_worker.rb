@@ -48,7 +48,7 @@ class ReminderWorker < ApplicationWorker
         PlivoSMS.new(
           # TODO: Constantize
           to: user.mobile_number,
-          from: GreenlightX::PHONE_NUMBER,
+          from: Greenlight::PHONE_NUMBER,
           message: eval(sms_template)
         ).run
       end

@@ -30,7 +30,7 @@ class MagicSignInWorker < ApplicationWorker
         PlivoSMS.new(
           to: user.mobile_number,
           # TODO: Constantize
-          from: GreenlightX::PHONE_NUMBER,
+          from: Greenlight::PHONE_NUMBER,
           message: I18n.t('texts.magic_sign_in', link: user.magic_sign_in_url(remember_me))
         ).run
       else

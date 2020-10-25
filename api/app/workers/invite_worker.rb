@@ -72,7 +72,7 @@ class InviteWorker < ApplicationWorker
       if user.mobile_number?
         PlivoSMS.new(
           to: user.mobile_number,
-          from: GreenlightX::PHONE_NUMBER,
+          from: Greenlight::PHONE_NUMBER,
           message: eval(sms_template)
         ).run
       end
