@@ -25,6 +25,7 @@ gem 'sidekiq-cron', '1.2'
 gem 'rack-cors'
 gem 'sinatra'
 
+
 #
 # Performance
 #
@@ -86,6 +87,7 @@ gem 'sendgrid-ruby'
 gem 'strip_attributes'
 # Performance monitoring
 gem 'skylight'
+# TablePrint shows objects in nicely formatted columns
 gem 'table_print', require: false
 # Email validations
 gem 'valid_email2'
@@ -99,6 +101,8 @@ group :development, :test do
   gem 'dotenv-rails'
   # Object generation framework
   gem 'fabrication'
+  # 2x Testing Speed
+  gem 'parallel_tests'
   # `rails c` alternative and runtime developer console
   gem 'pry-rails'
   # Launch a pry session when a test fails
@@ -108,10 +112,11 @@ group :development, :test do
   # Behavior driven development in Ruby
   gem 'rspec'
   gem 'rspec-rails'
-  # 2x Testing Speed
-  gem 'parallel_tests'
   # Swagger-based DSL for RSpec
   gem 'rswag-specs'
+  # Ruby static code analyzer
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
   # Test one-liners for common Rails functionality
   gem 'shoulda-matchers'
 end
@@ -123,9 +128,6 @@ group :development do
   gem 'foreman', require: false
   # Listens for file modifications, used by Spring
   gem 'listen', '~> 3.2'
-  # Preview email in the default browser
-  # A Ruby language server and code formatter
-  gem 'rubocop', require: false
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
