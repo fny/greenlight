@@ -68,6 +68,8 @@ gem 'jwt'
 gem 'lograge'
 # ActiveSupport::Memoizable with a few enhancements
 gem 'memoist'
+# A minimal, fast, safe sql executor
+gem 'mini_sql'
 # Phone validations
 gem 'phonelib'
 # SMS API and Voice API platform
