@@ -110,6 +110,8 @@ group :development, :test do
   gem 'rspec-rails'
   # 2x Testing Speed
   gem 'parallel_tests'
+  # Swagger-based DSL for RSpec
+  gem 'rswag-specs'
   # Test one-liners for common Rails functionality
   gem 'shoulda-matchers'
 end
