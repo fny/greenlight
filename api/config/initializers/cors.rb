@@ -5,13 +5,19 @@
 
 # Read more: https://github.com/cyu/rack-cors
 
+GREENLIGHT_SUBDOMAIN_PATTERN = %r{\Ahttps?:\/\/[a-z-]+\.greenlightready.com\z}.freeze
+
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    # TODO: Change Origin
-    origins '*'
+    if Rails.env.production?
+      origins GREENLIGHT_SUBDOMAIN_PATTERN
+    else
+      origins 'localhost:9990', '127.0.0.1:9990', GREENLIGHT_SUBDOMAIN_PATTERN
+    end
 
     resource '*',
-      headers: :any,
-      methods: [:get, :post, :put, :patch, :delete, :options, :head]
+             headers: :any,
+             methods: %i[get post put patch delete options head],
+             credentials: true
   end
 end

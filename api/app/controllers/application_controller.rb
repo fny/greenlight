@@ -1,51 +1,46 @@
 class ApplicationController < Sinatra::Base
   include ApplicationHelpers
   include RootController
+  include DebugController
   include LocationsUsersController
   include SessionsController
   include UsersController
-  include DebugController
-
+  include CurrentUserController
+  if Rails.env.development?
+    include DevelopmentController
+  end
 
   set :show_exceptions, false
 
   before do
     content_type 'application/json'
 
-    # @cookies = ActionDispatch::Cookies::CookieJar.build(request, request.cookies)
-
-    @session = Session.new(token: request.env['HTTP_AUTHORIZATION'])
-    if current_user
-      Time.zone = current_user.time_zone
-      I18n.locale = current_user.locale
-    else
-      Time.zone = 'America/New_York'
-      I18n.locale = 'en'
-    end
-
+    @session = Session.new(cookies)
+    Time.zone = current_user.time_zone
+    I18n.locale = current_user.locale
 
     request.env['exception_notifier.exception_data'] = {
       current_user: current_user
     }
   end
 
+  before '/v1/*' do
+    ensure_authenticated! unless %w[sessions magic-sign-in current-user].include?(params['splat'].first)
+  end
 
-
-  # after do
-  #   @cookies.write(response.headers)
-  # end
+  after do
+    cookies.write(response.headers)
+  end
 
   error do
     e = env['sinatra.error']
     Rails.logger.error(e.message)
     Rails.logger.error(e.backtrace.join("\n"))
-    if Rails.env.production?
-      JSONAPI::Errors.serialize(
-        JSONAPI::Errors::Wrapper.new(title: "#{e.class}", detail: e.message, backtrace: e.backtrace.join("\n"))
-      ).to_json
-    else
-      raise e
-    end
+    raise e unless Rails.env.production?
+
+    JSONAPI::Errors.serialize(
+      JSONAPI::Errors::Wrapper.new(title: e.class.to_s, detail: e.message, backtrace: e.backtrace.join("\n"))
+    ).to_json
   end
 
   error JSONAPI::Error do

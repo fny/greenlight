@@ -1,69 +1,58 @@
 class Session
-  def self.from_sign_in(user, remember_me: false)
-    new(user: user, expiration: remember_me ? 30.days.from_now : 1.day.from_now)
-  end
+  InvalidSessionError = Class.new(StandardError)
 
-  attr_accessor :issued_at, :expiration, :user, :token
+  COOKIE_NAME = '_gl_session'.freeze
 
-  def initialize(token: nil, user: nil, expiration: 1.day.from_now)
-    if token
-      # Tokens must have bearers
-      if !token.downcase.include?('bearer')
-        raise JSONAPI::Error.new(
-          code: 'invalid_auth_token',
-          detail: "Bearer was not provided",
-          status: 401,
-          source: { header: 'Authorization' },
-        )
-      end
-      token = token.sub('Bearer', '').sub('bearer', '').strip
-      @token = token
-      decoded = JSONWebToken.decode(token)
-      @data = HashWithIndifferentAccess.new(decoded)
-      @issued_at = Time.at(@data[:iat])
-      @expiration = Time.at(@data[:exp])
-      @user = User.find_by!(auth_token: decoded[:auth_token])
-      return
+  attr_reader :user, :data, :cookies
+
+  def initialize(cookies, user: nil, remember_me: false)
+    @cookies = cookies
+    @data = {}
+
+    if cookies.encrypted[COOKIE_NAME]
+      @data = cookies.encrypted[COOKIE_NAME]
+      @user = User.find_by(auth_token: @data[:auth_token])
+      # Destroy the session if the auth token is invalid
+      self.destroy if @user.nil?
     end
 
-    if !user
-      @data = HashWithIndifferentAccess.new
-    else
-      @data = HashWithIndifferentAccess.new(auth_token: user.auth_token, user_id: user.id)
+    if user
+      @data = { auth_token: user.auth_token, user_id: user.id }
+      @user = user
+      cookie = {
+        value: @data,
+        httponly: true,
+        secure: Rails.env.production?,
+        domain: Greenlight::COOKIE_DOMAINS,
+        same_site: :strict
+      }
+
+      cookie[:expires] = 1.year.from_now if remember_me
+
+      cookies.encrypted[COOKIE_NAME] = cookie
     end
 
-    @expiration = expiration
-    @issued_at = Time.now
+    @user ||= User.new
   end
 
-  def [](key)
-    @data[key]
+  def signed_in?
+    user.persisted?
   end
 
-  def []=(key, value)
-    @data[key] = value
+  def user_id
+    data[:user_id]
   end
 
   def locale
-    user ? user.locale : :en
+    user.locale
   end
 
-  def encoded
-    return nil if @data.empty?
-    JSONWebToken.encode(@data, @expiration)
+  def time_zone
+    user.time_zone
   end
 
-  def to_h
-    {
-      token: encoded,
-    }
-  end
-
-  def to_json
-    to_h.to_json
-  end
-
-  def user
-    return @user if defined?(@user)
+  def destroy
+    user.reset_auth_token! if user && user.persisted?
+    cookies.delete(COOKIE_NAME)
   end
 end

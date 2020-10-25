@@ -199,6 +199,8 @@ GEM
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
+    rack_csrf (2.6.0)
+      rack (>= 1.1.0)
     rails (6.0.3.3)
       actioncable (= 6.0.3.3)
       actionmailbox (= 6.0.3.3)
@@ -261,14 +263,9 @@ GEM
       rspec-core (~> 3.0, >= 3.0.0)
       sidekiq (>= 2.4.0)
     rspec-support (3.9.3)
-    rswag-api (2.3.1)
-      railties (>= 3.1, < 7.0)
     rswag-specs (2.3.1)
       activesupport (>= 3.1, < 7.0)
       json-schema (~> 2.2)
-      railties (>= 3.1, < 7.0)
-    rswag-ui (2.3.1)
-      actionpack (>= 3.1, < 7.0)
       railties (>= 3.1, < 7.0)
     rubocop (0.90.0)
       parallel (~> 1.10)
@@ -395,13 +392,12 @@ DEPENDENCIES
   pry-stack_explorer
   puma (~> 4.1)
   rack-cors
+  rack_csrf
   rails (~> 6.0.3, >= 6.0.3.2)
   rspec
   rspec-rails
   rspec-sidekiq
-  rswag-api
   rswag-specs
-  rswag-ui
   rubocop
   rubocop-rails
   seed-fu (~> 2.3)

@@ -3,18 +3,16 @@ module UsersController
   include ApplicationHelpers
 
   included do
-    get '/v1/users/:id' do |id|
-      user = lookup_user(id)
-      raise ForbiddenError unless current_user.authorized_to_view?(user)
+    get '/v1/users/:user_id' do |user_id|
+      user = User.includes(:location_accounts).find_by!(id: user_id)
+      ensure_or_forbidden! { current_user.authorized_to_view?(user) }
 
-      MobileUserSerializer.new(
-        user, include: MobileUserSerializer::COMMON_INCLUDES
-      ).serialized_json
+      UserSerializer.new(user).serialized_json
     end
 
-    patch '/v1/users/:id' do |id|
-      user = lookup_user(id)
-      raise ForbiddenError unless current_user.authorized_to_view?(user)
+    patch '/v1/users/:user_id' do |user_id|
+      user = User.includes(:location_accounts).find_by!(id: user_id)
+      ensure_or_forbidden! { current_user.authorized_to_view?(user) }
 
       # TODO: Mass assignment vulenrability
       user.update_attributes(request_json)
@@ -29,9 +27,8 @@ module UsersController
 
     # On success responds with a greenlight status
     post '/v1/users/:user_id/symptom-surveys' do |user_id|
-      require_auth!
-      user = lookup_user(user_id)
-      raise ForbiddenError unless current_user.authorized_to_view?(user)
+      user = User.includes(:location_accounts).find_by!(id: user_id)
+      ensure_or_forbidden! { current_user.authorized_to_view?(user) }
 
       survey = SymptomSurvey.new(
         medical_events: request_json[:medical_events],
@@ -39,10 +36,7 @@ module UsersController
         created_by: current_user
       )
 
-      if !survey.valid?
-        return error_response(survey)
-      end
-
+      return error_response(survey) unless survey.valid?
 
       if survey.save
         MobileGreenlightStatusSerializer.new(survey.greenlight_status).serialized_json

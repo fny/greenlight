@@ -3,15 +3,26 @@ class Location < ApplicationRecord
   has_many :cohorts
   has_many :users, through: :location_accounts
 
+  # has_many :students,
+  # has_many :teachers
+  # has_many :staff
+
   validates :phone_number, phone: { countries: :us }, allow_nil: true
-  before_save :format_phone_number
 
   def self.find_by_id_or_permalink(id)
     find_by(id: id) || find_by(permalink: id)
   end
 
   def self.find_by_id_or_permalink!(id)
-    self.find_by_id_or_permalink(id) || raise(ActiveRecord::RecordNotFound.new("Location could not be found by #{id}"))
+    find_by_id_or_permalink(id) ||
+      raise(ActiveRecord::RecordNotFound, "Location could not be found by #{id}")
+  end
+
+  def phone_number=(value)
+    return if value.blank?
+    parsed = Phonelib.parse(value, "US").full_e164
+    parsed = nil if parsed.blank?
+    self[:phone_number] = parsed
   end
 
   def users_to_invite
@@ -49,7 +60,7 @@ class Location < ApplicationRecord
   def users_to_notify
     location = Location.includes(
       :location_accounts,
-      location_accounts: { user: :parents }
+      location_accounts: { user: :parents },
     ).find(self.id)
 
     users_to_notify = Set.new
@@ -65,13 +76,6 @@ class Location < ApplicationRecord
     end
     users_to_notify
   end
-
-  def format_phone_number
-    return if phone_number.blank?
-    parsed = Phonelib.parse(phone_number, 'US').full_e164
-    parsed = nil if parsed.blank?
-    self.phone_number = parsed
-  end
 end
 
 # == Schema Information
@@ -79,14 +83,14 @@ end
 # Table name: locations
 #
 #  id           :bigint           not null, primary key
-#  category     :text             not null
-#  email        :text
-#  hidden       :boolean          default(TRUE), not null
 #  name         :text             not null
+#  category     :text             not null
 #  permalink    :text             not null
 #  phone_number :text
+#  email        :text
 #  website      :text
 #  zip_code     :text
+#  hidden       :boolean          default(TRUE), not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #

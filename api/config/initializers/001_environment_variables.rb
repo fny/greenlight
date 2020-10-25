@@ -1,3 +1,5 @@
+require 'configurator'
+
 if Rails.application.secrets.secret_key_base.nil?
   raise Configurator::MissingEnvironmentVariable.new(:SECRET_KEY_BASE)
 end
@@ -36,6 +38,13 @@ Configurator.new(Greenlight) do
     else
       recipients.split(' ')
     end
+  end
+
+  set :COOKIE_DOMAINS do
+    Set.new([Greenlight::API_URI, Greenlight::APP_URI].map { |u|
+      return 'localhost' if u.host == 'localhost'
+      ".#{u.host.split('.')[-2..].join('.')}"
+    }).to_a
   end
 
   set :PHONE_NUMBER, '19197285377'

@@ -9,7 +9,7 @@ import colors from 'src/common/colors'
 import { MyTrans, toggleLocale } from 'src/i18n'
 import { Trans, t, defineMessage } from '@lingui/macro'
 import { User } from 'src/common/models'
-import { currentUser, signOut } from 'src/common/api'
+import { currentUser, signOut } from 'src/initializers/providers'
 import { ReactNComponent } from 'reactn/build/components'
 
 function UserList({ users }: { users: User[]}) {

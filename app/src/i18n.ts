@@ -29,7 +29,6 @@ type Locales = 'en' | 'es'
 
 export function cookieLocale(): Locales {
   const locale = Cookies.get('_gl_locale') || 'en'
-  console.log('THIS IS THE LOCALE', locale)
   return locale as Locales
 }
 
@@ -120,12 +119,12 @@ export class MyTrans extends React.Component<any, any>{
   render() {
 
     let compiledTranslation = this.global.i18n.__(this.props.id || this.props.children)
-    console.log(this.global.i18n.locale, compiledTranslation)
+    // console.log(this.global.i18n.locale, compiledTranslation)
 
     // If the compiled translation matches the id, there's no valid translation
     // in the messages, so return the component's children as a default.
     if (compiledTranslation === this.props.id) {
-      console.error(`Translation missing for id ${this.props.id}`)
+      // console.error(`Translation missing for id ${this.props.id}`)
       return this.props.children
     }
 
@@ -136,7 +135,7 @@ export class MyTrans extends React.Component<any, any>{
       compiledTranslation = compiledTranslation.replace(/\<\/?\d+\>/g, '|').split('|')
       // If its still a string, it's already been translated.
       if (typeof compiledTranslation === 'string') {
-        console.log(compiledTranslation)
+        // console.log(compiledTranslation)
         return compiledTranslation
       }
     }
@@ -146,25 +145,25 @@ export class MyTrans extends React.Component<any, any>{
     // Compiled translation is an array we need to convert
     const processedChildren = (compiledTranslation as any[]).map((trans: any, i) => {
       if (typeof trans === 'string' && typeof children[i] === 'string') {
-        console.log('string,string', trans, children[i])
+        // console.log('string,string', trans, children[i])
         return trans
       }
 
       if (typeof trans === 'string' && typeof children[i] === 'object') {
-        console.log('string,obj', trans, children[i])
+        // console.log('string,obj', trans, children[i])
         return React.cloneElement(children[i] as ReactElement, {
           children: trans
         })
       } else {
         if (typeof children[i] === 'string') {
-          console.log('string,?', trans, children[i])
+          // console.log('string,?', trans, children[i])
           return children[i]
         }
         return children[i]
       }
     })
 
-    console.log('result', processedChildren)
+    // console.log('result', processedChildren)
 
     return React.createElement(React.Fragment, { children: processedChildren })
 
