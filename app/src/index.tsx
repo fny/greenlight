@@ -49,6 +49,9 @@ function startApp() {
 
 if ((window as any).cordova) {
   document.addEventListener('deviceready', startApp, false)
+  document.addEventListener('resume', function () {
+    ;(window as any).codePush.sync()
+  })
 } else {
   startApp()
 }

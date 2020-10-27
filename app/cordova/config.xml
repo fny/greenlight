@@ -18,8 +18,8 @@
     <platform name="android">
         <allow-intent href="market:*" />
 
-        <preference name="CodePushDeploymentKey" value="YOUR-ANDROID-DEPLOYMENT-KEY" />
-        <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" />
+        <preference name="CodePushDeploymentKey" value="96q-1na96bCWTbl8tTzLTukmelM9JHZJjfttN" />
+        <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
 
         <icon src="res/android/mipmap-hdpi/ic_launcher.png" density="hdpi" />
         <icon src="res/android/mipmap-mdpi/ic_launcher.png" density="mdpi" />
@@ -32,8 +32,9 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
 
-        <preference name="CodePushDeploymentKey" value="YOUR-IOS-DEPLOYMENT-KEY" />
-        <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" />
+        <!--  -->
+        <preference name="CodePushDeploymentKey" value="9tJypW_IQTNQi9xRaVPkZ1wLwyFodeEs0xnmx" />
+        <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
 
         <icon src="res/ios/16.png" width="16" height="16" />
         <icon src="res/ios/20.png" width="20" height="20" />
