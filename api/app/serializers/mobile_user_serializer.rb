@@ -14,12 +14,6 @@ class MobileUserSerializer < ApplicationSerializer
     :'children.last_greenlight_status'
   ]
 
-  ADMIN_INCLUDES = [
-    :location_accounts,
-    :'location_accounts.location',
-    :last_greenlight_status
-  ]
-
   set_type :user
 
   attribute :first_name
@@ -51,5 +45,38 @@ class MobileUserSerializer < ApplicationSerializer
   has_many :children, serializer: MobileUserSerializer, record_type: 'user'
 
   has_many :location_accounts
+
+
+  SWAGGER_SCHEMA = SwaggerSchemaBuilder.build do
+    data {
+      id :string
+      type :string
+      attributes {
+        firstName :string
+        lastName :string
+        email :string, nullable: true
+        mobileNumber :string, nullable: true
+        mobileCarrier :string, nullable: true
+        acceptedTerms_at :string
+        completed_invite_at :string
+        locale :string
+        zipCode :string, nullable: true
+        birthDate :string, nullable: true
+        physicianName :string, nullable: true
+        physicianPhoneNumber :string, nullable: true
+        createdAt :string
+        updatedAt :string
+      }
+      relationships {
+        # TODO: Ref is broken
+        # TODO: The spec doesn't really test these correctly... invalid open api
+        # pass schemas
+        # TODO: Fix swagger schema file
+        lastGreenlightStatus({ '$ref' => '/components/schemas/relationshipToOne' })
+        children({ '$ref' => '/components/schemas/relationshipToMany' })
+        locationAccounts({ '$ref' => '/components/schemas/relationshipToMany' })
+      }
+    }
+  end
 
 end

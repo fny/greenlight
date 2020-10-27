@@ -14,7 +14,7 @@ import {
 
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
 import './SignInPage.css'
-import { signIn } from 'src/common/api'
+import { createSession, getCurrentUser } from 'src/common/api'
 import { Trans, defineMessage } from '@lingui/macro'
 import { paths, dynamicPaths } from 'src/routes'
 import { MyTrans } from 'src/i18n'
@@ -51,7 +51,9 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
       this.global.i18n._(defineMessage({ id: 'SignInPage.signing_you_in', message: "Signing you in..." }))
     )
     try {
-      const user = await signIn(this.state.emailOrMobile, this.state.password, this.state.rememberMe)
+      await createSession(this.state.emailOrMobile, this.state.password, this.state.rememberMe)
+
+      const user = await getCurrentUser()
       this.$f7.dialog.close()
       this.setGlobal({ currentUser: user })
       this.$f7router.navigate(dynamicPaths.currentUserHomePath())

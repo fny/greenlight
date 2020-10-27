@@ -1,10 +1,22 @@
 class LocationAccount < ApplicationRecord
+  PERMISSION_LEVELS = [
+    ADMIN = 'admin',
+    NONE = 'none'
+  ]
+
+  ROLES = [
+    STUDENT = 'student',
+    TEACHER = 'teacher',
+    STAFF = 'staff'
+  ]
+
+
   extend Enumerize
   belongs_to :user
   belongs_to :location
 
-  enumerize :role, in: [:student, :teacher, :staff]
-  enumerize :permission_level, in: [:none, :admin], default: :none
+  enumerize :role, in: ROLES
+  enumerize :permission_level, in: PERMISSION_LEVELS, default: NONE
 end
 
 # == Schema Information
@@ -12,21 +24,21 @@ end
 # Table name: location_accounts
 #
 #  id                      :bigint           not null, primary key
-#  approved_by_location_at :datetime
-#  approved_by_user_at     :datetime
-#  attendance_status       :text
-#  deleted_at              :datetime
-#  permission_level        :text
+#  user_id                 :bigint           not null
+#  location_id             :bigint           not null
+#  external_id             :text
 #  role                    :text             not null
+#  permission_level        :text
 #  title                   :text
+#  attendance_status       :text
+#  approved_by_user_at     :datetime
+#  approved_by_location_at :datetime
+#  created_by_id           :bigint
+#  updated_by_id           :bigint
+#  deleted_by_id           :bigint
+#  deleted_at              :datetime
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
-#  created_by_id           :bigint
-#  deleted_by_id           :bigint
-#  external_id             :text
-#  location_id             :bigint           not null
-#  updated_by_id           :bigint
-#  user_id                 :bigint           not null
 #
 # Indexes
 #

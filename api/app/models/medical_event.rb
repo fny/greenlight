@@ -84,16 +84,16 @@ end
 # Table name: medical_events
 #
 #  id                   :bigint           not null, primary key
-#  deleted_at           :datetime
+#  user_id              :bigint           not null
+#  greenlight_status_id :bigint           not null
 #  event_type           :text             not null
 #  occurred_at          :datetime         not null
+#  created_by_id        :bigint
+#  updated_by_id        :bigint
+#  deleted_by_id        :bigint
+#  deleted_at           :datetime
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
-#  created_by_id        :bigint
-#  deleted_by_id        :bigint
-#  greenlight_status_id :bigint           not null
-#  updated_by_id        :bigint
-#  user_id              :bigint           not null
 #
 # Indexes
 #

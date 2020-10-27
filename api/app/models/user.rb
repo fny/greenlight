@@ -11,22 +11,10 @@ class User < ApplicationRecord
   extend Enumerize
   extend Memoist
 
+  TIME_ZONES = ActiveSupport::TimeZone.all.map { |x| x.tzinfo.name }
+
   enumerize :daily_reminder_type, in: [:text, :email, :none]
-  enumerize :time_zone, in: ActiveSupport::TimeZone.all.map { |x| x.tzinfo.name }, default: 'America/New_York'
-
-  # [
-  #   'America/New_York',
-  #   'America/Chicago',
-  #   'America/Denver',
-  #   'America/Los_Angeles'
-  # ]
-
-  # in: {
-  #   eastern: 'America/New_York',
-  #   central: 'America/Chicago',
-  #   mountain: 'America/Denver',
-  #   pacific: 'America/Los_Angeles'
-  # }
+  enumerize :time_zone, in: TIME_ZONES, default: 'America/New_York'
 
   has_many :parent_relationships, foreign_key: :child_id,
            class_name: 'ParentChild'
@@ -53,7 +41,7 @@ class User < ApplicationRecord
   has_secure_token :auth_token
   has_secure_token :magic_sign_in_token
 
-  validates :locale, inclusion: { in: GreenlightX::SUPPORTED_LOCALES }
+  validates :locale, inclusion: { in: Greenlight::SUPPORTED_LOCALES }
   validates :email, 'valid_email_2/email': true, uniqueness: true, allow_nil: true
   validates :mobile_number, phone: { countries: :us }, allow_nil: true, uniqueness: true
 
@@ -67,10 +55,7 @@ class User < ApplicationRecord
 
   before_save { email.downcase! if email }
 
-  memoize def admin_at?(location)
-    location_accounts.where(location_id: location.id, permission_level: :admin).exists?
-  end
-
+  # @param [EmailOrPhone, String] value
   def self.find_by_email_or_mobile(value)
     email_or_mobile = value.kind_of?(EmailOrPhone) ? value : EmailOrPhone.new(value)
     if email_or_mobile.email?
@@ -78,6 +63,10 @@ class User < ApplicationRecord
     elsif email_or_mobile.phone?
       User.find_by(mobile_number: email_or_mobile.value)
     end
+  end
+
+  def self.faraz
+    find_by(email: 'faraz.yashar@gmail.com')
   end
 
   def inferred_greenlight_status
@@ -123,53 +112,6 @@ class User < ApplicationRecord
     save!
   end
 
-  def magic_sign_in_url(remember_me = false)
-    if remember_me
-      "#{Greenlight::SHORT_URL}/mgk/#{magic_sign_in_token}/y"
-    else
-      "#{Greenlight::SHORT_URL}/mgk/#{magic_sign_in_token}/n"
-    end
-  end
-
-  def parent_of?(child_user)
-    children.include?(child_user)
-  end
-
-  def child_of?(parent_user)
-    parents.include?(parent_user)
-  end
-
-  def admin?
-    %w[
-      faraz.yashar@gmail.com
-      josephbwebb@gmail.com
-      mark.sendak@duke.edu
-      april.warren@studentudurham.org
-      amy.salo@studentudurham.org
-      cameron.phillips@studentudurham.org
-      daniela.sanchez@studentudurham.org
-      ray.starn@studentudurham.org
-      kellane.kornegay@studentudurham.org
-      feyth.scott@studentudurham.org
-      madelyn.srochi@studentudurham.org
-      bryanna.ray@studentudurham.org
-      emmanuel.lee@studentudurham.org
-      volunteer@dpsvmc.org
-    ].include?(self.email)
-  end
-
-
-  def authorized_to_view?(user)
-    admin? || parent_of?(user) || user == self
-  end
-
-  def authorized_to_edit?(user)
-    admin? || parent_of?(user) || user == self
-  end
-
-  def submitted_for_today?
-    last_greenlight_status.today?
-  end
 
   def needs_to_submit_survey_for
     submits_surveys_for.filter { |u| !u.submitted_for_today? }
@@ -212,6 +154,71 @@ class User < ApplicationRecord
     end
   end
 
+  def magic_sign_in_url(remember_me = false)
+    if remember_me
+      "#{Greenlight::SHORT_URL}/mgk/#{magic_sign_in_token}/y"
+    else
+      "#{Greenlight::SHORT_URL}/mgk/#{magic_sign_in_token}/n"
+    end
+  end
+
+  # @param [Location] location
+  def admin_at?(location)
+    location_accounts.where(location_id: location.id, permission_level: LocationAccount::ADMIN).exists?
+  end
+
+  # @param [User] child_user
+  def parent_of?(child_user)
+    children.include?(child_user)
+  end
+
+  # @param [User] parent_user
+  def child_of?(parent_user)
+    parents.include?(parent_user)
+  end
+
+  def superuser?
+    email == 'faraz.yashar@gmail.com'
+  end
+
+  # @param [User] user
+  def admin_of?(user)
+    DB.query_single(<<~SQL, admin_id: self.id, user_id: user.id).any?
+      select 1
+      from (
+        select
+          location_id
+        from
+          location_accounts
+        where
+          user_id = :admin_id
+          and permission_level = 'admin'
+        intersect
+        select
+          location_id
+        from
+          location_accounts
+        where
+          user_id = :user_id
+      ) as t
+      limit 1
+    SQL
+  end
+
+  # @param [User] user
+  def authorized_to_view?(user)
+    user == self || admin_of?(user) || parent_of?(user) || superuser?
+  end
+
+  # @param [User] user
+  def authorized_to_edit?(user)
+    user == self || admin_of?(user) || parent_of?(user) || superuser?
+  end
+
+  def submitted_for_today?
+    last_greenlight_status.today?
+  end
+
   private
 
   def email_or_mobile_number_present
@@ -239,48 +246,48 @@ end
 # Table name: users
 #
 #  id                                 :bigint           not null, primary key
-#  accepted_terms_at                  :datetime
-#  auth_token                         :text
-#  auth_token_set_at                  :datetime
-#  birth_date                         :date
-#  completed_invite_at                :datetime
-#  current_sign_in_at                 :datetime
-#  current_sign_in_ip                 :inet
-#  daily_reminder_type                :text             default("text"), not null
-#  deleted_at                         :datetime
-#  email                              :text
-#  email_confirmation_sent_at         :datetime
-#  email_confirmation_token           :text
-#  email_confirmed_at                 :datetime
-#  email_unconfirmed                  :text
 #  first_name                         :text             default("Greenlight User"), not null
-#  invited_at                         :datetime
-#  is_sms_emailable                   :boolean
 #  last_name                          :text             default("Unknown"), not null
-#  last_sign_in_at                    :datetime
-#  last_sign_in_ip                    :inet
-#  locale                             :text             default("en"), not null
-#  magic_sign_in_sent_at              :datetime
-#  magic_sign_in_token                :text
-#  mobile_carrier                     :text
-#  mobile_number                      :text
-#  mobile_number_confirmation_sent_at :datetime
-#  mobile_number_confirmation_token   :text
-#  mobile_number_confirmed_at         :datetime
-#  mobile_number_unconfirmed          :text
-#  needs_physician                    :boolean          default(FALSE), not null
 #  password_digest                    :text
 #  password_set_at                    :datetime
+#  magic_sign_in_token                :text
+#  magic_sign_in_sent_at              :datetime
+#  auth_token                         :text
+#  auth_token_set_at                  :datetime
+#  email                              :text
+#  email_confirmation_token           :text
+#  email_confirmation_sent_at         :datetime
+#  email_confirmed_at                 :datetime
+#  email_unconfirmed                  :text
+#  mobile_number                      :text
+#  mobile_carrier                     :text
+#  is_sms_emailable                   :boolean
+#  mobile_number_confirmation_token   :text
+#  mobile_number_confirmation_sent_at :datetime
+#  mobile_number_confirmed_at         :datetime
+#  mobile_number_unconfirmed          :text
+#  locale                             :text             default("en"), not null
+#  zip_code                           :text
+#  time_zone                          :text
+#  birth_date                         :date
 #  physician_name                     :text
 #  physician_phone_number             :text
+#  daily_reminder_type                :text             default("text"), not null
+#  needs_physician                    :boolean          default(FALSE), not null
+#  accepted_terms_at                  :datetime
+#  invited_at                         :datetime
+#  completed_invite_at                :datetime
 #  sign_in_count                      :integer          default(0), not null
-#  time_zone                          :text
-#  zip_code                           :text
+#  current_sign_in_at                 :datetime
+#  last_sign_in_at                    :datetime
+#  current_sign_in_ip                 :inet
+#  last_sign_in_ip                    :inet
+#  created_by_id                      :bigint
+#  updated_by_id                      :bigint
+#  deleted_by_id                      :bigint
+#  deleted_at                         :datetime
 #  created_at                         :datetime         not null
 #  updated_at                         :datetime         not null
-#  created_by_id                      :bigint
-#  deleted_by_id                      :bigint
-#  updated_by_id                      :bigint
 #
 # Indexes
 #

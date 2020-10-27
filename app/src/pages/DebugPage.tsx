@@ -1,6 +1,5 @@
 import React, { useGlobal } from 'reactn'
 import { Page, Navbar, Block, ListItem, List, AccordionContent } from 'framework7-react'
-import { session } from 'src/common/api'
 
 export default () => {
   const [ currentUser ] = useGlobal('currentUser')
@@ -19,15 +18,6 @@ export default () => {
             </Block>
           </AccordionContent>
         </ListItem>
-        <ListItem accordionItem title="Session">
-          <AccordionContent>
-            <Block>
-              <pre style={{whiteSpace: 'pre-wrap'}}>
-                {JSON.stringify(session, null, 2)}
-              </pre>
-            </Block>
-          </AccordionContent>
-        </ListItem>
-      </List>        
+      </List>
   </Page>
 }

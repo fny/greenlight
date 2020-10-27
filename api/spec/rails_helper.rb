@@ -6,6 +6,7 @@ require File.expand_path('../config/environment', __dir__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 require 'sidekiq/testing'
+Sidekiq::Testing.fake!
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -63,6 +64,9 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
   config.include ActiveSupport::Testing::TimeHelpers
+  config.include RequestHelpers
+  config.include ExpectationHelpers
+  config.include MiscHelpers
 
   config.before(:suite) do
     # zone = ActiveSupport::TimeZone.all.sample
@@ -71,6 +75,7 @@ RSpec.configure do |config|
   end
   config.before do
     Mail::TestMailer.deliveries.clear
+    Sidekiq::Worker.clear_all
   end
 end
 
@@ -80,7 +85,3 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
-
-Pony.override_options = { :via => :test }
-
-

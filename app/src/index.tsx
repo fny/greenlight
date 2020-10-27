@@ -13,7 +13,8 @@ import 'framework7-icons'
 
 import './index.css'
 
-import { getCurrentUser, session, destroySession } from './common/api'
+import { getCurrentUser } from './common/api'
+import Honeybadger from 'honeybadger-js'
 
 // Init Framework7-React plugin
 Framework7.use(Framework7React)
@@ -24,27 +25,21 @@ function render() {
 
 // TODO: This is a mess...
 function startApp() {
-  if (session.isValid()) {
-    console.debug('Valid session.')
-    getCurrentUser()
-      .then((user) => {
-        setGlobal({ currentUser: user, locale: user.locale })
-        render()
-      })
-      .catch((err) => {
-        if (err.response) {
-          if (err.code === 404) {
-            // User has been deleted clear the session
-            destroySession()
-          }
-          console.error(err)
-          console.error(err.response)
-        }
-        render()
-      })
-  } else {
-    render()
-  }
+  getCurrentUser()
+    .then((user) => {
+      setGlobal({ currentUser: user, locale: user.locale })
+    })
+    .catch((err) => {
+      if (err.response && err.response.status !== 401) {
+        console.error(err)
+        Honeybadger.notify(err)
+      } else {
+        throw err
+      }
+    })
+    .finally(() => {
+      render()
+    })
 }
 
 if ((window as any).cordova) {

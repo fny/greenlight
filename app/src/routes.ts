@@ -20,10 +20,10 @@ import { buildDynamicPath, resolvePath } from './util'
 import GiphySchedulePage from './pages/GiphySchedulePage'
 import UserGreenlightPassPage from './pages/UserGreenlightPassPage'
 import DebugPage from './pages/DebugPage'
-import { isSignedIn } from './common/api'
 import { Router } from 'framework7/modules/router/router'
 import AdminUsersPage from './pages/admin/AdminUsersPage'
 import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage'
+import { isSignedIn } from './initializers/providers'
 
 export const paths = {
   rootPath: '/',

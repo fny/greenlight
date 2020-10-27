@@ -22,7 +22,7 @@ import { ReactNComponent } from "reactn/build/components"
 import { NoCurrentUserError } from "src/common/errors"
 
 import { plural, Trans } from '@lingui/macro'
-import { signOut } from "src/common/api"
+import { signOut } from "src/initializers/providers"
 import { myPlural, MyTrans, toggleLocale } from "src/i18n"
 
 interface State {

@@ -8,32 +8,29 @@ module SessionsController
       authentication.ip_address = request.ip
       authentication.run
       if authentication.succeeded?
-        @session = Session.from_sign_in(authentication.result, remember_me: request_json[:remember_me])
-        @session.to_json
+        @session = Session.new(cookies, user: authentication.result, remember_me: request_json[:remember_me])
+        SUCCESS
       else
         error_response(authentication)
       end
     end
 
     delete '/v1/sessions' do
-      if current_user
-        current_user.reset_auth_token!
-      end
+      @session.destroy
       SUCCESS
     end
 
     post '/v1/magic-sign-in/:token' do |token|
       user = User.find_by!(magic_sign_in_token: token)
       user.save_sign_in!(request.ip)
-      @session = Session.from_sign_in(user, remember_me: request_json[:remember_me])
-      @session.to_json
+      @session = Session.new(cookies, user: user, remember_me: request_json[:remember_me])
+      SUCCESS
     end
 
     post '/v1/magic-sign-in' do
       sign_in = MagicSignInRequest.new(request_json)
       sign_in.run
       if sign_in.succeeded?
-        # TODO: What should the response code be here?
         SUCCESS
       else
         error_response(sign_in)
