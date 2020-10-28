@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class LocationAccountSerializer < ApplicationSerializer
   attributes :external_id, :role, :title, :permission_level, :attendance_status, :location_id
 

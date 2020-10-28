@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Represents a point where
 class CutoffTime
   include Comparable

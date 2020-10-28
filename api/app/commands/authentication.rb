@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Authentication < ApplicationCommand
   argument :email_or_mobile
   argument :password

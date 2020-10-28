@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe "Root routes", type: :request do
   it "pings" do
     get '/ping'

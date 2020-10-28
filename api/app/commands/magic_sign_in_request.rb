@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class MagicSignInRequest < ApplicationCommand
   argument :email_or_mobile
   argument :remember_me, type: :boolean, default: false

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class MedicalEvent < ApplicationRecord
   EVENT_TYPES = [
     FEVER = 'fever',

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Location < ApplicationRecord
   has_many :location_accounts
   has_many :cohorts

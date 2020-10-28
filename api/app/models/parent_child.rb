@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ParentChild < ApplicationRecord
   self.table_name = 'parents_children'
   belongs_to :parent, class_name: 'User'

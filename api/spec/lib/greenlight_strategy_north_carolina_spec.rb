@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 require 'fixtures/greenlight_status_scenarios/greenlight_status_scenario'
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module RootController
   extend ActiveSupport::Concern
   included do

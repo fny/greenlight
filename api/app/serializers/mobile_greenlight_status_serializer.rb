@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class MobileGreenlightStatusSerializer < ApplicationSerializer
   set_type :greenlight_status
   attribute :status

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Cohort < ApplicationRecord
   belongs_to :location
   has_many :users, through: :cohort_user
