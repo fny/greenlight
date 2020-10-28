@@ -5,14 +5,14 @@
 
 # Read more: https://github.com/cyu/rack-cors
 
-GREENLIGHT_SUBDOMAIN_PATTERN = %r{\Ahttps?:\/\/[a-z-]+\.greenlightready.com\z}.freeze
+GREENLIGHT_SUBDOMAIN_PATTERN = %r{\A[a-z-]+\.greenlightready.com\z}.freeze
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     if Rails.env.production?
-      origins GREENLIGHT_SUBDOMAIN_PATTERN
+      origins Greenlight::APP_URI.host
     else
-      origins 'localhost:9990', '127.0.0.1:9990', GREENLIGHT_SUBDOMAIN_PATTERN
+      origins 'localhost:9990', '127.0.0.1:9990', 'app-dev.greenlightready.com', GREENLIGHT_SUBDOMAIN_PATTERN
     end
 
     resource '*',

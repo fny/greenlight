@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 servers = %w[rails sinatra syro roda hanami]
 
 servers.each do |server|

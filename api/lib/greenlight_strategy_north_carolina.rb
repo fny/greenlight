@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 # @attr_reader [Array<MedicalEvent>]
 # Based on https://files.nc.gov/covid/documents/guidance/Strong-Schools-NC-Public-Health-Toolkit.pdf

@@ -1,6 +1,6 @@
 // import { I18n } from '@lingui/core'
 import 'reactn'
-import { User } from './common/models'
+import { User } from './models'
 import { MyI18n } from './i18n'
 
 declare module 'reactn/default' {

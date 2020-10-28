@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Create Kevin
 
 # Manually update phone numbers by email for staff
@@ -66,3 +67,30 @@ parents.each do |p|
   u.mobile_number = p[:mobile_number]
   u.save
 end
+
+# Creating a volunteer account for Cathi Sander @ Student U
+u = User.create(
+  first_name: 'Volunteer',
+  last_name: 'WG Pearson',
+  email: 'volunteer@dpsvmc.org',
+  password: 'CleverOrange55*'
+)
+
+l = LocationAccount.create({
+  user_id: u.id,
+  location: Location.find_by_id_or_permalink('wg-pearson'),
+  role: 'staff',
+  permission_level: 'admin'
+})
+
+# Create user
+
+
+create_account!(
+  first_name: 'Daniel',
+  last_name: 'Song',
+  email: 'supearle0518@gmail.com',
+  password: '@MagicMike179',
+  location: 'greenlight',
+  role: 'teacher'
+)

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 RSpec.describe "/v1/magic-sign-in", type: :request do
@@ -9,7 +10,7 @@ RSpec.describe "/v1/magic-sign-in", type: :request do
         emailOrMobile: user.email,
         rememberMe: false
       })
-      expect(response_json[:success]).to eq(true)
+      expect_success_response
       expect_work(MagicSignInWorker)
 
       last_delivery = Mail::TestMailer.deliveries.last
@@ -24,7 +25,7 @@ RSpec.describe "/v1/magic-sign-in", type: :request do
       })
       expect_work(MagicSignInWorker)
       last_delivery = Mail::TestMailer.deliveries.last
-      expect(response_json[:success]).to eq(true)
+      expect_success_response
       expect(last_delivery[:subject].to_s).to include('Greenlight Iniciar Sesión con Magia')
     end
 
@@ -33,7 +34,7 @@ RSpec.describe "/v1/magic-sign-in", type: :request do
         emailOrMobile: user.mobile_number,
         rememberMe: false
       })
-      expect(response_json[:success]).to eq(true)
+      expect_success_response
 
       expect_work(MagicSignInWorker)
 
@@ -49,7 +50,7 @@ RSpec.describe "/v1/magic-sign-in", type: :request do
       })
       expect_work(MagicSignInWorker)
       last_delivery = PlivoSMS.deliveries.last
-      expect(response_json[:success]).to eq(true)
+      expect_success_response
       expect(last_delivery[:message]).to include('Greenlight Iniciar Sesión con Magia')
     end
   end

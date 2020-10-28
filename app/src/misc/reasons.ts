@@ -1,6 +1,6 @@
 import { DateTime } from "luxon"
 import { getGlobal } from "reactn"
-import { GreenlightStatus, User } from "src/common/models"
+import { GreenlightStatus, User } from "src/models"
 
 const REASON_REPLACEMENTS = {
   '{you}': (status: GreenlightStatus, submittingUser: User, targetUser: User) => {

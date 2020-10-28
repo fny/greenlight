@@ -1,8 +1,8 @@
 import { Model, attribute as attr, relationship,initialize, STRING, DATETIME, BOOLEAN } from './Model'
 import { User } from './User'
-import colors from '../colors'
-import { today, tomorrow } from '../util'
-import CutoffTime from '../misc/CutoffTime'
+import colors from 'src/misc/colors'
+import { today, tomorrow } from 'src/util'
+import CutoffTime from 'src/misc/CutoffTime'
 import { defineMessage } from '@lingui/macro'
 
 import { DateTime }  from 'luxon'

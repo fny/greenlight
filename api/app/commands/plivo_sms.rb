@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PlivoSMS < ApplicationCommand
   argument :from, default: Greenlight::PHONE_NUMBER
   argument :to

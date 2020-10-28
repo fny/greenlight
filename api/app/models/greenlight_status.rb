@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class GreenlightStatus < ApplicationRecord
   # @!attribute submission_date
   #   @return [Date] The date on this status is effective.

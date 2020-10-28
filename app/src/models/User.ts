@@ -66,7 +66,7 @@ export class User extends Model {
   acceptedTermsAt: DateTime = DateTime.fromISO('')
 
   @attr({ type: DATETIME })
-  completedInviteAt: DateTime = DateTime.fromISO('')
+  completedWelcomeAt: DateTime = DateTime.fromISO('')
 
   @relationship({ type: 'hasMany', model: 'locationAccount'})
   locationAccounts: LocationAccount[] = []
@@ -138,7 +138,7 @@ export class User extends Model {
 
   /** Has the user completed the welcome sequence? */
   hasCompletedWelcome() {
-    return this.completedInviteAt !== null && this.completedInviteAt.isValid
+    return this.completedWelcomeAt !== null && this.completedWelcomeAt.isValid
   }
 
   /** The users current greenlight status */

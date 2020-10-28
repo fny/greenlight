@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This is the serialzier to use for the mobile app.
 # It should load *everything* that is required.
 class MobileUserSerializer < ApplicationSerializer
@@ -31,8 +32,7 @@ class MobileUserSerializer < ApplicationSerializer
   # attribute :mobile_number_confirmed_at
   # attribute :is_sms_gateway_emailable
 
-  attribute :accepted_terms_at
-  attribute :completed_invite_at
+  attribute :completed_welcome_at
 
   attribute :locale
   attribute :zip_code
@@ -46,7 +46,6 @@ class MobileUserSerializer < ApplicationSerializer
 
   has_many :location_accounts
 
-
   SWAGGER_SCHEMA = SwaggerSchemaBuilder.build do
     data {
       id :string
@@ -58,7 +57,7 @@ class MobileUserSerializer < ApplicationSerializer
         mobileNumber :string, nullable: true
         mobileCarrier :string, nullable: true
         acceptedTerms_at :string
-        completed_invite_at :string
+        completed_welcome_at :string
         locale :string
         zipCode :string, nullable: true
         birthDate :string, nullable: true

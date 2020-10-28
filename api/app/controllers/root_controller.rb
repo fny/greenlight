@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module RootController
   extend ActiveSupport::Concern
   included do
@@ -10,6 +11,10 @@ module RootController
     end
 
     get '/ping' do
+      'pong'
+    end
+
+    get '/v1/ping' do
       'pong'
     end
 

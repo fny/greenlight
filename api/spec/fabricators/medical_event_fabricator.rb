@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Fabricator(:medical_event) do
   event_type "none"
   occurred_at "2020-09-14 17:59:45"

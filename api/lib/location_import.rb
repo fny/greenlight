@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class LocationImport
   attr_reader :location, :rimport, :simport
   def initialize(permalink)

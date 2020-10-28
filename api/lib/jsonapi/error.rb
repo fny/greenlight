@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module JSONAPI
   class Error < StandardError
     attr_reader :status, :code, :title, :detail, :source

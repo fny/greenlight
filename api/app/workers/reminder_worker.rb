@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ReminderWorker < ApplicationWorker
   def html_template
     Erubi::Engine.new(<<~HTML

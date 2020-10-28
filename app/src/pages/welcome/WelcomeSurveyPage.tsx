@@ -6,27 +6,21 @@ import {
   Page,
   Block,
   Button,
-  Toolbar,
-  Link,
-  Row,
-  Col,
-  Sheet,
-  PageContent, Navbar, BlockTitle
+  Navbar, BlockTitle
 } from 'framework7-react'
 
 import { Case, When } from 'src/components/Case'
 
-import { esExclaim, greeting, joinWords } from "src/util"
-import { User } from 'src/common/models/User'
-import { dynamicPaths, paths } from "src/routes"
+import { joinWords } from "src/util"
+import { User } from 'src/models/User'
+import { paths } from "src/routes"
 import { ReactNComponent } from "reactn/build/components"
-import { NoCurrentUserError } from "src/common/errors"
+import { NoCurrentUserError } from "src/errors"
 
 import { defineMessage, plural, Trans } from '@lingui/macro'
-import { updateUser } from "src/common/api"
+import { completeWelcomeUser } from "src/api"
 import { myPlural, MyTrans, toggleLocale } from "src/i18n"
-import { Support } from "framework7"
-import { DateTime } from "luxon"
+
 
 interface State {
   termsOpened: boolean
@@ -43,7 +37,7 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
     }
     this.user = this.global.currentUser
 
-    updateUser(this.user, {  completedInviteAt: DateTime.local()   })
+    completeWelcomeUser(this.user)
   }
   render() {
 

@@ -1,8 +1,8 @@
 import { AxiosResponse } from 'axios'
-import { Dict, Record, RecordResponse, RecordRelationship, RecordPointer, EntityId } from '../types'
-import { Model } from '../models'
-import { deserializeJSONAPI } from '../models/Model'
-import { zipTwo } from '../util'
+import { Dict, Record, RecordResponse, RecordRelationship, RecordPointer, EntityId } from 'src/types'
+import { Model } from 'src/models'
+import { deserializeJSONAPI } from 'src/models/Model'
+import { zipTwo } from 'src/util'
 
 interface RecordStoreEntry {
   record: Record<any>

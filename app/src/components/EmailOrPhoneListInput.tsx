@@ -1,6 +1,6 @@
 import React from 'reactn'
 import { ListInput } from 'framework7-react'
-import { validEmail, validPhone } from 'src/common/util'
+import { validEmail, validPhone } from 'src/util'
 import { defineMessage } from '@lingui/macro'
 
 export type EmailOrPhoneInputTypes = 'email' | 'phone' | 'blank' | 'unknown'

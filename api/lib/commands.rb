@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Commands
   # Base class that all commands inherit from
   class Base

@@ -1,22 +1,31 @@
 namespace :gl do
-  task :token, [:email_or_phone] => :environment do |task, args|
+  desc "Prints complete list of middleware based on config.ru"
+  task :middleware do
+    require 'rack'
+    require 'pp'
 
-    user = User.find_by_email_or_mobile(args[:email_or_phone])
-
-    if !user
-      raise "No user found for #{args[:email_or_phone]}"
+    def class_name(app)
+      app.class.to_s == 'Class' ? app.to_s : app.class.to_s
     end
 
-    puts Session.new(user: user).encoded
-  end
-
-  task :destroy_statuses, [:email_or_phone]  => :environment do |task, args|
-    user = User.find_by_email_or_mobile(args[:email_or_phone])
-
-    if !user
-      raise "No user found for #{args[:email_or_phone]}"
+    def middleware_classes(app)
+      apps = []
+      loop do
+        if app.instance_variable_get(:@mapping)
+          apps << {
+            class_name(app) => app.instance_variable_get(:@mapping).map { |m| middleware_classes(m[3]) }
+          }
+          break
+        end
+        apps << class_name(app)
+        app = app.instance_variable_get(:@app)
+        break if app.nil?
+      end
+      apps
     end
 
-    puts Session.new(user: user).encoded
+    app = Rack::Builder.parse_file('config.ru').first
+    pp middleware_classes(app)
+
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Location < ApplicationRecord
   has_many :location_accounts
   has_many :cohorts
@@ -20,17 +21,18 @@ class Location < ApplicationRecord
 
   def phone_number=(value)
     return if value.blank?
-    parsed = Phonelib.parse(value, "US").full_e164
+
+    parsed = Phonelib.parse(value, 'US').full_e164
     parsed = nil if parsed.blank?
     self[:phone_number] = parsed
   end
 
   def users_to_invite
-    users_to_notify.filter { |u| u.completed_invite_at.blank? }
+    users_to_notify.filter { |u| u.completed_welcome_at.blank? }
   end
 
   def users_to_remind
-    users_to_notify.filter { |u| !u.completed_invite_at.blank? && u.submitted_for_today? }
+    users_to_notify.filter { |u| !u.completed_welcome_at.blank? && u.submitted_for_today? }
   end
 
   def remind_users
@@ -54,7 +56,7 @@ class Location < ApplicationRecord
   end
 
   def users_to_invite
-    users_to_notify.filter { |u| u.completed_invite_at.blank? }
+    users_to_notify.filter { |u| u.completed_welcome_at.blank? }
   end
 
   def users_to_notify

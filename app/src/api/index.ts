@@ -4,9 +4,11 @@ import { transformRecordResponse, recordStore } from './stores'
 import axios, { AxiosResponse } from 'axios'
 
 import { setGlobal } from 'reactn'
-import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from '../util'
+import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from 'src/util'
 import env from '../env'
 import Honeybadger from 'honeybadger-js'
+
+import * as logger from 'src/logger'
 
 const BASE_URL = `${env.API_URL}/v1`
 
@@ -16,9 +18,19 @@ export const v1 = axios.create({
   withCredentials: true
 })
 
+v1.interceptors.request.use(request => {
+  logger.dev(`[Request] ${request.method} ${request.url}`)
+  return request
+})
+
 v1.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    logger.dev('[Response]', response)
+    return response
+  },
   (error) => {
+    logger.dev('[Response Error]', error)
+
     if (!error.response) {
       throw error
     }
@@ -27,13 +39,12 @@ v1.interceptors.response.use(
     // Unauthorized errors should lead to a sign out
     if (response.status === 401) {
       setGlobal({ currentUser: null })
-      throw error
     }
+    throw error
   }
 )
 
 export const store = recordStore
-
 
 //
 // Authentication
@@ -83,6 +94,13 @@ export async function updateUser(user: User, updates: Partial<User>): Promise<Us
     transformForAPI(updates)
   )
 
+  const entity = transformRecordResponse<User>(response.data)
+  assertNotArray(entity)
+  return entity
+}
+
+export async function completeWelcomeUser(user: User): Promise<User> {
+  const response = await v1.put<RecordResponse<User>>(`/users/${user.id}/complete-welcome`)
   const entity = transformRecordResponse<User>(response.data)
   assertNotArray(entity)
   return entity

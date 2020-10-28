@@ -1,7 +1,7 @@
 import React from 'reactn'
 import { Page, Navbar, Block, Chip } from 'framework7-react'
-import { store } from 'src/common/api'
-import { User } from 'src/common/models'
+import { store } from 'src/api'
+import { User } from 'src/models'
 
 import './UserGreenlightPassPage.css'
 import StatusJDenticon from 'src/components/StatusJDenticon'
