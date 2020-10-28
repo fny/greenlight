@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class MagicSignInWorker < ApplicationWorker
   def html_template
     Erubi::Engine.new(<<~HTML).src
@@ -7,7 +8,7 @@ class MagicSignInWorker < ApplicationWorker
       </p>
 
       <p style="font-weight:bold">
-        <a href="<%= user.magic_sign_in_url(remember_me) %>">
+        <a href="<%= user.magic_sign_in_url(remember_me: remember_me) %>">
         #{I18n.t('emails.magic_sign_in.action')}
         </a>
       </p>
@@ -19,7 +20,7 @@ class MagicSignInWorker < ApplicationWorker
       to: user.name_with_email,
       subject: I18n.t('emails.magic_sign_in.subject'),
       html: eval(html_template),
-      text: I18n.t('texts.magic_sign_in', link: user.magic_sign_in_url(remember_me)),
+      text: I18n.t('texts.magic_sign_in', link: user.magic_sign_in_url(remember_me: remember_me)),
     ).run
   end
 
@@ -28,7 +29,7 @@ class MagicSignInWorker < ApplicationWorker
       to: user.mobile_number,
       # TODO: Constantize
       from: Greenlight::PHONE_NUMBER,
-      message: I18n.t('texts.magic_sign_in', link: user.magic_sign_in_url(remember_me))
+      message: I18n.t('texts.magic_sign_in', link: user.magic_sign_in_url(remember_me: remember_me))
     ).run
   end
 
