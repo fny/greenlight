@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ApplicationHelpers
   UnauthorizedError = Class.new(StandardError)
   NotFoundError = Class.new(StandardError)
@@ -5,9 +6,6 @@ module ApplicationHelpers
   SUCCESS = { success: true }.to_json
   FAILURE = { success: false }.to_json
 
-  def success_json
-    SUCCESS
-  end
 
   def action_dispatch_request
     @action_dispatch_request ||= ActionDispatch::Request.new(request.env)
@@ -25,14 +23,7 @@ module ApplicationHelpers
     @request_json ||= parse_request(request)
   end
 
-  def error_response(command)
-    response.status = 422
-    errors = JSONAPI::Errors.serialize(JSONAPI::Errors::ActiveModelInvalid.new(errors: command.errors)).to_h
-    errors[:meta] = {
-      type: command.class.to_s,
-    }
-    errors.to_json
-  end
+
 
   def developer_message
     "Coder, eh? Email us: hello [at] greenlightready"
@@ -58,8 +49,40 @@ module ApplicationHelpers
     end
   end
 
+
+  #
+  # Response Statuses
+  #
+
+  def set_status_created
+    response.status = 201 # Created
+  end
+
+  def set_status_updated
+    response.status = 202 # Accepted
+  end
+
+  def error_response(command)
+    response.status = 422
+    errors = JSONAPI::Errors.serialize(JSONAPI::Errors::ActiveModelInvalid.new(errors: command.errors)).to_h
+    errors[:meta] = {
+      type: command.class.to_s,
+    }
+    errors.to_json
+  end
+
+  def success_response
+    response.status = 204 # No content
+    body ''
+  end
+
+
+  #
+  # Assertions
+  #
+
   def ensure_authenticated!
-    return if current_user.persisted?
+    return if current_user.present? && current_user.persisted?
 
     raise UnauthorizedError
   end

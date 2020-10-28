@@ -42,8 +42,11 @@ Configurator.new(Greenlight) do
 
   set :COOKIE_DOMAINS do
     Set.new([Greenlight::API_URI, Greenlight::APP_URI].map { |u|
-      return 'localhost' if u.host == 'localhost'
-      ".#{u.host.split('.')[-2..].join('.')}"
+      if u.host == 'localhost'
+        'localhost'
+      else
+        ".#{u.host.split('.')[-2..].join('.')}"
+      end
     }).to_a
   end
 

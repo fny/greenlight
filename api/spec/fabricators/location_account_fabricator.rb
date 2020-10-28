@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Fabricator(:location_account) do
   user                    nil
   location                nil

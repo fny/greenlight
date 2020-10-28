@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # TODO: Generalize
 class ScheduledReminderWorker < ApplicationWorker
   def perform(location_permalink)
@@ -19,7 +20,7 @@ class ScheduledReminderWorker < ApplicationWorker
     end
 
     users_to_notify.each do |u|
-      if u.completed_invite_at
+      if u.completed_welcome_at
         ReminderWorker.perform_async(u.id)
       else
         InviteWorker.perform_async(u.id)

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Configurator
   # target - the module/class on which to append the constants
   def initialize(target, &block)
@@ -7,7 +8,7 @@ class Configurator
   end
 
   def set(name, value = nil, &block)
-    @constants[name] = value
+    @constants[name] = value if value
     @constants[name] ||= block.call if block_given?
     @target.const_set(name, @constants[name])
   end

@@ -11,7 +11,7 @@ import { I18nProvider, useLingui } from '@lingui/react'
 import { i18n } from './i18n'
 import { ErrorBoundary } from './ErrorBoundary'
 
-import { ping } from './common/util'
+import { ping } from './util'
 const ONLINE_TEST_URL = 'http://neverssl.com/'
 const PING_APP_URL = `${process.env.API_URL}/v1/ping`
 /** How long to wait for a response in milisecconds */
@@ -40,10 +40,10 @@ export default function () {
     theme: 'auto', // Automatic theme detection
     // App routes
     routes,
-    view: {
-      pushState: true,
-      pushStateSeparator: "#"
-    },
+    // view: {
+    //   pushState: true,
+    //   pushStateSeparator: '#',
+    // },
   }
   const [locale, ] = useGlobal('locale')
   const [, setAPIState] = useGlobal('apiState')

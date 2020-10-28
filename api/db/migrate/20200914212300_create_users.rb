@@ -8,7 +8,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
 
       t.text :magic_sign_in_token, index: { unique: true }
       t.timestamp :magic_sign_in_sent_at
-      
+
       t.text :auth_token, index: { unique: true }
       t.timestamp :auth_token_set_at
       t.text :email, index: { unique: true}

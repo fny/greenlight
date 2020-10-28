@@ -3,12 +3,12 @@ import React from 'reactn'
 import { clone } from 'lodash'
 import { Page, Navbar, Block, Button, List, ListInput } from 'framework7-react'
 
-import { User } from '../../common/models/User'
-import { formatPhone, haveEqualAttrs, deleteBlanks } from 'src/common/util'
-import { updateUser } from 'src/common/api'
+import { User } from '../../models/User'
+import { formatPhone, haveEqualAttrs, deleteBlanks } from 'src/util'
+import { updateUser } from 'src/api'
 import { paths } from 'src/routes'
 import { ReactNComponent } from 'reactn/build/components'
-import { NoCurrentUserError } from 'src/common/errors'
+import { NoCurrentUserError } from 'src/errors'
 
 
 import { Trans, t, defineMessage } from '@lingui/macro'

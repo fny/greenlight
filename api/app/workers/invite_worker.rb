@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 class InviteWorker < ApplicationWorker
   # TODO: Make invites locations specific
   def html_template
     # TODO: Generalize
-    Erubi::Engine.new(<<~HTML
+    Erubi::Engine.new(<<~HTML).src
       <h2>Welcome to Greenlight / Bienvenido a Greenlight</h2>
       <p>
         Hi <%= user.first_name %>,
@@ -16,7 +17,7 @@ class InviteWorker < ApplicationWorker
         for <%= user.submits_surveys_for_text %> through Greenlight.
       </p>
       <p style="font-weight:bold">
-        <a href="<%= user.magic_sign_in_url(false) %>">
+        <a href="<%= user.magic_sign_in_url %>">
           Click Here to Sign In and Review Your Account
         </a>
       </p>
@@ -36,7 +37,7 @@ class InviteWorker < ApplicationWorker
         Cada día, enviará encuestas de síntomas a través de Greenlight para sus hijos o para usted mismo si es maestro o miembro del personal.
       </p>
       <p style="font-weight:bold">
-        <a href="<%= user.magic_sign_in_url(false) %>">
+        <a href="<%= user.magic_sign_in_url %>">
           Haga clic aquí para iniciar sesión y revisar su cuenta
         </a>
       </p>
@@ -44,42 +45,41 @@ class InviteWorker < ApplicationWorker
       <p>Mantente a salvo,<br />
       El Equipo Greenlight
       </p>
-      HTML
-    ).src
+    HTML
   end
 
   def sms_template
     # TODO: Generalize
     Erubi::Engine.new(<<~SMS
       <% if user.invited_at %>REMINDER! <% end %>W.G. Pearson Center has registered you for Greenlight daily monitoring.
-      Sign up here: <%= user.magic_sign_in_url(false) %>
+      Sign up here: <%= user.magic_sign_in_url %>
     SMS
     ).src
   end
 
   def perform(user_id)
-    user = User.find_by!(id: user_id)
+    user = User.find(user_id)
     user.reset_magic_sign_in_token!
     I18n.with_locale(user.locale) do
       if user.email?
         SendGridEmail.new(
           to: user.name_with_email,
           subject: user.invited_at.blank? ? "✨ Welcome to Greenlight! / Bienvenido a Greenlight" : '✨ REMINDER: Welcome to Greenlight! / Bienvenido a Greenlight',
-          html: eval(html_template),
-          text: eval(sms_template),
+          html: eval(html_template), # rubocop:disable Security/Eval
+          text: eval(sms_template), # rubocop:disable Security/Eval
         ).run
       end
       if user.mobile_number?
         PlivoSMS.new(
           to: user.mobile_number,
           from: Greenlight::PHONE_NUMBER,
-          message: eval(sms_template)
+          message: eval(sms_template) # rubocop:disable Security/Eval
         ).run
       end
     end
 
     if user.invited_at.blank?
-      user.invited_at = Time.now
+      user.invited_at = Time.zone.now
       user.save!
     end
   end

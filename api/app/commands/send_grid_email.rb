@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class SendGridEmail < ApplicationCommand
   argument :from, default: "Greenlight <lucy@greenlightready.com>"
   argument :to

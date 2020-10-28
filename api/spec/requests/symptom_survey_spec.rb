@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 RSpec.describe "/v1/users/:user_id/symptom-surveys", type: :request do
@@ -20,7 +21,7 @@ RSpec.describe "/v1/users/:user_id/symptom-surveys", type: :request do
       expect(response_json).not_to have_key(:errors)
       expect(response_json).to have_key(:data)
       expect(response_json[:data][:attributes]).to include(status: 'cleared')
-      expect(user.todays_greenlight_status.status).to eq(GreenlightStatus::CLEARED)
+      expect(user.last_greenlight_status.status).to eq(GreenlightStatus::CLEARED)
     end
 
     MedicalEvent::SYMPTOMS.each do |symptom|
@@ -35,7 +36,7 @@ RSpec.describe "/v1/users/:user_id/symptom-surveys", type: :request do
         expect(response_json).not_to have_key(:errors)
         expect(response_json).to have_key(:data)
         expect(response_json[:data][:attributes]).to include(status: 'pending')
-        expect(user.todays_greenlight_status.status).to eq(GreenlightStatus::PENDING)
+        expect(user.last_greenlight_status.status).to eq(GreenlightStatus::PENDING)
       end
     end
 
@@ -51,7 +52,7 @@ RSpec.describe "/v1/users/:user_id/symptom-surveys", type: :request do
         expect(response_json).not_to have_key(:errors)
         expect(response_json).to have_key(:data)
         expect(response_json[:data][:attributes]).to include(status: 'recovery')
-        expect(user.todays_greenlight_status.status).to eq(GreenlightStatus::RECOVERY)
+        expect(user.last_greenlight_status.status).to eq(GreenlightStatus::RECOVERY)
       end
     end
   end

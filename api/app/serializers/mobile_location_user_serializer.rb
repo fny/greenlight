@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This is the serialzier to use for the mobile app.
 # It should load *everything* that is required.
 class MobileLocationUserSerializer < ApplicationSerializer
@@ -24,7 +25,6 @@ class MobileLocationUserSerializer < ApplicationSerializer
   # attribute :is_sms_gateway_emailable
 
   # attribute :accepted_terms_at
-  # attribute :completed_invite_at
 
   attribute :locale
   attribute :zip_code

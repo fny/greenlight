@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dict } from 'src/common/types'
+import { Dict } from 'src/types'
 import { DateTime } from 'luxon'
 import giphySchedule from 'src/data/giphySchedule'
 

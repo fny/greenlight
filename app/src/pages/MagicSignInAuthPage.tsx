@@ -11,8 +11,8 @@ import { Case, When } from 'src/components/Case'
 import { defineMessage } from '@lingui/macro'
 import { MyTrans } from 'src/i18n'
 
-import { Dict } from 'src/common/types'
-import { getCurrentUser, magicSignIn } from 'src/common/api'
+import { Dict } from 'src/types'
+import { getCurrentUser, magicSignIn } from 'src/api'
 import { dynamicPaths, paths } from 'src/routes'
 
 interface State {

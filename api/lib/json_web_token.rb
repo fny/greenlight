@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module JSONWebToken
   def encode(payload, expiration)
     payload[:exp] = expiration.to_i

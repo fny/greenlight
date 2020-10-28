@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Session
   InvalidSessionError = Class.new(StandardError)
 

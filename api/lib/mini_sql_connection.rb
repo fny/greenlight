@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Borrowed from Discourse
 # https://github.com/discourse/discourse/blob/a51b8d9c6604fa0a1ff4bf07aabbb1bdce7c4b51/lib/mini_sql_multisite_connection.rb
 class MiniSqlConnection < MiniSql::Postgres::Connection

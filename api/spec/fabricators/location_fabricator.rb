@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Fabricator(:location) do
   name         "MyText"
   permalink    { Faker::Internet.unique.domain_word }

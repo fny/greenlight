@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module RequestHelpers
   def response_json
     if response.body.is_a?(Array)

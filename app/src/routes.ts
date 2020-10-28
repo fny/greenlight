@@ -1,7 +1,5 @@
-
 import NotFoundPage from 'src/pages/NotFoundPage'
 import DashboardPage from 'src/pages/DashboardPage'
-
 
 import SplashPage from 'src/pages/SplashPage'
 import SignInPage from 'src/pages/SignInPage'
@@ -16,9 +14,9 @@ import SurveyNewPage from 'src/pages/SurveyNewPage'
 import SurveyThankYouPage from 'src/pages/SurveyThankYouPage'
 
 import { getGlobal } from 'reactn'
-import { User } from 'src/common/models'
+import { User } from 'src/models'
 import MagicSignInAuthPage from './pages/MagicSignInAuthPage'
-import { buildDynamicPath, resolvePath } from './util'
+import { resolvePath } from './util'
 import GiphySchedulePage from './pages/GiphySchedulePage'
 import UserGreenlightPassPage from './pages/UserGreenlightPassPage'
 import DebugPage from './pages/DebugPage'
@@ -43,11 +41,11 @@ export const paths = {
   userGreenlightPassPath: '/users/:userId/greenlight-pass',
   surveysThankYouPath: '/surveys/thank-you',
   // TODO naming
-  adminUsersPath: '/admin/locations/:locationId/users'
+  adminUsersPath: '/admin/locations/:locationId/users',
 }
 
 type PathsDynamized = {
-  [k in (keyof typeof paths)]: (substitutions?: any, query?: any) => string
+  [k in keyof typeof paths]: (substitutions?: any, query?: any) => string
 }
 
 const pathsDynamized = {} as PathsDynamized
@@ -56,6 +54,19 @@ Object.keys(paths).map((key) => {
   const k = key as keyof typeof paths
   pathsDynamized[k] = buildDynamicPath(paths[k])
 })
+
+
+type DynamicPath = (substitutions?: any, query?: any) => string
+
+/**
+ * Builds a callable path that will resolve itslev given substitutions.
+ * @param path
+ */
+export function buildDynamicPath(path: string): DynamicPath {
+  return (substitutions?: any, query?: any): string => {
+    return resolvePath(path, substitutions, query)
+  }
+}
 
 export const dynamicPaths = {
   currentUserHomePath: () => {
@@ -91,17 +102,17 @@ export const dynamicPaths = {
     if (!user) return paths.rootPath
     const people = [user, ...user.sortedChildren()]
     if (index < people.length) {
-      return resolvePath(paths.userSurveysNewPath, [ index ])
+      return resolvePath(paths.userSurveysNewPath, [index])
     } else {
       return paths.surveysThankYouPath
     }
   },
-  ...pathsDynamized
+  ...pathsDynamized,
 }
 
 const beforeEnter = {
+  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
   requireSignIn: function(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
-
     if (isSignedIn()) {
       resolve()
     } else {
@@ -110,6 +121,7 @@ const beforeEnter = {
       this.navigate(paths.rootPath)
     }
   },
+  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
   redirectHomeIfSignedIn: function(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
     if (isSignedIn()) {
       reject()
@@ -117,94 +129,93 @@ const beforeEnter = {
     } else {
       resolve()
     }
-  }
+  },
 }
-
 
 const routes = [
   {
     path: paths.rootPath,
     component: SplashPage,
-    beforeEnter: beforeEnter.redirectHomeIfSignedIn
+    beforeEnter: beforeEnter.redirectHomeIfSignedIn,
   },
   {
     path: paths.welcomePath,
     component: WelcomePage,
-    beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn,
   },
   {
     path: paths.signInPath,
     component: SignInPage,
-    beforeEnter: beforeEnter.redirectHomeIfSignedIn
+    beforeEnter: beforeEnter.redirectHomeIfSignedIn,
   },
   {
     path: paths.magicSignInPath,
     component: MagicSignInPage,
-    beforeEnter: beforeEnter.redirectHomeIfSignedIn
+    beforeEnter: beforeEnter.redirectHomeIfSignedIn,
   },
   {
     path: paths.dashboardPath,
     component: DashboardPage,
-    beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn,
   },
   {
     path: paths.magicSignInAuthPath,
-    component: MagicSignInAuthPage
+    component: MagicSignInAuthPage,
   },
   {
     path: paths.welcomePath,
     component: WelcomePage,
-    beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn,
   },
   {
     path: paths.welcomeReviewPath,
     component: WelcomeReviewPage,
-    beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn,
   },
   {
     path: paths.welcomePasswordPath,
     component: WelcomePasswordPage,
-    beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn,
   },
   {
     path: paths.welcomeSurveyPath,
     component: WelcomeSurveyPage,
-    beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn,
   },
   {
     path: paths.welcomeChildPath,
     component: WelcomeChildPage,
-    beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn,
   },
   {
     path: paths.userSurveysNewPath,
     component: SurveyNewPage,
-    beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn,
   },
   {
     path: paths.surveysThankYouPath,
     component: SurveyThankYouPage,
-    beforeEnter: beforeEnter.requireSignIn
+    beforeEnter: beforeEnter.requireSignIn,
   },
   {
     path: paths.userGreenlightPassPath,
-    component: UserGreenlightPassPage
+    component: UserGreenlightPassPage,
   },
   {
     path: paths.adminUsersPath,
-    component: AdminUsersPage
+    component: AdminUsersPage,
   },
   {
     path: '/giphy-schedule',
-    component: GiphySchedulePage
+    component: GiphySchedulePage,
   },
   {
     path: '/debug',
-    component: DebugPage
+    component: DebugPage,
   },
   {
     path: '(.*)',
-    component: NotFoundPage
+    component: NotFoundPage,
   },
 ]
 

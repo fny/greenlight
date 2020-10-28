@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 RSpec.describe '/v1/sessions', type: :request do
@@ -10,7 +11,7 @@ RSpec.describe '/v1/sessions', type: :request do
                                   password: user.password,
                                   rememberMe: false,
                                 })
-      expect_success_json
+      expect_success_response
       expect(response.cookies[Session::COOKIE_NAME]).not_to eq(nil)
       get_json('/v1/current-user')
       expect(response_json.fetch(:data).fetch(:id)).to eq(user.id.to_s)
@@ -25,7 +26,7 @@ RSpec.describe '/v1/sessions', type: :request do
                                   password: user.password,
                                   rememberMe: false,
                                 })
-      expect_success_json
+      expect_success_response
       expect(response.cookies[Session::COOKIE_NAME]).not_to eq(nil)
       get_json('/v1/current-user')
       expect(response_json.fetch(:data).fetch(:id)).to eq(user.id.to_s)
