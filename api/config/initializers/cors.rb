@@ -12,7 +12,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     if Rails.env.production?
       origins Greenlight::APP_URI.host
     else
-      origins 'localhost:9990', '127.0.0.1:9990', 'app-dev.greenlightready.com', GREENLIGHT_SUBDOMAIN_PATTERN
+      origins 'localhost:9991', '127.0.0.1:9991', 'app-dev.greenlightready.com', GREENLIGHT_SUBDOMAIN_PATTERN
     end
 
     resource '*',
