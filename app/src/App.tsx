@@ -1,4 +1,4 @@
-import React, { Fragment, getGlobal, useGlobal } from 'reactn'
+import React, { Fragment, getGlobal, useEffect, useGlobal } from 'reactn'
 
 import './App.css'
 
@@ -10,6 +10,17 @@ import { Framework7Params } from 'framework7/components/app/app-class'
 import { I18nProvider, useLingui } from '@lingui/react'
 import { i18n } from './i18n'
 import { ErrorBoundary } from './ErrorBoundary'
+
+import { ping } from './common/util'
+const ONLINE_TEST_URL = 'http://neverssl.com/'
+const PING_APP_URL = `${process.env.API_URL}/v1/ping`
+/** How long to wait for a response in milisecconds */
+const TIMEOUT = 5000
+
+/** How long to wait in between checks with exponential backoff applied */
+const CHECK_AFTER_MS = 1000
+const HAS_ONLINE_SUPPORT = 'onLine' in navigator
+
 
 function I18nWatchLocale({ children }: { children: React.ReactNode }) {
   const { i18n } = useLingui()
@@ -35,6 +46,29 @@ export default function () {
     },
   }
   const [locale, ] = useGlobal('locale')
+  const [, setAPIState] = useGlobal('apiState')
+  const [, setInternetState] = useGlobal('internetState')
+
+  useEffect(() => {
+    const timerId = window.setInterval(() => {
+      // Check if app is online
+      ping(PING_APP_URL, TIMEOUT).then((isAPIOnline) => {
+        setAPIState(isAPIOnline)
+        if (!isAPIOnline) {
+          if (HAS_ONLINE_SUPPORT) {
+            setInternetState(navigator.onLine)
+          } else {
+            ping(ONLINE_TEST_URL, TIMEOUT).then((isInternetConnected) => {
+              setInternetState(isInternetConnected)
+            })
+          }
+        }
+      })
+    }, CHECK_AFTER_MS)
+
+    return () => window.clearInterval(timerId)
+  }, [])
+
   return (
     <ErrorBoundary>
       <I18nProvider i18n={i18n}>
