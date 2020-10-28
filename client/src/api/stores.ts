@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios'
 import { Dict, Record, RecordResponse, RecordRelationship, RecordPointer, EntityId } from 'src/types'
 import { Model } from 'src/models'
 import { deserializeJSONAPI } from 'src/models/Model'

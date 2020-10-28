@@ -1,4 +1,4 @@
-import React, { Fragment, getGlobal, useGlobal } from 'reactn'
+import React, { Fragment, useGlobal } from 'reactn'
 
 import './App.css'
 
@@ -29,10 +29,10 @@ export default function () {
     theme: 'auto', // Automatic theme detection
     // App routes
     routes,
-    // view: {
-    //   pushState: true,
-    //   pushStateSeparator: '#',
-    // },
+    view: {
+      pushState: true,
+      pushStateSeparator: '#',
+    },
   }
   const [locale] = useGlobal('locale')
 

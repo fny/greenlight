@@ -17,7 +17,13 @@ const env = {
   isProduction(): boolean {
     return process.env.NODE_ENV === 'production'
   },
-  API_URL: required('REACT_APP_API_URL')
+  API_URL: (() => {
+    const herokuAppName = process.env['REACT_APP_HEROKU_APP_NAME']
+    if (herokuAppName) {
+      return `https://${herokuAppName}.herokuapp.com/api`
+    }
+    return required('REACT_APP_API_URL')
+  })()
 }
 
 export default env

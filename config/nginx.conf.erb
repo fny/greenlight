@@ -1,5 +1,5 @@
 daemon off;
-#Heroku dynos have at least 4 cores.
+# Heroku dynos have at least 4 cores.
 worker_processes <%= ENV.fetch('NGINX_WORKERS', 4) %>;
 
 events {
@@ -23,13 +23,33 @@ http {
     default_type application/octet-stream;
     sendfile on;
 
-    #Must read the body in 5 seconds.
+    # Must read the body in 5 seconds.
     client_body_timeout 5;
 
     upstream app_server {
         server unix:/tmp/nginx.socket fail_timeout=0;
     }
+<% if ENV.key?('HEROKU_APP_NAME') %>
+    server {
+        listen <%= ENV.fetch('PORT') %>;
+        server_name <%= ENV.fetch('HEROKU_APP_NAME') %>.herokuapp.com;
+        keepalive_timeout 5;
 
+        root <%= File.expand_path("../client/build", __dir__) %>;
+        index index.html index.htm;
+
+        location / {
+          try_files $uri /index.html;
+        }
+
+        location /api {
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header Host $http_host;
+            proxy_redirect off;
+            proxy_pass http://app_server;
+        }
+    }
+<% else %>
     server {
         listen <%= ENV.fetch('PORT') %>;
         server_name <%= URI(ENV.fetch('API_URL')).host %>;
@@ -53,4 +73,5 @@ http {
           try_files $uri /index.html;
         }
     }
+<% end %>
 }

@@ -11,7 +11,7 @@ import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/errors'
 
 
-import { Trans, t, defineMessage } from '@lingui/macro'
+import { defineMessage } from '@lingui/macro'
 import { MyTrans, toggleLocale } from 'src/i18n'
 
 interface State {

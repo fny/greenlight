@@ -9,7 +9,6 @@ import {
   Navbar, BlockTitle
 } from 'framework7-react'
 
-import { Case, When } from 'src/components/Case'
 
 import { joinWords } from "src/util"
 import { User } from 'src/models/User'
@@ -17,9 +16,9 @@ import { paths } from "src/routes"
 import { ReactNComponent } from "reactn/build/components"
 import { NoCurrentUserError } from "src/errors"
 
-import { defineMessage, plural, Trans } from '@lingui/macro'
+import { defineMessage } from '@lingui/macro'
 import { completeWelcomeUser } from "src/api"
-import { myPlural, MyTrans, toggleLocale } from "src/i18n"
+import { MyTrans } from "src/i18n"
 
 
 interface State {
