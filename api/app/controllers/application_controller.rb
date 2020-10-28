@@ -50,17 +50,17 @@ class ApplicationController < Sinatra::Base
   end
 
   error NotFoundError do
-    response.status = 401
+    response.status = 404 # Not Found
     JSONAPI::Errors.serialize(JSONAPI::Errors::NotFound.new).to_json
   end
 
   error UnauthorizedError do
-    response.status = 401
+    response.status = 401 # Unauthorized
     JSONAPI::Errors.serialize(JSONAPI::Errors::Unauthorized.new).to_json
   end
 
   error ForbiddenError do
-    response.status = 403
+    response.status = 403 # Forbidden
     JSONAPI::Errors.serialize(JSONAPI::Errors::Forbidden.new).to_json
   end
 end

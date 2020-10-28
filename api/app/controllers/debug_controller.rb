@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module DebugController
   extend ActiveSupport::Concern
   included do
@@ -14,12 +15,12 @@ module DebugController
 
     post '/debug/cookies' do
       cookies[:test] = 'test'
-      success_json
+      success_response
     end
 
     delete '/debug/cookies' do
       cookies.delete(:test)
-      success_json
+      success_response
     end
 
     get '/debug/cookies' do

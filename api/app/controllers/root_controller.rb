@@ -13,6 +13,10 @@ module RootController
       'pong'
     end
 
+    get '/v1/ping' do
+      'pong'
+    end
+
     get '/version' do
       {
         'release_created_at': ENV['HEROKU_RELEASE_CREATED_AT'],
