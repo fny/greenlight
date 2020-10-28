@@ -1,0 +1,10 @@
+{
+  "name": "greenlight",
+  "private": true,
+  "engines": {
+    "node": "15.0.1"
+  },
+  "scripts": {
+    "heroku-postbuild": "cd client && npm install && npm run build"
+  }
+}

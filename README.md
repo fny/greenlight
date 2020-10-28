@@ -2,23 +2,31 @@
 
 This is the README for the overall project.
 
-You'll need to also start the API (see `./api/README.md`) and the client app `./app`.
+## Requirements
 
-The admin application is a work in progress.
+  - Postgres v12
+  - Redis v6
+  - NGINX if you want to dev while using the api-dev loopback address;
+    you'll need to use the configuration in `nginx-development.conf`.
+  - See `/frontend` for frontend specific requirements
 
-## Directory Structure
+## Setting up the project
 
- - `/api` Greenlight API. Runs on port 9990.
- - `/app` Mobile web application. Runs on port 9991.
- - `/admin` Admin dashboard. Needs work. Runs on port 9992.
- - `/commonjs` This is where code between the mobile app and the admin application lives.
- - `/scripts` This is where useful scripts go.
+After you've installed the above, run the following:
 
-## Run the project
+```
+bundle install
+bundle exec rake db:create
+bundle exec rake db:migrate
+bundle exec rake db:seed
+```
 
- - cd app && npm start
- - cd api && bin/rails s
- - cd api && bundle exec sidekiq
+## Running the project
+
+ - `cd frontend && npm start` to start the frontend
+ - `bin/rails s` to start the API server
+ - `bundle exec sidekiq` to start the worker
+ - `bundle exec rspec` to run the API test suite
 
 ## Coding Conventions
 
@@ -26,17 +34,6 @@ The admin application is a work in progress.
  - Follow [Conventional Commits](https://conventionalcommits.org)
  - Follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0)
  - Follow style guides specific to the directories
-
-## Development Requirements
-
-For the top level of this project, you'll need the following:
-
- - Bash and Ruby v2.7.1 to run some of scripts
- - Optionally, if you want to access the app from `app-dev.greenlightready.com` and `api-dev.greenlightready.com` you can install NGINX and use the configuration in `nginx-development.conf`.
- - See `/api`, `/app`, and `/admin` for more specific installation requirements.
-
-
-Note this directory structure is bound to change, especially during early stages.
 
 ## Short URLs
 
@@ -48,11 +45,6 @@ It's available across all of the environments:
  - staging.glit.me/* redirects to app-staging.greenlightready.com/*
 
 This variable is set using the SHORT_URL environment variable.
-
-## README TODOs
-
- - Explain deployment and staging
- - Clean up notes below
 
 ---
 
@@ -197,3 +189,95 @@ curl -g "https://api.honeybadger.io/v1/deploys? \
 
 
 
+
+
+## Tags
+
+ - TODO: Things that need to be done
+ - FIXME: Things that really need to be fixed
+ - HACK: A quick and dirty thing that needs to be done better
+
+## TODO
+
+On Error, return the proper errors object
+
+Handle ERR_CONNECTION_REFUSED
+
+
+curl -g "https://api.honeybadger.io/v1/deploys? \
+  deploy[environment]=production& \
+  deploy[local_username]=Faraz Yashar& \
+  deploy[repository]=git@github.com:user/repo.git& \
+  deploy[revision]=b6826b8& \
+  api_key=1a49717c"
+
+
+## Yason API
+
+We'll be using this for version 2 of the API.
+
+Goals:
+
+ - Hypermedia sanity
+ - Add more flexibility than JSON API
+ - Add actions
+ - Allow for bulk operations
+ - Allow for remote/client sync
+ - Allow for conflict resolution
+ - Smaller payloads
+
+
+### "Primitive" Types
+
+ - Boolean:
+ - Password:
+ - Symbol:
+ - String:
+ - Integer:
+ - BigInt:
+ - Int64:
+ - Int32:
+ - Float:
+ - Double:
+ - Date:
+ - DateTime:
+ - Enum:
+ - Array:
+
+### Actions
+
+Based on HTTP verbs:
+
+POST /resource => createResource
+Creates a resource and updates the locale store
+
+GET /resource => readResource
+Fetches a resource and updates the local store
+
+PATCH /resource => updateResource
+Updates a resource and updates the local store
+
+DELETE /resource => deleteResource
+Performs a soft delete of the resource at first and queues a delete to occur far into the future giving clients time to delete data
+
+Writer actions:
+
+POST /records/action
+POST /records/:id/action
+
+Reader actions:
+
+GET /records/action
+
+
+It should be well known if an endpoint retuns a single value or not
+
+
+### Camel Casing
+
+
+### Errors
+
+### Pagination Meta
+
+### Extensions
