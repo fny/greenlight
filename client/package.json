@@ -32,10 +32,6 @@
     "i18n-add-locale": "lingui add-locale",
     "i18n-extract": "lingui extract --clean --overwrite",
     "i18n-compile": "lingui compile",
-    "build-cordova": "rm -rf ./cordova/www/* && npm run build && mv ./build/* ./cordova/www/ && rm -rf ./build",
-    "run-cordova-ios": "npm run build-cordova && cd cordova && cordova run ios",
-    "run-cordova-android": "npm run build-cordova && cd cordova && cordova run android",
-    "run-cordova-browser": "npm run build-cordova && cd cordova && cordova run browser"
   },
   "browserslist": {
     "production": [
