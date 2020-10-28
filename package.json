@@ -5,6 +5,11 @@
     "node": "15.0.1"
   },
   "scripts": {
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "build-client": "cd client && npm install && npm run build",
+    "build-cordova": "npm run build-client && rsync -a --delete client/build cordova/www",
+    "run-cordova-ios": "npm run build-cordova && cd cordova && cordova run ios",
+    "run-cordova-android": "npm run build-cordova && cd cordova && cordova run android",
+    "run-cordova-browser": "npm run build-cordova && cd cordova && cordova run browser",
+    "heroku-postbuild": "npm run build-client"
   }
 }
