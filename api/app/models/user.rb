@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # TODO: Incorporate these into this model.
 #
 # hasNotSubmittedOwnSurvey
@@ -12,30 +14,51 @@ class User < ApplicationRecord
   extend Memoist
 
   TIME_ZONES = ActiveSupport::TimeZone.all.map { |x| x.tzinfo.name }
-
-  enumerize :daily_reminder_type, in: [:text, :email, :none]
+  DAILY_REMINDER_TYPES = [
+    TEXT = 'text',
+    EMAIL = 'email',
+    NONE = 'none'
+  ]
+  enumerize :daily_reminder_type, in: DAILY_REMINDER_TYPES
   enumerize :time_zone, in: TIME_ZONES, default: 'America/New_York'
 
-  has_many :parent_relationships, foreign_key: :child_id,
-           class_name: 'ParentChild'
-  has_many :parents, through: :parent_relationships,
+  # @!attribute [rw]
+  # Users relationships as a child to other users
+  has_many :child_relationships,
+           foreign_key: :child_id,
+           class_name: 'ParentChild',
+           inverse_of: :child
+
+  has_many :parent_relationships,
+           foreign_key: :parent_id,
+           class_name: 'ParentChild',
+           inverse_of: :parent
+
+  has_many :parents,
+           through: :child_relationships,
            source: :parent
-  has_many :child_relationships, foreign_key: :parent_id,
-           class_name: 'ParentChild'
-  has_many :children, through: :child_relationships,
+
+  has_many :children,
+           through: :parent_relationships,
            source: :child
 
   has_many :greenlight_statuses
-  has_many :medical_events
-  has_many :location_accounts
+  has_many :medical_events, inverse_of: :user
+  has_many :location_accounts, inverse_of: :user
   has_many :locations, through: :location_accounts
   has_many :cohorts, through: :cohort_user
 
-  has_one :todays_greenlight_status, -> { submitted_for_today }, class_name: 'GreenlightStatus'
-  has_one :last_greenlight_status, -> { order('created_at DESC') }, class_name: 'GreenlightStatus'
+  self.permitted_params = %i[
+    first_name last_name email password mobile_number mobile_carrier locale
+    zip_code time_zone birth_date physician_name physician_phone_number
+    daily_reminder_type needs_physician
+  ]
 
-  has_many :recent_greenlight_statuses, -> { recently_created }, class_name: 'GreenlightStatus'
-  has_many :recent_medical_events, -> { recently_created }, class_name: 'MedicalEvent'
+  # Last Greenlight statuse submitted by the user
+  has_one :last_greenlight_status,
+          -> { order('created_at DESC') },
+          class_name: 'GreenlightStatus',
+          inverse_of: :user
 
   has_secure_password validations: false
   has_secure_token :auth_token
@@ -53,15 +76,29 @@ class User < ApplicationRecord
   before_save :format_mobile_number
   before_save :timestamp_password
 
-  before_save { email.downcase! if email }
+  before_save { self.email&.downcase! }
 
-  # @param [EmailOrPhone, String] value
-  def self.find_by_email_or_mobile(value)
-    email_or_mobile = value.kind_of?(EmailOrPhone) ? value : EmailOrPhone.new(value)
-    if email_or_mobile.email?
-      User.find_by(email: email_or_mobile.value)
-    elsif email_or_mobile.phone?
-      User.find_by(mobile_number: email_or_mobile.value)
+  def self.create_account!(
+    first_name:, last_name:, password:, location:, role:,
+    email: nil, mobile_number: nil, permission_level: 'none'
+  )
+    ActiveRecord::Base.transaction do
+      u = User.create!(
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        mobile_number: mobile_number,
+        password: password
+      )
+
+      l = Location.find_by_id_or_permalink!(location)
+
+      LocationAccount.create!(
+        user_id: u.id,
+        location: l,
+        role: role,
+        permission_level: permission_level
+      )
     end
   end
 
@@ -69,11 +106,20 @@ class User < ApplicationRecord
     find_by(email: 'faraz.yashar@gmail.com')
   end
 
-  def inferred_greenlight_status
-    return todays_greenlight_status if todays_greenlight_status
-    if last_greenlight_status && !last_greenlight_status.expired?
-      return last_greenlight_status
+  # @param [EmailOrPhone, String] value
+  def self.find_by_email_or_mobile(value)
+    email_or_mobile = value.is_a?(EmailOrPhone) ? value : EmailOrPhone.new(value)
+    if email_or_mobile.email?
+      User.find_by(email: email_or_mobile.value)
+    elsif email_or_mobile.phone?
+      User.find_by(mobile_number: email_or_mobile.value)
     end
+  end
+
+  # Todays status
+  def inferred_greenlight_status
+    return last_greenlight_status if last_greenlight_status && !last_greenlight_status.expired?
+
     GreenlightStatus.new(
       user: self,
       status: GreenlightStatus::UNKNOWN
@@ -95,20 +141,20 @@ class User < ApplicationRecord
   def save_sign_in!(ip)
     self.last_sign_in_ip = self.current_sign_in_ip
     self.current_sign_in_ip = ip
-    self.last_sign_in_at = Time.now
+    self.last_sign_in_at = Time.zone.now
     self.sign_in_count += 1
     save!
   end
 
   def reset_auth_token!
     regenerate_auth_token
-    self.auth_token_set_at = Time.now
+    self.auth_token_set_at = Time.zone.now
     save!
   end
 
   def reset_magic_sign_in_token!
     regenerate_magic_sign_in_token
-    self.magic_sign_in_sent_at = Time.now
+    self.magic_sign_in_sent_at = Time.zone.now
     save!
   end
 
@@ -123,6 +169,7 @@ class User < ApplicationRecord
 
   def mobile_number=(value)
     return if value.blank?
+
     parsed = Phonelib.parse(value, 'US').full_e164
     parsed = nil if parsed.blank?
     self[:mobile_number] = parsed
@@ -131,13 +178,9 @@ class User < ApplicationRecord
   # PERF: N+1 query
   def submits_surveys_for
     people = []
-    if location_accounts.any?
-      people.push(self)
-    end
+    people.push(self) if location_accounts.any?
     children.each do |c|
-      if c.location_accounts.any?
-        people.push(self)
-      end
+      people.push(self) if c.location_accounts.any?
     end
   end
 
@@ -154,7 +197,7 @@ class User < ApplicationRecord
     end
   end
 
-  def magic_sign_in_url(remember_me = false)
+  def magic_sign_in_url(remember_me: false)
     if remember_me
       "#{Greenlight::SHORT_URL}/mgk/#{magic_sign_in_token}/y"
     else
@@ -164,7 +207,7 @@ class User < ApplicationRecord
 
   # @param [Location] location
   def admin_at?(location)
-    location_accounts.where(location_id: location.id, permission_level: LocationAccount::ADMIN).exists?
+    location_accounts.exists?(location_id: location.id, permission_level: LocationAccount::ADMIN)
   end
 
   # @param [User] child_user
@@ -183,7 +226,9 @@ class User < ApplicationRecord
 
   # @param [User] user
   def admin_of?(user)
-    DB.query_single(<<~SQL, admin_id: self.id, user_id: user.id).any?
+    raise(ArgumentError, "#{user.class} is not a User") unless user.is_a?(User)
+
+    DB.query_single(<<~SQL.squish, admin_id: self.id, user_id: user.id).any?
       select 1
       from (
         select
@@ -274,9 +319,8 @@ end
 #  physician_phone_number             :text
 #  daily_reminder_type                :text             default("text"), not null
 #  needs_physician                    :boolean          default(FALSE), not null
-#  accepted_terms_at                  :datetime
 #  invited_at                         :datetime
-#  completed_invite_at                :datetime
+#  completed_welcome_at               :datetime
 #  sign_in_count                      :integer          default(0), not null
 #  current_sign_in_at                 :datetime
 #  last_sign_in_at                    :datetime

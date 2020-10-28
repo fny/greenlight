@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class UserSerializer < ApplicationSerializer
   attribute :first_name
   attribute :last_name
@@ -6,8 +7,7 @@ class UserSerializer < ApplicationSerializer
   attribute :physician_name
   attribute :physician_phone_number
   attribute :zip_code
-  attribute :accepted_terms_at
-  attribute :completed_invite_at
+  attribute :completed_welcome_at
 
   has_many :location_accounts
   has_one :last_greenlight_status, serializer: GreenlightStatusSerializer, record_type: 'greenlightStatus'
