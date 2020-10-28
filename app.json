@@ -40,16 +40,20 @@
     "SENDGRID_API_KEY": {
       "value": "BLANK",
       "description": "This value needs to be set manually."
+    },
+    "CI": {
+      "value": "false",
+      "description": "Work around until eslint versions match."
     }
   },
   "formation": {
     "web": {
       "quantity": 1,
-      "size": "hobby"
+      "size": "standard-1x"
     },
     "worker": {
       "quantity": 1,
-      "size": "hobby"
+      "size": "standard-1x"
     }
   },
   "addons": [
@@ -62,10 +66,13 @@
   ],
   "buildpacks": [
     {
-      "url": "https://github.com/heroku/heroku-buildpack-inline"
+      "url": "https://github.com/heroku/heroku-buildpack-nginx"
     },
     {
       "url": "https://github.com/heroku/heroku-buildpack-ruby"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs"
     }
   ],
   "environments": {

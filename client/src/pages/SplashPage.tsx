@@ -3,10 +3,7 @@ import {
   Page,
   Block,
   Button,
-  BlockFooter
 } from 'framework7-react'
-
-import { Trans } from '@lingui/macro'
 
 import './SplashPage.css'
 import { MyTrans, toggleLocale } from 'src/i18n'

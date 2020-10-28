@@ -41,7 +41,5 @@ module Greenlight
     end
 
     config.skylight.probes += %w[sinatra redis]
-    # config.middleware.use Rack::Protection, instrumenter: ActiveSupport::Notifications
-
   end
 end
