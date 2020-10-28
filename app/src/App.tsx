@@ -13,7 +13,7 @@ import { ErrorBoundary } from './ErrorBoundary'
 
 import { ping } from './util'
 const ONLINE_TEST_URL = 'http://neverssl.com/'
-const PING_APP_URL = `${process.env.API_URL}/v1/ping`
+const PING_APP_URL = `${process.env.REACT_APP_API_URL}/v1/ping`
 /** How long to wait for a response in milisecconds */
 const TIMEOUT = 5000
 
