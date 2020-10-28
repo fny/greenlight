@@ -1,0 +1,85 @@
+require:
+  - ./rubocop/rubocop
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-performance
+
+AllCops:
+  TargetRubyVersion: 2.7
+  TargetRailsVersion: 6.0
+  Exclude:
+    - 'rubocop/**/*'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+    - 'db/fixtures/**/*'
+    - 'db/schema.rb'
+    - 'tmp/**/*'
+    - 'bin/**/*'
+  CacheRootDirectory: tmp
+  MaxFilesInCache: 18000
+  NewCops: enable
+
+Cop/AvoidKeywordArgumentsInSidekiqWorkers:
+  Enabled: true
+  Include:
+    - 'app/workers/**/*'
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Enabled: false
+
+Rails/DynamicFindBy:
+  Whitelist:
+    - find_by_email_or_mobile
+    - find_by_email_or_mobile!
+    - find_by_id_or_permalink
+    - find_by_id_or_permalink!
+
+# We use database ON DELETEs instead
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+RSpec/DescribedClass:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+# Frozen String Literal
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Exclude:
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'config/**/*'
+    - 'danger/**/*'
+    - 'db/**/*'
+    - 'lib/tasks/**/*'
+    - 'rubocop/**/*'
+    - 'scripts/**/*'
+
+Style/RedundantSelf:
+  Enabled: false
+
+# This cop checks whether some constant value isn't a
+# mutable literal (e.g. array or hash).
+Style/MutableConstant:
+  Enabled: true
+  Exclude:
+    - 'db/migrate/**/*'
+    - 'db/post_migrate/**/*'
+
