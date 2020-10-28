@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_26_042632) do
+ActiveRecord::Schema.define(version: 2020_10_28_041142) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -150,7 +150,7 @@ ActiveRecord::Schema.define(version: 2020_10_26_042632) do
     t.text "mobile_number_unconfirmed"
     t.text "locale", default: "en", null: false
     t.text "zip_code"
-    t.text "time_zone"
+    t.text "time_zone", default: "America/New_York"
     t.date "birth_date"
     t.text "physician_name"
     t.text "physician_phone_number"

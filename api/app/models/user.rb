@@ -313,7 +313,7 @@ end
 #  mobile_number_unconfirmed          :text
 #  locale                             :text             default("en"), not null
 #  zip_code                           :text
-#  time_zone                          :text
+#  time_zone                          :text             default("America/New_York")
 #  birth_date                         :date
 #  physician_name                     :text
 #  physician_phone_number             :text
