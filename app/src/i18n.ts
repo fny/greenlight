@@ -5,15 +5,13 @@ import { isLength } from 'lodash'
 import { ReactElement } from 'react'
 import React from 'reactn'
 import { Fragment, getGlobal, setGlobal } from 'reactn'
-import { Dict } from './common/types'
+import { Dict } from './types'
 import en from './locales/en/messages'
 import es from './locales/es/messages'
 
 export const i18n = setupI18n()
-;(i18n as any).load('en', en.messages)
-;(i18n as any).load('es', es.messages)
-i18n.activate('en')
-
+i18n.load('en', en.messages)
+i18n.load('es', es.messages)
 
 export function isEmpty(obj: any) {
   // null and undefined are "empty"
@@ -31,6 +29,8 @@ export function cookieLocale(): Locales {
   const locale = Cookies.get('_gl_locale') || 'en'
   return locale as Locales
 }
+
+i18n.activate(cookieLocale())
 
 export class MyI18n {
   catalogs = { en, es }

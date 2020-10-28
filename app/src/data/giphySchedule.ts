@@ -1,4 +1,4 @@
-import { Dict } from "src/common/types"
+import { Dict } from "src/types"
 
 const giphySchedule: Dict<string> = {
   '12/2/2020': 'xT0BKsuDrhX7CDYO8U', // Wed

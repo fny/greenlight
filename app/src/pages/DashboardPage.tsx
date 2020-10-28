@@ -4,11 +4,11 @@ import UserJDenticon from '../components/UserJDenticon'
 import { greeting } from 'src/util'
 import If from 'src/components/If'
 import { dynamicPaths, paths } from 'src/routes'
-import colors from 'src/common/colors'
+import colors from 'src/misc/colors'
 
 import { MyTrans, toggleLocale } from 'src/i18n'
 import { Trans, t, defineMessage } from '@lingui/macro'
-import { User } from 'src/common/models'
+import { User } from 'src/models'
 import { currentUser, signOut } from 'src/initializers/providers'
 import { ReactNComponent } from 'reactn/build/components'
 

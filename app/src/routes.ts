@@ -16,9 +16,9 @@ import SurveyNewPage from 'src/pages/SurveyNewPage'
 import SurveyThankYouPage from 'src/pages/SurveyThankYouPage'
 
 import { getGlobal } from 'reactn'
-import { User } from 'src/common/models'
+import { User } from 'src/models'
 import MagicSignInAuthPage from './pages/MagicSignInAuthPage'
-import { buildDynamicPath, resolvePath } from './util'
+import { resolvePath } from './util'
 import GiphySchedulePage from './pages/GiphySchedulePage'
 import UserGreenlightPassPage from './pages/UserGreenlightPassPage'
 import DebugPage from './pages/DebugPage'
@@ -56,6 +56,19 @@ Object.keys(paths).map((key) => {
   const k = key as keyof typeof paths
   pathsDynamized[k] = buildDynamicPath(paths[k])
 })
+
+
+type DynamicPath = (substitutions?: any, query?: any) => string
+
+/**
+ * Builds a callable path that will resolve itslev given substitutions.
+ * @param path
+ */
+export function buildDynamicPath(path: string): DynamicPath {
+  return (substitutions?: any, query?: any): string => {
+    return resolvePath(path, substitutions, query)
+  }
+}
 
 export const dynamicPaths = {
   currentUserHomePath: () => {
@@ -100,6 +113,7 @@ export const dynamicPaths = {
 }
 
 const beforeEnter = {
+  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
   requireSignIn: function(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
 
     if (isSignedIn()) {
@@ -110,6 +124,7 @@ const beforeEnter = {
       this.navigate(paths.rootPath)
     }
   },
+  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
   redirectHomeIfSignedIn: function(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
     if (isSignedIn()) {
       reject()
@@ -119,7 +134,6 @@ const beforeEnter = {
     }
   }
 }
-
 
 const routes = [
   {

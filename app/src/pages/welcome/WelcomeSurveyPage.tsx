@@ -17,13 +17,13 @@ import {
 import { Case, When } from 'src/components/Case'
 
 import { esExclaim, greeting, joinWords } from "src/util"
-import { User } from 'src/common/models/User'
+import { User } from 'src/models/User'
 import { dynamicPaths, paths } from "src/routes"
 import { ReactNComponent } from "reactn/build/components"
-import { NoCurrentUserError } from "src/common/errors"
+import { NoCurrentUserError } from "src/errors"
 
 import { defineMessage, plural, Trans } from '@lingui/macro'
-import { updateUser } from "src/common/api"
+import { completeWelcomeUser, updateUser } from "src/api"
 import { myPlural, MyTrans, toggleLocale } from "src/i18n"
 import { Support } from "framework7"
 import { DateTime } from "luxon"

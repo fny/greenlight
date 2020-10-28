@@ -12,8 +12,8 @@ import { Trans, defineMessage } from '@lingui/macro'
 
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
 import './MagicSignInPage.css'
-import { Dict } from 'src/common/types'
-import { createMagicSignIn } from 'src/common/api'
+import { Dict } from 'src/types'
+import { createMagicSignIn } from 'src/api'
 import { MyTrans } from 'src/i18n'
 
 interface State {

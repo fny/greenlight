@@ -13,7 +13,7 @@ import 'framework7-icons'
 
 import './index.css'
 
-import { getCurrentUser } from './common/api'
+import { getCurrentUser } from './api'
 import Honeybadger from 'honeybadger-js'
 
 // Init Framework7-React plugin

@@ -1,6 +1,6 @@
 import { createProvider, setGlobal, getGlobal } from 'reactn'
-import { deleteSession, getCurrentUser } from 'src/common/api'
-import { User } from 'src/common/models'
+import { deleteSession, getCurrentUser } from 'src/api'
+import { User } from 'src/models'
 import { cookieLocale, myI18n } from 'src/i18n'
 import Honeybadger from './honeybadger'
 
