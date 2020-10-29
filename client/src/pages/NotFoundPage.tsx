@@ -1,6 +1,5 @@
 import React from 'react'
 import { Page, Navbar, Block } from 'framework7-react'
-import { Trans } from '@lingui/macro'
 import { MyTrans } from 'src/i18n'
 
 export default () => (

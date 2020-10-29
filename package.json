@@ -5,11 +5,11 @@
     "node": "15.0.1"
   },
   "scripts": {
-    "build-client": "cd client && npm install && npm run i18n-compile && CI=false npm run build",
+    "build-client": "cd client && npm install --only=dev && NODE_ENV=development npm install --no-shrinkwrap && npm run build",
     "build-cordova": "npm run build-client && rsync -a --delete client/build cordova/www",
     "run-cordova-ios": "npm run build-cordova && cd cordova && cordova run ios",
     "run-cordova-android": "npm run build-cordova && cd cordova && cordova run android",
     "run-cordova-browser": "npm run build-cordova && cd cordova && cordova run browser",
-    "heroku-postbuild": "REACT_APP_API_URL=$HEROKU_APP_NAME npm run build-client"
+    "heroku-postbuild": "REACT_APP_HEROKU_APP_NAME=$HEROKU_APP_NAME npm run build-client"
   }
 }

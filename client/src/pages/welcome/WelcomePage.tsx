@@ -21,7 +21,6 @@ import { paths } from "src/routes"
 import { ReactNComponent } from "reactn/build/components"
 import { NoCurrentUserError } from "src/errors"
 
-import { plural, Trans } from '@lingui/macro'
 import { signOut } from "src/initializers/providers"
 import { myPlural, MyTrans, toggleLocale } from "src/i18n"
 

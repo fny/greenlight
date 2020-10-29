@@ -1,6 +1,7 @@
-import { DateTime } from "luxon"
-import { getGlobal } from "reactn"
-import { GreenlightStatus, User } from "src/models"
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import { DateTime } from 'luxon'
+import { GreenlightStatus, User } from 'src/models'
 
 const REASON_REPLACEMENTS = {
   '{you}': (status: GreenlightStatus, submittingUser: User, targetUser: User) => {

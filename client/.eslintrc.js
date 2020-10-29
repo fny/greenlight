@@ -22,15 +22,16 @@ module.exports = {
     // "tslint-config-prettier"
   ],
   rules: {
-    "semi": ["error", "never"],
+    "semi": ["warn", "never"],
     "no-unexpected-multiline": "off", // We use this for translations
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-empty-interface": "warn",
     "@typescript-eslint/member-delimiter-style": [
-      "error",
+      "warn",
       {
         "multiline": {
           "delimiter": "none",

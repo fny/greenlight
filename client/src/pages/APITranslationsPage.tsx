@@ -1,6 +1,5 @@
 import React from 'react'
 import { Page, Navbar, Block, BlockTitle } from 'framework7-react'
-import { Trans } from '@lingui/macro'
 import { MyTrans } from 'src/i18n'
 /**
  * This page exists to enumerate translations for api errors.

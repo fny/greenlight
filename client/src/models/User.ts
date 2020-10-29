@@ -1,11 +1,9 @@
 import { Model, attribute as attr, relationship, initialize, STRING, DATETIME, DATE } from './Model'
 import { DateTime } from 'luxon'
-import { Location } from './Location'
 import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
 import { MedicalEvent } from './MedicalEvent'
 import { LocationAccount } from './LocationAccount'
 
-// TODO: These are app specific and need to be moved out
 import { joinWords } from 'src/util'
 
 export class User extends Model {

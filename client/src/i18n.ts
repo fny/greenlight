@@ -1,10 +1,8 @@
 import { MessageDescriptor, setupI18n } from '@lingui/core'
-import { MessageOptions } from '@lingui/core/cjs/i18n'
 import Cookies from 'js-cookie'
 import { ReactElement } from 'react'
 import React from 'reactn'
-import { Fragment, getGlobal, setGlobal } from 'reactn'
-import { Dict } from './types'
+import { getGlobal, setGlobal } from 'reactn'
 import en from './locales/en/messages'
 import es from './locales/es/messages'
 
@@ -106,12 +104,6 @@ export function toggleLocale() {
   window.location.reload()
 }
 
-interface Props {
-  id: string
-  children?: React.ReactNode
-}
-
-
 // Compiled translations may be strings or arrays of string and arrays
 export class MyTrans extends React.Component<any, any>{
 
@@ -131,7 +123,7 @@ export class MyTrans extends React.Component<any, any>{
     // If the compiled translation is a string...
     if (typeof compiledTranslation === 'string') {
       // ...check if we need to make any nested substitutions "<0>Like this</0>"
-      compiledTranslation = compiledTranslation.replace(/\<\/?\d+\>/g, '|').split('|')
+      compiledTranslation = compiledTranslation.replace(/<\/?\d+>/g, '|').split('|')
       // If its still a string, it's already been translated.
       if (typeof compiledTranslation === 'string') {
         // console.log(compiledTranslation)
