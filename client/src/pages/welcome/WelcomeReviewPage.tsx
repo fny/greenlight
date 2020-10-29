@@ -13,6 +13,7 @@ import { NoCurrentUserError } from 'src/errors'
 
 import { defineMessage } from '@lingui/macro'
 import { MyTrans, toggleLocale } from 'src/i18n'
+import logger from 'src/logger'
 
 interface State {
   originalEmail: string | null
@@ -79,7 +80,7 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
       this.$f7router.navigate(paths.welcomePasswordPath)
     } catch (error) {
       this.$f7.dialog.close()
-      console.error(error)
+      logger.error(error)
       // TODO: make errors smarter
       this.$f7.dialog.alert(
         this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.somethings_wrong', message: "Something went wrong" })),

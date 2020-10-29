@@ -15,6 +15,8 @@ import './MagicSignInPage.css'
 import { Dict } from 'src/types'
 import { createMagicSignIn } from 'src/api'
 import { MyTrans } from 'src/i18n'
+import { assertNotNull } from 'src/util'
+import logger from 'src/logger'
 
 interface State {
   emailOrMobile: string
@@ -33,10 +35,9 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
 
   async submit() {
     const input = this.emailOrMobileRef?.current
-    if (!input) {
-      console.error("Reference to input not created")
-      return
-    }
+
+    assertNotNull(input)
+
     const isValid = input.validate(input.state.value || '')
     if (!isValid) return
     try {
@@ -54,7 +55,7 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
             alertTitle)
       }
     } catch (e) {
-      console.error(e.response)
+      logger.error(e.response)
       this.$f7.dialog.alert(
         this.global.i18n._(
           defineMessage({ id: 'MagicSignInPage.failed_setup', message: "We couldn't set up a magic sign for that info." })),

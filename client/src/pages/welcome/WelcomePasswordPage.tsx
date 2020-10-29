@@ -10,6 +10,7 @@ import { NoCurrentUserError } from 'src/errors'
 
 import { defineMessage } from '@lingui/macro'
 import { MyTrans } from 'src/i18n'
+import logger from 'src/logger'
 
 
 interface State {
@@ -60,7 +61,7 @@ export default class extends ReactNComponent<any, State> {
       this.$f7router.navigate(dynamicPaths.afterWelcomePasswordPath())
     } catch (error) {
       this.$f7.dialog.close()
-      console.error(error)
+      logger.error(error)
       this.$f7.dialog.alert(
         this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.somethings_wrong', message: "Something went wrong" })),
         this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.update_failed', message: "Update Failed" })))

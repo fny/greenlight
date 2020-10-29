@@ -14,7 +14,7 @@ import 'framework7-icons'
 import './index.css'
 
 import { getCurrentUser } from './api'
-import Honeybadger from 'honeybadger-js'
+import logger from './logger'
 
 // Init Framework7-React plugin
 Framework7.use(Framework7React)
@@ -30,8 +30,7 @@ function startApp() {
     })
     .catch((err) => {
       if (err.response && err.response.status !== 401) {
-        console.error(err)
-        Honeybadger.notify(err)
+        logger.error(err)
       } else {
         throw err
       }

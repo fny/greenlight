@@ -15,6 +15,7 @@ import { defineMessage, t } from '@lingui/macro'
 import { MyTrans } from 'src/i18n'
 import { assertNotNull } from 'src/util'
 import { reloadCurrentUser } from 'src/initializers/providers'
+import logger from 'src/logger'
 
 
 interface SymptomButtonProps {
@@ -270,7 +271,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       }
 
       this.$f7.dialog.close()
-      console.error(error)
+      logger.error(error)
       // TODO: Make errors smarter
       this.$f7.dialog.alert(
         this.global.i18n._(defineMessage({ id: 'SurveyNewPage.submission_failed_message', message: "Something went wrong. Maybe someone already submitted?" })),

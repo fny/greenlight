@@ -1,4 +1,5 @@
 import React from 'reactn'
+import logger from './logger'
 
 export class ErrorBoundary extends React.Component<any, any> {
   state = {
@@ -6,14 +7,14 @@ export class ErrorBoundary extends React.Component<any, any> {
   }
 
   static getDerivedStateFromError(error: any) {
-    console.error(error)
+    logger.error(error)
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
   }
 
   componentDidCatch(error: any, errorInfo: any) {
     // You can also log the error to an error reporting service
-    console.error(error, errorInfo)
+    logger.error(error, errorInfo)
   }
 
   render() {

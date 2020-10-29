@@ -14,6 +14,7 @@ import { MyTrans } from 'src/i18n'
 import { Dict } from 'src/types'
 import { getCurrentUser, magicSignIn } from 'src/api'
 import { dynamicPaths, paths } from 'src/routes'
+import logger from 'src/logger'
 
 interface State {
   hasReceivedResponse: boolean
@@ -43,7 +44,7 @@ export default class MagicSignInAuthPage extends React.Component<Dict<any>, Stat
       this.$f7router.navigate(dynamicPaths.currentUserHomePath())
 
     } catch (error) {
-      console.error(error)
+      logger.error(error)
       this.setState({hasReceivedResponse: true, isSuccess: false})
       this.$f7.dialog.close()
     }
