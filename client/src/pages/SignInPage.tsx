@@ -18,6 +18,7 @@ import { createSession, getCurrentUser } from 'src/api'
 import { defineMessage } from '@lingui/macro'
 import { paths, dynamicPaths } from 'src/routes'
 import { MyTrans } from 'src/i18n'
+import logger from 'src/logger'
 
 interface SignInState {
   emailOrMobile: string
@@ -59,7 +60,7 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
       this.$f7router.navigate(dynamicPaths.currentUserHomePath())
     } catch (error) {
       this.$f7.dialog.close()
-      console.error(error)
+      logger.error(error)
       this.$f7.dialog.alert(
         this.global.i18n._(defineMessage({ id: 'SignInPage.credentials_incorrect', message: "The credentials your provided are incorrect." })),
         this.global.i18n._(defineMessage({ id: 'SignInPage.sign_in_failed', message: "Sign In Failed" }))

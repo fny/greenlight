@@ -11,6 +11,7 @@ import { NoCurrentUserError } from 'src/errors'
 
 import { t, defineMessage } from '@lingui/macro'
 import { myPlural, MyTrans } from 'src/i18n'
+import logger from 'src/logger'
 
 interface State {
   physicianName: string
@@ -97,7 +98,7 @@ export default class extends ReactNComponent<any, State> {
 
     } catch (error) {
       this.$f7.dialog.close()
-      console.error(error)
+      logger.error(error)
       this.$f7.dialog.alert(
         this.global.i18n._(defineMessage({id: 'WelcomeChildPage.somethings_wrong', message: "Something went wrong"})),
         this.global.i18n._(defineMessage({id: 'WelcomeChildPage.update_failed', message: "Update Failed"}))

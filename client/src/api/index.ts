@@ -8,7 +8,7 @@ import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transfo
 import env from '../env'
 import Honeybadger from 'honeybadger-js'
 
-import * as logger from 'src/logger'
+import logger from 'src/logger'
 
 const BASE_URL = `${env.API_URL}/v1`
 
