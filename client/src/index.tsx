@@ -23,7 +23,6 @@ function render() {
   ReactDOM.render(<App />, document.getElementById('root'))
 }
 
-// TODO: This is a mess...
 function startApp() {
   getCurrentUser()
     .then((user) => {
@@ -45,7 +44,7 @@ function startApp() {
 if ((window as any).cordova) {
   document.addEventListener('deviceready', startApp, false)
   document.addEventListener('resume', function () {
-    ;(window as any).codePush.sync()
+    (window as any).codePush.sync()
   })
 } else {
   startApp()

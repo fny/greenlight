@@ -1,5 +1,5 @@
 import React, { getGlobal } from 'reactn'
-import { AccordionContent, Page, List, ListItem, Navbar, Link, BlockTitle, NavTitle, NavRight, Icon, Actions, ActionsGroup, ActionsLabel, ActionsButton, Block } from "framework7-react"
+import { AccordionContent, Page, List, ListItem, Navbar, Link, BlockTitle, NavTitle, NavRight, Icon, Actions, ActionsGroup, ActionsButton, Block } from "framework7-react"
 import UserJDenticon from '../components/UserJDenticon'
 import { greeting } from 'src/util'
 import If from 'src/components/If'
@@ -7,9 +7,9 @@ import { dynamicPaths, paths } from 'src/routes'
 import colors from 'src/misc/colors'
 
 import { MyTrans, toggleLocale } from 'src/i18n'
-import { Trans, t, defineMessage } from '@lingui/macro'
+import { defineMessage } from '@lingui/macro'
 import { User } from 'src/models'
-import { currentUser, signOut } from 'src/initializers/providers'
+import { signOut } from 'src/initializers/providers'
 import { ReactNComponent } from 'reactn/build/components'
 
 function UserList({ users }: { users: User[]}) {

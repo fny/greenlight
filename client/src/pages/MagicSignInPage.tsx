@@ -8,7 +8,7 @@ import {
   ListItem
 } from 'framework7-react'
 
-import { Trans, defineMessage } from '@lingui/macro'
+import { defineMessage } from '@lingui/macro'
 
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
 import './MagicSignInPage.css'

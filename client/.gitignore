@@ -1,6 +1,6 @@
 .firebase/
 src/locales/_build/
-src/locales/**/*.js
+# src/locales/**/*.js
 build
 #
 # Node.gitignore

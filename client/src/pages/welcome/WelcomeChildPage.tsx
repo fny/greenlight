@@ -1,6 +1,6 @@
 import { Case, When } from '../../components/Case'
 import React from 'reactn'
-import { Page, Navbar, Block, Link, List, ListItem, ListInput, Row, Col, Button } from 'framework7-react'
+import { Page, Navbar, Block, List, ListItem, ListInput, Button } from 'framework7-react'
 
 import { User } from '../../models/User'
 import { updateUser } from 'src/api'
@@ -9,8 +9,7 @@ import { deleteBlanks } from 'src/util'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/errors'
 
-import { DateTime } from 'luxon'
-import { Trans, t, Plural, plural, defineMessage } from '@lingui/macro'
+import { t, defineMessage } from '@lingui/macro'
 import { myPlural, MyTrans } from 'src/i18n'
 
 interface State {

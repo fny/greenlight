@@ -15,7 +15,7 @@ import {
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
 import './SignInPage.css'
 import { createSession, getCurrentUser } from 'src/api'
-import { Trans, defineMessage } from '@lingui/macro'
+import { defineMessage } from '@lingui/macro'
 import { paths, dynamicPaths } from 'src/routes'
 import { MyTrans } from 'src/i18n'
 

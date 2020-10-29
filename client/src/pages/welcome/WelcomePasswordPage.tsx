@@ -8,7 +8,7 @@ import { User } from 'src/models'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/errors'
 
-import { Trans, t, defineMessage } from '@lingui/macro'
+import { defineMessage } from '@lingui/macro'
 import { MyTrans } from 'src/i18n'
 
 

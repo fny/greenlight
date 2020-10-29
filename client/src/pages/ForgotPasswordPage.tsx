@@ -1,34 +1,16 @@
-import React, { useState, getGlobal } from 'reactn'
+import React from 'reactn'
 import {
   Page,
   List,
-  LoginScreenTitle,
-  ListInput,
-  Row,
-  Col,
   Navbar,
-  Link,
   Block,
-  BlockTitle,
-  Segmented,
-  Button,
-  ListButton,
-  BlockFooter,
-  ListItem,
+  Button
 } from 'framework7-react'
 
 import EmailOrPhoneListInput from '../components/EmailOrPhoneListInput'
-import { Trans } from '@lingui/macro'
 import { MyTrans } from 'src/i18n'
 
-interface ForgotPasswordProps {}
-interface ForgotPasswordState {}
-
-export default class ForgotPasswordPage extends React.Component<
-  ForgotPasswordProps,
-  ForgotPasswordState
-> {
-  state: ForgotPasswordState = {}
+export default class ForgotPasswordPage extends React.Component<any, any> {
 
   render() {
     return (

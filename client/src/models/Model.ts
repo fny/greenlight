@@ -98,7 +98,7 @@ export class Model {
   static plural: string
 
   /** All entities must have a UUID */
-  id: string
+  id = ''
 
   /** Raw request data */
   _data: any
@@ -109,11 +109,8 @@ export class Model {
   /** Anything that was included while populatiing the entity */
   _included: string[] = []
 
-  /** Raw user data */
-
-  constructor(data?: any) {
-    this.id = ''
-  }
+  // eslint-disable-next-line
+  constructor(_data?: any) {}
 
   @attribute({ type: DATETIME })
   createdAt: DateTime = DateTime.fromISO('')
