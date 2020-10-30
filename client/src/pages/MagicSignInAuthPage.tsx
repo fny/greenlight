@@ -1,20 +1,19 @@
-import React from 'reactn'
+import React from 'reactn';
 import {
   Page,
   Navbar,
   Block,
-  Link
-} from 'framework7-react'
+  Link,
+} from 'framework7-react';
 
-import { Case, When } from 'src/components/Case'
+import { Case, When } from 'src/components/Case';
 
-import { defineMessage } from '@lingui/macro'
-import { MyTrans } from 'src/i18n'
+import { defineMessage, Trans } from '@lingui/macro';
 
-import { Dict } from 'src/types'
-import { getCurrentUser, magicSignIn } from 'src/api'
-import { dynamicPaths, paths } from 'src/routes'
-import logger from 'src/logger'
+import { Dict } from 'src/types';
+import { getCurrentUser, magicSignIn } from 'src/api';
+import { dynamicPaths, paths } from 'src/routes';
+import logger from 'src/logger';
 
 interface State {
   hasReceivedResponse: boolean
@@ -24,61 +23,60 @@ interface State {
 export default class MagicSignInAuthPage extends React.Component<Dict<any>, State> {
   state = {
     hasReceivedResponse: true,
-    isSuccess: false
-  }
+    isSuccess: false,
+  };
 
   async authorize() {
-    const token = this.$f7route.params['token']
-    const rememberMe = this.$f7route.params['remember'] === 'y'
+    const { token } = this.$f7route.params;
+    const rememberMe = this.$f7route.params.remember === 'y';
 
-    if (!token) return
+    if (!token) return;
 
-    this.$f7.dialog.preloader('Signing in...')
+    this.$f7.dialog.preloader('Signing in...');
 
     try {
-      await magicSignIn(token, rememberMe)
-      const user = await getCurrentUser()
-      this.setState({ hasReceivedResponse: true, isSuccess: true })
-      this.$f7.dialog.close()
-      this.setGlobal({ currentUser: user })
-      this.$f7router.navigate(dynamicPaths.currentUserHomePath())
-
+      await magicSignIn(token, rememberMe);
+      const user = await getCurrentUser();
+      this.setState({ hasReceivedResponse: true, isSuccess: true });
+      this.$f7.dialog.close();
+      this.setGlobal({ currentUser: user });
+      this.$f7router.navigate(dynamicPaths.currentUserHomePath());
     } catch (error) {
-      logger.error(error)
-      this.setState({hasReceivedResponse: true, isSuccess: false})
-      this.$f7.dialog.close()
+      logger.error(error);
+      this.setState({ hasReceivedResponse: true, isSuccess: false });
+      this.$f7.dialog.close();
     }
   }
 
   componentDidMount() {
-    this.authorize()
+    this.authorize();
   }
 
   render() {
     return (
       <Page className="MagicSignInAuthPage" noToolbar noSwipeback loginScreen>
-        <Navbar title={this.global.i18n._(defineMessage({id: 'MagicSignInAuthPage.title', message: 'Magic Sign In'}))} backLink="Back"></Navbar>
+        <Navbar title={this.global.i18n._(defineMessage({ id: 'MagicSignInAuthPage.title', message: 'Magic Sign In' }))} backLink="Back" />
 
         <Block>
           <Case test={this.state.hasReceivedResponse && !this.state.isSuccess}>
-            <When value={true}>
-              <MyTrans id="SignInAuthPage.magic_link_failed">
+            <When value>
+              <Trans id="SignInAuthPage.magic_link_failed">
                 That magic sign in link didn't work. It may have expired.
-              </MyTrans>
+              </Trans>
               <Link href={paths.rootPath}>
-                <MyTrans id="SignInAuthPage.try_again">
+                <Trans id="SignInAuthPage.try_again">
                   Try again?
-                </MyTrans>
+                </Trans>
               </Link>
             </When>
             <When value={false}>
-              <MyTrans id="SignInAuthPage.signing_in">
+              <Trans id="SignInAuthPage.signing_in">
                 Signing in...
-              </MyTrans>
+              </Trans>
             </When>
           </Case>
         </Block>
       </Page>
-    )
+    );
   }
 }

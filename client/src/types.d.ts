@@ -1,19 +1,12 @@
-import { Model } from "./models"
+import { Model } from './models';
 
-export type Dict<T> = { [k: string]: T}
+export type Dict<T> = { [k: string]: T};
 
-export type OnChangeEvent = ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined
+export type OnChangeEvent = ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined;
 
 //
 // Json API Related
 //
-
-export interface Record extends RecordFields, RecordPointer {}
-
-export interface UninitializedRecord extends RecordFields {
-  type: string
-  id?: string
-}
 
 export interface LinkObject {
   href: string
@@ -77,6 +70,6 @@ export interface ErrorReponse {
   errors?: JSONAPIError[]
 }
 
-export type Entity<T extends Model> = new() => T
+export type Entity<T extends Model> = new() => T;
 
-type EntityId = string
+type EntityId = string;

@@ -1,23 +1,27 @@
-import React, { useGlobal } from 'reactn'
-import { Page, Navbar, Block, ListItem, List, AccordionContent } from 'framework7-react'
+import React, { useGlobal } from 'reactn';
+import {
+  Page, Navbar, Block, ListItem, List, AccordionContent,
+} from 'framework7-react';
 
-export default () => {
-  const [ currentUser ] = useGlobal('currentUser')
+export default function DebugPage() {
+  const [currentUser] = useGlobal('currentUser');
 
-  return <Page>
-    <Navbar title="Debug" />
+  return (
+    <Page>
+      <Navbar title="Debug" />
       <List accordionList>
         <ListItem accordionItem title="Current User">
           <AccordionContent>
             <Block>
               <pre>
                 {
-                  !currentUser ? "Not Found" : JSON.stringify(currentUser, null, 2)
+                  !currentUser ? 'Not Found' : JSON.stringify(currentUser, null, 2)
                 }
               </pre>
             </Block>
           </AccordionContent>
         </ListItem>
       </List>
-  </Page>
+    </Page>
+  );
 }

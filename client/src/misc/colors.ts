@@ -1,4 +1,4 @@
-const colors =  {
+const colors = {
   greenLight: '#33DA97',
   green: '#00A183',
   greenFade: '#00A18370',
@@ -9,7 +9,7 @@ const colors =  {
   gold: '#FFCD65',
   // TODO: FIXME
   blue: '#b2d0f5',
-  gray: '#DDDDDD'
-}
+  gray: '#DDDDDD',
+};
 
-export default colors
+export default colors;

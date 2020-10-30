@@ -1,3 +1,5 @@
-import addReactNDevTools from 'reactn-devtools'
+import env from 'src/env';
 
-addReactNDevTools()
+if (env.isDevelopment()) {
+  import('reactn-devtools').then((tools) => tools.default());
+}
