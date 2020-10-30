@@ -83,3 +83,4 @@ production:
   database: greenlight_production
   username: greenlight
   password: <%= ENV['GREENLIGHT_DATABASE_PASSWORD'] %>
+  pool: <%= ENV["DB_POOL"] || ENV['RAILS_MAX_THREADS'] || 5 %>

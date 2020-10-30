@@ -41,8 +41,8 @@
       "value": "BLANK",
       "description": "This value needs to be set manually."
     },
-    "CI": {
-      "value": "false",
+    "SERVE_BUILD": {
+      "value": "true",
       "description": "Work around until eslint versions match."
     }
   },
@@ -65,9 +65,6 @@
     "papertrail"
   ],
   "buildpacks": [
-    {
-      "url": "https://github.com/heroku/heroku-buildpack-nginx"
-    },
     {
       "url": "https://github.com/heroku/heroku-buildpack-ruby"
     },
