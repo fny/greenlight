@@ -1,7 +1,8 @@
-import React from 'react'
-import * as jdenticon from 'jdenticon'
-import { User } from '../models/User'
-import { GREENLIGHT_STATUSES } from  '../models/GreenlightStatus'
+import React from 'react';
+import * as jdenticon from 'jdenticon';
+import { User } from '../models/User';
+import { GREENLIGHT_STATUSES } from '../models/GreenlightStatus';
+
 const configs: { [k in GREENLIGHT_STATUSES]: jdenticon.JdenticonConfig } = {
   recovery: {
     hues: [328],
@@ -63,16 +64,15 @@ const configs: { [k in GREENLIGHT_STATUSES]: jdenticon.JdenticonConfig } = {
     },
     backColor: '#ecf2fe',
   },
-}
+};
 
 type Props = {
   user: User
   size: number
-}
-
+};
 
 const UserJDenticon = ({ user, size }: Props) => {
-  jdenticon.configure(configs[user.greenlightStatus().status])
+  jdenticon.configure(configs[user.greenlightStatus().status]);
   return (
     <div
       // dangerouslySetInnerHTML={{ __html: jdenticon.toSvg(user.id, size) }}
@@ -80,7 +80,7 @@ const UserJDenticon = ({ user, size }: Props) => {
         // border: '1px solid #00000022',
         borderRadius: `${size}px`,
         background: `url(data:image/svg+xml;base64,${btoa(
-          jdenticon.toSvg(user.id, size)
+          jdenticon.toSvg(user.id, size),
         )})`,
         backgroundPosition: 'center',
         height: `${size}px`,
@@ -88,12 +88,12 @@ const UserJDenticon = ({ user, size }: Props) => {
         textAlign: 'center',
         lineHeight: `${size}px`,
         fontWeight: 'bold',
-        color: 'var(--gl-color-dark)'
+        color: 'var(--gl-color-dark)',
       }}
     >
       {user.firstName[0]}
     </div>
-  )
-}
+  );
+};
 
-export default UserJDenticon
+export default UserJDenticon;

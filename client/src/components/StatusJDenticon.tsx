@@ -1,7 +1,8 @@
-import React from 'react'
-import * as jdenticon from 'jdenticon'
-import { DateTime } from 'luxon'
-import { GREENLIGHT_STATUSES } from  '../models/GreenlightStatus'
+import React from 'react';
+import * as jdenticon from 'jdenticon';
+import { DateTime } from 'luxon';
+import { GREENLIGHT_STATUSES } from '../models/GreenlightStatus';
+
 const configs: { [k in GREENLIGHT_STATUSES]: jdenticon.JdenticonConfig } = {
   recovery: {
     hues: [328],
@@ -63,16 +64,16 @@ const configs: { [k in GREENLIGHT_STATUSES]: jdenticon.JdenticonConfig } = {
     },
     backColor: '#ecf2fe',
   },
-}
+};
 
 type Props = {
   date: DateTime
   status: GREENLIGHT_STATUSES
   size: number
-}
+};
 
 const StatusJDenticon = ({ date, status, size }: Props) => {
-  jdenticon.configure(configs[status])
+  jdenticon.configure(configs[status]);
   return (
     <div
       // dangerouslySetInnerHTML={{ __html: jdenticon.toSvg(user.id, size) }}
@@ -80,7 +81,7 @@ const StatusJDenticon = ({ date, status, size }: Props) => {
         // border: '1px solid #00000022',
         borderRadius: `${size}px`,
         background: `url(data:image/svg+xml;base64,${btoa(
-          jdenticon.toSvg(date.toLocaleString(DateTime.DATE_SHORT), size)
+          jdenticon.toSvg(date.toLocaleString(DateTime.DATE_SHORT), size),
         )})`,
         backgroundPosition: 'center',
         height: `${size}px`,
@@ -89,12 +90,12 @@ const StatusJDenticon = ({ date, status, size }: Props) => {
         lineHeight: `${size}px`,
         fontWeight: 'bold',
         fontSize: `${Math.floor(size / 6)}px`,
-        color: 'var(--gl-color-dark)'
+        color: 'var(--gl-color-dark)',
       }}
     >
       {date.toLocaleString(DateTime.DATE_SHORT)}
     </div>
-  )
-}
+  );
+};
 
-export default StatusJDenticon
+export default StatusJDenticon;

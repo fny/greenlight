@@ -1,22 +1,21 @@
-import React from 'reactn'
+import React from 'reactn';
 import {
   Page,
   List,
   Navbar,
   Block,
   Button,
-  ListItem
-} from 'framework7-react'
+  ListItem,
+} from 'framework7-react';
 
-import { defineMessage } from '@lingui/macro'
+import { defineMessage, Trans } from '@lingui/macro';
 
-import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
-import './MagicSignInPage.css'
-import { Dict } from 'src/types'
-import { createMagicSignIn } from 'src/api'
-import { MyTrans } from 'src/i18n'
-import { assertNotNull } from 'src/util'
-import logger from 'src/logger'
+import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput';
+import './MagicSignInPage.css';
+import { Dict } from 'src/types';
+import { createMagicSignIn } from 'src/api';
+import { assertNotNull } from 'src/util';
+import logger from 'src/logger';
 
 interface State {
   emailOrMobile: string
@@ -25,79 +24,89 @@ interface State {
 }
 
 export default class MagicSignInPage extends React.Component<Dict<any>, State> {
-  emailOrMobileRef = React.createRef<EmailOrPhoneListInput>()
+  emailOrMobileRef = React.createRef<EmailOrPhoneListInput>();
 
   state: State = {
     emailOrMobile: '',
     rememberMe: false,
-    submitted: false
-  }
+    submitted: false,
+  };
 
   async submit() {
-    const input = this.emailOrMobileRef?.current
+    const input = this.emailOrMobileRef?.current;
 
-    assertNotNull(input)
+    assertNotNull(input);
 
-    const isValid = input.validate(input.state.value || '')
-    if (!isValid) return
+    const isValid = input.validate(input.state.value || '');
+    if (!isValid) return;
     try {
-      await createMagicSignIn(this.state.emailOrMobile, this.state.rememberMe)
-      const alertTitle = this.global.i18n._(defineMessage({ id: 'MagicSignInPage.sign_in_sent', message: "Magic Sign In Sent" }))
+      await createMagicSignIn(this.state.emailOrMobile, this.state.rememberMe);
+      const alertTitle = this.global.i18n._(defineMessage({ id: 'MagicSignInPage.sign_in_sent', message: 'Magic Sign In Sent' }));
       if (this.state.emailOrMobile.includes('@')) {
         this.$f7.dialog.alert(
           this.global.i18n._(
-            defineMessage({ id: 'MagicSignInPage.will_get_email', message: "You should receive an email shortly with a magic sign in link." })),
-            alertTitle)
+            defineMessage({ id: 'MagicSignInPage.will_get_email', message: 'You should receive an email shortly with a magic sign in link.' }),
+          ),
+          alertTitle,
+        );
       } else {
         this.$f7.dialog.alert(
           this.global.i18n._(
-            defineMessage({ id: 'MagicSignInPage.will_get_text', message: "You should receive a text shortly with a magic sign in link." })),
-            alertTitle)
+            defineMessage({ id: 'MagicSignInPage.will_get_text', message: 'You should receive a text shortly with a magic sign in link.' }),
+          ),
+          alertTitle,
+        );
       }
     } catch (e) {
-      logger.error(e.response)
+      logger.error(e.response);
       this.$f7.dialog.alert(
         this.global.i18n._(
-          defineMessage({ id: 'MagicSignInPage.failed_setup', message: "We couldn't set up a magic sign for that info." })),
+          defineMessage({ id: 'MagicSignInPage.failed_setup', message: "We couldn't set up a magic sign for that info." }),
+        ),
         this.global.i18n._(
-          defineMessage({ id: 'MagicSignInPage.sign_in_failed', message: "Magic Sign In Failed" })))
+          defineMessage({ id: 'MagicSignInPage.sign_in_failed', message: 'Magic Sign In Failed' }),
+        ),
+      );
     }
   }
 
   render() {
     return (
       <Page className="MagicSignInPage" noToolbar noSwipeback loginScreen>
-        <Navbar title={this.global.i18n._(defineMessage({ id: 'MagicSignInPage.title', message: "Magic Sign In" }))} backLink="Back"></Navbar>
+        <Navbar title={this.global.i18n._(defineMessage({ id: 'MagicSignInPage.title', message: 'Magic Sign In' }))} backLink="Back" />
         <div className="greenlight-logo">
-          Greenlight<span>.</span>
+          Greenlight
+          <span>.</span>
         </div>
         <List form>
           <Block>
-            <MyTrans id="MagicSignInPage.directions">
+            <Trans id="MagicSignInPage.directions">
               Enter your email or mobile number, and we'll send you a magic sign in link.
-            </MyTrans>
+            </Trans>
           </Block>
           <EmailOrPhoneListInput
             value={this.state.emailOrMobile}
             ref={this.emailOrMobileRef}
             onInput={(e) => {
-              this.setState({ emailOrMobile: e.target.value })
+              this.setState({ emailOrMobile: e.target.value });
             }}
           />
-          <ListItem checkbox title={this.global.i18n._(defineMessage({ id: 'MagicSignInPage.remember_me', message: "Remember Me" }))}
-            onInput={e => {
-              this.setState({ rememberMe: e.target.value })
+          <ListItem
+            checkbox
+            title={this.global.i18n._(defineMessage({ id: 'MagicSignInPage.remember_me', message: 'Remember Me' }))}
+            onInput={(e) => {
+              this.setState({ rememberMe: e.target.value });
             }}
-          ></ListItem>
+          />
           <Block>
-            <Button outline fill onClick={() => { this.submit() }}>
-              <MyTrans id="MagicSignInPage.request_magic_link">
+            <Button outline fill onClick={() => { this.submit(); }}>
+              <Trans id="MagicSignInPage.request_magic_link">
                 Request Magic Link
-              </MyTrans>
+              </Trans>
             </Button>
           </Block>
         </List>
       </Page>
-    )
+    );
   }
 }

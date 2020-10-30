@@ -1,6 +1,6 @@
-import './honeybadger'
-import './reactn-devtools'
-import 'src/models'
+import './honeybadger';
+import './reactn-devtools';
+import 'src/models';
 
-import './providers'
-import './GL'
+import './providers';
+import './GL';
