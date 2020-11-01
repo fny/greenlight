@@ -1,0 +1,16 @@
+{
+  "ruby.lint": {
+      "rubocop": {
+        "useBundler": true
+      }
+    },
+    "ruby.useBundler": true,
+    "ruby.codeCompletion": false,
+    "ruby.format": "rubocop",
+    "ruby.intellisense": false,
+    "ruby.useLanguageServer": true,
+    "solargraph.useBundler": true,
+    "yard.spacers.afterTags": false,
+    "yard.spacers.beforeDescription": false,
+    "yard.spacers.beforeTags": false
+}
