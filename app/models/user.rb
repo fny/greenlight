@@ -117,7 +117,7 @@ class User < ApplicationRecord
   end
 
   # Todays status
-  def inferred_greenlight_status
+  def inferred_status
     return last_greenlight_status if last_greenlight_status && !last_greenlight_status.expired?
 
     GreenlightStatus.new(
@@ -267,19 +267,20 @@ class User < ApplicationRecord
   private
 
   def email_or_mobile_number_present
-    if !email? && !mobile_number?
-      errors.add(:base, 'email or mobile number required')
-    end
+    return unless email? || mobile_number?
+
+    errors.add(:base, 'email or mobile number required')
   end
 
   def timestamp_password
-    if password_digest_changed?
-      self.password_set_at = Time.now
-    end
+    return unless password_digest_changed?
+
+    self.password_set_at = Time.now
   end
 
   def format_mobile_number
-    return if mobile_number.blank?
+    return if mobile_number?
+
     parsed = Phonelib.parse(mobile_number, 'US').full_e164
     parsed = nil if parsed.blank?
     self.mobile_number = parsed

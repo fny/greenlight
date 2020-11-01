@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+
+# Greenlight Statuses are not meant to be created directly, but through
+# strategies since the expiration times depend on the status values.
 class GreenlightStatus < ApplicationRecord
   # @!attribute submission_date
   #   @return [Date] The date on this status is effective.
@@ -9,7 +12,7 @@ class GreenlightStatus < ApplicationRecord
   # @!attribute expiration_date
   #   @return [String] The last date a status is valid.
 
-  DAILY_CUT_OFF = CutoffTime.new(Time.parse('6 PM'))
+  DAILY_CUTOFF = CutoffTime.new(Time.zone.parse('6 PM'))
 
   STATUSES = [
     CLEARED = 'cleared',
@@ -17,9 +20,10 @@ class GreenlightStatus < ApplicationRecord
     RECOVERY = 'recovery',
     ABSENT = 'absent',
     UNKNOWN = 'unknown'
-  ]
+  ].freeze
 
-  REASONS = [
+
+  REASONS = [ # Reasons for a status, comment is here to disable rubocop.
     'cleared',
     'cleared_alternative_diagnosis',
     'cleared_with_symptom_improvement',
@@ -30,15 +34,18 @@ class GreenlightStatus < ApplicationRecord
     'recovery_not_covid_has_fever',
     'recovery_diagnosed_asymptomatic',
     'recovery_return_tomorrow'
-]
+  ].freeze
 
   extend Enumerize
   enumerize :status, in: STATUSES
   enumerize :reason, in: REASONS
   belongs_to :user
   belongs_to :created_by, class_name: 'User'
-  scope :submitted_for_today, -> { where('submission_date <= ?', Time.zone.today).where('follow_up_date > ?', Time.zone.today) }
-  scope :submitted_for_cuttoff, -> { where('submission_date <= ?', DAILY_CUT_OFF.round(Time.now) ).where('follow_up_date > ?', DAILY_CUT_OFF.round(Time.now)) }
+
+  scope :submitted_for_today, -> {
+    where('submission_date <= ?', Time.zone.today).where('follow_up_date > ?', Time.zone.today)
+  }
+
   scope :recently_created, -> { where(created_at: 20.days.ago.beginning_of_day..Time.zone.now.end_of_day) }
   scope :not_expired, -> { where('expiration_date <= ?', Time.current.to_date) }
   has_many :medical_events
@@ -52,6 +59,21 @@ class GreenlightStatus < ApplicationRecord
 
   validate :not_already_submitted
 
+  def self.new_cleared_status(time, other_attrs)
+    status = new(other_attrs)
+    status.submitted_at = time
+    status.status = CLEARED
+    status.expiration_date = time.to_date
+    status
+  end
+
+  def self.submittable_for?(user_id)
+    GreenlightStatus
+      .where(user_id: user_id)
+      .where('follow_up_date > ?', DAILY_CUTOFF.round(Time.current))
+      .exists?
+  end
+
   def expired?
     Time.current.to_date > expiration_date
   end
@@ -62,7 +84,7 @@ class GreenlightStatus < ApplicationRecord
 
   def submitted_at=(time)
     self.submission_date = time.to_date
-    self.follow_up_date = DAILY_CUT_OFF.round(time) + 1.day
+    self.follow_up_date = DAILY_CUTOFF.round(time) + 1.day
   end
 
   def assign_associated_users_to_medical_events
@@ -74,11 +96,10 @@ class GreenlightStatus < ApplicationRecord
 
   def not_already_submitted
     return if self.is_override
-    if GreenlightStatus.submitted_for_cuttoff.where(user: user).exists?
-      errors.add(:base, 'status_already_submitted')
-    end
-  end
+    return unless GreenlightStatus.submittable_for?(user_id || user&.id)
 
+    errors.add(:base, 'status_already_submitted')
+  end
 end
 
 # == Schema Information
