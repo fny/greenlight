@@ -4,15 +4,17 @@ This is the README for the overall project.
 
 ## Requirements
 
+  - Ruby and Node, see `.tool-versions` for the specific verions
   - Postgres v12
   - Redis v6
   - NGINX if you want to dev while using the api-dev loopback address;
     you'll need to use the configuration in `nginx-development.conf`.
-  - See `/frontend` for frontend specific requirements
+  - See `/client` for frontend specific requirements
+  - See `/cordova` for iOs and Android specific requirements
 
 ## Setting up the project
 
-After you've installed the above, run the following:
+After you've installed the above and, run the following:
 
 ```
 bundle install
@@ -30,10 +32,50 @@ bundle exec rake db:seed
 
 ## Coding Conventions
 
- - [Editorconfig Plugin](https://editorconfig.org/#download) should be installed in your editor
  - Follow [Conventional Commits](https://conventionalcommits.org)
  - Follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0)
+ - Try to stay within 80 characters per line. It's okay if you go to 100. You'll
+   get yelled at if you exceed 120.
  - Follow style guides specific to the directories
+ - When in doubt, try to match what you see
+ - Use plugins for your editor (see Editor Setup) to conform to the style guides
+ - For Ruby, use YARD to document your types. This makes Solargraph's
+   autocomplete smarter and will prepare us for the data when Ruby supports
+   type checking natively.
+
+## Editor Setup
+
+We don't really care what editor you use for as long as you follow the coding
+convetions imposed by Rubocop and eslint.
+
+You should try to have the following plugins in whatever editor you choose to use:
+
+ - [Editorconfig Plugin](https://editorconfig.org/#download) should be installed
+   in your editor
+ - A TypeScript plugin
+ - A plugin which supports ESLint issues and aucorrection
+ - A Ruby language server plugin
+ - A Solargraph plugin for type hints in Ruby
+ - A Rubocop plugin
+
+Visual Studio Code is recommended with the following plugins:
+
+ - [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+ - [endwise](https://marketplace.visualstudio.com/items?itemName=kaiwood.endwise)
+ - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+ - [Rewrap](https://marketplace.visualstudio.com/items?itemName=stkb.rewrap)
+ - [Ruby](https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby)
+ - [Ruby Solargraph](https://marketplace.visualstudio.com/items?itemName=castwide.solargraph)
+ - [YARD Documentor](https://marketplace.visualstudio.com/items?itemName=pavlitsky.yard)
+
+If you're coming from Sublime, [this extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.sublime-keybindings) might come in handy.
+
+If you're using VSCode, you should use the workspace specific configurations
+provided in this repo.
+
+---
+
+This is Faraz's brain dump. Please ignore for now.
 
 ## Short URLs
 
@@ -46,9 +88,6 @@ It's available across all of the environments:
 
 This variable is set using the SHORT_URL environment variable.
 
----
-
-This is Faraz's brain dump. Please ignore for now.
 
 ## Naming conventions
 
