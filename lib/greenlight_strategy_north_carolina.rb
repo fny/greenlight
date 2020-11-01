@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable Style/MultilineBlockChain, Metrics/AbcSize
 
 # @attr_reader [Array<MedicalEvent>]
 # Based on https://files.nc.gov/covid/documents/guidance/Strong-Schools-NC-Public-Health-Toolkit.pdf
@@ -13,14 +14,14 @@ class GreenlightStrategyNorthCarolina
   # @param previous_statuses [Array<MedicalEvent>]
   # @param cleared_override_date [Date, nil]
   def initialize(medical_events, previous_medical_events, cleared_override_date = nil)
-    @medical_events = (medical_events + previous_medical_events).sort_by { |e| e.occurred_at }
+    @medical_events = (medical_events + previous_medical_events).sort_by(&:occurred_at)
     if cleared_override_date
       @medical_events = medical_events.filter { |e| e.occurred_at > cleared_override_date}
     end
   end
 
   def cutoff_round(time)
-    GreenlightStatus::DAILY_CUT_OFF.round(time)
+    GreenlightStatus::DAILY_CUTOFF.round(time)
   end
 
   def events_last_14_days
@@ -32,15 +33,15 @@ class GreenlightStrategyNorthCarolina
   end
 
   def exposure_within_last_14_days
-    events_last_14_days.filter { |e| e.event_type == MedicalEvent::COVID_EXPOSURE }.max { |e| e.occurred_at }
+    events_last_14_days.filter { |e| e.event_type == MedicalEvent::COVID_EXPOSURE }.max(&:occurred_at)
   end
 
   def asymptomatic_last_14_days?
-    !events_last_14_days.any? { |e| e.symptom? }
+    events_last_14_days.none?(&:symptom?)
   end
 
   def asymptomatic_last_10_days?
-    !events_last_10_days.any? { |e| e.symptom? }
+    events_last_10_days.none?(&:symptom?)
   end
 
   def positive_diagnosis_within_last_10_days
@@ -55,8 +56,8 @@ class GreenlightStrategyNorthCarolina
     medical_events.any? { |e| e.occurred_at.today? && e.symptom? }
   end
 
-  def yesterday?(t)
-    t.to_date == 1.day.ago.to_date
+  def yesterday?(date)
+    date.to_date == 1.day.ago.to_date
   end
 
   def fever_yesterday_or_today?
@@ -72,28 +73,31 @@ class GreenlightStrategyNorthCarolina
   end
 
   def covid_diagnosis_within_10_days?
-    events_last_10_days.any? { |e| e.has_covid? }
+    events_last_10_days.any?(&:has_covid?)
   end
 
   def not_tested_within_10_days?
-    !events_last_10_days.any? { |e| e.test_result? }
+    events_last_10_days.none?(&:test_result?)
   end
 
   def more_than_one_day_since_negative_test?
     last_negative = events_last_10_days.max { |e| e.event_type == MedicalEvent::COVID_TEST_NEGATIVE }
     return false unless last_negative
+
     (Time.current - last_negative.occurred_at) >= 1.day
   end
 
   def more_than_one_day_since_ruled_out?
     last_ruled_out = events_last_10_days.max { |e| e.event_type == MedicalEvent::COVID_RULED_OUT }
     return false unless last_ruled_out
+
     (Time.current - last_ruled_out.occurred_at) >= 1.day
   end
 
   def symptoms_within_10_days?
     first_symptom = first_symptom_last_10_days
-    return false if !first_symptom
+    return false unless first_symptom
+
     first_symptom.occurred_at < 10.days.ago
   end
 

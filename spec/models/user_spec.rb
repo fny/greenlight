@@ -26,6 +26,20 @@ RSpec.describe User, type: :model do
       expect(status.status).to eq(gl_status.status)
       expect(user.last_greenlight_status.status).to eq(gl_status.status)
     end
+
+    it 'has a last greenlight status' do
+      expect(user.last_greenlight_status).to eq(nil)
+
+      status1 = GreenlightStatus.new_cleared_status(Time.current, user: user, created_by: user)
+      status1.save!
+      expect(user.reload.last_greenlight_status).to eq(status1)
+
+      travel_to Time.current + 10.days
+      status2 = GreenlightStatus.new_cleared_status(Time.current, user: user, created_by: user)
+      status2.save!
+      expect(user.reload.last_greenlight_status).to eq(status2)
+      travel_back
+    end
   end
 
   describe '.permitted_params' do
@@ -43,6 +57,26 @@ RSpec.describe User, type: :model do
     it 'restricts the attributes to those that are permitted for strings' do
       permitted = User.restrict_params({ 'email' => 'a', 'password' => 'b', 'created_at' => 'c' })
       expect(permitted).to eq({ 'email' => 'a', 'password' => 'b' })
+    end
+  end
+
+  describe '#inferred_status' do
+    it 'returns an unpersisted unknown status if there is no last status' do
+      expect(user.inferred_status.status).to eq(GreenlightStatus::UNKNOWN)
+      expect(user.inferred_status.persisted?).to eq(false)
+    end
+
+    it 'returns the last submitted status on the same day' do
+      status = GreenlightStatus.new_cleared_status(Time.current, user: user, created_by: user)
+      status.save!
+    end
+
+    it 'returns the unknown if the status has expired' do
+      status = GreenlightStatus.new_cleared_status(Time.current, user: user, created_by: user)
+      status.save!
+      travel_to 2.days.from_now
+      expect(user.inferred_status.status).to eq(GreenlightStatus::UNKNOWN)
+      expect(user.inferred_status.persisted?).to eq(false)
     end
   end
 
