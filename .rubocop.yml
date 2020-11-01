@@ -50,11 +50,18 @@ Rails/HasManyOrHasOneDependent:
 RSpec/DescribedClass:
   Enabled: false
 
+RSpec/EmptyExampleGroup:
+  Enabled: false
+
 RSpec/ExampleLength:
   Enabled: false
 
 RSpec/MultipleExpectations:
   Enabled: false
+
+RSpec/ImplicitExpect:
+  Enabled: false
+
 
 Style/Documentation:
   Enabled: false
@@ -83,3 +90,9 @@ Style/MutableConstant:
     - 'db/migrate/**/*'
     - 'db/post_migrate/**/*'
 
+Style/Lambda:
+  Enabled: false
+
+
+Style/CommentedKeyword:
+  Enabled: false
