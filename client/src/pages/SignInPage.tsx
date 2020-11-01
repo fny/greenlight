@@ -1,4 +1,4 @@
-import React from 'reactn';
+import React from 'reactn'
 
 import {
   Page,
@@ -10,14 +10,14 @@ import {
   Button,
   BlockFooter,
   ListItem,
-} from 'framework7-react';
+} from 'framework7-react'
 
-import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput';
-import './SignInPage.css';
-import { createSession, getCurrentUser } from 'src/api';
-import { defineMessage, Trans } from '@lingui/macro';
-import { paths, dynamicPaths } from 'src/routes';
-import logger from 'src/logger';
+import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
+import './SignInPage.css'
+import { createSession, getCurrentUser } from 'src/api'
+import { defineMessage, Trans } from '@lingui/macro'
+import { paths, dynamicPaths } from 'src/routes'
+import logger from 'src/logger'
 
 interface SignInState {
   emailOrMobile: string
@@ -26,45 +26,45 @@ interface SignInState {
 }
 
 export default class SignInPage extends React.Component<Record<string, any>, SignInState> {
-  emailOrMobileRef = React.createRef<EmailOrPhoneListInput>();
+  emailOrMobileRef = React.createRef<EmailOrPhoneListInput>()
 
-  passwordRef = React.createRef<ListInput>();
+  passwordRef = React.createRef<ListInput>()
 
   state: SignInState = {
     emailOrMobile: '',
     password: '',
     rememberMe: false,
-  };
+  }
 
   validate() {
-    const passwordValid = this.$f7.input.validateInputs('#sign-in-form');
-    const emailOrMobileValid = this.emailOrMobileRef.current?.validate(this.emailOrMobileRef.current?.state.value || '');
-    return passwordValid && emailOrMobileValid;
+    const passwordValid = this.$f7.input.validateInputs('#sign-in-form')
+    const emailOrMobileValid = this.emailOrMobileRef.current?.validate(this.emailOrMobileRef.current?.state.value || '')
+    return passwordValid && emailOrMobileValid
   }
 
   // TODO: Refactor: Extract this pattern
   // TODO: Improve error messages
   async submit() {
     if (!this.validate()) {
-      return;
+      return
     }
     this.$f7.dialog.preloader(
       this.global.i18n._(defineMessage({ id: 'SignInPage.signing_you_in', message: 'Signing you in...' })),
-    );
+    )
     try {
-      await createSession(this.state.emailOrMobile, this.state.password, this.state.rememberMe);
+      await createSession(this.state.emailOrMobile, this.state.password, this.state.rememberMe)
 
-      const user = await getCurrentUser();
-      this.$f7.dialog.close();
-      this.setGlobal({ currentUser: user });
-      this.$f7router.navigate(dynamicPaths.currentUserHomePath());
+      const user = await getCurrentUser()
+      this.$f7.dialog.close()
+      this.setGlobal({ currentUser: user })
+      this.$f7router.navigate(dynamicPaths.currentUserHomePath())
     } catch (error) {
-      this.$f7.dialog.close();
-      logger.error(error);
+      this.$f7.dialog.close()
+      logger.error(error)
       this.$f7.dialog.alert(
         this.global.i18n._(defineMessage({ id: 'SignInPage.credentials_incorrect', message: 'The credentials your provided are incorrect.' })),
         this.global.i18n._(defineMessage({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' })),
-      );
+      )
     }
   }
 
@@ -91,7 +91,7 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
             ref={this.emailOrMobileRef}
             value={this.state.emailOrMobile}
             onInput={(e) => {
-              this.setState({ emailOrMobile: e.target.value });
+              this.setState({ emailOrMobile: e.target.value })
             }}
           />
           <ListInput
@@ -106,7 +106,7 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
             value={this.state.password}
             required
             onInput={(e) => {
-              this.setState({ password: e.target.value });
+              this.setState({ password: e.target.value })
             }}
             errorMessage={
               this.global.i18n._(
@@ -122,7 +122,7 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
               )
             }
             onChange={(e) => {
-              this.setState({ rememberMe: e.target.checked });
+              this.setState({ rememberMe: e.target.checked })
             }}
           />
           <Block>
@@ -143,6 +143,6 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
           </BlockFooter>
         </List>
       </Page>
-    );
+    )
   }
 }

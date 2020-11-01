@@ -9,12 +9,15 @@ module.exports = {
     project: "tsconfig.json"
   },
   plugins: [
+    "only-warn",
     "@typescript-eslint"
   ],
   extends: [
     "airbnb-typescript"
   ],
   rules: {
+    "semi": ["off"],
+    "@typescript-eslint/semi": ["warn", "never"],
     // TODO
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",

@@ -1,17 +1,17 @@
-import { defineMessage } from '@lingui/macro';
+import { defineMessage } from '@lingui/macro'
 import {
   AccordionContent, Icon, Link, List, ListGroup, ListItem, Navbar, NavRight, Page, Searchbar, Subnavbar,
-} from 'framework7-react';
-import React, { getGlobal } from 'reactn';
-import { ReactNComponent } from 'reactn/build/components';
-import { getUsersForLocation } from 'src/api';
-import { User } from 'src/models';
-import { Dict } from 'src/types';
-import UserJDenticon from 'src/components/UserJDenticon';
-import { dynamicPaths, paths } from 'src/routes';
-import { assertNotUndefined, sortBy } from 'src/util';
-import { NoCurrentUserError } from 'src/errors';
-import { Router } from 'framework7/modules/router/router';
+} from 'framework7-react'
+import React, { getGlobal } from 'reactn'
+import { ReactNComponent } from 'reactn/build/components'
+import { getUsersForLocation } from 'src/api'
+import { User } from 'src/models'
+import { Dict } from 'src/types'
+import UserJDenticon from 'src/components/UserJDenticon'
+import { dynamicPaths, paths } from 'src/routes'
+import { assertNotUndefined, sortBy } from 'src/util'
+import { NoCurrentUserError } from 'src/errors'
+import { Router } from 'framework7/modules/router/router'
 
 interface Props {
   users: User[]
@@ -20,13 +20,13 @@ interface Props {
 
 class UsersList extends React.Component<Props, any> {
   groupByLetter() {
-    const grouped: Dict<User[]> = {};
+    const grouped: Dict<User[]> = {}
     for (const user of this.props.users) {
-      const letter = user.lastName[0];
-      if (!grouped[letter]) grouped[letter] = [];
-      grouped[letter].push(user);
+      const letter = user.lastName[0]
+      if (!grouped[letter]) grouped[letter] = []
+      grouped[letter].push(user)
     }
-    return grouped;
+    return grouped
   }
 
   userItem(user: User) {
@@ -66,11 +66,11 @@ class UsersList extends React.Component<Props, any> {
           </List>
         </AccordionContent>
       </ListItem>
-    );
+    )
   }
 
   render() {
-    const grouped = this.groupByLetter();
+    const grouped = this.groupByLetter()
     return (
       <Page>
         <Navbar title="Users" backLink="Back" backLinkUrl={paths.dashboardPath}>
@@ -101,7 +101,7 @@ class UsersList extends React.Component<Props, any> {
         }
         </List>
       </Page>
-    );
+    )
   }
 }
 
@@ -111,40 +111,40 @@ interface State {
 }
 
 export default class AdminUsersPage extends ReactNComponent<any, State> {
-  user: User;
+  user: User
 
-  locationId: string;
+  locationId: string
 
   constructor(props: any) {
-    super(props);
+    super(props)
     if (!this.global.currentUser) {
-      throw new NoCurrentUserError();
+      throw new NoCurrentUserError()
     }
-    const locatonId = this.$f7route.params.locationId;
-    assertNotUndefined(locatonId);
-    this.locationId = locatonId;
+    const locatonId = this.$f7route.params.locationId
+    assertNotUndefined(locatonId)
+    this.locationId = locatonId
 
-    this.user = this.global.currentUser;
+    this.user = this.global.currentUser
     this.state = {
       users: [],
       isLoaded: false,
-    };
+    }
   }
 
   async fetchUsers() {
-    const users = await getUsersForLocation(this.locationId);
-    this.setState({ users, isLoaded: true });
+    const users = await getUsersForLocation(this.locationId)
+    this.setState({ users, isLoaded: true })
   }
 
   componentDidMount() {
-    this.$f7.preloader.show();
+    this.$f7.preloader.show()
 
     this.fetchUsers().finally(() => {
-      this.$f7.preloader.hide();
-    });
+      this.$f7.preloader.hide()
+    })
   }
 
   render() {
-    return <UsersList users={this.state.users} route={this.$f7route} />;
+    return <UsersList users={this.state.users} route={this.$f7route} />
   }
 }

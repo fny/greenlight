@@ -1,9 +1,9 @@
-import React from 'reactn';
-import { ListInput } from 'framework7-react';
-import { validEmail, validPhone } from 'src/util';
-import { defineMessage } from '@lingui/macro';
+import React from 'reactn'
+import { ListInput } from 'framework7-react'
+import { validEmail, validPhone } from 'src/util'
+import { defineMessage } from '@lingui/macro'
 
-export type EmailOrPhoneInputTypes = 'email' | 'phone' | 'blank' | 'unknown';
+export type EmailOrPhoneInputTypes = 'email' | 'phone' | 'blank' | 'unknown'
 
 interface State {
   inputType: EmailOrPhoneInputTypes
@@ -15,9 +15,9 @@ interface State {
 
 export default class EmailOrPhoneListInput extends React.Component<ListInput.Props, State> {
   // Required for this to be collected in the List
-  static displayName = 'F7ListItem';
+  static displayName = 'F7ListItem'
 
-  listInput = React.createRef<ListInput>();
+  listInput = React.createRef<ListInput>()
 
   state: State = {
     inputType: 'blank',
@@ -25,7 +25,7 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
     errorMessage: '',
     errorMessageForce: false,
     value: String(this.props.value),
-  };
+  }
 
   validate(value: string): boolean {
     if (value === '') {
@@ -37,16 +37,16 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
             message: 'Please enter your email or mobile number.',
           }),
         ),
-      });
-      this.setState({ errorMessageForce: true });
-      return false;
+      })
+      this.setState({ errorMessageForce: true })
+      return false
     }
     if (validEmail(value)) {
-      this.setState({ inputType: 'email' });
+      this.setState({ inputType: 'email' })
     }
 
     if (validPhone(value)) {
-      this.setState({ inputType: 'phone' });
+      this.setState({ inputType: 'phone' })
     }
 
     if (!validEmail(value) && !validPhone(value)) {
@@ -58,24 +58,24 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
             message: 'Invalid email or mobile number.',
           }),
         ),
-      });
-      this.setState({ errorMessageForce: true });
-      return false;
+      })
+      this.setState({ errorMessageForce: true })
+      return false
     }
 
-    this.setState({ errorMessage: '' });
-    this.setState({ errorMessageForce: false });
-    return true;
+    this.setState({ errorMessage: '' })
+    this.setState({ errorMessageForce: false })
+    return true
   }
 
   onBlur(e: React.ChangeEvent<HTMLInputElement>) {
-    if (this.state.seenInput === false) this.setState({ seenInput: true });
-    this.validate(e.target.value);
+    if (this.state.seenInput === false) this.setState({ seenInput: true })
+    this.validate(e.target.value)
   }
 
   onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ value: e.target.value });
-    if (this.state.seenInput) this.validate(e.target.value);
+    this.setState({ value: e.target.value })
+    if (this.state.seenInput) this.validate(e.target.value)
   }
 
   render() {
@@ -96,6 +96,6 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
           }
         onInput={this.props.onInput}
       />
-    );
+    )
   }
 }

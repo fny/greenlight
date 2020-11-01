@@ -1,13 +1,13 @@
-import React from 'reactn';
+import React from 'reactn'
 import {
   Page,
   Block,
   Button,
-} from 'framework7-react';
+} from 'framework7-react'
 
-import './SplashPage.css';
-import { toggleLocale } from 'src/initializers/providers';
-import { Trans } from '@lingui/macro';
+import './SplashPage.css'
+import { toggleLocale } from 'src/initializers/providers'
+import { Trans } from '@lingui/macro'
 
 export default class SplashPage extends React.Component<any, any> {
   render() {
@@ -47,6 +47,6 @@ export default class SplashPage extends React.Component<any, any> {
           Greenlight Ready LLC
         </p>
       </Page>
-    );
+    )
   }
 }

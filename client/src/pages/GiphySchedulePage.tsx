@@ -1,11 +1,11 @@
-import React from 'react';
-import { Page, Navbar, Block } from 'framework7-react';
-import Giphy from 'src/components/Giphy';
-import giphySchedule from 'src/data/giphySchedule';
-import { DateTime } from 'luxon';
+import React from 'react'
+import { Page, Navbar, Block } from 'framework7-react'
+import Giphy from 'src/components/Giphy'
+import giphySchedule from 'src/data/giphySchedule'
+import { DateTime } from 'luxon'
 
 function dateString(date: string) {
-  return DateTime.fromFormat(date, 'L/d/yy').toLocaleString(DateTime.DATE_HUGE);
+  return DateTime.fromFormat(date, 'L/d/yy').toLocaleString(DateTime.DATE_HUGE)
 }
 
 export default function GiphySchedulePage() {
@@ -27,5 +27,5 @@ export default function GiphySchedulePage() {
         ))}
       </Block>
     </Page>
-  );
+  )
 }

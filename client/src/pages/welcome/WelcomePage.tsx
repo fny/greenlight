@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import React from 'reactn';
+import React from 'reactn'
 
 import {
   Page,
@@ -11,18 +11,18 @@ import {
   Col,
   Sheet,
   PageContent,
-} from 'framework7-react';
+} from 'framework7-react'
 
-import { Case, When } from 'src/components/Case';
+import { Case, When } from 'src/components/Case'
 
-import { esExclaim, greeting } from 'src/util';
-import { User } from 'src/models/User';
-import { paths } from 'src/routes';
-import { ReactNComponent } from 'reactn/build/components';
-import { NoCurrentUserError } from 'src/errors';
+import { esExclaim, greeting } from 'src/util'
+import { User } from 'src/models/User'
+import { paths } from 'src/routes'
+import { ReactNComponent } from 'reactn/build/components'
+import { NoCurrentUserError } from 'src/errors'
 
-import { toggleLocale, signOut } from 'src/initializers/providers';
-import { plural, Trans } from '@lingui/macro';
+import { toggleLocale, signOut } from 'src/initializers/providers'
+import { plural, Trans } from '@lingui/macro'
 
 interface State {
   termsOpened: boolean
@@ -31,26 +31,26 @@ interface State {
 
 export default class WelcomePage extends ReactNComponent<any, State> {
   constructor(props: any) {
-    super(props);
+    super(props)
 
     if (!this.global.currentUser) {
-      throw new NoCurrentUserError();
+      throw new NoCurrentUserError()
     }
     this.state = {
       termsOpened: false,
       currentUser: this.global.currentUser,
-    };
+    }
   }
 
   totalLocations() {
-    const user = this.state.currentUser;
-    return user.locations__HACK().length + user.children.map((x) => x.locations__HACK().length).reduce((x, y) => x + y, 0);
+    const user = this.state.currentUser
+    return user.locations__HACK().length + user.children.map((x) => x.locations__HACK().length).reduce((x, y) => x + y, 0)
   }
 
   whoDoYouFillSurveysFor() {
-    const user = this.state.currentUser;
-    const fillForSelf = user.locationAccounts.length > 0;
-    const fillForChildren = user.children.length > 0;
+    const user = this.state.currentUser
+    const fillForSelf = user.locationAccounts.length > 0
+    const fillForChildren = user.children.length > 0
     if (fillForSelf && fillForChildren) {
       return (
         <Trans id="WelcomePage.fill_for_self_and_children">
@@ -60,13 +60,13 @@ export default class WelcomePage extends ReactNComponent<any, State> {
           {this.global.i18n._(plural(user.children.length, { one: 'child', other: 'children' }))}
           .
         </Trans>
-      );
+      )
     } if (fillForSelf) {
       return (
         <Trans id="WelcomePage.fill_for_self">
           Every day you'll need to fill out symptom surveys for yourself.
         </Trans>
-      );
+      )
     } if (fillForChildren) {
       return (
         <Trans id="WelcomePage.fill_children">
@@ -74,7 +74,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
           {this.global.i18n._(plural(user.children.length, { one: 'child', other: 'children' }))}
           .
         </Trans>
-      );
+      )
     }
     // TODO: What do we do in the case that the user is not associated with anything over the long run?
     return (
@@ -82,12 +82,12 @@ export default class WelcomePage extends ReactNComponent<any, State> {
         It looks like your account has not been set up properly.
         Please contact greenlight at help@greenlightready.com.
       </Trans>
-    );
+    )
   }
 
   render() {
-    const user = this.state.currentUser;
-    const locationCount = this.totalLocations();
+    const user = this.state.currentUser
+    const locationCount = this.totalLocations()
     return (
       <Page>
         <Block>
@@ -140,7 +140,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
               {' '}
               <Link
                 onClick={() => {
-                  this.setState({ termsOpened: true });
+                  this.setState({ termsOpened: true })
                 }}
               >
                 Terms and Conditions
@@ -168,7 +168,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
         <Sheet
           opened={this.state.termsOpened}
           onSheetClosed={() => {
-            this.setState({ termsOpened: false });
+            this.setState({ termsOpened: false })
           }}
         >
           <Toolbar>
@@ -184,6 +184,6 @@ export default class WelcomePage extends ReactNComponent<any, State> {
           </PageContent>
         </Sheet>
       </Page>
-    );
+    )
   }
 }

@@ -1,24 +1,24 @@
-import React, { Fragment, useGlobal } from 'reactn';
+import React, { Fragment, useGlobal } from 'reactn'
 
-import './App.css';
+import './App.css'
 
-import { App, View } from 'framework7-react';
+import { App, View } from 'framework7-react'
 
-import { Framework7Params } from 'framework7/components/app/app-class';
+import { Framework7Params } from 'framework7/components/app/app-class'
 
-import { I18nProvider, useLingui } from '@lingui/react';
-import routes from './routes';
-import { i18n as myI18n } from './i18n';
-import { ErrorBoundary } from './ErrorBoundary';
+import { I18nProvider, useLingui } from '@lingui/react'
+import routes from './routes'
+import { i18n as myI18n } from './i18n'
+import { ErrorBoundary } from './ErrorBoundary'
 
 function I18nWatchLocale({ children }: { children: React.ReactNode }) {
-  const { i18n } = useLingui();
+  const { i18n } = useLingui()
 
   // Skip render when locale isn't loaded
-  if (!i18n.locale) return null;
+  if (!i18n.locale) return null
 
   // Force re-render by using active locale as an element key.
-  return <Fragment key={i18n.locale}>{children}</Fragment>;
+  return <Fragment key={i18n.locale}>{children}</Fragment>
 }
 
 export default function Main() {
@@ -33,8 +33,8 @@ export default function Main() {
       pushState: true,
       pushStateSeparator: '#',
     },
-  };
-  const [locale] = useGlobal('locale');
+  }
+  const [locale] = useGlobal('locale')
 
   return (
     <ErrorBoundary>
@@ -46,5 +46,5 @@ export default function Main() {
         </I18nWatchLocale>
       </I18nProvider>
     </ErrorBoundary>
-  );
+  )
 }

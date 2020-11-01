@@ -1,8 +1,8 @@
 // import { I18n } from '@lingui/core'
-import 'reactn';
-import { Dispatch } from 'react';
-import { User } from './models';
-import { i18n } from './i18n';
+import 'reactn'
+import { Dispatch } from 'react'
+import { User } from './models'
+import { i18n } from './i18n'
 
 declare module 'reactn/default' {
   export interface Reducers {

@@ -1,22 +1,22 @@
-import React from 'reactn';
+import React from 'reactn'
 import {
   Page, Navbar, Block, Button, Preloader,
-} from 'framework7-react';
-import './SurveyNewPage.css';
-import { paths } from 'src/routes';
-import { MEDICAL_EVENTS } from 'src/models/MedicalEvent';
-import { CUTOFF_TIME } from 'src/models/GreenlightStatus';
-import { createSymptomSurvey, getUser } from 'src/api';
-import { User } from 'src/models';
-import { NoCurrentUserError } from 'src/errors';
-import { ReactNComponent } from 'reactn/build/components';
-import { DateTime } from 'luxon';
-import { defineMessage, t, Trans } from '@lingui/macro';
-import { assertNotNull } from 'src/util';
-import { reloadCurrentUser } from 'src/initializers/providers';
-import logger from 'src/logger';
-import DatedYesNoButton from '../components/DatedYesNoButton';
-import { Case, When } from '../components/Case';
+} from 'framework7-react'
+import './SurveyNewPage.css'
+import { paths } from 'src/routes'
+import { MEDICAL_EVENTS } from 'src/models/MedicalEvent'
+import { CUTOFF_TIME } from 'src/models/GreenlightStatus'
+import { createSymptomSurvey, getUser } from 'src/api'
+import { User } from 'src/models'
+import { NoCurrentUserError } from 'src/errors'
+import { ReactNComponent } from 'reactn/build/components'
+import { DateTime } from 'luxon'
+import { defineMessage, t, Trans } from '@lingui/macro'
+import { assertNotNull } from 'src/util'
+import { reloadCurrentUser } from 'src/initializers/providers'
+import logger from 'src/logger'
+import DatedYesNoButton from '../components/DatedYesNoButton'
+import { Case, When } from '../components/Case'
 
 interface SymptomButtonProps {
   title: string
@@ -38,7 +38,7 @@ function SymptomButton({
       <br />
       <span dangerouslySetInnerHTML={{ __html: title }} />
     </div>
-  );
+  )
 }
 
 interface SurveyProps {
@@ -68,30 +68,30 @@ type Symptoms =
   | 'hasChills'
   | 'hasNewCough'
   | 'hasDifficultyBreathing'
-  | 'hasLossTasteSmell';
+  | 'hasLossTasteSmell'
 
 export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveyState> {
-  isSequence = false;
+  isSequence = false
 
-  currentUser: User;
+  currentUser: User
 
   constructor(props: SurveyProps) {
-    super(props);
+    super(props)
     if (!this.global.currentUser) {
-      throw new NoCurrentUserError();
+      throw new NoCurrentUserError()
     }
 
-    this.currentUser = this.global.currentUser;
+    this.currentUser = this.global.currentUser
 
-    const { userId } = this.$f7route.params;
-    if (!userId) { throw 'userId missing in url'; }
+    const { userId } = this.$f7route.params
+    if (!userId) { throw 'userId missing in url' }
 
     if (userId === 'seq') {
-      this.isSequence = true;
+      this.isSequence = true
     } else {
       getUser(userId).then((user) => {
-        this.setState({ targetUser: user, isLoaded: true });
-      });
+        this.setState({ targetUser: user, isLoaded: true })
+      })
     }
 
     this.state = {
@@ -107,177 +107,177 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       hadContact: null,
       showConfirmation: false,
       targetUser: null,
-    };
+    }
   }
 
   redirect() {
-    return this.$f7route.query.redirect || null;
+    return this.$f7route.query.redirect || null
   }
 
   medicalEvents() {
-    const events = [];
+    const events = []
     if (this.state.hasFever) {
       events.push({
         eventType: MEDICAL_EVENTS.FEVER,
         occurredAt: DateTime.local(),
-      });
+      })
     }
     if (this.state.hasChills) {
       events.push({
         eventType: MEDICAL_EVENTS.CHILLS,
         occurredAt: DateTime.local(),
-      });
+      })
     }
     if (this.state.hasNewCough) {
       events.push({
         eventType: MEDICAL_EVENTS.NEW_COUGH,
         occurredAt: DateTime.local(),
-      });
+      })
     }
     if (this.state.hasDifficultyBreathing) {
       events.push({
         eventType: MEDICAL_EVENTS.DIFFICULTY_BREATHING,
         occurredAt: DateTime.local(),
-      });
+      })
     }
     if (this.state.hasLossTasteSmell) {
       events.push({
         eventType: MEDICAL_EVENTS.LOST_TASTE_SMELL,
         occurredAt: DateTime.local(),
-      });
+      })
     }
     if (this.state.hadDiagnosis && this.state.diagnosisDate) {
       events.push({
         eventType: MEDICAL_EVENTS.COVID_DIAGNOSIS,
         occurredAt: this.state.diagnosisDate,
-      });
+      })
     }
     if (this.state.hadContact && this.state.contactDate) {
       events.push({
         eventType: MEDICAL_EVENTS.COVID_EXPOSURE,
         occurredAt: this.state.contactDate,
-      });
+      })
     }
-    return events;
+    return events
   }
 
   submittingFor(): User | null {
     if (this.isSequence) {
       if (CUTOFF_TIME.isAfter(DateTime.local())) {
-        return this.currentUser.usersNotSubmitted()[0] || null;
+        return this.currentUser.usersNotSubmitted()[0] || null
       }
-      return this.currentUser.usersNotSubmittedForTomorrow()[0] || null;
+      return this.currentUser.usersNotSubmittedForTomorrow()[0] || null
     }
-    return this.state.targetUser;
+    return this.state.targetUser
   }
 
   isSubmittingForSelf(): boolean {
-    return this.submittingFor() === this.currentUser;
+    return this.submittingFor() === this.currentUser
   }
 
   hasNextUser(): boolean {
-    if (!this.isSequence) return false;
-    return this.currentUser.usersNotSubmitted().length > 1;
+    if (!this.isSequence) return false
+    return this.currentUser.usersNotSubmitted().length > 1
   }
 
   nextUser(): User | null {
-    if (!this.isSequence) return null;
-    return this.currentUser.usersNotSubmitted()[1] || null;
+    if (!this.isSequence) return null
+    return this.currentUser.usersNotSubmitted()[1] || null
   }
 
   setContacted(yesNo: boolean) {
     this.setState({
       showConfirmation: false,
       hadContact: yesNo,
-    });
+    })
   }
 
   setDiagnosed(yesNo: boolean) {
     this.setState({
       showConfirmation: false,
       hadDiagnosis: yesNo,
-    });
+    })
   }
 
   setDiagnosisDate(date: Date) {
     this.setState({
       showConfirmation: false,
       diagnosisDate: DateTime.fromJSDate(date),
-    });
+    })
   }
 
   setContactDate(date: Date) {
     this.setState({
       showConfirmation: false,
       contactDate: DateTime.fromJSDate(date),
-    });
+    })
   }
 
   toggleSymptom(symptom: Symptoms) {
     this.setState({
       ...this.state,
       [symptom]: !this.state[symptom],
-    });
+    })
   }
 
   submit1() {
     this.setState({
       submitClicked: true,
-    });
+    })
     if (this.validate()) {
-      this.setState({ showConfirmation: true });
+      this.setState({ showConfirmation: true })
     }
   }
 
   async submit2() {
     if (!this.validate()) {
-      this.setState({ showConfirmation: false });
-      return;
+      this.setState({ showConfirmation: false })
+      return
     }
-    const medicalEvents = this.medicalEvents();
+    const medicalEvents = this.medicalEvents()
 
     this.$f7.dialog.preloader(
       this.global.i18n._(defineMessage({ id: 'SurveyNewPage.submitting', message: 'Submitting...' })),
-    );
-    const redirect = this.redirect();
+    )
+    const redirect = this.redirect()
     try {
       // TODO: This should load the data
-      const target = this.submittingFor();
-      assertNotNull(target);
-      const status = await createSymptomSurvey(target, medicalEvents);
+      const target = this.submittingFor()
+      assertNotNull(target)
+      const status = await createSymptomSurvey(target, medicalEvents)
       if (!status) {
-        throw 'This should never happen, but status was somehow nil.';
+        throw 'This should never happen, but status was somehow nil.'
       }
-      const user = await reloadCurrentUser(); // Reload data
-      this.$f7.dialog.close();
+      const user = await reloadCurrentUser() // Reload data
+      this.$f7.dialog.close()
 
       if (redirect) {
-        this.$f7router.navigate(redirect, { reloadCurrent: true, ignoreCache: true });
+        this.$f7router.navigate(redirect, { reloadCurrent: true, ignoreCache: true })
       } else if (this.isSequence && user.usersNotSubmitted().length > 0) {
-        this.$f7router.refreshPage();
+        this.$f7router.refreshPage()
       } else {
-        this.$f7router.navigate(paths.surveysThankYouPath);
+        this.$f7router.navigate(paths.surveysThankYouPath)
       }
     } catch (error) {
       if (!error.response) {
-        throw error;
+        throw error
       }
 
       if (error.response.status === 422) {
         if (redirect) {
-          this.$f7router.navigate(redirect, { reloadCurrent: true, ignoreCache: true });
+          this.$f7router.navigate(redirect, { reloadCurrent: true, ignoreCache: true })
         } else {
-          this.$f7router.navigate(paths.dashboardPath);
+          this.$f7router.navigate(paths.dashboardPath)
         }
       }
 
-      this.$f7.dialog.close();
-      logger.error(error);
+      this.$f7.dialog.close()
+      logger.error(error)
       // TODO: Make errors smarter
       this.$f7.dialog.alert(
         this.global.i18n._(defineMessage({ id: 'SurveyNewPage.submission_failed_message', message: 'Something went wrong. Maybe someone already submitted?' })),
         this.global.i18n._(defineMessage({ id: 'SurveyNewPage.submission_failed_title', message: 'Submission Failed' })),
-      );
+      )
     }
   }
 
@@ -291,18 +291,18 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       && !this.state.contactDate,
       this.state.hadDiagnosis === true
       && !this.state.diagnosisDate,
-    ];
-    return !errors.includes(true);
+    ]
+    return !errors.includes(true)
   }
 
   render() {
-    const user = this.currentUser;
+    const user = this.currentUser
     if (!user) {
       // TODO: Flash message
-      this.$f7router.navigate('/');
-      return <></>;
+      this.$f7router.navigate('/')
+      return <></>
     }
-    const submittingFor = this.submittingFor();
+    const submittingFor = this.submittingFor()
 
     if (submittingFor === null) {
       return (
@@ -312,7 +312,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
             All surveys have already been submitted for today. Please check back later!
           </Block>
         </Page>
-      );
+      )
     }
 
     // if (!submittingFor.greenlightStatus().isUnknown()) {
@@ -492,6 +492,6 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
         }
       </Page>
 
-    );
+    )
   }
 }

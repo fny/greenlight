@@ -1,18 +1,18 @@
-import React, { getGlobal } from 'reactn';
+import React, { getGlobal } from 'reactn'
 import {
   AccordionContent, Page, List, ListItem, Navbar, Link, BlockTitle, NavTitle, NavRight, Icon, Actions, ActionsGroup, ActionsButton, Block,
-} from 'framework7-react';
-import { greeting } from 'src/util';
-import If from 'src/components/If';
-import { dynamicPaths, paths } from 'src/routes';
-import colors from 'src/misc/colors';
+} from 'framework7-react'
+import { greeting } from 'src/util'
+import If from 'src/components/If'
+import { dynamicPaths, paths } from 'src/routes'
+import colors from 'src/misc/colors'
 
-import { toggleLocale, signOut } from 'src/initializers/providers';
-import { defineMessage, Trans } from '@lingui/macro';
-import { User } from 'src/models';
+import { toggleLocale, signOut } from 'src/initializers/providers'
+import { defineMessage, Trans } from '@lingui/macro'
+import { User } from 'src/models'
 
-import { ReactNComponent } from 'reactn/build/components';
-import UserJDenticon from '../components/UserJDenticon';
+import { ReactNComponent } from 'reactn/build/components'
+import UserJDenticon from '../components/UserJDenticon'
 
 function UserList({ users }: { users: User[]}) {
   return (
@@ -59,15 +59,15 @@ function UserList({ users }: { users: User[]}) {
         </ListItem>
       ))}
     </List>
-  );
+  )
 }
 
 export default class DashboardPage extends ReactNComponent<any, any> {
   render() {
-    const user = this.global.currentUser;
+    const user = this.global.currentUser
     if (!user) {
-      this.$f7router.navigate('/');
-      return <></>;
+      this.$f7router.navigate('/')
+      return <></>
     }
 
     return (
@@ -220,7 +220,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
               </ActionsButton>
               {user.isAdmin()
               && (
-              <ActionsButton color="blue" onClick={() => { this.$f7router.navigate(dynamicPaths.adminUsersPath(user.adminLocation__HACK())); }}>
+              <ActionsButton color="blue" onClick={() => { this.$f7router.navigate(dynamicPaths.adminUsersPath(user.adminLocation__HACK())) }}>
                 Admin Page
               </ActionsButton>
               )}
@@ -228,6 +228,6 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           </Actions>
         </Block>
       </Page>
-    );
+    )
   }
 }

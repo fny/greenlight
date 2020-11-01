@@ -30,6 +30,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
+    "lint-fix": "eslint 'src/**/*.{js,ts,tsx}' --fix",
     "i18n-add-locale": "lingui add-locale",
     "i18n-extract": "lingui extract --clean --overwrite",
     "i18n-compile": "lingui compile"
@@ -73,6 +74,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-only-warn": "^1.0.2",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",

@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 import {
   Page, Navbar, Block, BlockTitle,
-} from 'framework7-react';
-import { Trans } from '@lingui/macro';
+} from 'framework7-react'
+import { Trans } from '@lingui/macro'
 
 /**
  * This page exists to enumerate translations for api errors.
@@ -40,5 +40,5 @@ export default function APITranslationPage() {
         </p>
       </Block>
     </Page>
-  );
+  )
 }

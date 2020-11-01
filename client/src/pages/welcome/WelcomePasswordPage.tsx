@@ -1,17 +1,17 @@
-import React from 'reactn';
+import React from 'reactn'
 import {
   Page, Navbar, Block, List, ListInput, Button, Toggle, ListItem,
-} from 'framework7-react';
-import { SyntheticEvent } from 'react';
-import { updateUser } from 'src/api';
-import { dynamicPaths } from 'src/routes';
-import { User } from 'src/models';
-import { ReactNComponent } from 'reactn/build/components';
-import { NoCurrentUserError } from 'src/errors';
+} from 'framework7-react'
+import { SyntheticEvent } from 'react'
+import { updateUser } from 'src/api'
+import { dynamicPaths } from 'src/routes'
+import { User } from 'src/models'
+import { ReactNComponent } from 'reactn/build/components'
+import { NoCurrentUserError } from 'src/errors'
 
-import { defineMessage, Trans } from '@lingui/macro';
-import logger from 'src/logger';
-import { When, Case } from '../../components/Case';
+import { defineMessage, Trans } from '@lingui/macro'
+import logger from 'src/logger'
+import { When, Case } from '../../components/Case'
 
 interface State {
   password: string
@@ -23,10 +23,10 @@ interface State {
 
 export default class extends ReactNComponent<any, State> {
   constructor(props: any) {
-    super(props);
+    super(props)
 
     if (!this.global.currentUser) {
-      throw new NoCurrentUserError();
+      throw new NoCurrentUserError()
     }
 
     this.state = {
@@ -35,11 +35,11 @@ export default class extends ReactNComponent<any, State> {
       showErrorMessage: false,
       isPasswordHidden: true,
       currentUser: this.global.currentUser,
-    };
+    }
   }
 
   toggleReveal(e: SyntheticEvent) {
-    this.setState({ isPasswordHidden: !(e.target as any).checked });
+    this.setState({ isPasswordHidden: !(e.target as any).checked })
     // this.$f7.input.validateInputs('#WelcomePasswordPage-form')
   }
 
@@ -48,25 +48,25 @@ export default class extends ReactNComponent<any, State> {
       this.setState({
         errorMessage: this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.short_password', message: 'Password is too short.' })),
         showErrorMessage: true,
-      });
-      return;
+      })
+      return
     }
-    this.setState({ errorMessage: '', showErrorMessage: false });
-    this.$f7.input.validateInputs('#WelcomePasswordPage-form');
+    this.setState({ errorMessage: '', showErrorMessage: false })
+    this.$f7.input.validateInputs('#WelcomePasswordPage-form')
 
-    this.$f7.dialog.preloader(this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.submitting_changes', message: 'Submitting changes...' })));
+    this.$f7.dialog.preloader(this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.submitting_changes', message: 'Submitting changes...' })))
     try {
-      const user = await updateUser(this.state.currentUser, { password: this.state.password } as Partial<User>);
-      this.setGlobal({ currentUser: user });
-      this.$f7.dialog.close();
-      this.$f7router.navigate(dynamicPaths.afterWelcomePasswordPath());
+      const user = await updateUser(this.state.currentUser, { password: this.state.password } as Partial<User>)
+      this.setGlobal({ currentUser: user })
+      this.$f7.dialog.close()
+      this.$f7router.navigate(dynamicPaths.afterWelcomePasswordPath())
     } catch (error) {
-      this.$f7.dialog.close();
-      logger.error(error);
+      this.$f7.dialog.close()
+      logger.error(error)
       this.$f7.dialog.alert(
         this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.somethings_wrong', message: 'Something went wrong' })),
         this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.update_failed', message: 'Update Failed' })),
-      );
+      )
     }
   }
 
@@ -92,7 +92,7 @@ export default class extends ReactNComponent<any, State> {
               errorMessage={this.state.errorMessage || ''}
               errorMessageForce={this.state.showErrorMessage}
               onChange={(e) => {
-                this.setState({ password: e.target.value });
+                this.setState({ password: e.target.value })
               }}
               required
               validate
@@ -135,6 +135,6 @@ export default class extends ReactNComponent<any, State> {
 
         </Block>
       </Page>
-    );
+    )
   }
 }

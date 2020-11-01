@@ -1,49 +1,49 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { DateTime } from 'luxon';
-import { GreenlightStatus, User } from 'src/models';
+import { DateTime } from 'luxon'
+import { GreenlightStatus, User } from 'src/models'
 
 const REASON_REPLACEMENTS = {
   '{you}': (status: GreenlightStatus, submittingUser: User, targetUser: User) => {
     if (submittingUser === targetUser) {
-      return 'you';
+      return 'you'
     }
-    return targetUser.firstName || '';
+    return targetUser.firstName || ''
   },
   '{You}': (status: GreenlightStatus, submittingUser: User, targetUser: User) => {
     if (submittingUser === targetUser) {
-      return 'You';
+      return 'You'
     }
-    return targetUser.firstName || '';
+    return targetUser.firstName || ''
   },
   '{usted}': (status: GreenlightStatus, submittingUser: User, targetUser: User) => {
     if (submittingUser === targetUser) {
-      return 'usted';
+      return 'usted'
     }
-    return targetUser.firstName || '';
+    return targetUser.firstName || ''
   },
   '{Usted}': (status: GreenlightStatus, submittingUser: User, targetUser: User) => {
     if (submittingUser === targetUser) {
-      return 'Usted';
+      return 'Usted'
     }
-    return targetUser.firstName || '';
+    return targetUser.firstName || ''
   },
   '{date}': (status: GreenlightStatus, submittingUser: User, targetUser: User) => status.expirationDate.plus({ days: 1 }).toLocaleString(DateTime.DATE_SHORT),
   '{days}': (status: GreenlightStatus, submittingUser: User, targetUser: User) => {
-    const count = status.expirationDate.diff(status.submissionDate, 'days').days + 1;
+    const count = status.expirationDate.diff(status.submissionDate, 'days').days + 1
     if (count === 1) {
-      return '1 day';
+      return '1 day'
     }
-    return `${count} days`;
+    return `${count} days`
   },
   '{días}': (status: GreenlightStatus, submittingUser: User, targetUser: User) => {
-    const count = status.expirationDate.diff(status.submissionDate, 'days').days + 1;
+    const count = status.expirationDate.diff(status.submissionDate, 'days').days + 1
     if (count === 1) {
-      return '1 día';
+      return '1 día'
     }
-    return `${count} diás`;
+    return `${count} diás`
   },
-};
+}
 
 const REASONS = {
   en: {
@@ -98,25 +98,25 @@ const REASONS = {
       message: 'El período de recuperación casi ha terminado. {Usted} debería quedarse en casa hoy, pero {usted} debería tener autorización para regresar mañana.',
     },
   },
-};
+}
 
 function interpolate(value: string, status: GreenlightStatus, submittingUser: User, targetUser: User) {
   for (const [key, replacer] of Object.entries(REASON_REPLACEMENTS)) {
     (
       value = value.replace(key, replacer(status, submittingUser, targetUser))
-    );
+    )
   }
-  return value;
+  return value
 }
 
 export function reasonTitle(targetUser: User, submittingUser: User) {
-  const status = targetUser.greenlightStatus();
-  const bundle = (REASONS[submittingUser.locale || 'en'] as any)[status.reason];
-  return interpolate(bundle?.title || '', status, submittingUser, targetUser);
+  const status = targetUser.greenlightStatus()
+  const bundle = (REASONS[submittingUser.locale || 'en'] as any)[status.reason]
+  return interpolate(bundle?.title || '', status, submittingUser, targetUser)
 }
 
 export function reasonMessage(targetUser: User, submittingUser: User) {
-  const status = targetUser.greenlightStatus();
-  const bundle = (REASONS[submittingUser.locale || 'en'] as any)[status.reason];
-  return interpolate(bundle?.message || '', status, submittingUser, targetUser);
+  const status = targetUser.greenlightStatus()
+  const bundle = (REASONS[submittingUser.locale || 'en'] as any)[status.reason]
+  return interpolate(bundle?.message || '', status, submittingUser, targetUser)
 }

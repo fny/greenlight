@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 // TODO: Translate
-import React from 'reactn';
+import React from 'reactn'
 
 import {
   Page,
   Block,
   Button,
   Navbar, BlockTitle,
-} from 'framework7-react';
+} from 'framework7-react'
 
-import { joinWords } from 'src/util';
-import { User } from 'src/models/User';
-import { paths } from 'src/routes';
-import { ReactNComponent } from 'reactn/build/components';
-import { NoCurrentUserError } from 'src/errors';
+import { joinWords } from 'src/util'
+import { User } from 'src/models/User'
+import { paths } from 'src/routes'
+import { ReactNComponent } from 'reactn/build/components'
+import { NoCurrentUserError } from 'src/errors'
 
-import { defineMessage, Trans } from '@lingui/macro';
-import { completeWelcomeUser } from 'src/api';
+import { defineMessage, Trans } from '@lingui/macro'
+import { completeWelcomeUser } from 'src/api'
 
 interface State {
   termsOpened: boolean
@@ -24,17 +24,17 @@ interface State {
 }
 
 export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
-  user: User;
+  user: User
 
   constructor(props: any) {
-    super(props);
+    super(props)
 
     if (!this.global.currentUser) {
-      throw new NoCurrentUserError();
+      throw new NoCurrentUserError()
     }
-    this.user = this.global.currentUser;
+    this.user = this.global.currentUser
 
-    completeWelcomeUser(this.user);
+    completeWelcomeUser(this.user)
   }
 
   render() {
@@ -73,6 +73,6 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
           </Button>
         </Block>
       </Page>
-    );
+    )
   }
 }

@@ -1,10 +1,10 @@
-import React, { useGlobal } from 'reactn';
+import React, { useGlobal } from 'reactn'
 import {
   Page, Navbar, Block, ListItem, List, AccordionContent,
-} from 'framework7-react';
+} from 'framework7-react'
 
 export default function DebugPage() {
-  const [currentUser] = useGlobal('currentUser');
+  const [currentUser] = useGlobal('currentUser')
 
   return (
     <Page>
@@ -23,5 +23,5 @@ export default function DebugPage() {
         </ListItem>
       </List>
     </Page>
-  );
+  )
 }

@@ -1,14 +1,14 @@
-import React from 'reactn';
+import React from 'reactn'
 import {
   Page,
   List,
   Navbar,
   Block,
   Button,
-} from 'framework7-react';
+} from 'framework7-react'
 
-import { Trans } from '@lingui/macro';
-import EmailOrPhoneListInput from '../components/EmailOrPhoneListInput';
+import { Trans } from '@lingui/macro'
+import EmailOrPhoneListInput from '../components/EmailOrPhoneListInput'
 
 export default class ForgotPasswordPage extends React.Component<any, any> {
   render() {
@@ -32,14 +32,14 @@ export default class ForgotPasswordPage extends React.Component<any, any> {
           </Block>
         </List>
       </Page>
-    );
+    )
   }
 
   signIn() {
-    const app = this.$f7;
-    const router = this.$f7router;
+    const app = this.$f7
+    const router = this.$f7router
     app.dialog.alert('You should be recieving an email or text soon.', () => {
-      router.back();
-    });
+      router.back()
+    })
   }
 }

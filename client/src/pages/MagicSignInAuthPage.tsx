@@ -1,19 +1,19 @@
-import React from 'reactn';
+import React from 'reactn'
 import {
   Page,
   Navbar,
   Block,
   Link,
-} from 'framework7-react';
+} from 'framework7-react'
 
-import { Case, When } from 'src/components/Case';
+import { Case, When } from 'src/components/Case'
 
-import { defineMessage, Trans } from '@lingui/macro';
+import { defineMessage, Trans } from '@lingui/macro'
 
-import { Dict } from 'src/types';
-import { getCurrentUser, magicSignIn } from 'src/api';
-import { dynamicPaths, paths } from 'src/routes';
-import logger from 'src/logger';
+import { Dict } from 'src/types'
+import { getCurrentUser, magicSignIn } from 'src/api'
+import { dynamicPaths, paths } from 'src/routes'
+import logger from 'src/logger'
 
 interface State {
   hasReceivedResponse: boolean
@@ -24,32 +24,32 @@ export default class MagicSignInAuthPage extends React.Component<Dict<any>, Stat
   state = {
     hasReceivedResponse: true,
     isSuccess: false,
-  };
+  }
 
   async authorize() {
-    const { token } = this.$f7route.params;
-    const rememberMe = this.$f7route.params.remember === 'y';
+    const { token } = this.$f7route.params
+    const rememberMe = this.$f7route.params.remember === 'y'
 
-    if (!token) return;
+    if (!token) return
 
-    this.$f7.dialog.preloader('Signing in...');
+    this.$f7.dialog.preloader('Signing in...')
 
     try {
-      await magicSignIn(token, rememberMe);
-      const user = await getCurrentUser();
-      this.setState({ hasReceivedResponse: true, isSuccess: true });
-      this.$f7.dialog.close();
-      this.setGlobal({ currentUser: user });
-      this.$f7router.navigate(dynamicPaths.currentUserHomePath());
+      await magicSignIn(token, rememberMe)
+      const user = await getCurrentUser()
+      this.setState({ hasReceivedResponse: true, isSuccess: true })
+      this.$f7.dialog.close()
+      this.setGlobal({ currentUser: user })
+      this.$f7router.navigate(dynamicPaths.currentUserHomePath())
     } catch (error) {
-      logger.error(error);
-      this.setState({ hasReceivedResponse: true, isSuccess: false });
-      this.$f7.dialog.close();
+      logger.error(error)
+      this.setState({ hasReceivedResponse: true, isSuccess: false })
+      this.$f7.dialog.close()
     }
   }
 
   componentDidMount() {
-    this.authorize();
+    this.authorize()
   }
 
   render() {
@@ -77,6 +77,6 @@ export default class MagicSignInAuthPage extends React.Component<Dict<any>, Stat
           </Case>
         </Block>
       </Page>
-    );
+    )
   }
 }

@@ -1,29 +1,29 @@
-import NotFoundPage from 'src/pages/NotFoundPage';
-import DashboardPage from 'src/pages/DashboardPage';
+import NotFoundPage from 'src/pages/NotFoundPage'
+import DashboardPage from 'src/pages/DashboardPage'
 
-import SplashPage from 'src/pages/SplashPage';
-import SignInPage from 'src/pages/SignInPage';
-import MagicSignInPage from 'src/pages/MagicSignInPage';
+import SplashPage from 'src/pages/SplashPage'
+import SignInPage from 'src/pages/SignInPage'
+import MagicSignInPage from 'src/pages/MagicSignInPage'
 
-import WelcomePage from 'src/pages/welcome/WelcomePage';
-import WelcomeChildPage from 'src/pages/welcome/WelcomeChildPage';
-import WelcomeReviewPage from 'src/pages/welcome/WelcomeReviewPage';
-import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage';
+import WelcomePage from 'src/pages/welcome/WelcomePage'
+import WelcomeChildPage from 'src/pages/welcome/WelcomeChildPage'
+import WelcomeReviewPage from 'src/pages/welcome/WelcomeReviewPage'
+import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage'
 
-import SurveyNewPage from 'src/pages/SurveyNewPage';
-import SurveyThankYouPage from 'src/pages/SurveyThankYouPage';
+import SurveyNewPage from 'src/pages/SurveyNewPage'
+import SurveyThankYouPage from 'src/pages/SurveyThankYouPage'
 
-import { getGlobal } from 'reactn';
-import { User } from 'src/models';
-import { Router } from 'framework7/modules/router/router';
-import MagicSignInAuthPage from './pages/MagicSignInAuthPage';
-import { resolvePath } from './util';
-import GiphySchedulePage from './pages/GiphySchedulePage';
-import UserGreenlightPassPage from './pages/UserGreenlightPassPage';
-import DebugPage from './pages/DebugPage';
-import AdminUsersPage from './pages/admin/AdminUsersPage';
-import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage';
-import { isSignedIn } from './initializers/providers';
+import { getGlobal } from 'reactn'
+import { User } from 'src/models'
+import { Router } from 'framework7/modules/router/router'
+import MagicSignInAuthPage from './pages/MagicSignInAuthPage'
+import { resolvePath } from './util'
+import GiphySchedulePage from './pages/GiphySchedulePage'
+import UserGreenlightPassPage from './pages/UserGreenlightPassPage'
+import DebugPage from './pages/DebugPage'
+import AdminUsersPage from './pages/admin/AdminUsersPage'
+import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage'
+import { isSignedIn } from './initializers/providers'
 
 export const paths = {
   rootPath: '/',
@@ -42,88 +42,88 @@ export const paths = {
   surveysThankYouPath: '/surveys/thank-you',
   // TODO naming
   adminUsersPath: '/admin/locations/:locationId/users',
-};
+}
 
 type PathsDynamized = {
   [k in keyof typeof paths]: (substitutions?: any, query?: any) => string
-};
+}
 
-const pathsDynamized = {} as PathsDynamized;
+const pathsDynamized = {} as PathsDynamized
 
 Object.keys(paths).forEach((key) => {
-  const k = key as keyof typeof paths;
-  pathsDynamized[k] = buildDynamicPath(paths[k]);
-});
+  const k = key as keyof typeof paths
+  pathsDynamized[k] = buildDynamicPath(paths[k])
+})
 
-type DynamicPath = (substitutions?: any, query?: any) => string;
+type DynamicPath = (substitutions?: any, query?: any) => string
 
 /**
  * Builds a callable path that will resolve itslev given substitutions.
  * @param path
  */
 export function buildDynamicPath(path: string): DynamicPath {
-  return (substitutions?: any, query?: any): string => resolvePath(path, substitutions, query);
+  return (substitutions?: any, query?: any): string => resolvePath(path, substitutions, query)
 }
 
 export const dynamicPaths = {
   currentUserHomePath: () => {
-    const user: User | null | undefined = getGlobal().currentUser;
-    if (!user) return paths.rootPath;
+    const user: User | null | undefined = getGlobal().currentUser
+    if (!user) return paths.rootPath
     if (user.hasCompletedWelcome()) {
-      return paths.dashboardPath;
+      return paths.dashboardPath
     }
-    return paths.welcomePath;
+    return paths.welcomePath
   },
   afterWelcomePasswordPath: () => {
-    const user: User | null | undefined = getGlobal().currentUser;
-    if (!user) return paths.rootPath;
+    const user: User | null | undefined = getGlobal().currentUser
+    if (!user) return paths.rootPath
     if (user.hasChildren()) {
-      return dynamicPaths.welcomeChildIndexPath(0);
+      return dynamicPaths.welcomeChildIndexPath(0)
     }
-    return paths.welcomeSurveyPath;
+    return paths.welcomeSurveyPath
   },
   welcomeChildIndexPath: (index: number): string => {
-    const user: User | null | undefined = getGlobal().currentUser;
-    if (!user) return paths.rootPath;
-    const children = user.sortedChildren();
+    const user: User | null | undefined = getGlobal().currentUser
+    if (!user) return paths.rootPath
+    const children = user.sortedChildren()
     if (index < children.length) {
-      return dynamicPaths.welcomeChildPath(index);
+      return dynamicPaths.welcomeChildPath(index)
     }
-    return dynamicPaths.welcomeChildIndexPath(0);
+    return dynamicPaths.welcomeChildIndexPath(0)
   },
   userSurveysNewIndexPath: (index: number) => {
-    const user: User | null | undefined = getGlobal().currentUser;
-    if (!user) return paths.rootPath;
-    const people = [user, ...user.sortedChildren()];
+    const user: User | null | undefined = getGlobal().currentUser
+    if (!user) return paths.rootPath
+    const people = [user, ...user.sortedChildren()]
     if (index < people.length) {
-      return resolvePath(paths.userSurveysNewPath, [index]);
+      return resolvePath(paths.userSurveysNewPath, [index])
     }
-    return paths.surveysThankYouPath;
+    return paths.surveysThankYouPath
   },
   ...pathsDynamized,
-};
+}
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
   requireSignIn(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
     if (isSignedIn()) {
-      resolve();
+      resolve()
     } else {
-      resolve();
+      resolve()
 
-      this.navigate(paths.rootPath);
+      this.navigate(paths.rootPath)
     }
   },
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
   redirectHomeIfSignedIn(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
     if (isSignedIn()) {
-      reject();
-      this.navigate(dynamicPaths.currentUserHomePath());
+      reject()
+      this.navigate(dynamicPaths.currentUserHomePath())
     } else {
-      resolve();
+      resolve()
     }
   },
-};
+}
 
 const routes = [
   {
@@ -210,6 +210,6 @@ const routes = [
     path: '(.*)',
     component: NotFoundPage,
   },
-];
+]
 
-export default routes;
+export default routes

@@ -1,30 +1,30 @@
-import React from 'reactn';
+import React from 'reactn'
 import {
   Page, Navbar, Block, Chip,
-} from 'framework7-react';
-import { store } from 'src/api';
-import { User } from 'src/models';
+} from 'framework7-react'
+import { store } from 'src/api'
+import { User } from 'src/models'
 
-import './UserGreenlightPassPage.css';
-import StatusJDenticon from 'src/components/StatusJDenticon';
-import { Case, When } from 'src/components/Case';
+import './UserGreenlightPassPage.css'
+import StatusJDenticon from 'src/components/StatusJDenticon'
+import { Case, When } from 'src/components/Case'
 
-import { defineMessage, Trans } from '@lingui/macro';
-import { DateTime } from 'luxon';
+import { defineMessage, Trans } from '@lingui/macro'
+import { DateTime } from 'luxon'
 
 export default class UserGreenlightPassPage extends React.Component<any, any> {
   user() {
-    const { userId } = this.$f7route.params;
+    const { userId } = this.$f7route.params
 
-    if (!userId) throw new Error('Missing user id');
-    const user = store.findEntity<User>(`user-${userId}`);
-    if (!user) throw new Error(`Could not finder user for id ${userId}`);
-    return user;
+    if (!userId) throw new Error('Missing user id')
+    const user = store.findEntity<User>(`user-${userId}`)
+    if (!user) throw new Error(`Could not finder user for id ${userId}`)
+    return user
   }
 
   render() {
-    const user = this.user();
-    const status = user.greenlightStatus();
+    const user = this.user()
+    const status = user.greenlightStatus()
 
     return (
       <Page className="UserGreenlightPassPage">
@@ -61,6 +61,6 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
           </p>
         </Block>
       </Page>
-    );
+    )
   }
 }

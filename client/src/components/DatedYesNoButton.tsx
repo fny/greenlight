@@ -1,14 +1,14 @@
-import React from 'reactn';
+import React from 'reactn'
 
 import {
   Row,
   Col,
   Segmented,
   Button, ListInput, List,
-} from 'framework7-react';
+} from 'framework7-react'
 
-import { DateTime } from 'luxon';
-import { defineMessage, Trans } from '@lingui/macro';
+import { DateTime } from 'luxon'
+import { defineMessage, Trans } from '@lingui/macro'
 
 interface Props {
   showErrors?: boolean
@@ -25,20 +25,20 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
   state = {
     yesNo: null,
     date: null,
-  };
+  }
 
   errorMessage() {
     if (!this.props.showErrors) {
-      return <></>;
+      return <></>
     }
     if (this.state.yesNo === null) {
-      return <Trans id="DatedYesNoButton.yes_no_missing">Please choose yes or no.</Trans>;
+      return <Trans id="DatedYesNoButton.yes_no_missing">Please choose yes or no.</Trans>
     }
 
     if (this.state.yesNo === true && this.state.date === null) {
-      return <Trans id="DatedYesNoButton.date_missing">Please set the date.</Trans>;
+      return <Trans id="DatedYesNoButton.date_missing">Please set the date.</Trans>
     }
-    return <></>;
+    return <></>
   }
 
   render() {
@@ -51,8 +51,8 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
                 outline
                 fill={this.state.yesNo === true}
                 onClick={() => {
-                  this.setState({ yesNo: true });
-                  this.props.setYesNo(true);
+                  this.setState({ yesNo: true })
+                  this.props.setYesNo(true)
                 }}
               >
                 <Trans id="DatedYesNoButton.yes">Yes</Trans>
@@ -61,8 +61,8 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
                 outline
                 fill={this.state.yesNo === false}
                 onClick={() => {
-                  this.setState({ yesNo: false });
-                  this.props.setYesNo(false);
+                  this.setState({ yesNo: false })
+                  this.props.setYesNo(false)
                 }}
               >
                 <Trans id="DatedYesNoButton.no">No</Trans>
@@ -83,8 +83,8 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
                   direction: 'horizontal',
                 }}
                 onCalendarChange={(d) => {
-                  this.setState({ date: d[0] });
-                  this.props.setDate(d[0]);
+                  this.setState({ date: d[0] })
+                  this.props.setDate(d[0])
                 }}
                 type="datepicker"
                 placeholder={this.global.i18n._(defineMessage({ id: 'DatedYesNoButton.select_date', message: 'Select date' }))}
@@ -98,6 +98,6 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
         </Row>
 
       </>
-    );
+    )
   }
 }

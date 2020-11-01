@@ -1,5 +1,5 @@
-import * as React from 'react';
-import logger from 'src/logger';
+import * as React from 'react'
+import logger from 'src/logger'
 
 interface WhenProps {
   children: any
@@ -7,7 +7,7 @@ interface WhenProps {
   value?: any
 }
 export function When({ children }: WhenProps) {
-  return <>{children === undefined ? null : children}</>;
+  return <>{children === undefined ? null : children}</>
 }
 
 interface Props {
@@ -18,16 +18,16 @@ interface Props {
 export function Case({ test, children }: Props) {
   const matches = React.Children.toArray(children).filter((child) => {
     if (React.isValidElement(child)) {
-      return child.props.value === undefined || child.props.value === test;
+      return child.props.value === undefined || child.props.value === test
     }
-    return false;
-  });
+    return false
+  })
 
   if (matches.length === 0) {
-    return <></>;
+    return <></>
   }
   if (matches.length > 1) {
-    logger.dev(`<Case /> statement matched multiple children: ${test}`);
+    logger.dev(`<Case /> statement matched multiple children: ${test}`)
   }
-  return <>{matches[0]}</>;
+  return <>{matches[0]}</>
 }

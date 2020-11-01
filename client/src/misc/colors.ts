@@ -10,6 +10,6 @@ const colors = {
   // TODO: FIXME
   blue: '#b2d0f5',
   gray: '#DDDDDD',
-};
+}
 
-export default colors;
+export default colors

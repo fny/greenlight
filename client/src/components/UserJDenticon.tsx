@@ -1,7 +1,7 @@
-import React from 'react';
-import * as jdenticon from 'jdenticon';
-import { User } from '../models/User';
-import { GREENLIGHT_STATUSES } from '../models/GreenlightStatus';
+import React from 'react'
+import * as jdenticon from 'jdenticon'
+import { User } from '../models/User'
+import { GREENLIGHT_STATUSES } from '../models/GreenlightStatus'
 
 const configs: { [k in GREENLIGHT_STATUSES]: jdenticon.JdenticonConfig } = {
   recovery: {
@@ -64,15 +64,15 @@ const configs: { [k in GREENLIGHT_STATUSES]: jdenticon.JdenticonConfig } = {
     },
     backColor: '#ecf2fe',
   },
-};
+}
 
 type Props = {
   user: User
   size: number
-};
+}
 
 const UserJDenticon = ({ user, size }: Props) => {
-  jdenticon.configure(configs[user.greenlightStatus().status]);
+  jdenticon.configure(configs[user.greenlightStatus().status])
   return (
     <div
       // dangerouslySetInnerHTML={{ __html: jdenticon.toSvg(user.id, size) }}
@@ -93,7 +93,7 @@ const UserJDenticon = ({ user, size }: Props) => {
     >
       {user.firstName[0]}
     </div>
-  );
-};
+  )
+}
 
-export default UserJDenticon;
+export default UserJDenticon

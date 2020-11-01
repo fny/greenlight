@@ -1,6 +1,6 @@
-import React from 'react';
-import { Page, Navbar, Block } from 'framework7-react';
-import { Trans } from '@lingui/macro';
+import React from 'react'
+import { Page, Navbar, Block } from 'framework7-react'
+import { Trans } from '@lingui/macro'
 
 export default function NotFoundPage() {
   return (
@@ -15,5 +15,5 @@ export default function NotFoundPage() {
         </p>
       </Block>
     </Page>
-  );
+  )
 }

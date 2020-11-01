@@ -1,33 +1,33 @@
-import React from 'reactn';
-import { ReactNComponent } from 'reactn/build/components';
+import React from 'reactn'
+import { ReactNComponent } from 'reactn/build/components'
 import {
   Page, Navbar, Block, Button, BlockTitle,
-} from 'framework7-react';
-import { GiphyForToday } from 'src/components/Giphy';
-import { defineMessage, Trans } from '@lingui/macro';
-import { NoCurrentUserError } from 'src/errors';
-import { User } from 'src/models';
-import { paths } from 'src/routes';
-import { reasonMessage, reasonTitle } from 'src/misc/reasons';
+} from 'framework7-react'
+import { GiphyForToday } from 'src/components/Giphy'
+import { defineMessage, Trans } from '@lingui/macro'
+import { NoCurrentUserError } from 'src/errors'
+import { User } from 'src/models'
+import { paths } from 'src/routes'
+import { reasonMessage, reasonTitle } from 'src/misc/reasons'
 
 export default class SurveyThankYouPage extends ReactNComponent<any, any> {
-  currentUser: User;
+  currentUser: User
 
   constructor(props: any) {
-    super(props);
+    super(props)
 
     if (!this.global.currentUser) {
-      throw new NoCurrentUserError();
+      throw new NoCurrentUserError()
     }
-    this.currentUser = this.global.currentUser;
+    this.currentUser = this.global.currentUser
   }
 
   anyMissing() {
-    return this.currentUser.usersExpectedToSubmit().map((x) => x.greenlightStatus()).some((x) => x.isUnknown());
+    return this.currentUser.usersExpectedToSubmit().map((x) => x.greenlightStatus()).some((x) => x.isUnknown())
   }
 
   allCleared() {
-    return this.currentUser.areUsersCleared();
+    return this.currentUser.areUsersCleared()
   }
 
   renderAllCleared() {
@@ -51,7 +51,7 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
           </Button>
         </Block>
       </Page>
-    );
+    )
   }
 
   renderStatusBreakdownNotSubmitted() {
@@ -88,7 +88,7 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
           </Button>
         </Block>
       </Page>
-    );
+    )
   }
 
   renderStatusBreakdown() {
@@ -130,12 +130,12 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
           </Button>
         </Block>
       </Page>
-    );
+    )
   }
 
   renderStatus() {
-    const title = reasonTitle(this.currentUser, this.currentUser);
-    const message = reasonMessage(this.currentUser, this.currentUser);
+    const title = reasonTitle(this.currentUser, this.currentUser)
+    const message = reasonMessage(this.currentUser, this.currentUser)
     // TODO: This needs to be improved
     return (
       <Page>
@@ -162,20 +162,20 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
           </Button>
         </Block>
       </Page>
-    );
+    )
   }
 
   render() {
     if (this.anyMissing()) {
-      return this.renderStatusBreakdownNotSubmitted();
+      return this.renderStatusBreakdownNotSubmitted()
     }
     if (this.allCleared()) {
-      return this.renderAllCleared();
+      return this.renderAllCleared()
     }
 
     if (this.currentUser.hasChildren()) {
-      return this.renderStatusBreakdown();
+      return this.renderStatusBreakdown()
     }
-    return this.renderStatus();
+    return this.renderStatus()
   }
 }

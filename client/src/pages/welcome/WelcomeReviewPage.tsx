@@ -1,20 +1,20 @@
-import React from 'reactn';
+import React from 'reactn'
 
-import { clone } from 'lodash';
+import { clone } from 'lodash'
 import {
   Page, Navbar, Block, Button, List, ListInput,
-} from 'framework7-react';
+} from 'framework7-react'
 
-import { formatPhone, haveEqualAttrs, deleteBlanks } from 'src/util';
-import { updateUser } from 'src/api';
-import { paths } from 'src/routes';
-import { ReactNComponent } from 'reactn/build/components';
-import { NoCurrentUserError } from 'src/errors';
+import { formatPhone, haveEqualAttrs, deleteBlanks } from 'src/util'
+import { updateUser } from 'src/api'
+import { paths } from 'src/routes'
+import { ReactNComponent } from 'reactn/build/components'
+import { NoCurrentUserError } from 'src/errors'
 
-import { defineMessage, Trans } from '@lingui/macro';
-import logger from 'src/logger';
-import { toggleLocale } from 'src/initializers/providers';
-import { User } from '../../models/User';
+import { defineMessage, Trans } from '@lingui/macro'
+import logger from 'src/logger'
+import { toggleLocale } from 'src/initializers/providers'
+import { User } from '../../models/User'
 
 interface State {
   originalEmail: string | null
@@ -27,27 +27,27 @@ interface State {
 
 export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
   constructor(props: any) {
-    super(props);
+    super(props)
 
     if (!this.global.currentUser) {
-      throw new NoCurrentUserError();
+      throw new NoCurrentUserError()
     }
 
     this.state = {
       originalEmail: this.global.currentUser.email,
       originalPhone: formatPhone(this.global.currentUser.mobileNumber),
       updatedUser: (() => {
-        const user = clone(this.global.currentUser);
-        user.mobileNumber = formatPhone(user.mobileNumber);
-        return user;
+        const user = clone(this.global.currentUser)
+        user.mobileNumber = formatPhone(user.mobileNumber)
+        return user
       })(),
       showMobileNumberError: false,
       currentUser: this.global.currentUser,
-    };
+    }
   }
 
   validate() {
-    return this.$f7.input.validateInputs('#WelcomeReviewPage-form');
+    return this.$f7.input.validateInputs('#WelcomeReviewPage-form')
   }
 
   extractUpdateAttrs(user: User): Partial<User> {
@@ -56,42 +56,42 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
       lastName: user.lastName,
       locale: user.locale,
       dailyReminderType: user.dailyReminderType,
-    });
+    })
   }
 
   // TODO: Reactor: Extract this pattern
   async submit() {
     if (!this.validate()) {
-      return;
+      return
     }
-    const userAttrs = this.extractUpdateAttrs(this.state.currentUser);
-    const updatedUserAttrs = this.extractUpdateAttrs(this.state.updatedUser);
+    const userAttrs = this.extractUpdateAttrs(this.state.currentUser)
+    const updatedUserAttrs = this.extractUpdateAttrs(this.state.updatedUser)
 
     if (haveEqualAttrs(userAttrs, updatedUserAttrs)) {
-      this.$f7router.navigate(paths.welcomePasswordPath);
-      return;
+      this.$f7router.navigate(paths.welcomePasswordPath)
+      return
     }
 
-    this.$f7.dialog.preloader(this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.submitting_changes', message: 'Submitting changes...' })));
+    this.$f7.dialog.preloader(this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.submitting_changes', message: 'Submitting changes...' })))
     try {
-      const user = await updateUser(this.state.currentUser, updatedUserAttrs);
-      this.setGlobal({ currentUser: user });
-      this.$f7.dialog.close();
-      this.$f7router.navigate(paths.welcomePasswordPath);
+      const user = await updateUser(this.state.currentUser, updatedUserAttrs)
+      this.setGlobal({ currentUser: user })
+      this.$f7.dialog.close()
+      this.$f7router.navigate(paths.welcomePasswordPath)
     } catch (error) {
-      this.$f7.dialog.close();
-      logger.error(error);
+      this.$f7.dialog.close()
+      logger.error(error)
       // TODO: make errors smarter
       this.$f7.dialog.alert(
         this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.somethings_wrong', message: 'Something went wrong' })),
         this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.update_failed', message: 'Update Failed' })),
-      );
+      )
     }
   }
 
   render() {
-    const { updatedUser } = this.state;
-    updatedUser.locale = this.global.locale;
+    const { updatedUser } = this.state
+    updatedUser.locale = this.global.locale
     // const isDifferentEmail = updatedUser.email !== this.state.originalEmail
     // const isDifferentMobileNumber =
     //   updatedUser.mobileNumber !== this.state.originalEmail
@@ -117,8 +117,8 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             placeholder={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.first_name_placeholder', message: 'Your first name' }))}
             value={updatedUser.firstName}
             onChange={(e) => {
-              updatedUser.firstName = (e.target.value as string) || '';
-              this.setState({ updatedUser });
+              updatedUser.firstName = (e.target.value as string) || ''
+              this.setState({ updatedUser })
             }}
             validateOnBlur
             required
@@ -129,8 +129,8 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             placeholder={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.last_name_placeholder', message: 'Your last name' }))}
             value={updatedUser.lastName}
             onChange={(e) => {
-              updatedUser.lastName = (e.target.value as string) || '';
-              this.setState({ updatedUser });
+              updatedUser.lastName = (e.target.value as string) || ''
+              this.setState({ updatedUser })
             }}
             validateOnBlur
             required
@@ -141,8 +141,8 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             defaultValue="text"
             placeholder={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.reminders_placeholder', message: 'Please choose...' }))}
             onChange={(e) => {
-              updatedUser.dailyReminderType = e.target.value;
-              this.setState({ updatedUser });
+              updatedUser.dailyReminderType = e.target.value
+              this.setState({ updatedUser })
             }}
           >
             <option value="text">
@@ -158,9 +158,9 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             defaultValue={this.global.locale}
             placeholder={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.language_placeholder', message: 'Please choose...' }))}
             onChange={(e) => {
-              toggleLocale();
-              updatedUser.locale = e.target.value;
-              this.setState({ updatedUser });
+              toggleLocale()
+              updatedUser.locale = e.target.value
+              this.setState({ updatedUser })
             }}
           >
             <option value="en">
@@ -187,8 +187,8 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
               )
             }
             onChange={(e) => {
-              updatedUser.email = (e.target.value as string) || '';
-              this.setState({ updatedUser });
+              updatedUser.email = (e.target.value as string) || ''
+              this.setState({ updatedUser })
             }}
             required
             validate
@@ -212,8 +212,8 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             //     : undefined
             // }
             onInput={(e) => {
-              updatedUser.mobileNumber = (e.target.value as string) || '';
-              this.setState({ updatedUser });
+              updatedUser.mobileNumber = (e.target.value as string) || ''
+              this.setState({ updatedUser })
             }}
             required
             validate
@@ -233,6 +233,6 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
           </Block>
         </List>
       </Page>
-    );
+    )
   }
 }
