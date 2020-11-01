@@ -18,6 +18,8 @@ module.exports = {
   rules: {
     "semi": ["off"],
     "@typescript-eslint/semi": ["warn", "never"],
+    "react/jsx-one-expression-per-line": "off",
+
     // TODO
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
