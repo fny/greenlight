@@ -4,6 +4,7 @@ This is a first attempt to [keep a changelog](https://keepachangelog.com/en/1.0.
 
 ## [Unreleased]
 
+ - Add online status component
  - Added tests for GreenlighStatus submission date conflicts
  - Impoved documentation for GreenlightStatusScenario
  - Added ability to build and deploy entire app to Heroku when `SERVE_BUILD` is
