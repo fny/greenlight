@@ -4,14 +4,17 @@ import Honeybadger from 'honeybadger-js'
 import env from './env'
 
 const logger = {
+  notify(...args: any[]) {
+    Honeybadger.notify(...args)
+  },
   log(...args: any[]) {
     console.log(...args)
   },
+  warn(...args: any[]) {
+    console.warn(...args)
+  },
   error(...args: any[]) {
     console.error(...args)
-    if (env.isProduction()) {
-      Honeybadger.notify(...args)
-    }
   },
   dev(...args: any[]) {
     if (env.isDevelopment()) {

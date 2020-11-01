@@ -35,16 +35,22 @@ v1.interceptors.response.use(
   (error) => {
     logger.dev('[Response Error]', error)
 
-    if (!error.response) {
+    if (error.response) {
+      const response = error.response as AxiosResponse
+      // Unauthorized errors should lead to a sign out
+      if (response.status === 401) {
+        setGlobal({ currentUser: null })
+      }
+      throw error
+    } else if (error.request) {
+      setGlobal({
+        isAPIOnline: false,
+        isInternetOnline: navigator.onLine,
+      })
+      throw error
+    } else {
       throw error
     }
-
-    const response = error.response as AxiosResponse
-    // Unauthorized errors should lead to a sign out
-    if (response.status === 401) {
-      setGlobal({ currentUser: null })
-    }
-    throw error
   },
 )
 

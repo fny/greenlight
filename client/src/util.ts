@@ -2,9 +2,10 @@ import { defineMessage } from '@lingui/macro'
 import { DateTime } from 'luxon'
 import qs from 'qs'
 
-import { getGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import { v1 } from './api'
 
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
@@ -295,4 +296,19 @@ export function joinWords(words: string[], conjunction?: string): string {
     return `${words[0]}${twoWordsConnector}${words[1]}`
   }
   return `${words.slice(0, -1).join(wordsConnector)}${lastWordConnector}${words[words.length - 1]}`
+}
+
+/**
+ * An interval timer that executes immediately
+ *
+ * @param func The function to execute
+ * @param ms How long to wait between executions
+ */
+export function setIntervalSafely(func: Function, ms: number, immediate: boolean = false): number {
+  if (immediate) func()
+  const wrapped = () => {
+    func()
+    return window.setTimeout(wrapped, ms)
+  }
+  return wrapped()
 }

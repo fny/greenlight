@@ -11,10 +11,12 @@ module RootController
     end
 
     get '/ping' do
+      content_type 'application/plain'
       'pong'
     end
 
     get '/v1/ping' do
+      content_type 'application/plain'
       'pong'
     end
 

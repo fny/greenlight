@@ -26,7 +26,7 @@ class ApplicationController < Sinatra::Base
   end
 
   before '/v1/*' do
-    ensure_authenticated! unless %w[sessions magic-sign-in current-user].include?(params['splat'].first)
+    ensure_authenticated! unless %w[ping sessions magic-sign-in current-user].include?(params['splat'].first)
   end
 
   after do
