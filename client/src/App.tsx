@@ -11,6 +11,7 @@ import routes from './routes'
 import { i18n as myI18n } from './i18n'
 import { ErrorBoundary } from './ErrorBoundary'
 import OnlineStatus from './components/OnlineStatus'
+import SupportedBrowserBar from './components/SupportedBrowserBar'
 
 function I18nWatchLocale({ children }: { children: React.ReactNode }) {
   const { i18n } = useLingui()
@@ -42,6 +43,7 @@ export default function Main() {
       <I18nProvider i18n={myI18n}>
         <I18nWatchLocale>
           <App key={locale} params={f7params} className="App">
+            <SupportedBrowserBar />
             <OnlineStatus />
             <View id="main-view" url="/" main className="safe-areas" />
           </App>
