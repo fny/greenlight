@@ -16,6 +16,8 @@ import {
 
 const BASE_URL = `${env.API_URL}/v1`
 
+logger.dev(BASE_URL)
+
 export const v1 = axios.create({
   baseURL: BASE_URL,
   timeout: 3000,

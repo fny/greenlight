@@ -27,6 +27,9 @@ Cop/AvoidKeywordArgumentsInSidekiqWorkers:
 Metrics/BlockLength:
   Enabled: false
 
+Metrics/BranchSize:
+  Enabled: false
+
 Metrics/ClassLength:
   Enabled: false
 

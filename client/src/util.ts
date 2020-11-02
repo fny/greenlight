@@ -2,10 +2,9 @@ import { defineMessage } from '@lingui/macro'
 import { DateTime } from 'luxon'
 import qs from 'qs'
 
-import { getGlobal, setGlobal } from 'reactn'
+import { getGlobal } from 'reactn'
 import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
-import { v1 } from './api'
 
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 

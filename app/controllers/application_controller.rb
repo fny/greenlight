@@ -7,9 +7,7 @@ class ApplicationController < Sinatra::Base
   include SessionsController
   include UsersController
   include CurrentUserController
-  if Rails.env.development?
-    include DevelopmentController
-  end
+  include DevelopmentController if Rails.env.development?
 
   set :show_exceptions, false
 

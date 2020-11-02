@@ -12,6 +12,7 @@ import { defineMessage, Trans } from '@lingui/macro'
 import { User } from 'src/models'
 
 import { ReactNComponent } from 'reactn/build/components'
+import ReleaseCard from 'src/components/ReleaseCard'
 import UserJDenticon from '../components/UserJDenticon'
 
 function UserList({ users }: { users: User[]}) {
@@ -83,11 +84,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
 
         <BlockTitle>
           <b>
-            {greeting()}
-            ,
-            {' '}
-            {user.firstName}
-            !
+            {greeting()}, {user.firstName}!
           </b>
         </BlockTitle>
 
@@ -100,9 +97,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
               <div className="GLCard-body" style={{ color: colors.greenDark }}>
                 <Trans id="DashboardPage.needs_to_submit">
                   How are you today? You still need to fill out surveys for
-                  {' '}
-                  {user.usersNotSubmittedText()}
-                  .
+                  {' '}{user.usersNotSubmittedText()}.
                 </Trans>
               </div>
               <div className="GLCard-action">
@@ -158,6 +153,8 @@ export default class DashboardPage extends ReactNComponent<any, any> {
             </div>
           </Link>
         </If>
+
+        <ReleaseCard />
 
         <If test={!user.hasChildren() && user.greenlightStatus().isValidForToday()}>
           <UserList users={[user]} />

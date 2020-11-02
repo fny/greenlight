@@ -24,36 +24,121 @@ import DebugPage from './pages/DebugPage'
 import AdminUsersPage from './pages/admin/AdminUsersPage'
 import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage'
 import { isSignedIn } from './initializers/providers'
+import ReleaseNotesPage from './pages/ReleaseNotesPage'
 
-export const paths = {
-  rootPath: '/',
-  signInPath: '/sign-in',
-  magicSignInPath: '/magic-sign-in',
-  magicSignInAuthPath: '/mgk/:token/:remember',
-  dashboardPath: '/dashboard',
-  welcomePath: '/welcome',
-  welcomeReviewPath: '/welcome/review',
-  welcomePasswordPath: '/welcome/password',
-  welcomeSurveyPath: '/welcome/survey',
-  welcomeChildPath: '/welcome/children/:id',
-  userSurveysNewPath: '/users/:userId/surveys/new',
-  userSeqSurveysNewPath: '/users/seq/surveys/new',
-  userGreenlightPassPath: '/users/:userId/greenlight-pass',
-  surveysThankYouPath: '/surveys/thank-you',
-  // TODO naming
-  adminUsersPath: '/admin/locations/:locationId/users',
+const beforeEnter = {
+  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
+  requireSignIn(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+    if (isSignedIn()) {
+      resolve()
+    } else {
+      resolve()
+
+      this.navigate(paths.rootPath)
+    }
+  },
+  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
+  redirectHomeIfSignedIn(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+    if (isSignedIn()) {
+      reject()
+      this.navigate(dynamicPaths.currentUserHomePath())
+    } else {
+      resolve()
+    }
+  },
 }
 
-type PathsDynamized = {
-  [k in keyof typeof paths]: (substitutions?: any, query?: any) => string
+const routeMap = {
+  rootPath: {
+    path: '/',
+    component: SplashPage,
+    beforeEnter: beforeEnter.redirectHomeIfSignedIn,
+  },
+  signInPath: {
+    path: '/sign-in',
+    component: SignInPage,
+    beforeEnter: beforeEnter.redirectHomeIfSignedIn,
+  },
+  magicSignInPath: {
+    path: '/magic-sign-in',
+    component: MagicSignInPage,
+    beforeEnter: beforeEnter.redirectHomeIfSignedIn,
+  },
+  magicSignInAuthPath: {
+    path: '/mgk/:token/:remember',
+    component: MagicSignInAuthPage,
+    beforeEnter: beforeEnter.redirectHomeIfSignedIn,
+  },
+  dashboardPath: {
+    path: '/dashboard',
+    component: DashboardPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  welcomePath: {
+    path: '/welcome',
+    component: WelcomePage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  welcomeReviewPath: {
+    path: '/welcome/review',
+    component: WelcomeReviewPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  welcomePasswordPath: {
+    path: '/welcome/password',
+    component: WelcomePasswordPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  welcomeSurveyPath: {
+    path: '/welcome/survey',
+    component: WelcomeSurveyPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  welcomeChildPath: {
+    path: '/welcome/children/:id',
+    component: WelcomeChildPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  userSurveysNewPath: {
+    path: '/users/:userId/surveys/new',
+    component: SurveyNewPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  userSeqSurveysNewPath: {
+    path: '/users/seq/surveys/new',
+    component: SurveyNewPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  surveysThankYouPath: {
+    path: '/surveys/thank-you',
+    component: SurveyThankYouPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  userGreenlightPassPath: {
+    path: '/users/:userId/greenlight-pass',
+    component: UserGreenlightPassPage,
+  },
+  adminUsersPath: {
+    path: '/admin/locations/:locationId/users',
+    component: AdminUsersPage,
+  },
+  giphySchedulePath: {
+    path: '/giphy-schedule',
+    component: GiphySchedulePage,
+  },
+  debugPath: {
+    path: '/debug',
+    component: DebugPage,
+  },
+  releasesPath: {
+    path: '/releases',
+    component: ReleaseNotesPage,
+  },
+  notFoundPath: {
+    path: '(.*)',
+    component: NotFoundPage,
+  },
 }
-
-const pathsDynamized = {} as PathsDynamized
-
-Object.keys(paths).forEach((key) => {
-  const k = key as keyof typeof paths
-  pathsDynamized[k] = buildDynamicPath(paths[k])
-})
 
 type DynamicPath = (substitutions?: any, query?: any) => string
 
@@ -64,6 +149,18 @@ type DynamicPath = (substitutions?: any, query?: any) => string
 export function buildDynamicPath(path: string): DynamicPath {
   return (substitutions?: any, query?: any): string => resolvePath(path, substitutions, query)
 }
+
+export const paths = {} as { [k in keyof typeof routeMap]: string }
+type PathsDynamized = {
+  [k in keyof typeof routeMap]: (substitutions?: any, query?: any) => string
+}
+const pathsDynamized = {} as PathsDynamized
+
+Object.keys(routeMap).forEach((key) => {
+  const k = key as keyof typeof routeMap
+  paths[k] = routeMap[k].path
+  pathsDynamized[k] = buildDynamicPath(paths[k])
+})
 
 export const dynamicPaths = {
   currentUserHomePath: () => {
@@ -103,113 +200,4 @@ export const dynamicPaths = {
   ...pathsDynamized,
 }
 
-const beforeEnter = {
-  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
-  requireSignIn(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
-    if (isSignedIn()) {
-      resolve()
-    } else {
-      resolve()
-
-      this.navigate(paths.rootPath)
-    }
-  },
-  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
-  redirectHomeIfSignedIn(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
-    if (isSignedIn()) {
-      reject()
-      this.navigate(dynamicPaths.currentUserHomePath())
-    } else {
-      resolve()
-    }
-  },
-}
-
-const routes = [
-  {
-    path: paths.rootPath,
-    component: SplashPage,
-    beforeEnter: beforeEnter.redirectHomeIfSignedIn,
-  },
-  {
-    path: paths.welcomePath,
-    component: WelcomePage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  {
-    path: paths.signInPath,
-    component: SignInPage,
-    beforeEnter: beforeEnter.redirectHomeIfSignedIn,
-  },
-  {
-    path: paths.magicSignInPath,
-    component: MagicSignInPage,
-    beforeEnter: beforeEnter.redirectHomeIfSignedIn,
-  },
-  {
-    path: paths.dashboardPath,
-    component: DashboardPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  {
-    path: paths.magicSignInAuthPath,
-    component: MagicSignInAuthPage,
-  },
-  {
-    path: paths.welcomePath,
-    component: WelcomePage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  {
-    path: paths.welcomeReviewPath,
-    component: WelcomeReviewPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  {
-    path: paths.welcomePasswordPath,
-    component: WelcomePasswordPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  {
-    path: paths.welcomeSurveyPath,
-    component: WelcomeSurveyPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  {
-    path: paths.welcomeChildPath,
-    component: WelcomeChildPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  {
-    path: paths.userSurveysNewPath,
-    component: SurveyNewPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  {
-    path: paths.surveysThankYouPath,
-    component: SurveyThankYouPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  {
-    path: paths.userGreenlightPassPath,
-    component: UserGreenlightPassPage,
-  },
-  {
-    path: paths.adminUsersPath,
-    component: AdminUsersPage,
-  },
-  {
-    path: '/giphy-schedule',
-    component: GiphySchedulePage,
-  },
-  {
-    path: '/debug',
-    component: DebugPage,
-  },
-  {
-    path: '(.*)',
-    component: NotFoundPage,
-  },
-]
-
-export default routes
+export default Object.values(routeMap)

@@ -62,3 +62,8 @@ Configurator.new(Greenlight) do
   set :PHONE_NUMBER, '19197285377'
   set :SUPPORTED_LOCALES, %w[en es]
 end
+
+
+$stdout.puts("=> API URL: #{Greenlight::API_URL}")
+$stdout.puts("=> APP URL: #{Greenlight::APP_URL}")
+$stdout.puts("* Cookie Domains: #{Greenlight::COOKIE_DOMAINS}")
