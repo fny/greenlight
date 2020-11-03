@@ -57,7 +57,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
           Every day you'll need to fill out symptom surveys for
           you and your
           {' '}
-          {this.global.i18n._(plural(user.children.length, { one: 'child', other: 'children' }))}
+          {/* {this.global.i18n._(plural(user.children.length, { one: 'child', other: 'children' }))} */}
           .
         </Trans>
       )

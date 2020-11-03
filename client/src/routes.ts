@@ -25,6 +25,7 @@ import AdminUsersPage from './pages/admin/AdminUsersPage'
 import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage'
 import { isSignedIn } from './initializers/providers'
 import ReleaseNotesPage from './pages/ReleaseNotesPage'
+import MapPage from './pages/MapPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -133,6 +134,10 @@ const routeMap = {
   releasesPath: {
     path: '/releases',
     component: ReleaseNotesPage,
+  },
+  mapPath: {
+    path: '/map',
+    component: MapPage
   },
   notFoundPath: {
     path: '(.*)',

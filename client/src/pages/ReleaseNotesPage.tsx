@@ -84,7 +84,7 @@ export default function ReleaseNotesPage() {
               )}
               {release.hasBugFixes() && (
                 <>
-                  <p style={{ fontWeight: 'bold' }}><Trans id="ReleaseNotesPage.whats_new">Bug Fixes</Trans></p>
+                  <p style={{ fontWeight: 'bold' }}><Trans id="ReleaseNotesPage.bug_fixes">Bug Fixes</Trans></p>
                   {release.bugFixesList()}
                 </>
               )}
