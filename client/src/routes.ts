@@ -25,10 +25,17 @@ import AdminUsersPage from './pages/admin/AdminUsersPage'
 import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage'
 import { isSignedIn } from './initializers/providers'
 import ReleaseNotesPage from './pages/ReleaseNotesPage'
+import SettingsPage from './pages/SettingsPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
-  requireSignIn(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+  requireSignIn(
+    this: Router.Router,
+    routeTo: Router.Route,
+    routeFrom: Router.Route,
+    resolve: Function,
+    reject: Function,
+  ) {
     if (isSignedIn()) {
       resolve()
     } else {
@@ -38,7 +45,13 @@ const beforeEnter = {
     }
   },
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
-  redirectHomeIfSignedIn(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+  redirectHomeIfSignedIn(
+    this: Router.Router,
+    routeTo: Router.Route,
+    routeFrom: Router.Route,
+    resolve: Function,
+    reject: Function,
+  ) {
     if (isSignedIn()) {
       reject()
       this.navigate(dynamicPaths.currentUserHomePath())
@@ -72,6 +85,11 @@ const routeMap = {
   dashboardPath: {
     path: '/dashboard',
     component: DashboardPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  settingsPath: {
+    path: '/settings',
+    component: SettingsPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   welcomePath: {

@@ -31,8 +31,8 @@
     "eject": "react-scripts eject",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "lint-fix": "eslint 'src/**/*.{js,ts,tsx}' --fix",
-    "i18n-add-locale": "lingui add-locale",
     "i18n-extract": "lingui extract --clean --overwrite",
+    "i18n-add-locale": "lingui add-locale",
     "i18n-compile": "lingui compile"
   },
   "browserslist": {
