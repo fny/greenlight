@@ -27,6 +27,8 @@ import { isSignedIn } from './initializers/providers'
 import ReleaseNotesPage from './pages/ReleaseNotesPage'
 import SettingsPage from './pages/SettingsPage'
 import MapPage from './pages/MapPage'
+import AboutPage from './pages/AboutPage'
+import EditUserPage from './pages/EditUserPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -93,6 +95,11 @@ const routeMap = {
     component: SettingsPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
+  aboutPAth: {
+    path: '/about',
+    component: AboutPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
   welcomePath: {
     path: '/welcome',
     component: WelcomePage,
@@ -156,6 +163,14 @@ const routeMap = {
   mapPath: {
     path: '/map',
     component: MapPage,
+  },
+  editUserPath: {
+    path: '/users/:userId/edit',
+    component: EditUserPage,
+  },
+  editChildrenPath: {
+    path: '/users/:userId/children/:childId',
+    component: EditUserPage,
   },
   notFoundPath: {
     path: '(.*)',

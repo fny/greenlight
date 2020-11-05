@@ -8,9 +8,11 @@
     "@lingui/macro": "^3.0.0",
     "@lingui/react": "^3.0.0",
     "@types/echarts": "^4.9.0",
-    "axios": "^0.20.0",
     "echarts": "^4.9.0",
     "echarts-for-react": "^2.0.16",
+    "@types/yup": "^0.29.9",
+    "axios": "^0.20.0",
+    "formik": "^2.2.2",
     "framework7": "^5.7.13",
     "framework7-icons": "^3.0.1",
     "framework7-react": "^5.7.13",
@@ -25,7 +27,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "reactn": "^2.2.7",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "yup": "^0.29.3"
   },
   "scripts": {
     "start": "PORT=9991 react-scripts start",

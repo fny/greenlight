@@ -321,7 +321,7 @@ end
 #  daily_reminder_type                :text             default("text"), not null
 #  needs_physician                    :boolean          default(FALSE), not null
 #  invited_at                         :datetime
-#  completed_welcome_at               :datetime
+#  completed_invite_at                :datetime
 #  sign_in_count                      :integer          default(0), not null
 #  current_sign_in_at                 :datetime
 #  last_sign_in_at                    :datetime

@@ -17,7 +17,7 @@ const SettingsPage = ({}) => {
       />
       <List accordionList>
         <ListItem
-          link="/account"
+          link={`/users/${user?.id}/edit`}
           title={global.i18n._(defineMessage({ id: 'Settings.account', message: 'Account' }))}
         ></ListItem>
 
@@ -42,7 +42,11 @@ const SettingsPage = ({}) => {
             <AccordionContent>
               <List>
                 {user?.sortedChildren().map((child) => (
-                  <ListItem key={child.id} link="/account/child1" title={child.firstName}></ListItem>
+                  <ListItem
+                    key={child.id}
+                    link={`/users/${user?.id}/children/${child.id}`}
+                    title={child.firstName}
+                  ></ListItem>
                 ))}
               </List>
             </AccordionContent>
