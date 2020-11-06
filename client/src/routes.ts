@@ -26,7 +26,7 @@ import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage'
 import { isSignedIn } from './initializers/providers'
 import ReleaseNotesPage from './pages/ReleaseNotesPage'
 import SettingsPage from './pages/SettingsPage'
-import MapPage from './pages/MapPage'
+// import MapPage from './pages/MapPage'
 import AboutPage from './pages/AboutPage'
 import EditUserPage from './pages/EditUserPage'
 
@@ -160,10 +160,10 @@ const routeMap = {
     path: '/releases',
     component: ReleaseNotesPage,
   },
-  mapPath: {
-    path: '/map',
-    component: MapPage,
-  },
+  // mapPath: {
+  //   path: '/map',
+  //   component: MapPage,
+  // },
   editUserPath: {
     path: '/users/:userId/edit',
     component: EditUserPage,

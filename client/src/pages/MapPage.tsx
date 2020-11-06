@@ -20,7 +20,7 @@ const MapPage = ({}) => {
     <Page>
       <Navbar title="Map" backLink="Back" />
       <Block>
-        <ReactEcharts ref={mapRef} option={chartOption} style={{ flex: 1 }} />
+        <ReactEcharts ref={mapRef} option={{}} style={{ flex: 1 }} />
       </Block>
     </Page>
   )
@@ -28,7 +28,7 @@ const MapPage = ({}) => {
 
 export default MapPage
 
-const chartOption: echarts.EChartOption<echarts.EChartOption.Series> = {
+const chartOption = {
   title: {
     text: 'USA Estimates',
     subtext: 'Data from Eric TECH',

@@ -38,6 +38,7 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
       birthDate: userInfo?.birthDate || '',
       physicianName: userInfo?.physicianName || '',
       physicianPhoneNumber: userInfo?.physicianPhoneNumber || '',
+      needHelp: false,
     },
     onSubmit: (value) => {
       console.log('submit', value)
@@ -62,9 +63,16 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
           <ListInput
             label={global.i18n._(defineMessage({ id: 'EditUserPage.first_name_label', message: 'First Name' }))}
             validateOnBlur
-            value={userInfo?.firstName}
+            value={formik.values.firstName}
             required
-            onInput={console.log}
+            onInput={(e) =>
+              formik.handleChange({
+                target: {
+                  name: 'firstName',
+                  value: e.target.value,
+                },
+              })
+            }
             errorMessage={global.i18n._(
               defineMessage({ id: 'EditUserPage.first_name_missing', message: 'Please enter your first name.' }),
             )}
@@ -72,9 +80,16 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
           <ListInput
             label={global.i18n._(defineMessage({ id: 'EditUserPage.last_name_label', message: 'Last Name' }))}
             validateOnBlur
-            value={userInfo?.lastName}
+            value={formik.values.lastName}
             required
-            onInput={console.log}
+            onInput={(e) =>
+              formik.handleChange({
+                target: {
+                  name: 'lastName',
+                  value: e.target.value,
+                },
+              })
+            }
             errorMessage={global.i18n._(
               defineMessage({ id: 'EditUserPage.last_name_missing', message: 'Please enter your last name.' }),
             )}
@@ -84,7 +99,15 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
             <ListInput
               label={global.i18n._(defineMessage({ id: 'EditUserPage.email_label', message: 'Email' }))}
               validateOnBlur
-              value={userInfo?.email || ''}
+              value={formik.values.email}
+              onInput={(e) =>
+                formik.handleChange({
+                  target: {
+                    name: 'email',
+                    value: e.target.value,
+                  },
+                })
+              }
               readonly
             />
           )}
@@ -92,7 +115,15 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
             <ListInput
               label={global.i18n._(defineMessage({ id: 'EditUserPage.mobile_number_label', message: 'Mobile Number' }))}
               validateOnBlur
-              value={userInfo?.mobileNumber || ''}
+              value={formik.values.mobileNumber}
+              onInput={(e) =>
+                formik.handleChange({
+                  target: {
+                    name: 'mobileNumber',
+                    value: e.target.value,
+                  },
+                })
+              }
               readonly
             />
           )}
@@ -100,16 +131,30 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
           <ListInput
             label={global.i18n._(defineMessage({ id: 'EditUserPage.zip_code_label', message: 'Zip Code' }))}
             validateOnBlur
-            value={userInfo?.zipCode || ''}
-            onInput={console.log}
+            value={formik.values.zipCode}
+            onInput={(e) =>
+              formik.handleChange({
+                target: {
+                  name: 'zipCode',
+                  value: e.target.value,
+                },
+              })
+            }
           />
 
           <ListInput
             label={global.i18n._(defineMessage({ id: 'EditUserPage.date_of_birth_label', message: 'Date of Birth' }))}
             validateOnBlur
-            value={userInfo?.birthDate || ''}
+            value={formik.values.birthDate}
             type="date"
-            onInput={console.log}
+            onInput={(e) =>
+              formik.handleChange({
+                target: {
+                  name: 'birthDate',
+                  value: e.target.value,
+                },
+              })
+            }
           />
 
           <ListInput
@@ -120,8 +165,15 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
               }),
             )}
             validateOnBlur
-            value={userInfo?.physicianName || ''}
-            onInput={console.log}
+            value={formik.values.physicianName}
+            onInput={(e) =>
+              formik.handleChange({
+                target: {
+                  name: 'physicianName',
+                  value: e.target.value,
+                },
+              })
+            }
           />
 
           <ListInput
@@ -132,9 +184,16 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
               }),
             )}
             validateOnBlur
-            value={userInfo?.physicianPhoneNumber || ''}
+            value={formik.values.physicianPhoneNumber}
             type="tel"
-            onInput={console.log}
+            onInput={(e) =>
+              formik.handleChange({
+                target: {
+                  name: 'physicianPhoneNumber',
+                  value: e.target.value,
+                },
+              })
+            }
           />
 
           <ListItem
@@ -145,11 +204,26 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
                 message: 'Need help finding a physician?',
               }),
             )}
-            onChange={console.log}
+            checked={formik.values.needHelp}
+            onChange={(e) =>
+              formik.handleChange({
+                target: {
+                  name: 'needHelp',
+                  value: e.target.checked,
+                },
+              })
+            }
           />
 
           <Block>
-            <Button outline fill onClick={console.log}>
+            <Button
+              outline
+              fill
+              onClick={(e) => {
+                e.preventDefault()
+                formik.submitForm()
+              }}
+            >
               <Trans id="EditUserPage.submit">Submit</Trans>
             </Button>
           </Block>
@@ -168,8 +242,12 @@ interface EditUserInput {
   birthDate: string
   physicianName: string
   physicianPhoneNumber: string
+  needHelp: boolean
 }
 
-const schema = Yup.object<EditUserInput>().shape({})
+const schema = Yup.object<EditUserInput>().shape({
+  firstName: Yup.string().required(),
+  lastName: Yup.string().required(),
+})
 
 export default EditUserPage
