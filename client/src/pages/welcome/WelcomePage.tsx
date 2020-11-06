@@ -5,14 +5,14 @@ import { Page, Block, Button, Toolbar, Link, Row, Col, Sheet, PageContent } from
 
 import { Case, When } from 'src/components/Case'
 
-import { esExclaim, greeting } from 'src/util'
+import { esExclaim, greeting, plurals } from 'src/util'
 import { User } from 'src/models/User'
 import { paths } from 'src/routes'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/errors'
 
 import { toggleLocale, signOut } from 'src/initializers/providers'
-import { plural, Trans } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 
 interface State {
   termsOpened: boolean
@@ -47,7 +47,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
       return (
         <Trans id="WelcomePage.fill_for_self_and_children">
           Every day you'll need to fill out symptom surveys for you and your{' '}
-          {this.global.i18n._(plural(user.children.length, { one: 'child', other: 'children' }))}.
+          {this.global.i18n._(plurals(user.children.length, { one: 'child', other: 'children' }))}.
         </Trans>
       )
     }
@@ -60,7 +60,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
       return (
         <Trans id="WelcomePage.fill_children">
           Every day you'll need to fill out symptom surveys for your
-          {this.global.i18n._(plural(user.children.length, { one: 'child', other: 'children' }))}.
+          {this.global.i18n._(plurals(user.children.length, { one: 'child', other: 'children' }))}.
         </Trans>
       )
     }
@@ -96,7 +96,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
               <p>
                 <Trans id="WelcomePage.welcome">
                   Hi {user.firstName}! You've been added by{' '}
-                  {this.global.i18n._(plural(this.totalLocations(), { one: 'location', other: 'locations' }))} to
+                  {this.global.i18n._(plurals(this.totalLocations(), { one: 'location', other: 'locations' }))} to
                   Greenlight's secure COVID-19 monitoring platform.
                 </Trans>
               </p>

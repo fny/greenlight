@@ -1,4 +1,4 @@
-import { defineMessage } from '@lingui/macro'
+import { defineMessage, t } from '@lingui/macro'
 import { DateTime } from 'luxon'
 import qs from 'qs'
 
@@ -27,10 +27,11 @@ export function validPhone(phoneNumber: string): boolean {
 }
 
 export function timeOfDay(): 'morning' | 'afternoon' | 'evening' {
-  const hours = (new Date()).getHours()
+  const hours = new Date().getHours()
   if (hours < 12) {
     return 'morning'
-  } if (hours < 17) {
+  }
+  if (hours < 17) {
     return 'afternoon'
   }
   return 'evening'
@@ -73,18 +74,19 @@ export function deleteBlanks<T>(obj: T): Partial<T> {
 }
 
 export function isEmptyType(data: any) {
-  return typeof data === null
-  || typeof data === undefined
+  return typeof data === null || typeof data === undefined
 }
 
 export function isPrimitiveType(data: any) {
-  return typeof data === 'string'
-    || typeof data === 'number'
-    || typeof data === 'boolean'
-    || typeof data === 'bigint'
-    || typeof data === 'symbol'
-    || typeof data === null
-    || typeof data === undefined
+  return (
+    typeof data === 'string' ||
+    typeof data === 'number' ||
+    typeof data === 'boolean' ||
+    typeof data === 'bigint' ||
+    typeof data === 'symbol' ||
+    typeof data === null ||
+    typeof data === undefined
+  )
 }
 
 export function transformForAPI(data: any): any {
@@ -148,11 +150,14 @@ export function ping(url: string, timeout: number): Promise<boolean> {
 }
 
 export function sortBy<T>(ary: T[], fn: (el: T) => any): T[] {
-  return ary.map((el) => [fn(el), el] as [any, T]).sort((e1, e2) => {
-    if (e1[0] > e2[0]) return 1
-    if (e1[0] < e2[0]) return -1
-    return 0
-  }).map((x) => x[1])
+  return ary
+    .map((el) => [fn(el), el] as [any, T])
+    .sort((e1, e2) => {
+      if (e1[0] > e2[0]) return 1
+      if (e1[0] < e2[0]) return -1
+      return 0
+    })
+    .map((x) => x[1])
 }
 
 export function zipTwo<X, Y>(xs: X[], ys: Y[]): [X, Y][] {
@@ -289,9 +294,11 @@ export function joinWords(words: string[], conjunction?: string): string {
   const wordsConnector = getGlobal().i18n._(defineMessage({ id: 'util.words_connector', message: ', ' }))
   if (words.length === 0) {
     return ''
-  } if (words.length === 1) {
+  }
+  if (words.length === 1) {
     return `${words[0]}`
-  } if (words.length === 2) {
+  }
+  if (words.length === 2) {
     return `${words[0]}${twoWordsConnector}${words[1]}`
   }
   return `${words.slice(0, -1).join(wordsConnector)}${lastWordConnector}${words[words.length - 1]}`
@@ -310,4 +317,20 @@ export function setIntervalSafely(func: Function, ms: number, immediate: boolean
     return window.setTimeout(wrapped, ms)
   }
   return wrapped()
+}
+
+interface PluralOptions {
+  one: string
+  other: string
+}
+
+export function plurals(count: number, options: PluralOptions, addPrefix: boolean = false) {
+  const prefix = addPrefix ? `${count} ` : ''
+  if (options.one && count === 1) {
+    return prefix + t`Plurals.${options.one}`
+  }
+  if (options.other) {
+    return prefix + t`Plurals.${options.other}`
+  }
+  return prefix
 }
