@@ -27,9 +27,6 @@ Cop/AvoidKeywordArgumentsInSidekiqWorkers:
 Metrics/BlockLength:
   Enabled: false
 
-Metrics/BranchSize:
-  Enabled: false
-
 Metrics/ClassLength:
   Enabled: false
 
@@ -40,11 +37,7 @@ Metrics/ParameterLists:
   Enabled: false
 
 Rails/DynamicFindBy:
-  Whitelist:
-    - find_by_email_or_mobile
-    - find_by_email_or_mobile!
-    - find_by_id_or_permalink
-    - find_by_id_or_permalink!
+  Enabled: false
 
 # We use database ON DELETEs instead
 Rails/HasManyOrHasOneDependent:

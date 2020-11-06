@@ -31,8 +31,9 @@ class Location < ApplicationRecord
     users_to_notify.filter { |u| u.completed_welcome_at.blank? }
   end
 
+  # We send reminders to users who have finished the welcome sequence
   def users_to_remind
-    users_to_notify.filter { |u| !u.completed_welcome_at.blank? && u.submitted_for_today? }
+    users_to_notify.filter { |u| u.completed_welcome_at.present? && !u.submitted_for_today? }
   end
 
   def remind_users
@@ -59,6 +60,7 @@ class Location < ApplicationRecord
     users_to_notify.filter { |u| u.completed_welcome_at.blank? }
   end
 
+  # Any users that should recieve a notification
   def users_to_notify
     location = Location.includes(
       :location_accounts,

@@ -17,6 +17,41 @@ function date(value: string) {
 
 const releaseData: ReleaseData[] = [
   {
+    version: '1.1.0',
+    date: date('11/6/2020'),
+    notesEn: `
+    Happy Friday! We've added a lot a new changes to the app.
+    `,
+    notesEs: `
+    ¡Bienvenido a nuestro primer lanzamiento! 🎉&nbsp;
+    ¡Estamos muy felices de tenerte con nosotros!
+    Comuníquese con nosotros si necesita ayuda, tiene preguntas o comentarios.
+    Queremos asegurarnos de que tenga una experiencia increíble con nosotros.
+    `,
+    whatsNewEn: [
+      'This releases page!',
+      "We've added the Duke COVID testing hotline",
+      "We've added more Spanish language translations",
+      "The app will now tell you if you're disconnected from the internet.",
+      'The app will now tell you if our servers are down.',
+      "We've a bug report button to the app.",
+    ],
+    whatsNewEs: [
+      '¡Esta página de lanzamientos!',
+      'Hemos agregado la línea directa de prueba de Duke COVID',
+      'Hemos agregado más traducciones al español',
+      'La aplicación ahora te dirá si estás desconectado de Internet',
+      'La aplicación ahora le dirá si nuestros servidores están caídos.',
+      'Tenemos un botón de informe de errores en la aplicación.',
+    ],
+    bugFixesEn: [
+      "Some users reported issues on older versions of Internet Explorer. While we don't recommend using IE, we think you should be able to submit a survey with it.",
+    ],
+    bugFixesEs: [
+      'Algunos usuarios informaron problemas en versiones anteriores de Internet Explorer. Aunque no recomendamos utilizar IE, creemos que debería poder utilizarlo para enviar una encuesta',
+    ],
+  },
+  {
     version: '1.0.0',
     date: date('10/12/2020'),
     notesEn: `

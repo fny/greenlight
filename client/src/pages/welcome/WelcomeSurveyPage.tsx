@@ -18,6 +18,8 @@ import { NoCurrentUserError } from 'src/errors'
 import { defineMessage, Trans } from '@lingui/macro'
 import { completeWelcomeUser } from 'src/api'
 
+import onlineCheckupImage from 'src/images/online-checkup.svg'
+
 interface State {
   termsOpened: boolean
   currentUser: User
@@ -41,31 +43,39 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
     return (
       <Page>
         <Navbar
-          title="Symptom Surveys"
-          backLink={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.back', message: 'Back' }))}
+          title={this.global.i18n._(defineMessage({ id: 'WelcomeSurveyPage.title', message: 'Symptom Surveys' }))}
+          backLink={this.global.i18n._(defineMessage({ id: 'Common.back', message: 'Back' }))}
         />
 
-        <BlockTitle>Your First Symptom Check-In</BlockTitle>
+        <BlockTitle>
+          <Trans id="WelcomeSurveyPage.heading">
+            Your First Symptom Check-In
+          </Trans>
+        </BlockTitle>
         <Block>
           <p>
-            Thanks for reviewing that information!
+            <Trans id="WelcomeSurveyPage.thank_you">
+              Thanks for reviewing that information!
+            </Trans>
           </p>
 
           <p>
-            Greenlight helps keep your community safe by monitoring everyone's health.
-            We need your help! You should fill out this survey every day especially
-            when
-            {' '}
-            {joinWords(this.user.usersExpectedToSubmit().map((u) => (u === this.user ? this.user.you__HACK() : u.firstName)), 'or')}
-            {' '}
-            does not feel well.
+            <Trans id="WelcomeSurvyePage.instructions">
+              Greenlight helps keep your community safe by monitoring everyone's health.
+              We need your help! You should fill out this survey every day especially
+              when
+              {joinWords(this.user.usersExpectedToSubmit().map((u) => (u === this.user ? this.user.you__HACK() : u.firstName)), 'or')}
+              does not feel well.
+            </Trans>
           </p>
           <br />
-          <img src="/images/online-checkup.svg" alt="Daily Check-In" />
+          <img src={onlineCheckupImage} alt="Daily Check-In" />
 
           <br />
           <br />
-          On the next screen, you'll fill out your first survey.
+          <Trans id="WelcomeSurveyPage.next_screen">
+            On the next screen, you'll fill out your first survey.
+          </Trans>
           <br />
           <br />
           <Button href={paths.userSeqSurveysNewPath} fill>

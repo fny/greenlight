@@ -25,6 +25,7 @@ import AdminUsersPage from './pages/admin/AdminUsersPage'
 import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage'
 import { isSignedIn } from './initializers/providers'
 import ReleaseNotesPage from './pages/ReleaseNotesPage'
+import DukeScheduleTestPage from './pages/DukeScheduleTestPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -122,13 +123,17 @@ const routeMap = {
     path: '/admin/locations/:locationId/users',
     component: AdminUsersPage,
   },
-  giphySchedulePath: {
-    path: '/giphy-schedule',
-    component: GiphySchedulePage,
-  },
   debugPath: {
     path: '/debug',
     component: DebugPage,
+  },
+  dukeScheduleTestPage: {
+    path: '/schedule-test-at-duke',
+    component: DukeScheduleTestPage
+  },
+  giphySchedulePath: {
+    path: '/giphy-schedule',
+    component: GiphySchedulePage,
   },
   releasesPath: {
     path: '/releases',

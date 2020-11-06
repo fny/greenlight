@@ -2,8 +2,17 @@
 
 This is a first attempt to [keep a changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [1.1.0] - 2020-11-6
 
+ - Fix submited_for_today? bug that was plaguing Sidekiq
+ - Add release card
+ - Add support page
+ - Add schedule test page
+ - Attempt to fix exception notification
+ - Improve translations
+ - Add student report
+ - Add additional scopes and realtions for accessing parents and students
+ - Fix admin check in mobile app
  - Add error message for unsupported browsers
  - Add online status component
  - Added tests for GreenlighStatus submission date conflicts

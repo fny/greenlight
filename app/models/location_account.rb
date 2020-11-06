@@ -3,14 +3,13 @@ class LocationAccount < ApplicationRecord
   PERMISSION_LEVELS = [
     ADMIN = 'admin',
     NONE = 'none'
-  ]
+  ].freeze
 
   ROLES = [
     STUDENT = 'student',
     TEACHER = 'teacher',
     STAFF = 'staff'
-  ]
-
+  ].freeze
 
   extend Enumerize
   belongs_to :user

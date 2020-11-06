@@ -102,12 +102,12 @@ export default class DashboardPage extends ReactNComponent<any, any> {
               </div>
               <div className="GLCard-action">
                 <div className="GLCard-action">
-                  <div style={{ width: '50%', display: 'inline-block' }}>
+                  <div style={{ width: '80%', display: 'inline-block' }}>
                     <Trans id="DashboardPage.go_to_check_in">Go to Check-In</Trans>
                   </div>
                   <div
                     style={{
-                      width: '50%',
+                      width: '20%',
                       display: 'inline-block',
                       textAlign: 'right',
                     }}
@@ -129,9 +129,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
               <div className="GLCard-body" style={{ color: colors.greenDark }}>
                 <Trans id="DashboardPage.needs_to_submit_for_tomorrow">
                   Get ready for tomorrow! You need to fill out surveys for
-                  {' '}
-                  {user.usersNotSubmittedForTomorrowText()}
-                  .
+                  {' '}{user.usersNotSubmittedForTomorrowText()}.
                 </Trans>
               </div>
               <div className="GLCard-action">
@@ -175,10 +173,17 @@ export default class DashboardPage extends ReactNComponent<any, any> {
         </BlockTitle>
         <List>
           <ListItem
+            title={this.global.i18n._(defineMessage({ id: 'DashboardPage.duke_testing_title', message: 'Testing at Duke' }))}
+            footer={this.global.i18n._(defineMessage({ id: 'DashboardPage.duke_testing_footer', message: 'Connect to streamlined testing 8am to 5pm any day' }))}
+            link={paths.dukeScheduleTestPage}
+          >
+            <Icon slot="media" f7="thermometer" />
+          </ListItem>
+          <ListItem
             external
             link="https://www.dcopublichealth.org/services/communicable-diseases/coronavirus-disease-2019/covid-19-testing"
             target="_blank"
-            title={this.global.i18n._(defineMessage({ id: 'DashboardPage.testing_title', message: 'Find Testing' }))}
+            title={this.global.i18n._(defineMessage({ id: 'DashboardPage.testing_title', message: 'Find other Testing' }))}
             footer={this.global.i18n._(defineMessage({ id: 'DashboardPage.testing_footer', message: 'Testing Sites Near You' }))}
           >
             <Icon slot="media" f7="search" />
@@ -203,15 +208,23 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           >
             <Icon slot="media" f7="phone" />
           </ListItem>
+          <ListItem
+            title={this.global.i18n._(defineMessage({ id: 'DashboardPage.support_title', message: 'Email Support' }))}
+            footer={this.global.i18n._(defineMessage({ id: 'DashboardPage.support_footer', message: 'Need help? Email our support team.' }))}
+            external
+            link="mailto:help@greenlightready.com"
+          >
+            <Icon slot="media" f7="envelope" />
+          </ListItem>
         </List>
         <Block>
           <Actions id="actions-group">
             <ActionsGroup>
               <ActionsButton onClick={() => signOut()} color="red">
-                <Trans>Sign Out</Trans>
+                <Trans id="Common.sign_out">Sign Out</Trans>
               </ActionsButton>
               <ActionsButton onClick={() => toggleLocale()} color="blue">
-                <Trans id="DashboardPage.toggle_locale">
+                <Trans id="Common.toggle_locale">
                   En Español
                 </Trans>
               </ActionsButton>

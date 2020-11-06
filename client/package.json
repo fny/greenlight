@@ -4,9 +4,9 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@lingui/core": "^3.0.0",
-    "@lingui/react": "^3.0.0",
-    "@lingui/macro": "^3.0.0",
+    "@lingui/core": "3.0.2",
+    "@lingui/react": "3.0.2",
+    "@lingui/macro": "3.0.2",
     "axios": "^0.20.0",
     "framework7": "^5.7.13",
     "framework7-icons": "^3.0.1",
@@ -32,7 +32,8 @@
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "lint-fix": "eslint 'src/**/*.{js,ts,tsx}' --fix",
     "i18n-add-locale": "lingui add-locale",
-    "i18n-extract": "lingui extract --clean --overwrite",
+    "i18n-extract": "lingui extract",
+    "i18n-extract-hard": "lingui extract --clean --overwrite",
     "i18n-compile": "lingui compile"
   },
   "browserslist": {
@@ -50,7 +51,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
-    "@lingui/cli": "^3.0.0",
+    "@lingui/cli": "3.0.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",

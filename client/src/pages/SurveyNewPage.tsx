@@ -15,12 +15,36 @@ import { defineMessage, t, Trans } from '@lingui/macro'
 import { assertNotNull } from 'src/util'
 import { reloadCurrentUser } from 'src/initializers/providers'
 import logger from 'src/logger'
-import DatedYesNoButton from '../components/DatedYesNoButton'
+
+import fever from 'src/images/symptoms/fever.svg'
+import feverBright from 'src/images/symptoms/fever-bright.svg'
+import cough from 'src/images/symptoms/cough.svg'
+import coughBright from 'src/images/symptoms/cough-bright.svg'
+import chills from 'src/images/symptoms/chills.svg'
+import chillsBright from 'src/images/symptoms/chills-bright.svg'
+import difficultyBreathing from 'src/images/symptoms/difficulty-breathing.svg'
+import difficultyBreathingBright from 'src/images/symptoms/difficulty-breathing-bright.svg'
+import tasteSmell from 'src/images/symptoms/taste-smell.svg'
+import tasteSmellBright from 'src/images/symptoms/taste-smell-bright.svg'
 import { Case, When } from '../components/Case'
+import DatedYesNoButton from '../components/DatedYesNoButton'
+
+const buttonImages = {
+  cough,
+  coughBright,
+  fever,
+  feverBright,
+  chills,
+  chillsBright,
+  difficultyBreathing,
+  difficultyBreathingBright,
+  tasteSmell,
+  tasteSmellBright,
+}
 
 interface SymptomButtonProps {
   title: string
-  image: string
+  image: keyof typeof buttonImages
   selected?: boolean
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
@@ -33,8 +57,8 @@ function SymptomButton({
       className={`SymptomButton ${selected ? 'selected' : ''}`}
       onClick={onClick}
     >
-      <img alt={title} src={`/images/symptoms/${image}.svg`} />
-      <img alt={title} src={`/images/symptoms/${image}-bright.svg`} />
+      <img alt={title} src={buttonImages[image]} />
+      <img alt={title} src={(buttonImages as any)[`${image}Bright`]} />
       <br />
       <span dangerouslySetInnerHTML={{ __html: title }} />
     </div>
@@ -307,28 +331,21 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     if (submittingFor === null) {
       return (
         <Page>
-          <Navbar title="Already submitted for today." backLink={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.back', message: 'Back' }))} />
+          <Navbar title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.already_submitted_title', message: 'Already Submitted' }))} backLink={this.global.i18n._(defineMessage({ id: 'Common.back', message: 'Back' }))} />
           <Block>
-            All surveys have already been submitted for today. Please check back later!
+            <Trans id="SurveyNewPage.already_submitted_message">
+              All surveys have already been submitted for today. Please check back later!
+            </Trans>
           </Block>
         </Page>
       )
     }
 
-    // if (!submittingFor.greenlightStatus().isUnknown()) {
-    //   return <Page>
-    //     <Navbar title="Already submitted for today." backLink={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.back', message: "Back" }))} />
-    //     <Block>
-    //       Survey has been submitted for today.
-    //     </Block>
-    //   </Page>
-    // }
-
     return (
       <Page>
         <Navbar
-          title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.survey', message: t`Symptom Survey: ${submittingFor.fullName()}` }))}
-          backLink={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.back', message: 'Back' }))}
+          title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.title', message: t`Symptom Survey: ${submittingFor.fullName()}` }))}
+          backLink={this.global.i18n._(defineMessage({ id: 'Common.back', message: 'Back' }))}
         />
 
         {
@@ -338,22 +355,20 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                 <Block>
                   <div className="survey-title">
                     {
-              this.isSubmittingForSelf()
-                ? (
-                  <Trans id="SurveyNewPage.any_symptoms">
-                    Do you have any of these symptoms?
-                  </Trans>
-                )
-                : (
-                  <Trans id="SurveyNewPage.any_symptoms_child">
-                    Does
-                    {' '}
-                    {submittingFor?.firstName}
-                    {' '}
-                    have any of these symptoms?
-                  </Trans>
-                )
-            }
+                      this.isSubmittingForSelf()
+                        ? (
+                          <Trans id="SurveyNewPage.any_symptoms">
+                            Do you have any of these symptoms?
+                          </Trans>
+                        )
+                        : (
+                          <Trans id="SurveyNewPage.any_symptoms_child">
+                            Does
+                            {submittingFor?.firstName}
+                            have any of these symptoms?
+                          </Trans>
+                        )
+                    }
                   </div>
                 </Block>
                 <div className="SymptomButtons">
@@ -377,13 +392,13 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                   />
                   <SymptomButton
                     title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.difficulty_breathing', message: 'Difficulty<br />Breathing' }))}
-                    image="difficulty-breathing"
+                    image="difficultyBreathing"
                     onClick={() => this.toggleSymptom('hasDifficultyBreathing')}
                     selected={this.state.hasDifficultyBreathing}
                   />
                   <SymptomButton
                     title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.loss_of_smell', message: 'Loss of<br />Taste/Smell' }))}
-                    image="taste-smell"
+                    image="tasteSmell"
                     onClick={() => this.toggleSymptom('hasLossTasteSmell')}
                     selected={this.state.hasLossTasteSmell}
                   />
@@ -402,10 +417,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                 )
                 : (
                   <Trans id="SurveyNewPage.covid_contact_child">
-                    Has
-                    {' '}
-                    {submittingFor?.firstName}
-                    {' '}
+                    Has {submittingFor?.firstName}
                     had close contact—within 6 feet for at least 15
                     minutes—with someone diagnosed with COVID-19?
                   </Trans>
@@ -429,10 +441,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                 )
                 : (
                   <Trans id="SurveyNewPage.covid_diagnosis_child">
-                    Has
-                    {' '}
-                    {submittingFor?.firstName}
-                    {' '}
+                    Has {submittingFor?.firstName}
                     been diagnosed with or tested positive for
                     COVID-19?
                   </Trans>
@@ -456,9 +465,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                 }
               >
                 <Trans id="SurveyNewPage.continue">
-                  Continue to
-                  {' '}
-                  {this.nextUser()?.firstName}
+                  Continue to {this.nextUser()?.firstName}
                 </Trans>
               </Button>
             </When>

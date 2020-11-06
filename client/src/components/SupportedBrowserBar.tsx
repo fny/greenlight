@@ -16,7 +16,7 @@ export default function SupportedBrowserBar(): JSX.Element {
   return (
     <div className="SupportedBrowserBar">
       <Trans id="SupportedBrowserBar.error">
-        Your browser is't supported. Some things might not work!
+        Your browser isn't supported. Some things might not work!
       </Trans>
       <button type="button" className="close" onClick={() => setHidden(true)}>
         <Trans id="Common.hide">Hide</Trans>

@@ -14,9 +14,9 @@ en:
       title: Check In with Greenlight
       body: |
         Just reminding you to send out symptom surveys
-        for %{people} through Greenlight for WG Pearson.
+        for %{people} through Greenlight.
       action: Click Here to Sign In and Submit your Survey
       closing: Enjoy your day,
   texts:
     magic_sign_in: "Greenlight Magic Sign In: %{link}"
-    reminder: "Greenlight reminding you to send out your symptom surveys for WG Pearson!"
+    reminder: "Greenlight reminding you to send out your symptom surveys!"

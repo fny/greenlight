@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+
+# This model represents the relationship bewtween parents and children.
 class ParentChild < ApplicationRecord
   self.table_name = 'parents_children'
   belongs_to :parent, class_name: 'User'

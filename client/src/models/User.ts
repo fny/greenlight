@@ -5,7 +5,7 @@ import {
 } from './Model'
 import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
 import { MedicalEvent } from './MedicalEvent'
-import { LocationAccount } from './LocationAccount'
+import { LocationAccount, PermissionLevels } from './LocationAccount'
 
 export class User extends Model {
   static singular = 'user'
@@ -115,20 +115,7 @@ export class User extends Model {
 
   // HACK
   isAdmin(): boolean {
-    return ['faraz.yashar@gmail.com',
-      'josephbwebb@gmail.com',
-      'mark.sendak@duke.edu',
-      'april.warren@studentudurham.org',
-      'amy.salo@studentudurham.org',
-      'cameron.phillips@studentudurham.org',
-      'daniela.sanchez@studentudurham.org',
-      'ray.starn@studentudurham.org',
-      'kellane.kornegay@studentudurham.org',
-      'feyth.scott@studentudurham.org',
-      'madelyn.srochi@studentudurham.org',
-      'bryanna.ray@studentudurham.org',
-      'volunteer@dpsvmc.org',
-      'emmanuel.lee@studentudurham.org'].includes(this.email || '')
+    return this.locationAccounts[0]?.role === PermissionLevels.ADMIN
   }
 
   // HACK

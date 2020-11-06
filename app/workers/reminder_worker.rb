@@ -47,7 +47,6 @@ class ReminderWorker < ApplicationWorker
       end
       if user.daily_reminder_type.text?
         PlivoSMS.new(
-          # TODO: Constantize
           to: user.mobile_number,
           from: Greenlight::PHONE_NUMBER,
           message: eval(sms_template)

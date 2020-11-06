@@ -18,41 +18,30 @@ class User < ApplicationRecord
     TEXT = 'text',
     EMAIL = 'email',
     NONE = 'none'
-  ]
+  ].freeze
+
   enumerize :daily_reminder_type, in: DAILY_REMINDER_TYPES
   enumerize :time_zone, in: TIME_ZONES, default: 'America/New_York'
 
-  # @!attribute [rw]
+  scope :affiliated_with, ->(location) {
+    permalink = location.is_a?(Location) ? location.permalink : location
+    joins(:locations).where(locations: { permalink: permalink })
+  }
+  scope :children, -> { joins('INNER JOIN parents_children ON parents_children.child_id = users.id') }
+  scope :parents, -> { joins('INNER JOIN parents_children ON parents_children.parent_id = users.id') }
+
   # Users relationships as a child to other users
-  has_many :child_relationships,
-           foreign_key: :child_id,
-           class_name: 'ParentChild',
-           inverse_of: :child
-
-  has_many :parent_relationships,
-           foreign_key: :parent_id,
-           class_name: 'ParentChild',
-           inverse_of: :parent
-
-  has_many :parents,
-           through: :child_relationships,
-           source: :parent
-
-  has_many :children,
-           through: :parent_relationships,
-           source: :child
+  has_many :child_relationships, foreign_key: :child_id, class_name: 'ParentChild', inverse_of: :child
+  # Users relationships as a parent to other users
+  has_many :parent_relationships, foreign_key: :parent_id, class_name: 'ParentChild', inverse_of: :parent
+  has_many :parents, through: :child_relationships, source: :parent
+  has_many :children, through: :parent_relationships, source: :child
 
   has_many :greenlight_statuses
   has_many :medical_events, inverse_of: :user
   has_many :location_accounts, inverse_of: :user
   has_many :locations, through: :location_accounts
   has_many :cohorts, through: :cohort_user
-
-  self.permitted_params = %i[
-    first_name last_name email password mobile_number mobile_carrier locale
-    zip_code time_zone birth_date physician_name physician_phone_number
-    daily_reminder_type needs_physician
-  ]
 
   # Last Greenlight statuse submitted by the user
   has_one :last_greenlight_status,
@@ -73,13 +62,19 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :first_name, presence: true
 
-  before_save :format_mobile_number
   before_save :timestamp_password
 
   before_save { self.email&.downcase! }
 
+  self.permitted_params = %i[
+    first_name last_name email password mobile_number mobile_carrier locale
+    zip_code time_zone birth_date physician_name physician_phone_number
+    daily_reminder_type needs_physician
+  ]
+
   def self.create_account!(
-    first_name:, last_name:, password:, location:, role:,
+    first_name:, last_name:, location:, role:,
+    password: nil, title: nil, external_id: nil,
     email: nil, mobile_number: nil, permission_level: 'none'
   )
     ActiveRecord::Base.transaction do
@@ -94,9 +89,11 @@ class User < ApplicationRecord
       l = Location.find_by_id_or_permalink!(location)
 
       LocationAccount.create!(
+        external_id: external_id,
         user_id: u.id,
         location: l,
         role: role,
+        title: title,
         permission_level: permission_level
       )
     end
@@ -107,6 +104,7 @@ class User < ApplicationRecord
   end
 
   # @param [EmailOrPhone, String] value
+  # @return [User]
   def self.find_by_email_or_mobile(value)
     email_or_mobile = value.is_a?(EmailOrPhone) ? value : EmailOrPhone.new(value)
     if email_or_mobile.email?
@@ -115,6 +113,52 @@ class User < ApplicationRecord
       User.find_by(mobile_number: email_or_mobile.value)
     end
   end
+
+  # @param [String] external_id
+  # @returns [User]
+  def self.find_by_external_id(external_id)
+    User.joins(:location_accounts).where('location_accounts.external_id': external_id).first
+  end
+
+  def full_name
+    "#{self.first_name} #{self.last_name}"
+  end
+
+  def name_with_email
+    "\"#{full_name}\" <#{email}>"
+  end
+
+  #
+  # Location Related
+  #
+
+  # @param [Location] location
+  # @param [Hash] location_account_attrs
+  # @returns [Boolean]
+  def add_to_location!(location, **location_account_attrs)
+    la = LocationAccount.new(location: location, user: self)
+    la.assign_attributes(location_account_attrs)
+    la.save!
+  end
+
+  # @returns [ActiveRecord::Relation]
+  def child_locations
+    Location.joins(<<~SQL)
+      INNER JOIN location_accounts ON location_id = locations.id
+      INNER JOIN parents_children ON parents_children.child_id = location_accounts.user_id
+    SQL
+    .where('parents_children.parent_id' => id)
+  end
+
+  # All of the locations a user is affiliated with, including the children
+  # @returns [ActiveRecord::Relation]
+  def affiliated_locations
+    Location.from("(#{locations.to_sql} UNION #{child_locations.to_sql}) AS locations")
+  end
+
+  #
+  # Greenlight Status Related
+  #
 
   # Todays status
   def inferred_status
@@ -126,44 +170,26 @@ class User < ApplicationRecord
     )
   end
 
+  # Is there a recent status that's an override?
   def recent_cleared_override
     greenlight_statuses.order('created_at DESC').where(is_override: true).where('submission_date >= ?', 14.days.ago).first
   end
 
-  def full_name
-    "#{self.first_name} #{self.last_name}"
-  end
-
-  def name_with_email
-    "\"#{full_name}\" <#{email}>"
-  end
-
-  def save_sign_in!(ip)
-    self.last_sign_in_ip = self.current_sign_in_ip
-    self.current_sign_in_ip = ip
-    self.last_sign_in_at = Time.zone.now
-    self.sign_in_count += 1
-    save!
-  end
-
-  def reset_auth_token!
-    regenerate_auth_token
-    self.auth_token_set_at = Time.zone.now
-    save!
-  end
-
-  def reset_magic_sign_in_token!
-    regenerate_magic_sign_in_token
-    self.magic_sign_in_sent_at = Time.zone.now
-    save!
-  end
-
-
+  # @returns [Array<User>]
   def needs_to_submit_survey_for
     submits_surveys_for.filter { |u| !u.submitted_for_today? }
   end
 
   def needs_to_submit_survey_for_text
+    needs_to_submit_survey_for.map(&:first_name).to_sentence
+  end
+
+  # @returns [Array<Location>]
+  def needs_to_submit_survey_for_locations
+    needs_to_submit_survey_for.map(&:location)
+  end
+
+  def needs_to_submit_survey_for_location_text
     needs_to_submit_survey_for.map(&:first_name).to_sentence
   end
 
@@ -197,6 +223,10 @@ class User < ApplicationRecord
     end
   end
 
+  #
+  # Authentication Related
+  #
+
   def magic_sign_in_url(remember_me: false)
     if remember_me
       "#{Greenlight::SHORT_URL}/mgk/#{magic_sign_in_token}/y"
@@ -205,9 +235,38 @@ class User < ApplicationRecord
     end
   end
 
+
+  def save_sign_in!(ip)
+    self.last_sign_in_ip = self.current_sign_in_ip
+    self.current_sign_in_ip = ip
+    self.last_sign_in_at = Time.zone.now
+    self.sign_in_count += 1
+    save!
+  end
+
+  def reset_auth_token!
+    regenerate_auth_token
+    self.auth_token_set_at = Time.zone.now
+    save!
+  end
+
+  def reset_magic_sign_in_token!
+    regenerate_magic_sign_in_token
+    self.magic_sign_in_sent_at = Time.zone.now
+    save!
+  end
+
+  #
+  # Predicates
+  #
+
   # @param [Location] location
   def admin_at?(location)
     location_accounts.exists?(location_id: location.id, permission_level: LocationAccount::ADMIN)
+  end
+
+  def parent?
+    children.exists?
   end
 
   # @param [User] child_user
@@ -215,10 +274,15 @@ class User < ApplicationRecord
     children.include?(child_user)
   end
 
+  def child?
+    parents.exists?
+  end
+
   # @param [User] parent_user
   def child_of?(parent_user)
     parents.include?(parent_user)
   end
+
 
   def superuser?
     email == 'faraz.yashar@gmail.com'
@@ -261,7 +325,7 @@ class User < ApplicationRecord
   end
 
   def submitted_for_today?
-    last_greenlight_status.today?
+    !GreenlightStatus.submittable_for?(id)
   end
 
   private
@@ -276,14 +340,6 @@ class User < ApplicationRecord
     return unless password_digest_changed?
 
     self.password_set_at = Time.now
-  end
-
-  def format_mobile_number
-    return if mobile_number?
-
-    parsed = Phonelib.parse(mobile_number, 'US').full_e164
-    parsed = nil if parsed.blank?
-    self.mobile_number = parsed
   end
 end
 

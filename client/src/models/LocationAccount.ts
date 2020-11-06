@@ -4,6 +4,11 @@ import {
   Model, attribute as attr, initialize, relationship, STRING,
 } from './Model'
 
+export enum PermissionLevels {
+  ADMIN = 'admin',
+  NONE = 'none'
+}
+
 export class LocationAccount extends Model {
   static singular = 'locationAccount'
 

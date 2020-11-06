@@ -82,7 +82,7 @@ gem 'pony'
 # Advanced seed data handling for Rails
 gem 'seed-fu', '~> 2.3'
 # Control flow tracing.
-gem 'self_control', :path => "vendor/gems/self_control"
+gem 'self_control', path: 'vendor/gems/self_control'
 # Twilio Sendgrid Email API
 gem 'sendgrid-ruby'
 # Automatically strips all attributes of leading and trailing

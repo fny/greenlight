@@ -30,7 +30,7 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
       <Page className="UserGreenlightPassPage">
         <Navbar
           title={this.global.i18n._(defineMessage({ id: 'UserGreenlightPassPage.pass_title', message: 'Greenlight Pass' }))}
-          backLink={this.global.i18n._(defineMessage({ id: 'UserGreenlightPassPage.back', message: 'Back' }))}
+          backLink={this.global.i18n._(defineMessage({ id: 'Common.back', message: 'Back' }))}
         />
 
         <Block className="text-center">
