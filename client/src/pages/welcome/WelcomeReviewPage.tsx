@@ -222,7 +222,7 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
           <Block>
             <p><Trans id="WelcomeReviewPage.next_password">Next you'll set your password.</Trans></p>
             <Button onClick={() => this.submit()} fill>
-              <Trans id="WelcomeReviewPage.continue">Continue</Trans>
+              <Trans id="Common.continue">Continue</Trans>
             </Button>
             {/* TOOD: HACK: Preload password image. */}
             <img

@@ -3,6 +3,8 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   let(:user) { Fabricate(:user) }
+  let(:location) { Fabricate(:location) }
+  let(:parent) { Fabricator(:parent_with_two_children) }
 
   describe 'relationships' do
     it 'has parent/child relationships' do
@@ -77,6 +79,24 @@ RSpec.describe User, type: :model do
       travel_to 2.days.from_now
       expect(user.inferred_status.status).to eq(GreenlightStatus::UNKNOWN)
       expect(user.inferred_status.persisted?).to eq(false)
+    end
+  end
+
+  describe '#find_by_external_id' do
+    it 'returns the user with the apporpriate location account id' do
+      user = Fabricate(:user)
+      location = Fabricate(:location)
+      external_id = 'test'
+      user.add_to_location!(location, role: LocationAccount::STUDENT,  permission_level: LocationAccount::NONE, external_id: external_id)
+
+      expect(User.find_by_external_id(external_id)).to eq(user)
+    end
+  end
+
+  describe '#mobile_number=' do
+    it "corrects the formatting of the mobile number" do
+      user.mobile_number = '302.332.0728'
+      expect(user.mobile_number).to eq('+13023320728')
     end
   end
 

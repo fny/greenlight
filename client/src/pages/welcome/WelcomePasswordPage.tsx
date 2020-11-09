@@ -11,7 +11,8 @@ import { NoCurrentUserError } from 'src/errors'
 
 import { defineMessage, Trans } from '@lingui/macro'
 import logger from 'src/logger'
-import { When, Case } from '../../components/Case'
+import passwordImage from 'src/images/welcome-secure.svg'
+import { When, Case } from 'src/components/Case'
 
 interface State {
   password: string
@@ -108,7 +109,7 @@ export default class extends ReactNComponent<any, State> {
             alt={this.global.i18n._(
               defineMessage({ id: 'WelcomePasswordPage.security_alt_text', message: 'Greenlight gives security the highest importance.' }),
             )}
-            src="/images/welcome-secure.svg"
+            src={passwordImage}
           />
 
           <Case test={this.state.currentUser.children.length > 0}>
@@ -130,7 +131,7 @@ export default class extends ReactNComponent<any, State> {
           </Case>
 
           <Button large fill onClick={() => this.submit()}>
-            <Trans id="WelcomePasswordPage.continue">Continue</Trans>
+            <Trans id="Common.continue">Continue</Trans>
           </Button>
 
         </Block>

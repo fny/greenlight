@@ -6,6 +6,9 @@ import colors from 'src/misc/colors'
 import { Icon, Link } from 'framework7-react'
 import './ReleaseCard.css'
 import { useReducer } from 'reactn'
+import { esExclaim } from 'src/util'
+import { Trans } from '@lingui/macro'
+import { paths } from 'src/routes'
 
 const LAST_VERSION_COOKIE = '_gl_last_version_seen'
 
@@ -36,7 +39,7 @@ export default function ReleaseCard(): JSX.Element {
         <div className="ReleaseCard-title">
 
           <div style={{ width: '50%', display: 'inline-block' }}>
-            You're updated to v{releaseData[0].version}!
+            <Trans id="ReleaseCard.title">You're updated to v{releaseData[0].version}!</Trans>
           </div>
           <div
             style={{
@@ -46,6 +49,7 @@ export default function ReleaseCard(): JSX.Element {
             }}
           >
             <div
+              className="ReleaseCard-close"
               onClick={() => {
                 setLastVersionCookie()
                 forceUpdate()
@@ -58,8 +62,8 @@ export default function ReleaseCard(): JSX.Element {
         <div className="ReleaseCard-action">
           <div className="ReleaseCard-action">
             <div style={{ width: '50%', display: 'inline-block' }}>
-              <Link href="/releases">
-                See What's New 🎉
+              <Link href={paths.releasesPath}>
+                <Trans id="ReleaseCard.action">See What's New 🎉</Trans>
               </Link>
             </div>
           </div>

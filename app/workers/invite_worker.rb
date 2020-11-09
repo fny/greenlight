@@ -9,7 +9,7 @@ class InviteWorker < ApplicationWorker
         Hi <%= user.first_name %>,
       </p>
       <p>
-        We're working with W.G. Pearson Center to create a safe and healthy space for learning,
+        We're working with <%= user.affiliated_locations.map(&:name).to_sentence} %> to create a safe and healthy space for learning,
         and we need your help too!
       </p>
       <p>
@@ -31,7 +31,7 @@ class InviteWorker < ApplicationWorker
         Hola <%= user.first_name %>,
       </p>
       <p>
-        Estamos trabajando con W.G. Pearson Center para crear un espacio seguro y saludable para el aprendizaje, y también necesitamos su ayuda.
+        Estamos trabajando con <%= user.affiliated_locations.map(&:name).to_sentence} %> para crear un espacio seguro y saludable para el aprendizaje, y también necesitamos su ayuda.
       </p>
       <p>
         Cada día, enviará encuestas de síntomas a través de Greenlight para sus hijos o para usted mismo si es maestro o miembro del personal.
@@ -51,7 +51,7 @@ class InviteWorker < ApplicationWorker
   def sms_template
     # TODO: Generalize
     Erubi::Engine.new(<<~SMS
-      <% if user.invited_at %>REMINDER! <% end %>W.G. Pearson Center has registered you for Greenlight daily monitoring.
+      <% if user.invited_at %>REMINDER! <% end %><%= user.affiliated_locations.map(&:name).to_sentence} %> has registered you for Greenlight daily monitoring.
       Sign up here: <%= user.magic_sign_in_url %>
     SMS
     ).src

@@ -1,11 +1,9 @@
 {
+   "locales": ["en", "es"],
+   "sourceLocale": "en",
    "catalogs": [{
-    "path": "<rootDir>/locales/{locale}/messages",
-    "include": ["<rootDir>"],
-  }],
-  "rootDir": "./src",
-  "locales": ["en", "es"],
-  "format": "minimal",
-  "sourceLocale": "en",
-  "fallbackLocale": "en",
+      "path": "src/locales/{locale}/messages",
+      "include": ["src"]
+   }],
+   "format": "minimal"
 }

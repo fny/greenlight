@@ -66,6 +66,7 @@ Visual Studio Code is recommended with the following plugins:
  - [Rewrap](https://marketplace.visualstudio.com/items?itemName=stkb.rewrap)
  - [Ruby](https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby)
  - [Ruby Solargraph](https://marketplace.visualstudio.com/items?itemName=castwide.solargraph)
+ - [Sync Scroll](https://marketplace.visualstudio.com/items?itemName=dqisme.sync-scroll) for language files
  - [YARD Documentor](https://marketplace.visualstudio.com/items?itemName=pavlitsky.yard)
 
 If you're coming from Sublime, [this extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.sublime-keybindings) might come in handy.

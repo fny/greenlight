@@ -1,7 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import React from 'reactn'
 
-import { Page, Block, Button, Toolbar, Link, Row, Col, Sheet, PageContent } from 'framework7-react'
+import welcomeDoctorImage from 'src/images/welcome-doctor.svg'
+
+import {
+  Page,
+  Block,
+  Button,
+  Toolbar,
+  Link,
+  Row,
+  Col,
+  Sheet,
+  PageContent,
+} from 'framework7-react'
 
 import { Case, When } from 'src/components/Case'
 
@@ -12,7 +24,9 @@ import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/errors'
 
 import { toggleLocale, signOut } from 'src/initializers/providers'
-import { Trans } from '@lingui/macro'
+import {
+  plural, Trans,
+} from '@lingui/macro'
 
 interface State {
   termsOpened: boolean
@@ -47,7 +61,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
       return (
         <Trans id="WelcomePage.fill_for_self_and_children">
           Every day you'll need to fill out symptom surveys for you and your{' '}
-          {this.global.i18n._(plurals(user.children.length, { one: 'child', other: 'children' }))}.
+          {plural(user.children.length, { one: 'child', other: 'children' })}.
         </Trans>
       )
     }
@@ -59,15 +73,16 @@ export default class WelcomePage extends ReactNComponent<any, State> {
     if (fillForChildren) {
       return (
         <Trans id="WelcomePage.fill_children">
-          Every day you'll need to fill out symptom surveys for your
-          {this.global.i18n._(plurals(user.children.length, { one: 'child', other: 'children' }))}.
+          Every day you'll need to fill out symptom surveys for your{' '}
+          {plural(user.children.length, { one: 'child', other: 'children' })}.
         </Trans>
       )
     }
-    // TODO: What do we do in the case that the user is not associated with anything over the long run?
+
     return (
       <Trans id="WelcomePage.fill_for_no_one_error">
-        It looks like your account has not been set up properly. Please contact greenlight at help@greenlightready.com.
+        It looks like your account has not been set up properly.
+        Please contact greenlight at <Link href="mailto:help@greenlightready.com">help@greenlightready.com</Link>.
       </Trans>
     )
   }
@@ -79,13 +94,11 @@ export default class WelcomePage extends ReactNComponent<any, State> {
       <Page>
         <Block>
           <h1>
-            {esExclaim()}
-            {greeting()}! &nbsp;&nbsp;&nbsp;&nbsp;
+            {esExclaim()}{greeting()}! &nbsp;&nbsp;&nbsp;&nbsp;
             <Link style={{ fontSize: '12px' }} onClick={() => toggleLocale()}>
               <Trans id="WelcomePage.toggle_locale">En Español</Trans>
             </Link>
           </h1>
-
           <Case test={locationCount}>
             <When value={0}>
               <Trans id="WelcomePage.account_misconfigured">
@@ -95,20 +108,21 @@ export default class WelcomePage extends ReactNComponent<any, State> {
             <When>
               <p>
                 <Trans id="WelcomePage.welcome">
-                  Hi {user.firstName}! You've been added by{' '}
-                  {this.global.i18n._(plurals(this.totalLocations(), { one: 'location', other: 'locations' }))} to
-                  Greenlight's secure COVID-19 monitoring platform.
+                  Hi {user.firstName}! You've been added
+                  by {plural(this.totalLocations(), { one: '# location', other: '# locations' })} to Greenlight's secure COVID-19 monitoring platform.
                 </Trans>
               </p>
               <p>
                 <Trans id="WelcomePage.instructions">
-                  {this.whoDoYouFillSurveysFor()} We will not share any data without your permission.
+                  {this.whoDoYouFillSurveysFor()}
+                  We will not share any data without your
+                  permission.
                 </Trans>
               </p>
             </When>
           </Case>
 
-          <img alt="Welcome to Greenlight!" src="/images/welcome-doctor.svg" />
+          <img alt="Welcome to Greenlight!" src={welcomeDoctorImage} />
           <p>
             <Trans id="WelcomePage.terms_and_conditions">
               By continuing, you accept Greenlight's{' '}
@@ -116,23 +130,23 @@ export default class WelcomePage extends ReactNComponent<any, State> {
                 onClick={() => {
                   this.setState({ termsOpened: true })
                 }}
-              >
-                Terms and Conditions
-              </Link>
-              .
+              > Terms and Conditions
+              </Link>.
             </Trans>
           </p>
         </Block>
         <Block>
           <Row tag="p">
             <Col tag="span">
-              <Button large onClick={() => signOut()}>
-                <Trans id="WelcomePage.sign_out">Sign Out</Trans>
-              </Button>
+              <Button large onClick={() => signOut()}><Trans id="Common.sign_out">Sign Out</Trans></Button>
             </Col>
             <Col tag="span">
-              <Button large fill href={paths.welcomeReviewPath}>
-                <Trans id="WelcomePage.continue">Continue</Trans>
+              <Button
+                large
+                fill
+                href={paths.welcomeReviewPath}
+              >
+                <Trans id="Common.continue">Continue</Trans>
               </Button>
             </Col>
           </Row>
@@ -146,9 +160,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
           <Toolbar>
             <div className="left" />
             <div className="right">
-              <Link sheetClose>
-                <Trans id="WelcomePage.close">Close</Trans>
-              </Link>
+              <Link sheetClose><Trans id="Common.close">Close</Trans></Link>
             </div>
           </Toolbar>
           {/*  Scrollable sheet content */}

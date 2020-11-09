@@ -8,6 +8,7 @@ import {
 import './SplashPage.css'
 import { toggleLocale } from 'src/initializers/providers'
 import { Trans } from '@lingui/macro'
+import releaseData from 'src/data/releases'
 
 export default class SplashPage extends React.Component<any, any> {
   render() {
@@ -45,6 +46,11 @@ export default class SplashPage extends React.Component<any, any> {
           {(new Date()).getFullYear()}
           {' '}
           Greenlight Ready LLC
+        </p>
+        <p className="version">
+          <Trans id="Common.version">Version</Trans>
+          {' '}
+          {releaseData[0].version}
         </p>
       </Page>
     )

@@ -8,10 +8,27 @@ Fabricator(:user) do
   email { Faker::Internet.unique.email }
   mobile_number {
     number = ''
-    while !Phonelib.parse(number, 'US').valid?
-      number = Faker::PhoneNumber.cell_phone_in_e164[3, 10]
-    end
+    number = Faker::PhoneNumber.cell_phone_in_e164[3, 10] until Phonelib.parse(number, 'US').valid?
+
     Phonelib.parse(number, 'US').full_e164
   }
   password 'super_secret_password'
+end
+
+Fabricator(:child, from: :user) do
+  location_accounts {
+    Fabricate(
+      :location_account,
+      location: Fabricate(:location),
+      role: LocationAccount::STUDENT
+    ) do
+      external_id { Faker::Internet.uuid }
+    end
+  }
+end
+
+Fabricator(:parent_with_two_children, from: :user) do
+  children {
+    [ Fabricate(:child), Fabricate(:child) ]
+  }
 end

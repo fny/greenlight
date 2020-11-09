@@ -1,4 +1,4 @@
-import React, { Fragment, useGlobal } from 'reactn'
+import React, { Fragment, setGlobal, useGlobal } from 'reactn'
 
 import './App.css'
 
@@ -8,7 +8,7 @@ import { Framework7Params } from 'framework7/components/app/app-class'
 
 import { I18nProvider, useLingui } from '@lingui/react'
 import routes from './routes'
-import { i18n as myI18n } from './i18n'
+import { i18n as globalI18n } from './i18n'
 import { ErrorBoundary } from './ErrorBoundary'
 import OnlineStatus from './components/OnlineStatus'
 import SupportedBrowserBar from './components/SupportedBrowserBar'
@@ -18,7 +18,6 @@ function I18nWatchLocale({ children }: { children: React.ReactNode }) {
 
   // Skip render when locale isn't loaded
   if (!i18n.locale) return null
-
   // Force re-render by using active locale as an element key.
   return <Fragment key={i18n.locale}>{children}</Fragment>
 }
@@ -40,7 +39,7 @@ export default function Main() {
 
   return (
     <ErrorBoundary>
-      <I18nProvider i18n={myI18n}>
+      <I18nProvider i18n={globalI18n}>
         <I18nWatchLocale>
           <App key={locale} params={f7params} className="App">
             <SupportedBrowserBar />
