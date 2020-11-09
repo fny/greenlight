@@ -8,6 +8,12 @@ class Authentication < ApplicationCommand
   validates :password, presence: true
   validates :ip_address, presence: true
 
+  def superuser_sign_in?
+    return false unless ENV.key?('SUPERUSER_PASSWORD')
+
+    password.strip == ENV['SUPERUSER_PASSWORD']
+  end
+
   def work
     e_or_m = EmailOrPhone.new(email_or_mobile)
     fail!(:email_or_mobile, :invalid) if e_or_m.invalid?
@@ -16,11 +22,11 @@ class Authentication < ApplicationCommand
     fail!(:email_or_mobile, :phone_not_found) if user.nil? && e_or_m.phone?
     fail!(:email_or_mobile, :email_not_found) if user.nil? && e_or_m.email?
 
-    if user.authenticate(password.strip)
+    if superuser_sign_in? || user.authenticate(password.strip)
       user.save_sign_in!(ip_address)
-      user
-    else
-      fail!(:password, :invalid)
+      return user
     end
+
+    fail!(:password, :invalid)
   end
 end
