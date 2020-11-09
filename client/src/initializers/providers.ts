@@ -42,7 +42,7 @@ export function toggleLocale() {
   setGlobal({ locale: newLocale })
   i18n.activate(newLocale)
   // TODO: How do we stop doing this?
-  window.location.reload();
+  window.location.reload()
 }
 
 export function cookieLocale(): Locales {

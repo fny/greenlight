@@ -65,6 +65,7 @@ trap clean_up ERR
 if [ "$env" == "production" ]; then
   assert_branch $env
   confirmation $env
+  source .env.production
   mask_local_config
   yarn build
   firebase deploy --only hosting:production
@@ -74,6 +75,7 @@ fi
 if [ "$env" == "staging" ]; then
   assert_branch $env
   confirmation $env
+  source .env.staging
   mask_local_config
   # We need to make staging the production .env
   mv .env.production .env.production.bak
