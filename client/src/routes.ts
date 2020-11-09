@@ -172,6 +172,10 @@ const routeMap = {
     path: '/users/:userId/children/:childId',
     component: EditUserPage,
   },
+  404: {
+    path: '/404',
+    component: NotFoundPage,
+  },
   notFoundPath: {
     path: '(.*)',
     component: NotFoundPage,

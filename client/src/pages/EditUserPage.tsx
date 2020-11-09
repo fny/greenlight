@@ -6,13 +6,17 @@ import { defineMessage, t, Trans } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
 import * as Yup from 'yup'
 
+import { updateUser } from 'src/api'
+import { reloadCurrentUser } from 'src/initializers/providers'
+
 import { FunctionComponent } from '../types'
 
 interface Props {
   f7route: Router.Route
+  f7router: Router.Router
 }
 
-const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
+const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
   const [global] = useGlobal()
   const user = useMemo(() => global.currentUser, [global])
 
@@ -22,6 +26,10 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
     childId,
   ])
   const isParent = useMemo(() => childId === undefined, [childId])
+
+  if ((user && user.id !== userId) || !userInfo) {
+    f7router.navigate('/404')
+  }
 
   const formik = useFormik<EditUserInput>({
     validationSchema: schema,
@@ -41,7 +49,9 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
       needHelp: false,
     },
     onSubmit: (value) => {
-      console.log('submit', value)
+      console.log('submit', userInfo, value)
+      updateUser(userInfo!, value)
+      reloadCurrentUser()
     },
   })
 
@@ -51,7 +61,7 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route }) => {
         title={global.i18n._(
           defineMessage({
             id: 'EditUserPage.title',
-            message: isParent ? 'Your Information' : t`${userInfo?.firstName}'s Information`,
+            message: isParent ? 'Your Information' : `${userInfo?.firstName}'s Information`,
           }),
         )}
         backLink="Back"
