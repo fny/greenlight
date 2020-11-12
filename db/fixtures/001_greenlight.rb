@@ -37,7 +37,7 @@ parents = [
     last_name: 'Song',
     email: 'supearle0518@gmail.com',
     mobile_number: '+19167985029',
-    children: [],
+    children: [%w[Mango Banana], %w[Pineapple Banana]],
     is_teacher: true
   },  {
     first_name: 'Chiquita',

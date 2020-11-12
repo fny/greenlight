@@ -24,17 +24,28 @@ function I18nWatchLocale({ children }: { children: React.ReactNode }) {
 
 export default function Main() {
   // Framework7 parameters here
-  const f7params: Framework7Params = {
-    id: 'com.greenlightready.mobile', // App bundle ID
-    name: 'Greenlight', // App name
-    theme: 'auto', // Automatic theme detection
-    // App routes
-    routes,
-    view: {
-      pushState: true,
-      pushStateSeparator: '#',
-    },
-  }
+  const f7params: Framework7Params = (window as any).cordova
+    ? {
+        id: 'com.greenlightready.mobile', // App bundle ID
+        name: 'Greenlight', // App name
+        theme: 'auto', // Automatic theme detection
+        // App routes
+        routes,
+      }
+    : {
+        id: 'com.greenlightready.mobile', // App bundle ID
+        name: 'Greenlight', // App name
+        theme: 'auto', // Automatic theme detection
+        // App routes
+        routes,
+        view: {
+          pushState: true,
+          pushStateSeparator: '',
+        },
+      }
+
+  console.log('f7params', f7params)
+
   const [locale] = useGlobal('locale')
 
   return (
