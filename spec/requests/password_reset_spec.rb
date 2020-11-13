@@ -23,4 +23,41 @@ RSpec.describe '/v1/password-reset', type: :request do
       expect(user.password_reset).to be_token_valid
     end
   end
+
+  describe 'POST :token' do
+    let(:new_password) { Faker::Alphanumeric.alphanumeric }
+    before do
+      post_json('/v1/password-reset', body: {
+                                        emailOrMobile: user.email,
+                                      })
+      @token = user.password_reset.token
+    end
+
+    it 'resets the password' do
+      post_json("/v1/password-reset/#{@token}", body: {
+        password: new_password
+      })
+      expect_success_response
+      
+      post_json('/v1/sessions', body: {
+        emailOrMobile: user.email,
+        password: new_password
+      })
+      expect_success_response
+    end
+  end
+
+  describe 'GET :token/valid' do
+    before do
+      post_json('/v1/password-reset', body: {
+        emailOrMobile: user.email,
+      })
+      @token = user.password_reset.token
+    end
+
+    it 'validates the token' do
+      get("/v1/password-reset/#{@token}/valid")
+      expect_success_response
+    end
+  end
 end
