@@ -4,7 +4,7 @@ module PasswordResetController
   include ApplicationHelpers
 
   included do
-    post '/v1/password_reset' do
+    post '/v1/password-reset' do
       email_or_mobile = request_json[:email_or_mobile]
       e_or_m = EmailOrPhone.new(email_or_mobile)
       fail!(:email_or_mobile, :invalid) if e_or_m.invalid?
@@ -14,10 +14,10 @@ module PasswordResetController
       fail!(:email_or_mobile, :email_not_found) if user.nil? && e_or_m.email?
 
       user.generate_password_token!
-      set_status_created
+      success_response
     end
 
-    get '/v1/password_reset/:token/valid' do |token|
+    get '/v1/password-reset/:token/valid' do |token|
       if PasswordReset.token_valid?(token)
         success_response
       else
@@ -25,9 +25,9 @@ module PasswordResetController
       end
     end
 
-    post '/v1/password_reset/:token' do |token|
+    post '/v1/password-reset/:token' do |token|
       PasswordReset.reset_password!(token, request_json[:password])
-      set_status_updated
+      success_response
     end
   end
 end
