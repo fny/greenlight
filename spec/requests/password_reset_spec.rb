@@ -7,7 +7,16 @@ RSpec.describe '/v1/password-reset', type: :request do
   describe 'POST' do
     it 'generates token with email' do
       post_json('/v1/password-reset', body: {
-                                        emailOrMobile: user.email
+                                        emailOrMobile: user.email,
+                                      })
+      expect_success_response
+      expect(user.password_reset).to be_present
+      expect(user.password_reset).to be_token_valid
+    end
+
+    it 'generates token with mobile' do
+      post_json('/v1/password-reset', body: {
+                                        emailOrMobile: user.mobile_number,
                                       })
       expect_success_response
       expect(user.password_reset).to be_present

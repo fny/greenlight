@@ -5,6 +5,7 @@ class ApplicationController < Sinatra::Base
   include DebugController
   include LocationsUsersController
   include SessionsController
+  include PasswordResetController
   include UsersController
   include CurrentUserController
   include DevelopmentController if Rails.env.development?
