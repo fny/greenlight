@@ -20,7 +20,6 @@ import { DATE } from 'src/models/Model'
 import GL from 'src/initializers/GL'
 import { DateTime } from 'luxon'
 
-
 interface Props {
   f7route: Router.Route
   f7router: Router.Router
@@ -43,9 +42,11 @@ const schema = Yup.object<EditUserInput>().shape({
   lastName: Yup.string().required(),
   zipCode: Yup.string().matches(/^\d{5}$/, {
     excludeEmptyString: true,
-    message: t({id: 'EditUserPage.invalid_zip_code', message: 'Zip code should be 5 digits'})
-  })
+    message: t({ id: 'EditUserPage.invalid_zip_code', message: 'Zip code should be 5 digits' }),
+  }),
 })
+
+const submissionHandler = new SubmissionHandler(f7)
 
 const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
   const [currentUser] = useGlobal('currentUser')
@@ -62,10 +63,6 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
   // user.birthDate = DATE.deserialize!('1991-04-03')
   // GL.user = user
   // console.log('rendering')
-
-  const submissionHandler = new SubmissionHandler(
-    f7
-  )
 
   const formik = useFormik<EditUserInput>({
     validationSchema: schema,
@@ -84,21 +81,15 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
     onSubmit: (values) => {
       submissionHandler.submit(async () => {
         if (!formik.dirty) return
-        updateUser(user, values)
-        reloadCurrentUser()
+        await updateUser(user, values)
+        await reloadCurrentUser()
       })
     },
   })
 
-  console.log('values', formik.values)
-  console.log('errors', formik.errors)
-
   return (
     <Page>
-      <Navbar
-        title={t({ id: 'EditUserPage.title', message: "Edit User" })}
-        backLink
-      />
+      <Navbar title={t({ id: 'EditUserPage.title', message: 'Edit User' })} backLink />
 
       <FormikProvider value={formik}>
         <List form id="EditUserPage-form" onSubmit={formik.handleSubmit} noHairlines>
@@ -135,21 +126,19 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
             validateOnBlur
             value={formatPhone(formik.values.mobileNumber)}
             onInput={formik.handleChange}
-            info={
-              t({ id: 'EditUserPage.cant_be_changed', message: "Can't be changed at this time." })
-            }
+            info={t({ id: 'EditUserPage.cant_be_changed', message: "Can't be changed at this time." })}
             disabled
           />
 
-          {/* <ListInput
+          <ListInput
             name="zipCode"
             label={t({ id: 'EditUserPage.zip_code_label', message: 'Zip Code' })}
-            validateOnBlur
-            errorMessageForce={isBlank(formik.errors.zipCode)}
+            errorMessageForce
             errorMessage={formik.errors.zipCode}
             value={formik.values.zipCode}
             onInput={formik.handleChange}
-          /> */}
+            onBlur={formik.handleBlur}
+          />
 
           {/* TODO: Daniel can you fix this? */}
           {/* <ListInput
@@ -181,7 +170,7 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
 
           <ListInput
             name="physicianName"
-            label={t({id: 'EditUserPage.primary_care_physician_name_label', message: 'Primary Care Physician Name'})}
+            label={t({ id: 'EditUserPage.primary_care_physician_name_label', message: 'Primary Care Physician Name' })}
             validateOnBlur
             value={formik.values.physicianName}
             onInput={formik.handleChange}
@@ -190,8 +179,8 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
           <ListInput
             name="physicianPhoneNumber"
             label={t({
-                id: 'EditUserPage.primary_care_physician_phone_number_label',
-                message: 'Primary Care Physician Phone Number',
+              id: 'EditUserPage.primary_care_physician_phone_number_label',
+              message: 'Primary Care Physician Phone Number',
             })}
             validateOnBlur
             value={formik.values.physicianPhoneNumber}
@@ -202,9 +191,7 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
           <ListItem
             name="needsPhysician"
             checkbox
-            title={t({id: 'EditUserPage.need_help_finding_physician',
-                message: 'Need help finding a physician?',
-              })}
+            title={t({ id: 'EditUserPage.need_help_finding_physician', message: 'Need help finding a physician?' })}
             checked={formik.values.needsPhysician}
             onChange={formik.handleChange}
           />

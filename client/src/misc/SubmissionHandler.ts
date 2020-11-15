@@ -1,6 +1,6 @@
-import { t } from "@lingui/macro"
-import Framework7 from "framework7"
-import logger from "src/logger"
+import { t } from '@lingui/macro'
+import Framework7 from 'framework7'
+import logger from 'src/logger'
 
 export default class SubmissionHandler {
   f7: Framework7
@@ -15,7 +15,8 @@ export default class SubmissionHandler {
 
     this.onSubmitMessage = options.onSubmitMessage || t({ id: 'Common.submitting', message: 'Submitting...' })
     this.onErrorTitle = options.onErrorTitle || t({ id: 'Common.submission_failed', message: 'Submission Failed' })
-    this.onErrorMessage = options.onErrorMessage || t({ id: 'Common.somethings_wrong', message: 'Something went wrong' })
+    this.onErrorMessage =
+      options.onErrorMessage || t({ id: 'Common.somethings_wrong', message: 'Something went wrong' })
     this.onSuccess = options.onSuccess || (() => {})
     this.onError = options.onError || ((error: any) => {})
   }
@@ -24,7 +25,9 @@ export default class SubmissionHandler {
     this.f7.dialog.preloader(this.onSubmitMessage)
 
     try {
-      action()
+      action().then(() => {
+        this.f7.dialog.close()
+      })
     } catch (error) {
       this.f7.dialog.close()
       logger.error(error)
