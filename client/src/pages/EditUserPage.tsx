@@ -52,8 +52,6 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
 
-  const [locale] = useGlobal('locale')
-
   const { userId } = f7route.params
 
   const user = store.findEntity<User>(`user-${userId}`)
@@ -80,12 +78,12 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
     onSubmit: (values) => {
       submissionHandler.submit(async () => {
         if (!formik.dirty) return
-        console.log(values)
         await updateUser(user, {
           ...values,
           birthDate: values.birthDate ? DateTime.fromJSDate(values.birthDate) : null,
         })
         await reloadCurrentUser()
+        f7router.back()
       })
     },
   })
@@ -143,24 +141,20 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
             onBlur={formik.handleBlur}
           />
 
-          {/* TODO: Daniel can you fix this? */}
           <ListInput
             label={t({ id: 'EditUserPage.date_of_birth_label', message: 'Date of Birth' })}
-            validateOnBlur
-            value={[formik.values.birthDate]}
+            value={isBlank(formik.values.birthDate) ? [] : [formik.values.birthDate]}
             type="datepicker"
+            clearButton
             calendarParams={{
-              locale: locale,
+              locale: currentUser.locale,
               routableModals: false,
-              onCalendarChange: (d: any) => {
-                console.log(d)
-              },
             }}
             onCalendarChange={(d) => {
               formik.handleChange({
                 target: {
                   name: 'birthDate',
-                  value: d[0],
+                  value: d === [] ? null : d[0],
                 },
               })
             }}
@@ -169,7 +163,6 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
           <ListInput
             name="physicianName"
             label={t({ id: 'EditUserPage.primary_care_physician_name_label', message: 'Primary Care Physician Name' })}
-            validateOnBlur
             value={formik.values.physicianName}
             onInput={formik.handleChange}
           />
@@ -180,7 +173,6 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
               id: 'EditUserPage.primary_care_physician_phone_number_label',
               message: 'Primary Care Physician Phone Number',
             })}
-            validateOnBlur
             value={formik.values.physicianPhoneNumber}
             type="tel"
             onInput={formik.handleChange}

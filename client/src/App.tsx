@@ -1,4 +1,4 @@
-import React, { Fragment, setGlobal, useGlobal } from 'reactn'
+import React, { Fragment, useGlobal } from 'reactn'
 
 import './App.css'
 

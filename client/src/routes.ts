@@ -162,7 +162,7 @@ const routeMap = {
   },
   dukeScheduleTestPage: {
     path: '/schedule-test-at-duke',
-    component: DukeScheduleTestPage
+    component: DukeScheduleTestPage,
   },
   giphySchedulePath: {
     path: '/giphy-schedule',

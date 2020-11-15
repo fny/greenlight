@@ -7,8 +7,8 @@ module LocationsUsersController
       if !location # || !current_user.admin_at?(location)
         return []
       end
-      MobileLocationUserSerializer.new(
-        location.users.includes(:location_accounts, :last_greenlight_status), include: MobileUserSerializer::ADMIN_INCLUDES
+      MobileUserSerializer.new(
+        location.users.where.not(id: current_user.id).includes(:location_accounts, :last_greenlight_status), include: MobileUserSerializer::ADMIN_INCLUDES
       ).serialized_json
     end
   end

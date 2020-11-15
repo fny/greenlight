@@ -20,7 +20,7 @@ const SettingsPage = ({}) => {
       <List accordionList noHairlines>
         <ListItem
           link={dynamicPaths.editUserPath({ userId: currentUser.id })}
-          title={t({ id: 'SettingsPage.account', message: 'Account' })}
+          title={t({ id: 'SettingsPage.profile', message: 'Profile' })}
         />
       {/*
         {currentUser.isAdmin() && (
