@@ -1,8 +1,6 @@
 import { DateTime } from 'luxon'
 import { joinWords } from 'src/util'
-import {
-  Model, attribute as attr, relationship, initialize, STRING, DATETIME, DATE, BOOLEAN,
-} from './Model'
+import { Model, attribute as attr, relationship, initialize, STRING, DATETIME, DATE, BOOLEAN } from './Model'
 import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
 import { MedicalEvent } from './MedicalEvent'
 import { LocationAccount, PermissionLevels } from './LocationAccount'
@@ -63,7 +61,7 @@ export class User extends Model {
   dailyReminderType: string | null = null
 
   @attr({ type: DATE })
-  birthDate: DateTime = DateTime.fromISO('')
+  birthDate: DateTime | null = DateTime.fromISO('')
 
   @attr({ type: DATETIME })
   acceptedTermsAt: DateTime = DateTime.fromISO('')
@@ -94,7 +92,7 @@ export class User extends Model {
   }
 
   sortedChildren() {
-    return this.children.sort((a, b) => ((a.id < b.id) ? 1 : -1))
+    return this.children.sort((a, b) => (a.id < b.id ? 1 : -1))
   }
 
   locations__HACK() {
@@ -158,7 +156,9 @@ export class User extends Model {
 
   /** This inclues this user */
   areUsersCleared(): boolean {
-    return this.usersExpectedToSubmit().map((u) => u.isCleared()).every((x) => x === true)
+    return this.usersExpectedToSubmit()
+      .map((u) => u.isCleared())
+      .every((x) => x === true)
   }
 
   //

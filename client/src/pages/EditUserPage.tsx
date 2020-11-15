@@ -5,6 +5,7 @@ import { Router } from 'framework7/modules/router/router'
 import { defineMessage, t, Trans } from '@lingui/macro'
 import { useFormik, FormikProvider, FormikConfig } from 'formik'
 import * as Yup from 'yup'
+import { DateTime } from 'luxon'
 
 import { store, updateUser } from 'src/api'
 import { reloadCurrentUser } from 'src/initializers/providers'
@@ -18,7 +19,6 @@ import { User } from 'src/models'
 import SubmissionHandler from 'src/misc/SubmissionHandler'
 import { DATE } from 'src/models/Model'
 import GL from 'src/initializers/GL'
-import { DateTime } from 'luxon'
 
 interface Props {
   f7route: Router.Route
@@ -31,7 +31,7 @@ interface EditUserInput {
   email: string
   mobileNumber: string
   zipCode: string
-  birthDate: Date
+  birthDate: Date | null
   physicianName: string
   physicianPhoneNumber: string
   needsPhysician: boolean
@@ -72,7 +72,7 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
       email: user.email || '',
       mobileNumber: user.mobileNumber || '',
       zipCode: user.zipCode || '',
-      birthDate: user.birthDate.isValid ? user.birthDate.toJSDate() : new Date(),
+      birthDate: user.birthDate?.isValid ? user.birthDate.toJSDate() : null,
       physicianName: user.physicianName || '',
       physicianPhoneNumber: user.physicianPhoneNumber || '',
       needsPhysician: user.needsPhysician || false,
@@ -83,7 +83,7 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
         console.log(values)
         await updateUser(user, {
           ...values,
-          birthDate: DateTime.fromJSDate(values.birthDate),
+          birthDate: values.birthDate ? DateTime.fromJSDate(values.birthDate) : null,
         })
         await reloadCurrentUser()
       })
