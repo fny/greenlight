@@ -1,57 +1,44 @@
-import React, { useGlobal, useMemo } from 'reactn'
-import { Page, Navbar, List, Icon, ListItem, AccordionContent } from 'framework7-react'
+import React from 'reactn'
+import { Page, Navbar, List, ListItem } from 'framework7-react'
 
-import { toggleLocale, signOut } from 'src/initializers/providers'
-import { defineMessage } from '@lingui/macro'
+import { t } from '@lingui/macro'
+import { paths } from 'src/routes'
+import releaseData from 'src/data/releases'
 
 const SettingsPage = ({}) => {
-  const [global] = useGlobal()
-  const user = useMemo(() => global.currentUser, [global])
-
   return (
     <Page>
-      <Navbar title={global.i18n._(defineMessage({ id: 'About.title', message: 'About' }))} backLink="Back" sliding />
-      <List accordionList>
+      <Navbar title={t({ id: 'AboutPage.title', message: 'About' })} backLink />
+      <List noHairlines>
         <ListItem
-          link="#"
-          title={global.i18n._(defineMessage({ id: 'About.greenlight_version', message: 'GreenLight Version' }))}
-        ></ListItem>
+          title={t({ id: 'AboutPage.greenlight_version', message: 'Greenlight Version' })}
+          footer={releaseData[0].version}
+          noChevron
+        />
         <ListItem
-          link="#"
-          title={global.i18n._(defineMessage({ id: 'About.visit_the_blog', message: 'Visit the Blog' }))}
-        ></ListItem>
-        <ListItem
+          link="https://medium.com/greenlightready"
+          title={t({ id: 'AboutPage.visit_the_blog', message: 'Visit the Blog' })}
           external
+        />
+        <ListItem
           link="https://greenlightready.com"
-          title={global.i18n._(
-            defineMessage({ id: 'About.visit_greenlightready_com', message: 'Visit greenlightready.com' }),
-          )}
-          target="_blank"
-        ></ListItem>
-        <ListItem
+          title={t({ id: 'AboutPage.visit_our_site', message: 'Visit our Website' })}
           external
-          link="https://greenlighted.org"
-          title={global.i18n._(
-            defineMessage({ id: 'About.visit_greenlighted_org', message: 'Visit greenlighted.org' }),
-          )}
-          target="_blank"
-        ></ListItem>
+        />
         <ListItem
-          link="#"
-          title={global.i18n._(defineMessage({ id: 'About.open_source_licenses', message: 'Open source licenses' }))}
-        ></ListItem>
+          link={paths.openSourcePath}
+          title={t({ id: 'AboutPage.open_source_licenses', message: 'Open Source Licenses' })}
+        />
         <ListItem
-          link="#"
-          title={global.i18n._(defineMessage({ id: 'About.privacy_policy', message: 'Privacy Policy' }))}
-        ></ListItem>
+          link="https://greenlighted.org/privacy"
+          title={t({ id: 'AboutPage.privacy_policy', message: 'Privacy Policy' })}
+          external
+        />
         <ListItem
-          link="#"
-          title={global.i18n._(defineMessage({ id: 'About.Cookie Policy', message: 'Cookie Policy' }))}
-        ></ListItem>
-        <ListItem
-          link="#"
-          title={global.i18n._(defineMessage({ id: 'About.terms_of_service', message: 'Terms of Service' }))}
-        ></ListItem>
+          link="https://app.greenlightready.com/terms"
+          title={t({ id: 'AboutPage.terms_of_service', message: 'Terms of Service' })}
+          external
+        />
       </List>
     </Page>
   )
