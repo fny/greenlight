@@ -31,7 +31,7 @@ interface EditUserInput {
   email: string
   mobileNumber: string
   zipCode: string
-  birthDate: DateTime
+  birthDate: Date
   physicianName: string
   physicianPhoneNumber: string
   needsPhysician: boolean
@@ -52,6 +52,8 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
 
+  const [locale] = useGlobal('locale')
+
   const { userId } = f7route.params
 
   const user = store.findEntity<User>(`user-${userId}`)
@@ -60,9 +62,6 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
     f7router.navigate(paths.notFoundPath)
     return <></>
   }
-  // user.birthDate = DATE.deserialize!('1991-04-03')
-  // GL.user = user
-  // console.log('rendering')
 
   const formik = useFormik<EditUserInput>({
     validationSchema: schema,
@@ -73,7 +72,7 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
       email: user.email || '',
       mobileNumber: user.mobileNumber || '',
       zipCode: user.zipCode || '',
-      birthDate: user.birthDate,
+      birthDate: user.birthDate.isValid ? user.birthDate.toJSDate() : new Date(),
       physicianName: user.physicianName || '',
       physicianPhoneNumber: user.physicianPhoneNumber || '',
       needsPhysician: user.needsPhysician || false,
@@ -81,7 +80,11 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
     onSubmit: (values) => {
       submissionHandler.submit(async () => {
         if (!formik.dirty) return
-        await updateUser(user, values)
+        console.log(values)
+        await updateUser(user, {
+          ...values,
+          birthDate: DateTime.fromJSDate(values.birthDate),
+        })
         await reloadCurrentUser()
       })
     },
@@ -141,32 +144,27 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
           />
 
           {/* TODO: Daniel can you fix this? */}
-          {/* <ListInput
+          <ListInput
             label={t({ id: 'EditUserPage.date_of_birth_label', message: 'Date of Birth' })}
             validateOnBlur
-            value={[formik.values.birthDate.toJSDate()]}
+            value={[formik.values.birthDate]}
             type="datepicker"
             calendarParams={{
-              locale: global.locale,
+              locale: locale,
               routableModals: false,
               onCalendarChange: (d: any) => {
                 console.log(d)
-              }
+              },
             }}
             onCalendarChange={(d) => {
-              console.log(d[0])
-              console.log(GL.user.birthDate.toJSDate())
-              if (!equalDates(d[0], GL.user.birthDate.toJSDate())) {
-                formik.handleChange({
-                  target: {
-                    name: 'birthDate',
-                    value: DateTime.fromJSDate(d[0]),
-                  },
-                })
-              }
-
+              formik.handleChange({
+                target: {
+                  name: 'birthDate',
+                  value: d[0],
+                },
+              })
             }}
-          /> */}
+          />
 
           <ListInput
             name="physicianName"
