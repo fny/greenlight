@@ -41,6 +41,7 @@
     "i18n-extract": "lingui extract",
     "i18n-extract-hard": "lingui extract --clean --overwrite",
     "i18n-compile": "lingui compile"
+    "licenses": "license-report --output=json > src/data/licenses.json"
   },
   "browserslist": {
     "production": [
