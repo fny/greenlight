@@ -5,6 +5,8 @@ import qs from 'qs'
 import { getGlobal } from 'reactn'
 import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import { date } from '@lingui/core/cjs/formats'
+import { ChangeEvent, SetStateAction } from 'react'
 
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
@@ -106,6 +108,11 @@ export function transformForAPI(data: any): any {
   return transformed
 }
 
+//
+// Date and Time Related
+//
+
+
 export function yesterday(): DateTime {
   return today().minus({ days: 1 })
 }
@@ -116,6 +123,20 @@ export function today(): DateTime {
 
 export function tomorrow(): DateTime {
   return today().plus({ days: 1 })
+}
+
+export function equalDates(date1: Date | DateTime | null, date2: Date | DateTime | null) {
+  if (date1 === null && date2 === null) return true
+  if (date1 === null || date2 === null) return false
+  const year1 = date1 instanceof Date ? date1.getFullYear() : date1.year
+  const month1 = date1 instanceof Date ? date1.getMonth() : date1.month
+  const day1 = date1 instanceof Date ? date1.getDate() : date1.day
+
+  const year2 = date2 instanceof Date ? date2.getFullYear() : date2.year
+  const month2 = date2 instanceof Date ? date2.getMonth() : date2.month
+  const day2 = date2 instanceof Date ? date2.getDate() : date2.day
+
+  return year1 === year2 && month1 === month2 && day1 === day2
 }
 
 /**
@@ -333,4 +354,36 @@ export function plurals(count: number, options: PluralOptions, addPrefix: boolea
     return prefix + t`Plurals.${options.other}`
   }
   return prefix
+}
+
+export function isBlank(value: any): boolean {
+  return value === '' || value === 0 || value === undefined || value === null
+}
+
+export function isPresent(value: any): boolean {
+  return !isBlank(value)
+}
+
+
+export function changeHandler(valueSetter: (value: SetStateAction<any>) => void, target?: string) {
+  let targeted = target
+  const handler = (e: ChangeEvent<any>) => {
+    const { name, value } = e.target
+    targeted = name || targeted
+    valueSetter((prevState: any) => {
+      assertNotUndefined(targeted)
+      return ({
+        ...prevState,
+        [targeted]: value
+      })
+    })
+  }
+
+  return (e: ChangeEvent<any> | string) => {
+    if (typeof e === 'string') {
+      targeted = e
+      return handler
+    }
+    return handler(e)
+  }
 }

@@ -7,7 +7,7 @@ import { deleteBlanks, plurals } from 'src/util'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/errors'
 
-import { t, defineMessage, Trans } from '@lingui/macro'
+import { t, defineMessage, Trans, plural } from '@lingui/macro'
 import logger from 'src/logger'
 import { User } from '../../models/User'
 import { Case, When } from '../../components/Case'
@@ -125,7 +125,7 @@ export default class extends ReactNComponent<any, State> {
           <When value={user.sortedChildren()[0] === child}>
             <Block>
               <Trans id="WelcomeChildPage.review_children">
-                We've found {this.global.i18n._(plurals(user.children.length, { one: 'child', other: 'children' }))}
+                We've found {plural(user.children.length, { one: 'child', other: 'children' })}
                 associated with you: {this.childrenNames()}. Let's take a moment to review their information.
               </Trans>
               <br />

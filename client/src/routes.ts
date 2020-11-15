@@ -30,6 +30,8 @@ import SettingsPage from './pages/SettingsPage'
 import AboutPage from './pages/AboutPage'
 import EditUserPage from './pages/EditUserPage'
 import DukeScheduleTestPage from './pages/DukeScheduleTestPage'
+import OpenSourceLicensesPage from './pages/OpenSourceLicensesPage'
+import NotificationsPage from './pages/NotificationsPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -96,9 +98,14 @@ const routeMap = {
     component: SettingsPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
-  aboutPAth: {
+  aboutPath: {
     path: '/about',
     component: AboutPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  notificationsPath: {
+    path: '/notifications',
+    component: NotificationsPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   welcomePath: {
@@ -165,6 +172,10 @@ const routeMap = {
     path: '/releases',
     component: ReleaseNotesPage,
   },
+  openSourcePath: {
+    path: '/open-source',
+    component: OpenSourceLicensesPage
+  },
   // mapPath: {
   //   path: '/map',
   //   component: MapPage,
@@ -177,11 +188,11 @@ const routeMap = {
     path: '/users/:userId/children/:childId',
     component: EditUserPage,
   },
-  404: {
-    path: '/404',
+  notFoundPath: {
+    path: '/not-found',
     component: NotFoundPage,
   },
-  notFoundPath: {
+  catchAllPath: {
     path: '(.*)',
     component: NotFoundPage,
   },
