@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { joinWords } from 'src/util'
 import {
-  Model, attribute as attr, relationship, initialize, STRING, DATETIME, DATE,
+  Model, attribute as attr, relationship, initialize, STRING, DATETIME, DATE, BOOLEAN,
 } from './Model'
 import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
 import { MedicalEvent } from './MedicalEvent'
@@ -53,6 +53,9 @@ export class User extends Model {
   @attr({ type: STRING })
   physicianPhoneNumber: string | null = null
 
+  @attr({ type: BOOLEAN })
+  needsPhysician: boolean | null = null
+
   @attr({ type: STRING })
   locale: 'en' | 'es' | null = null
 
@@ -60,7 +63,7 @@ export class User extends Model {
   dailyReminderType: string | null = null
 
   @attr({ type: DATE })
-  birthDate: string | null = null
+  birthDate: DateTime = DateTime.fromISO('')
 
   @attr({ type: DATETIME })
   acceptedTermsAt: DateTime = DateTime.fromISO('')
