@@ -7,4 +7,11 @@ module MiscHelpers
       rememberMe: remember_me
     })
   end
+
+  def valid_mobile_number
+    number = ''
+    number = Faker::PhoneNumber.cell_phone_in_e164[3, 10] until Phonelib.parse(number, 'US').valid?
+
+    Phonelib.parse(number, 'US').full_e164
+  end
 end
