@@ -17,6 +17,14 @@ en:
         for %{people} through Greenlight.
       action: Click Here to Sign In and Submit your Survey
       closing: Enjoy your day,
+    password_reset:
+      subject: ✨ Greenlight Password Reset
+      title: Use this link to reset your Greenlight account's password
+      body: |
+        You requested to reset your password and here's the link!
+        Note that this link expires in 1 hour and can only be used once.
+      action: Click Here to Reset Password
   texts:
     magic_sign_in: "Greenlight Magic Sign In: %{link}"
     reminder: "Greenlight reminding you to send out your symptom surveys!"
+    password_reset: "Greenlight Password Reset: %{link}"

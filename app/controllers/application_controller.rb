@@ -5,7 +5,7 @@ class ApplicationController < Sinatra::Base
   include DebugController
   include LocationsUsersController
   include SessionsController
-  include PasswordResetController
+  include PasswordResetsController
   include UsersController
   include CurrentUserController
   include DevelopmentController if Rails.env.development?
@@ -25,7 +25,7 @@ class ApplicationController < Sinatra::Base
   end
 
   before '/v1/*' do
-    return if params['splat'].first.include? 'password-reset'
+    return if params['splat'].first.include? 'password-resets'
 
     ensure_authenticated! unless %w[ping sessions magic-sign-in current-user].include?(params['splat'].first)
   end
