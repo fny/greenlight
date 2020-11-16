@@ -10,6 +10,6 @@
     "run-cordova-ios": "npm run build-cordova && cd cordova && cordova run ios",
     "run-cordova-android": "npm run build-cordova && cd cordova && cordova run android",
     "run-cordova-browser": "npm run build-cordova && cd cordova && cordova run browser",
-    "heroku-postbuild": "REACT_APP_HEROKU_APP_NAME=$HEROKU_APP_NAME npm run build-client"
+    "heroku-postbuild-future": "REACT_APP_HEROKU_APP_NAME=$HEROKU_APP_NAME npm run build-client"
   }
 }

@@ -13,20 +13,20 @@ Configurator.new(Greenlight) do
   get :SENDGRID_API_KEY
 
   set :API_URL do
-    if ENV.key?('HEROKU_APP_NAME')
-      "https://#{ENV.fetch('HEROKU_APP_NAME')}.herokuapp.com/api"
-    elsif ENV.key?('API_URL')
+    if ENV.key?('API_URL')
       ENV.fetch('API_URL')
+    elsif ENV.key?('HEROKU_APP_NAME')
+      "https://#{ENV.fetch('HEROKU_APP_NAME')}.herokuapp.com/api"
     else
       raise Configurator::MissingEnvironmentVariable.new(:API_URL)
     end
   end
 
   set :APP_URL do
-    if ENV.key?('HEROKU_APP_NAME')
-      "https://#{ENV.fetch('HEROKU_APP_NAME')}.herokuapp.com"
-    elsif ENV.key?('APP_URL')
+    if ENV.key?('APP_URL')
       ENV.fetch('APP_URL')
+    elsif ENV.key?('HEROKU_APP_NAME')
+      "https://#{ENV.fetch('HEROKU_APP_NAME')}.herokuapp.com"
     else
       raise Configurator::MissingEnvironmentVariable.new(:APP_URL)
     end

@@ -16,11 +16,23 @@ clean_up() {
     ARG=$?
     echo "> clean_up"
     if test -f .env.production.bak; then
-      mv .env.production .env.staging
+      # Put back production if we backed it up for making a staging release
       rm .env.production
       mv .env.production.bak .env.production
+      mv .env.production .env.staging
     fi
+    unmask_local_config
     exit $ARG
+}
+
+mask_local_config() {
+  mv .env.local .env.local.bak
+}
+
+unmask_local_config() {
+  if test -f .env.local.bak; then
+    mv .env.local.bak .env.local
+  fi
 }
 
 confirmation() {
@@ -48,22 +60,32 @@ assert_branch() {
   fi
 }
 
-trap clean_up EXIT
+trap clean_up ERR
 
 if [ "$env" == "production" ]; then
   assert_branch $env
   confirmation $env
+  source .env.production
+  mask_local_config
   yarn build
   firebase deploy --only hosting:production
+
 fi
 
 if [ "$env" == "staging" ]; then
   assert_branch $env
   confirmation $env
+  source .env.staging
+  mask_local_config
+  # We need to make staging the production .env
   mv .env.production .env.production.bak
   cp .env.staging .env.production
   yarn build
   firebase deploy --only hosting:staging
+
+  # We need to undo what we did
   rm .env.production
   mv .env.production.bak .env.production
 fi
+
+unmask_local_config

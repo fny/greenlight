@@ -30,7 +30,10 @@ class User < ApplicationRecord
   }
   scope :children, -> { joins('INNER JOIN parents_children ON parents_children.child_id = users.id') }
   scope :parents, -> { joins('INNER JOIN parents_children ON parents_children.parent_id = users.id') }
-
+  scope :staff, -> {
+    joins('INNER JOIN location_accounts ON location_accounts.user_id = users.id')
+      .where.not(location_accounts: { role: LocationAccount::STUDENT })
+  }
   # Users relationships as a child to other users
   has_many :child_relationships, foreign_key: :child_id, class_name: 'ParentChild', inverse_of: :child
   # Users relationships as a parent to other users

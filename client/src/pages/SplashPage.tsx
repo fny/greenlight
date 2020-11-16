@@ -45,9 +45,7 @@ export default class SplashPage extends React.Component<any, any> {
           &copy;
           {(new Date()).getFullYear()}
           {' '}
-          Greenlight Ready LLC
-        </p>
-        <p className="version">
+          Greenlight Ready LLC<br />
           <Trans id="Common.version">Version</Trans>
           {' '}
           {releaseData[0].version}

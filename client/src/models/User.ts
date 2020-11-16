@@ -115,7 +115,7 @@ export class User extends Model {
 
   // HACK
   isAdmin(): boolean {
-    return this.locationAccounts[0]?.role === PermissionLevels.ADMIN
+    return this.locationAccounts[0]?.permissionLevel === PermissionLevels.ADMIN
   }
 
   // HACK

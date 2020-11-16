@@ -46,6 +46,12 @@ export default function DukeScheduleTestPage() {
             </Link>
           </li>
         </ul>
+        <p>
+
+          <Trans id="DukeScheduleTestPage.support">
+            Still need help? Contact Greenlight support <a href="mailto:help@greenlightready.com">help@greenlightready.com</a>
+          </Trans>
+        </p>
       </Block>
     </Page>
   )

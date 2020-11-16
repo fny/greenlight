@@ -15,6 +15,12 @@ class MobileUserSerializer < ApplicationSerializer
     :'children.last_greenlight_status'
   ]
 
+  ADMIN_INCLUDES = [
+    # This is all we need for admins right now
+    :location_accounts,
+    :last_greenlight_status
+  ]
+
   set_type :user
 
   attribute :first_name
