@@ -12,6 +12,7 @@
 class User < ApplicationRecord
   extend Enumerize
   extend Memoist
+  include PasswordResetable
 
   TIME_ZONES = ActiveSupport::TimeZone.all.map { |x| x.tzinfo.name }
   DAILY_REMINDER_TYPES = [
