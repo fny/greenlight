@@ -26,10 +26,18 @@ import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage'
 import { isSignedIn } from './initializers/providers'
 import ReleaseNotesPage from './pages/ReleaseNotesPage'
 import DukeScheduleTestPage from './pages/DukeScheduleTestPage'
+import LocationPage from './pages/LocationPage'
+import MobileVerificationPage from './pages/MobileVerificationPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
-  requireSignIn(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+  requireSignIn(
+    this: Router.Router,
+    routeTo: Router.Route,
+    routeFrom: Router.Route,
+    resolve: Function,
+    reject: Function,
+  ) {
     if (isSignedIn()) {
       resolve()
     } else {
@@ -39,7 +47,13 @@ const beforeEnter = {
     }
   },
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
-  redirectHomeIfSignedIn(this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+  redirectHomeIfSignedIn(
+    this: Router.Router,
+    routeTo: Router.Route,
+    routeFrom: Router.Route,
+    resolve: Function,
+    reject: Function,
+  ) {
     if (isSignedIn()) {
       reject()
       this.navigate(dynamicPaths.currentUserHomePath())
@@ -119,6 +133,14 @@ const routeMap = {
     path: '/users/:userId/greenlight-pass',
     component: UserGreenlightPassPage,
   },
+  locationPath: {
+    path: '/l/:location',
+    component: LocationPage,
+  },
+  mobileVerificationPath: {
+    path: '/mobile-verification',
+    component: MobileVerificationPage,
+  },
   adminUsersPath: {
     path: '/admin/locations/:locationId/users',
     component: AdminUsersPage,
@@ -129,7 +151,7 @@ const routeMap = {
   },
   dukeScheduleTestPage: {
     path: '/schedule-test-at-duke',
-    component: DukeScheduleTestPage
+    component: DukeScheduleTestPage,
   },
   giphySchedulePath: {
     path: '/giphy-schedule',
