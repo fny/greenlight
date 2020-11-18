@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_12_185203) do
+ActiveRecord::Schema.define(version: 2020_11_15_233613) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -135,6 +135,23 @@ ActiveRecord::Schema.define(version: 2020_11_12_185203) do
     t.index ["user_id"], name: "index_password_resets_on_user_id"
   end
 
+  create_table "user_settings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.boolean "override_location_reminders", default: false, null: false
+    t.text "daily_reminder_type", default: "text", null: false
+    t.integer "daily_reminder_time", default: 7, null: false
+    t.boolean "remind_mon", default: true, null: false
+    t.boolean "remind_tue", default: true, null: false
+    t.boolean "remind_wed", default: true, null: false
+    t.boolean "remind_thu", default: true, null: false
+    t.boolean "remind_fri", default: true, null: false
+    t.boolean "remind_sat", default: true, null: false
+    t.boolean "remind_sun", default: true, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_user_settings_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.text "first_name", default: "Greenlight User", null: false
     t.text "last_name", default: "Unknown", null: false
@@ -210,6 +227,7 @@ ActiveRecord::Schema.define(version: 2020_11_12_185203) do
   add_foreign_key "parents_children", "users", column: "child_id", on_delete: :cascade
   add_foreign_key "parents_children", "users", column: "parent_id", on_delete: :cascade
   add_foreign_key "password_resets", "users", on_delete: :cascade
+  add_foreign_key "user_settings", "users", on_delete: :cascade
   add_foreign_key "users", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "users", "users", column: "deleted_by_id", on_delete: :nullify
   add_foreign_key "users", "users", column: "updated_by_id", on_delete: :nullify

@@ -25,8 +25,6 @@ gem 'sidekiq-cron', '1.2'
 gem 'rack-cors'
 gem 'rack_csrf'
 gem 'rack-freeze'
-gem 'sinatra'
-
 
 #
 # Performance
@@ -127,6 +125,10 @@ group :development, :test do
 end
 
 group :development do
+  # Improve Rails error pages
+  gem 'better_errors'
+  # Used by better errors
+  gem 'binding_of_caller'
   # Help to kill N+1 queries and unused eager loading
   gem 'bullet', '~> 6.1.0'
   # Manage Procfile-based apps

@@ -3,10 +3,6 @@ import {
 } from './Model'
 
 export class Location extends Model {
-  static singular = 'location'
-
-  static plural = 'locations'
-
   constructor(data?: any) {
     super()
     initialize(this, data)

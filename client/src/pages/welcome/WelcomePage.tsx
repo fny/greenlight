@@ -17,7 +17,7 @@ import {
 
 import { Case, When } from 'src/components/Case'
 
-import { esExclaim, greeting, plurals } from 'src/util'
+import { esExclaim, greeting } from 'src/util'
 import { User } from 'src/models/User'
 import { paths } from 'src/routes'
 import { ReactNComponent } from 'reactn/build/components'

@@ -4,7 +4,7 @@ import {
 } from 'framework7-react'
 import './SurveyNewPage.css'
 import { paths } from 'src/routes'
-import { MEDICAL_EVENTS } from 'src/models/MedicalEvent'
+import { MedicalEventTypes } from 'src/models/MedicalEvent'
 import { CUTOFF_TIME } from 'src/models/GreenlightStatus'
 import { createSymptomSurvey, getUser } from 'src/api'
 import { User } from 'src/models'
@@ -142,43 +142,43 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     const events = []
     if (this.state.hasFever) {
       events.push({
-        eventType: MEDICAL_EVENTS.FEVER,
+        eventType: MedicalEventTypes.FEVER,
         occurredAt: DateTime.local(),
       })
     }
     if (this.state.hasChills) {
       events.push({
-        eventType: MEDICAL_EVENTS.CHILLS,
+        eventType: MedicalEventTypes.CHILLS,
         occurredAt: DateTime.local(),
       })
     }
     if (this.state.hasNewCough) {
       events.push({
-        eventType: MEDICAL_EVENTS.NEW_COUGH,
+        eventType: MedicalEventTypes.NEW_COUGH,
         occurredAt: DateTime.local(),
       })
     }
     if (this.state.hasDifficultyBreathing) {
       events.push({
-        eventType: MEDICAL_EVENTS.DIFFICULTY_BREATHING,
+        eventType: MedicalEventTypes.DIFFICULTY_BREATHING,
         occurredAt: DateTime.local(),
       })
     }
     if (this.state.hasLossTasteSmell) {
       events.push({
-        eventType: MEDICAL_EVENTS.LOST_TASTE_SMELL,
+        eventType: MedicalEventTypes.LOST_TASTE_SMELL,
         occurredAt: DateTime.local(),
       })
     }
     if (this.state.hadDiagnosis && this.state.diagnosisDate) {
       events.push({
-        eventType: MEDICAL_EVENTS.COVID_DIAGNOSIS,
+        eventType: MedicalEventTypes.COVID_DIAGNOSIS,
         occurredAt: this.state.diagnosisDate,
       })
     }
     if (this.state.hadContact && this.state.contactDate) {
       events.push({
-        eventType: MEDICAL_EVENTS.COVID_EXPOSURE,
+        eventType: MedicalEventTypes.COVID_EXPOSURE,
         occurredAt: this.state.contactDate,
       })
     }

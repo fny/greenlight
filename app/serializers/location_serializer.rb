@@ -1,4 +1,11 @@
 # frozen_string_literal: true
 class LocationSerializer < ApplicationSerializer
-  attributes :name, :category, :permalink, :hidden, :phone_number, :email, :website, :zip_code
+  attribute :name
+  attribute :category
+  attribute :permalink
+  attribute :hidden
+  attribute :phone_number
+  attribute :email
+  attribute :website
+  attribute :zip_code
 end

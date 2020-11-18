@@ -1,19 +1,14 @@
 # frozen_string_literal: true
-module ApplicationHelpers
+module APIHelpers
+  extend ActiveSupport::Concern
+
+  included do
+    include Sinatrify
+  end
+
   UnauthorizedError = Class.new(StandardError)
   NotFoundError = Class.new(StandardError)
   ForbiddenError = Class.new(StandardError)
-  SUCCESS = { success: true }.to_json
-  FAILURE = { success: false }.to_json
-
-
-  def action_dispatch_request
-    @action_dispatch_request ||= ActionDispatch::Request.new(request.env)
-  end
-
-  def cookies
-    @cookies ||= ActionDispatch::Cookies::CookieJar.build(action_dispatch_request, request.cookies)
-  end
 
   def parse_request(request)
     HashWithIndifferentAccess.new(camelize_hash(JSON.parse(request.body.read)))
@@ -23,10 +18,8 @@ module ApplicationHelpers
     @request_json ||= parse_request(request)
   end
 
-
-
   def developer_message
-    "Coder, eh? Email us: hello [at] greenlightready"
+    'Coder, eh? Email us: hello [at] greenlightready'
   end
 
   def current_user
@@ -48,7 +41,6 @@ module ApplicationHelpers
       data
     end
   end
-
 
   #
   # Response Statuses
@@ -73,9 +65,8 @@ module ApplicationHelpers
 
   def success_response
     response.status = 204 # No content
-    body ''
+    render plain: nil
   end
-
 
   #
   # Assertions

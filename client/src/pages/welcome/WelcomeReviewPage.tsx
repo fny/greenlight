@@ -55,7 +55,7 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
       firstName: user.firstName,
       lastName: user.lastName,
       locale: user.locale,
-      dailyReminderType: user.dailyReminderType,
+      // dailyReminderType: user.dailyReminderType,
     })
   }
 
@@ -135,7 +135,7 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             validateOnBlur
             required
           />
-          <ListInput
+          {/* <ListInput
             label={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.reminders_label', message: 'Receive Reminders By' }))}
             type="select"
             defaultValue="text"
@@ -151,7 +151,7 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             <option value="email">
               {this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.email', message: 'Email' }))}
             </option>
-          </ListInput>
+          </ListInput> */}
           <ListInput
             label={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.language_label', message: 'Language' }))}
             type="select"

@@ -1,0 +1,13 @@
+Regex for interpolation in translation file that's not spaced properly
+
+Fix for "Your {0}is ready!":
+
+```
+\}[^(\s|"|\.|'|!\})]
+```
+
+Fix for "Your{0} is ready!":
+
+```
+[^(\s|")]\{
+```

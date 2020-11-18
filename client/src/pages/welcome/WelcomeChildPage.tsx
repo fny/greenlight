@@ -1,13 +1,17 @@
 import React from 'reactn'
-import { Page, Navbar, Block, List, ListItem, ListInput, Button } from 'framework7-react'
+import {
+  Page, Navbar, Block, List, ListItem, ListInput, Button,
+} from 'framework7-react'
 
 import { updateUser } from 'src/api'
 import { dynamicPaths, paths } from 'src/routes'
-import { deleteBlanks, plurals } from 'src/util'
+import { deleteBlanks } from 'src/util'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/errors'
 
-import { t, defineMessage, Trans, plural } from '@lingui/macro'
+import {
+  t, defineMessage, Trans, plural,
+} from '@lingui/macro'
 import logger from 'src/logger'
 import { User } from '../../models/User'
 import { Case, When } from '../../components/Case'

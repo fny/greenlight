@@ -3,7 +3,7 @@ import {
   Model, attribute as attr, initialize, DATETIME, STRING,
 } from './Model'
 
-export enum MEDICAL_EVENTS {
+export enum MedicalEventTypes {
   NONE = 'none',
   FEVER = 'fever',
   NEW_COUGH = 'new_cough',
@@ -20,18 +20,12 @@ export enum MEDICAL_EVENTS {
 }
 
 export class MedicalEvent extends Model {
-  static singular = 'medical-event'
-
-  static plural = 'medical-events'
-
-  static TYPES = MEDICAL_EVENTS
-
   static SYMPTOMS = [
-    MEDICAL_EVENTS.FEVER,
-    MEDICAL_EVENTS.NEW_COUGH,
-    MEDICAL_EVENTS.LOST_TASTE_SMELL,
-    MEDICAL_EVENTS.DIFFICULTY_BREATHING,
-    MEDICAL_EVENTS.CHILLS,
+    MedicalEventTypes.FEVER,
+    MedicalEventTypes.NEW_COUGH,
+    MedicalEventTypes.LOST_TASTE_SMELL,
+    MedicalEventTypes.DIFFICULTY_BREATHING,
+    MedicalEventTypes.CHILLS,
   ]
 
   constructor(data?: any) {
@@ -40,7 +34,7 @@ export class MedicalEvent extends Model {
   }
 
   @attr({ type: STRING })
-  eventType: MEDICAL_EVENTS = MEDICAL_EVENTS.NONE
+  eventType: MedicalEventTypes = MedicalEventTypes.NONE
 
   @attr({ type: DATETIME })
   occurredAt: DateTime = DateTime.fromISO('')
@@ -49,11 +43,11 @@ export class MedicalEvent extends Model {
   createdAt: DateTime = DateTime.fromISO('')
 }
 
-export function hasEvent(medicalEvents: MedicalEvent[], eventType: MEDICAL_EVENTS | MEDICAL_EVENTS[], lookbackDays: number) {
+export function hasEvent(medicalEvents: MedicalEvent[], eventType: MedicalEventTypes | MedicalEventTypes[], lookbackDays: number) {
   return findEvents(medicalEvents, eventType, lookbackDays).length > 0
 }
 
-export function findEvents(medicalEvents: MedicalEvent[], eventType: MEDICAL_EVENTS | MEDICAL_EVENTS[], lookbackDays: number) {
+export function findEvents(medicalEvents: MedicalEvent[], eventType: MedicalEventTypes | MedicalEventTypes[], lookbackDays: number) {
   const start = DateTime.local().minus({ days: lookbackDays })
   const eventTypes = Array.isArray(eventType) ? eventType : [eventType]
   return medicalEvents
@@ -61,7 +55,7 @@ export function findEvents(medicalEvents: MedicalEvent[], eventType: MEDICAL_EVE
     .filter((event) => eventTypes.includes(event.eventType))
 }
 
-export function findLastEvent(medicalEvents: MedicalEvent[], eventType: MEDICAL_EVENTS | MEDICAL_EVENTS[], lookbackDays: number) {
+export function findLastEvent(medicalEvents: MedicalEvent[], eventType: MedicalEventTypes | MedicalEventTypes[], lookbackDays: number) {
   const events = findEvents(medicalEvents, eventType, lookbackDays)
   return events.length > 0 ? events[-1] : null
 }

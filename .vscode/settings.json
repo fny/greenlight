@@ -12,5 +12,15 @@
     "solargraph.useBundler": true,
     "yard.spacers.afterTags": false,
     "yard.spacers.beforeDescription": false,
-    "yard.spacers.beforeTags": false
+    "yard.spacers.beforeTags": false,
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/node_modules": true,
+      "client/src/locales/_build": true,
+      "client/src/locales/*/messages.js": true
+  },
 }

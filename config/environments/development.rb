@@ -39,7 +39,7 @@ Rails.application.configure do
 
   # config.log_level = :fatal
 
-  config.hosts << "api-dev.greenlightready.com"
+  config.hosts += %w[api-dev.greenlightready.com api.greenlightready.net]
 
   config.middleware.use PrettyJsonResponse
 

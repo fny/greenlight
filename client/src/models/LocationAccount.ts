@@ -1,7 +1,7 @@
 import { User } from './User'
 import { Location } from './Location'
 import {
-  Model, attribute as attr, initialize, relationship, STRING,
+  Model, attribute as attr, initialize, STRING, hasOne,
 } from './Model'
 
 export enum PermissionLevels {
@@ -10,10 +10,6 @@ export enum PermissionLevels {
 }
 
 export class LocationAccount extends Model {
-  static singular = 'locationAccount'
-
-  static plural = 'locationAccounts'
-
   constructor(data?: any) {
     super()
     initialize(this, data)
@@ -31,9 +27,9 @@ export class LocationAccount extends Model {
 
   @attr({ type: STRING }) attendanceStatus: string | null = null
 
-  @relationship({ type: 'hasOne', model: 'location' })
-  location: Location = new Location()
+  @hasOne('Location')
+  location: Location | null = null
 
-  @relationship({ type: 'hasOne', model: 'user' })
-  user: User = new User()
+  @hasOne('User')
+  user: User | null = null
 }

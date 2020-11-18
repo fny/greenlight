@@ -1,18 +1,17 @@
 import colors from 'src/misc/colors'
 import { today, tomorrow } from 'src/util'
 import CutoffTime from 'src/misc/CutoffTime'
-import { defineMessage } from '@lingui/macro'
+import { t } from '@lingui/macro'
 
 import { DateTime } from 'luxon'
-import { getGlobal } from 'reactn'
 import { User } from './User'
 import {
-  Model, attribute as attr, relationship, initialize, STRING, DATETIME, BOOLEAN,
+  Model, attribute as attr, initialize, STRING, DATETIME, BOOLEAN, hasOne,
 } from './Model'
 
 export const CUTOFF_TIME = new CutoffTime('2020-10-08 18:00')
 
-export enum GREENLIGHT_STATUSES {
+export enum GreenlightStatusTypes {
   CLEARED = 'cleared',
   PENDING = 'pending',
   RECOVERY = 'recovery',
@@ -40,14 +39,8 @@ export const GREENLIGHT_COLORS = {
 }
 
 export class GreenlightStatus extends Model {
-  static STATUSES = GREENLIGHT_STATUSES
-
-  static singular = 'greenlightStatus'
-
-  static plural = 'greenlightStatuses'
-
   static newUnknown(): GreenlightStatus {
-    return new GreenlightStatus({ status: GreenlightStatus.STATUSES.UNKNOWN })
+    return new GreenlightStatus({ status: GreenlightStatusTypes.UNKNOWN })
   }
 
   constructor(data?: any) {
@@ -56,7 +49,7 @@ export class GreenlightStatus extends Model {
   }
 
   @attr({ type: STRING })
-  status: GREENLIGHT_STATUSES = GREENLIGHT_STATUSES.UNKNOWN
+  status: GreenlightStatusTypes = GreenlightStatusTypes.UNKNOWN
 
   @attr({ type: DATETIME })
   submissionDate: DateTime = DateTime.fromISO('')
@@ -73,8 +66,8 @@ export class GreenlightStatus extends Model {
   @attr({ type: STRING })
   reason = ''
 
-  @relationship({ type: 'hasOne', model: 'user' })
-  user?: User
+  @hasOne('User')
+  user: User | null = null
 
   /** Name of the color corresponding to the status */
   colorName(): string {
@@ -87,23 +80,23 @@ export class GreenlightStatus extends Model {
   }
 
   isUnknown(): boolean {
-    return this.status === GREENLIGHT_STATUSES.UNKNOWN
+    return this.status === GreenlightStatusTypes.UNKNOWN
   }
 
   isAbsent(): boolean {
-    return this.status === GREENLIGHT_STATUSES.ABSENT
+    return this.status === GreenlightStatusTypes.ABSENT
   }
 
   isCleared(): boolean {
-    return this.status === GREENLIGHT_STATUSES.CLEARED
+    return this.status === GreenlightStatusTypes.CLEARED
   }
 
   isPending(): boolean {
-    return this.status === GREENLIGHT_STATUSES.PENDING
+    return this.status === GreenlightStatusTypes.PENDING
   }
 
   isRecovering(): boolean {
-    return this.status === GREENLIGHT_STATUSES.RECOVERY
+    return this.status === GreenlightStatusTypes.RECOVERY
   }
 
   isValidForDate(date: DateTime): boolean {
@@ -120,20 +113,19 @@ export class GreenlightStatus extends Model {
     return this.isValidForDate(tomorrow())
   }
 
-  // TODO: Move out
   title(): string {
-    if (this.status === GREENLIGHT_STATUSES.CLEARED) {
-      return getGlobal().i18n._(defineMessage({ id: 'GreenlightStatus.cleared', message: 'Cleared' }))
+    if (this.status === GreenlightStatusTypes.CLEARED) {
+      return t({ id: 'GreenlightStatus.cleared', message: 'Cleared' })
     }
-    if (this.status === GREENLIGHT_STATUSES.PENDING) {
-      return getGlobal().i18n._(defineMessage({ id: 'GreenlightStatus.pending', message: 'Pending' }))
+    if (this.status === GreenlightStatusTypes.PENDING) {
+      return t({ id: 'GreenlightStatus.pending', message: 'Pending' })
     }
-    if (this.status === GREENLIGHT_STATUSES.RECOVERY) {
-      return getGlobal().i18n._(defineMessage({ id: 'GreenlightStatus.recovery', message: 'Recovery' }))
+    if (this.status === GreenlightStatusTypes.RECOVERY) {
+      return t({ id: 'GreenlightStatus.recovery', message: 'Recovery' })
     }
-    if (this.status === GREENLIGHT_STATUSES.ABSENT) {
-      return getGlobal().i18n._(defineMessage({ id: 'GreenlightStatus.absent', message: 'Absent' }))
+    if (this.status === GreenlightStatusTypes.ABSENT) {
+      return t({ id: 'GreenlightStatus.absent', message: 'Absent' })
     }
-    return getGlobal().i18n._(defineMessage({ id: 'GreenlightStatus.not_submitted', message: 'Not Submitted' }))
+    return t({ id: 'GreenlightStatus.not_submitted', message: 'Not Submitted' })
   }
 }

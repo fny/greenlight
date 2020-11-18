@@ -5,7 +5,6 @@ import qs from 'qs'
 import { getGlobal } from 'reactn'
 import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
-import { date } from '@lingui/core/cjs/formats'
 import { ChangeEvent, SetStateAction } from 'react'
 
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -81,13 +80,13 @@ export function isEmptyType(data: any) {
 
 export function isPrimitiveType(data: any) {
   return (
-    typeof data === 'string' ||
-    typeof data === 'number' ||
-    typeof data === 'boolean' ||
-    typeof data === 'bigint' ||
-    typeof data === 'symbol' ||
-    typeof data === null ||
-    typeof data === undefined
+    typeof data === 'string'
+    || typeof data === 'number'
+    || typeof data === 'boolean'
+    || typeof data === 'bigint'
+    || typeof data === 'symbol'
+    || typeof data === null
+    || typeof data === undefined
   )
 }
 
@@ -111,7 +110,6 @@ export function transformForAPI(data: any): any {
 //
 // Date and Time Related
 //
-
 
 export function yesterday(): DateTime {
   return today().minus({ days: 1 })
@@ -340,22 +338,6 @@ export function setIntervalSafely(func: Function, ms: number, immediate: boolean
   return wrapped()
 }
 
-interface PluralOptions {
-  one: string
-  other: string
-}
-
-export function plurals(count: number, options: PluralOptions, addPrefix: boolean = false) {
-  const prefix = addPrefix ? `${count} ` : ''
-  if (options.one && count === 1) {
-    return prefix + t`Plurals.${options.one}`
-  }
-  if (options.other) {
-    return prefix + t`Plurals.${options.other}`
-  }
-  return prefix
-}
-
 export function isBlank(value: any): boolean {
   return value === '' || value === 0 || value === undefined || value === null
 }
@@ -363,7 +345,6 @@ export function isBlank(value: any): boolean {
 export function isPresent(value: any): boolean {
   return !isBlank(value)
 }
-
 
 export function changeHandler(valueSetter: (value: SetStateAction<any>) => void, target?: string) {
   let targeted = target
@@ -374,7 +355,7 @@ export function changeHandler(valueSetter: (value: SetStateAction<any>) => void,
       assertNotUndefined(targeted)
       return ({
         ...prevState,
-        [targeted]: value
+        [targeted]: value,
       })
     })
   }
