@@ -1,8 +1,5 @@
 import React, { useGlobal } from 'reactn'
-import {
-  Page, Navbar, f7, List, ListInput, Block, Button, ListItem,
-} from 'framework7-react'
-import { Router } from 'framework7/modules/router/router'
+import { Page, Navbar, f7, List, ListInput, Block, Button, ListItem } from 'framework7-react'
 
 import { defineMessage, t, Trans } from '@lingui/macro'
 import { useFormik, FormikProvider, FormikConfig } from 'formik'
@@ -15,19 +12,12 @@ import { reloadCurrentUser } from 'src/initializers/providers'
 import Framework7 from 'framework7'
 import logger from 'src/logger'
 import { paths } from 'src/routes'
-import {
-  assertNotNull, equalDates, formatPhone, isBlank,
-} from 'src/util'
+import { assertNotNull, equalDates, formatPhone, isBlank } from 'src/util'
 import { User } from 'src/models'
 import SubmissionHandler from 'src/misc/SubmissionHandler'
 import { DATE } from 'src/models/Model'
 import GL from 'src/initializers/GL'
-import { FunctionComponent } from '../types'
-
-interface Props {
-  f7route: Router.Route
-  f7router: Router.Router
-}
+import { FunctionComponent, F7Props } from '../types'
 
 interface EditUserInput {
   firstName: string
@@ -52,7 +42,7 @@ const schema = Yup.object<EditUserInput>().shape({
 
 const submissionHandler = new SubmissionHandler(f7)
 
-const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
+const EditUserPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
 

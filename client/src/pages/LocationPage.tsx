@@ -1,20 +1,14 @@
 import React from 'reactn'
 import { Page, Navbar, BlockTitle, Badge, Block, Button } from 'framework7-react'
-import { Router } from 'framework7/modules/router/router'
 import { Trans, t } from '@lingui/macro'
 
-import { FunctionComponent } from 'src/types'
+import { FunctionComponent, F7Props } from 'src/types'
 import { assertNotUndefined } from 'src/util'
 import { paths } from 'src/routes'
 
 import './LocationPage.css'
 
-interface Props {
-  f7route: Router.Route
-  f7router: Router.Router
-}
-
-const LocationPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
+const LocationPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
   const { location } = f7route.params
   assertNotUndefined(location)
 

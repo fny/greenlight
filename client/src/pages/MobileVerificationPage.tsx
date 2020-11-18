@@ -1,20 +1,14 @@
 import React, { useState } from 'reactn'
 import { f7, Page, Navbar, Block, Button, List, ListInput, ListItem } from 'framework7-react'
-import { Router } from 'framework7/modules/router/router'
 import { Trans, t } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
 import ReactCodeInput from 'react-verification-code-input'
 import * as Yup from 'yup'
 
-import { FunctionComponent } from 'src/types'
-// import SubmissionHandler from 'src/misc/SubmissionHandler'
+import { FunctionComponent, F7Props } from 'src/types'
+import SubmissionHandler from 'src/misc/SubmissionHandler'
 
 import './MobileVerificationPage.css'
-
-interface Props {
-  f7route: Router.Route
-  f7router: Router.Router
-}
 
 interface MobileInput {
   mobileNumber: string
@@ -31,9 +25,9 @@ const schema = Yup.object<MobileInput>().shape({
   mobileCarrier: Yup.string().required(),
 })
 
-// const submissionHandler = new SubmissionHandler(f7)
+const submissionHandler = new SubmissionHandler(f7)
 
-const MobileVerificationPage: FunctionComponent<Props> = () => {
+const MobileVerificationPage: FunctionComponent<F7Props> = () => {
   const [isCodeSent, setCodeSent] = useState(false)
   const [verificationCodeInput, setVerificationCodeInput] = useState({
     value: '',
@@ -50,10 +44,11 @@ const MobileVerificationPage: FunctionComponent<Props> = () => {
       mobileCarrier: '',
     },
     onSubmit: (values) => {
-      // submissionHandler.submit(async () => {
-      console.log('submit', values)
-      setCodeSent(true)
-      // })
+      submissionHandler.submit(async () => {
+        console.log('submit', values)
+        setCodeSent(true)
+        return Promise.resolve()
+      })
     },
   })
 

@@ -1,17 +1,11 @@
 import React from 'reactn'
 import { f7, Page, Navbar, Block, Button, List, ListInput } from 'framework7-react'
-import { Router } from 'framework7/modules/router/router'
 import { Trans, t } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
 import * as Yup from 'yup'
 
-import { FunctionComponent } from 'src/types'
-// import SubmissionHandler from 'src/misc/SubmissionHandler'
-
-interface Props {
-  f7route: Router.Route
-  f7router: Router.Router
-}
+import { FunctionComponent, F7Props } from 'src/types'
+import SubmissionHandler from 'src/misc/SubmissionHandler'
 
 interface RegistrationInput {
   firstName: string
@@ -35,9 +29,9 @@ const schema = Yup.object<RegistrationInput>().shape({
   ),
 })
 
-// const submissionHandler = new SubmissionHandler(f7)
+const submissionHandler = new SubmissionHandler(f7)
 
-const LocationRegistrationPage: FunctionComponent<Props> = () => {
+const LocationRegistrationPage: FunctionComponent<F7Props> = () => {
   const formik = useFormik<RegistrationInput>({
     validationSchema: schema,
     validateOnChange: true,
@@ -48,9 +42,10 @@ const LocationRegistrationPage: FunctionComponent<Props> = () => {
       registrationCode: '',
     },
     onSubmit: (values) => {
-      // submissionHandler.submit(async () => {
-      console.log('submit', values)
-      // })
+      submissionHandler.submit(async () => {
+        console.log('submit', values)
+        return Promise.resolve()
+      })
     },
   })
 
