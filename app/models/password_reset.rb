@@ -33,3 +33,22 @@ class PasswordReset < ApplicationRecord
     SecureRandom.hex(10)
   end
 end
+
+# == Schema Information
+#
+# Table name: password_resets
+#
+#  id         :bigint           not null, primary key
+#  user_id    :bigint           not null
+#  token      :text
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_password_resets_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id) ON DELETE => cascade
+#

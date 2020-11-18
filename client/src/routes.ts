@@ -28,6 +28,7 @@ import ReleaseNotesPage from './pages/ReleaseNotesPage'
 import DukeScheduleTestPage from './pages/DukeScheduleTestPage'
 import LocationPage from './pages/LocationPage'
 import MobileVerificationPage from './pages/MobileVerificationPage'
+import LocationRegistrationPage from './pages/LocationRegistrationPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -142,8 +143,12 @@ const routeMap = {
     path: '/l/:location',
     component: LocationPage,
   },
+  locationRegistrationPath: {
+    path: '/l/:location/registrations',
+    component: LocationRegistrationPage,
+  },
   mobileVerificationPath: {
-    path: '/mobile-verification',
+    path: '/mobile-verifications',
     component: MobileVerificationPage,
   },
   adminUsersPath: {
