@@ -4,8 +4,9 @@ import { Block, Navbar, Page } from 'framework7-react'
 import React from 'reactn'
 
 export default function OpenSourceLicensesPage() {
-  return <Page>
-      <Navbar title={t({ id: 'OpenSourceLicensesPage.title', message: 'Open Source Licenses' })} />
+  return (
+    <Page>
+      <Navbar title={t({ id: 'OpenSourceLicensesPage.title', message: 'Open Source Licenses' })} backLink />
       <Block strong noHairlines>
         <p>
           <Trans id="OpenSourceLicensesPage.message">
@@ -16,9 +17,10 @@ export default function OpenSourceLicensesPage() {
         </p>
         <ul>
           {
-            licenses.map(l => <li>{l.name} by {l.author} under the {l.licenseType} license</li>)
+            licenses.map((l) => <li>{l.name} by {l.author} under the {l.licenseType} license</li>)
           }
         </ul>
       </Block>
     </Page>
+  )
 }

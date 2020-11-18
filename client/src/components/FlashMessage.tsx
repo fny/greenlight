@@ -1,7 +1,6 @@
 import React, { useGlobal } from 'reactn'
-import { f7 } from 'framework7-react'
 
-export default function FlashMessage({ message: string = '' }) {
+export default function FlashMessage() {
   const [flashMessage] = useGlobal('flashMessage')
   // f7.notification.create({
   //   icon: '<i class="icon demo-icon">7</i>',

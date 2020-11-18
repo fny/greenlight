@@ -4,24 +4,20 @@ import {
 } from 'framework7-react'
 import { Router } from 'framework7/modules/router/router'
 
-import { defineMessage, t, Trans } from '@lingui/macro'
-import { useFormik, FormikProvider, FormikConfig } from 'formik'
+import { t, Trans } from '@lingui/macro'
+import { useFormik, FormikProvider } from 'formik'
 import * as Yup from 'yup'
 import { DateTime } from 'luxon'
 
 import { store, updateUser } from 'src/api'
 import { reloadCurrentUser } from 'src/initializers/providers'
 
-import Framework7 from 'framework7'
-import logger from 'src/logger'
 import { paths } from 'src/routes'
 import {
-  assertNotNull, equalDates, formatPhone, isBlank,
+  assertNotNull, formatPhone, isBlank,
 } from 'src/util'
 import { User } from 'src/models'
 import SubmissionHandler from 'src/misc/SubmissionHandler'
-import { DATE } from 'src/models/Model'
-import GL from 'src/initializers/GL'
 import { FunctionComponent } from '../types'
 
 interface Props {

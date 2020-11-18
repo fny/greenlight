@@ -43,4 +43,13 @@ export class UserSettings extends Model {
 
   @attr({ type: BOOLEAN })
   remindSun = false
+
+  dailyReminderHour(): number {
+    return this.dailyReminderTime > 12 ? this.dailyReminderTime - 12 : this.dailyReminderTime
+  }
+
+  dailyReminderAMPM(): 'am' | 'pm' {
+    if (this.dailyReminderTime === 24) return 'am'
+    return this.dailyReminderTime < 12 && this.dailyReminderTime !== 12 ? 'am' : 'pm'
+  }
 }

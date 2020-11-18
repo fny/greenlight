@@ -9,6 +9,6 @@ export class ApplicationError extends Error {
 
 export class NoCurrentUserError extends ApplicationError {
   constructor() {
-    super("Current user is required, but none was found.")
+    super('Current user is required, but none was found.')
   }
 }

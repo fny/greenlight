@@ -6,7 +6,7 @@ import echarts from 'echarts/lib/echarts'
 import states from 'src/data/states.json'
 
 const state = 'North Carolina'
-const county = 'Durham'
+// const county = 'Durham'
 
 const MapPage = ({}) => {
   const mapRef = useRef(null)
@@ -31,16 +31,16 @@ export default MapPage
 const chartOption = {
   title: {
     text: 'USA Estimates',
-    subtext: 'Data from Eric TECH',
+    subtext: 'GeoJSON Data from Eric Celeste',
     sublink: 'https://eric.clst.org/tech/usgeojson/',
   },
   tooltip: {
     trigger: 'item',
     showDelay: 0,
     transitionDuration: 0.2,
-    formatter: function (params: any) {
-      const value = (params.value + '').split('.')[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,')
-      return params.seriesName + '<br/>' + params.name + ': ' + value
+    formatter(params: any) {
+      const value = (`${params.value}`).split('.')[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,')
+      return `${params.seriesName}<br/>${params.name}: ${value}`
     },
   },
   visualMap: {

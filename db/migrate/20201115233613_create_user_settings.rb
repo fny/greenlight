@@ -1,6 +1,6 @@
 class CreateUserSettings < ActiveRecord::Migration[6.0]
   def change
-    create_table :user_settings, id: :uuid do |t|
+    create_table :user_settings  do |t|
       t.references :user, null: false, foreign_key: { on_delete: :cascade }
       t.boolean :override_location_reminders, default: false, null: false
       t.text    :daily_reminder_type, default: 'text', null: false

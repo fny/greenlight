@@ -4,10 +4,15 @@ import logger from 'src/logger'
 
 export default class SubmissionHandler {
   f7: Framework7
+
   onSubmitMessage: string
+
   onErrorTitle: string
+
   onErrorMessage: string
+
   onSuccess: () => void
+
   onError: (error: any) => void
 
   constructor(f7: Framework7, options: Partial<SubmissionHandler> = {}) {
@@ -15,19 +20,17 @@ export default class SubmissionHandler {
 
     this.onSubmitMessage = options.onSubmitMessage || t({ id: 'Common.submitting', message: 'Submitting...' })
     this.onErrorTitle = options.onErrorTitle || t({ id: 'Common.submission_failed', message: 'Submission Failed' })
-    this.onErrorMessage =
-      options.onErrorMessage || t({ id: 'Common.somethings_wrong', message: 'Something went wrong' })
+    this.onErrorMessage = options.onErrorMessage || t({ id: 'Common.somethings_wrong', message: 'Something went wrong' })
     this.onSuccess = options.onSuccess || (() => {})
-    this.onError = options.onError || ((error: any) => {})
+    this.onError = options.onError || (() => {})
   }
 
-  submit(action: () => Promise<any>) {
+  async submit(action: () => Promise<any>) {
     this.f7.dialog.preloader(this.onSubmitMessage)
 
     try {
-      action().then(() => {
-        this.f7.dialog.close()
-      })
+      await action()
+      this.f7.dialog.close()
     } catch (error) {
       this.f7.dialog.close()
       logger.error(error)

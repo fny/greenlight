@@ -5,7 +5,7 @@ import { assertNotUndefined } from 'src/util'
 export default function FormikInput(props: ListInput.Props & { formik: any, children?: ReactNode }) {
   assertNotUndefined(props.name)
   const newProps = {
-    ...props, onChange: props.formik.handleChange, name: props.name,
+    ...props, onChange: props.formik.handleChange, name: props.name, value: props.formik.values[props.name],
   }
   delete newProps.formik
   // eslint-disable-next-line react/jsx-props-no-spreading

@@ -10,18 +10,13 @@ import {
   NavTitle,
   NavRight,
   Icon,
-  Actions,
-  ActionsGroup,
-  ActionsButton,
-  Block,
 } from 'framework7-react'
 import { esExclaim, greeting } from 'src/util'
 import If from 'src/components/If'
 import { dynamicPaths, paths } from 'src/routes'
 import colors from 'src/misc/colors'
 
-import { toggleLocale, signOut } from 'src/initializers/providers'
-import { defineMessage, t, Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import { User } from 'src/models'
 
 import { ReactNComponent } from 'reactn/build/components'
@@ -207,9 +202,9 @@ export default class DashboardPage extends ReactNComponent<any, any> {
             link="tel:1-888-600-1685"
             title={t({ id: 'DashboardPage.child_care_title', message: 'Child Care Hotline' })}
             footer={t({
-                id: 'DashboardPage.child_care_footer',
-                message: 'Child care referrals available 8am-5pm Monday-Friday',
-              })}
+              id: 'DashboardPage.child_care_footer',
+              message: 'Child care referrals available 8am-5pm Monday-Friday',
+            })}
           >
             <Icon slot="media" f7="phone" />
           </ListItem>

@@ -16,22 +16,22 @@ import SurveyThankYouPage from 'src/pages/SurveyThankYouPage'
 import { getGlobal } from 'reactn'
 import { User } from 'src/models'
 import { Router } from 'framework7/modules/router/router'
-import MagicSignInAuthPage from './pages/MagicSignInAuthPage'
-import { resolvePath } from './util'
-import GiphySchedulePage from './pages/GiphySchedulePage'
-import UserGreenlightPassPage from './pages/UserGreenlightPassPage'
-import DebugPage from './pages/DebugPage'
-import AdminUsersPage from './pages/admin/AdminUsersPage'
-import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage'
-import { isSignedIn } from './initializers/providers'
-import ReleaseNotesPage from './pages/ReleaseNotesPage'
-import SettingsPage from './pages/SettingsPage'
-// import MapPage from './pages/MapPage'
-import AboutPage from './pages/AboutPage'
-import EditUserPage from './pages/EditUserPage'
-import DukeScheduleTestPage from './pages/DukeScheduleTestPage'
-import OpenSourceLicensesPage from './pages/OpenSourceLicensesPage'
-import NotificationsPage from './pages/NotificationsPage'
+import MagicSignInAuthPage from 'src/pages/MagicSignInAuthPage'
+import { resolvePath } from 'src/util'
+import GiphySchedulePage from 'src/pages/GiphySchedulePage'
+import UserGreenlightPassPage from 'src/pages/UserGreenlightPassPage'
+import DebugPage from 'src/pages/DebugPage'
+import AdminUsersPage from 'src/pages/admin/AdminUsersPage'
+import WelcomeSurveyPage from 'src/pages/welcome/WelcomeSurveyPage'
+import { isSignedIn } from 'src/initializers/providers'
+import ReleaseNotesPage from 'src/pages/ReleaseNotesPage'
+import SettingsPage from 'src/pages/SettingsPage'
+import CovidCountyMapPage from 'src/pages/CovidCountyMapPage'
+import AboutPage from 'src/pages/AboutPage'
+import EditUserPage from 'src/pages/EditUserPage'
+import DukeScheduleTestPage from 'src/pages/DukeScheduleTestPage'
+import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
+import NotificationsPage from 'src/pages/NotificationsPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -40,6 +40,7 @@ const beforeEnter = {
     routeTo: Router.Route,
     routeFrom: Router.Route,
     resolve: Function,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     reject: Function,
   ) {
     if (isSignedIn()) {
@@ -179,12 +180,12 @@ const routeMap = {
   },
   openSourcePath: {
     path: '/open-source',
-    component: OpenSourceLicensesPage
+    component: OpenSourceLicensesPage,
   },
-  // mapPath: {
-  //   path: '/map',
-  //   component: MapPage,
-  // },
+  mapPath: {
+    path: '/covid-county-map',
+    component: CovidCountyMapPage,
+  },
   editUserPath: {
     path: '/users/:userId/edit',
     component: EditUserPage,

@@ -135,7 +135,7 @@ ActiveRecord::Schema.define(version: 2020_11_15_233613) do
     t.index ["user_id"], name: "index_password_resets_on_user_id"
   end
 
-  create_table "user_settings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "user_settings", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.boolean "override_location_reminders", default: false, null: false
     t.text "daily_reminder_type", default: "text", null: false

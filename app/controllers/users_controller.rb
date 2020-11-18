@@ -38,8 +38,10 @@ module UsersController
 
     patch '/v1/users/:user_id/settings' do
       user_id = params[:user_id]
-      ensure_or_forbidden! { current_user.id == user_id }
+      ensure_or_forbidden! { current_user.id.to_s == user_id }
+      current_user.build_settings if current_user.settings.nil?
       current_user.settings.assign_attributes(request_json)
+
       if current_user.settings.save
         set_status_updated
         render json: UserSettingsSerializer.new(current_user.settings)

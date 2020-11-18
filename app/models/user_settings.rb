@@ -18,7 +18,7 @@ end
 #
 # Table name: user_settings
 #
-#  id                          :uuid             not null, primary key
+#  id                          :bigint           not null, primary key
 #  user_id                     :bigint           not null
 #  override_location_reminders :boolean          default(FALSE), not null
 #  daily_reminder_type         :text             default("text"), not null

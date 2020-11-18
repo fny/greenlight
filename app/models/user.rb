@@ -333,14 +333,6 @@ class User < ApplicationRecord
     !GreenlightStatus.submittable_for?(id)
   end
 
-  #
-  # Misc
-  #
-
-  def settings
-    super || build_settings(id: SecureRandom.uuid)
-  end
-
   private
 
   def email_or_mobile_number_present
