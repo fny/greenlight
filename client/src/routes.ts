@@ -32,6 +32,9 @@ import EditUserPage from 'src/pages/EditUserPage'
 import DukeScheduleTestPage from 'src/pages/DukeScheduleTestPage'
 import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
 import NotificationsPage from 'src/pages/NotificationsPage'
+import LocationPage from './pages/LocationPage'
+import MobileVerificationPage from './pages/MobileVerificationPage'
+import LocationRegistrationPage from './pages/LocationRegistrationPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -157,6 +160,18 @@ const routeMap = {
   userGreenlightPassPath: {
     path: '/users/:userId/greenlight-pass',
     component: UserGreenlightPassPage,
+  },
+  locationPath: {
+    path: '/l/:location',
+    component: LocationPage,
+  },
+  locationRegistrationPath: {
+    path: '/l/:location/registrations',
+    component: LocationRegistrationPage,
+  },
+  mobileVerificationPath: {
+    path: '/mobile-verifications',
+    component: MobileVerificationPage,
   },
   adminUsersPath: {
     path: '/admin/locations/:locationId/users',
