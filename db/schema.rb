@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_02_175902) do
+ActiveRecord::Schema.define(version: 2020_11_12_185203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -127,6 +127,14 @@ ActiveRecord::Schema.define(version: 2020_11_02_175902) do
     t.index ["parent_id"], name: "index_parents_children_on_parent_id"
   end
 
+  create_table "password_resets", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "token"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_password_resets_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.text "first_name", default: "Greenlight User", null: false
     t.text "last_name", default: "Unknown", null: false
@@ -201,6 +209,7 @@ ActiveRecord::Schema.define(version: 2020_11_02_175902) do
   add_foreign_key "medical_events", "users", on_delete: :cascade
   add_foreign_key "parents_children", "users", column: "child_id", on_delete: :cascade
   add_foreign_key "parents_children", "users", column: "parent_id", on_delete: :cascade
+  add_foreign_key "password_resets", "users", on_delete: :cascade
   add_foreign_key "users", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "users", "users", column: "deleted_by_id", on_delete: :nullify
   add_foreign_key "users", "users", column: "updated_by_id", on_delete: :nullify

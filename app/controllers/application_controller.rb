@@ -5,6 +5,7 @@ class ApplicationController < Sinatra::Base
   include DebugController
   include LocationsUsersController
   include SessionsController
+  include PasswordResetsController
   include UsersController
   include CurrentUserController
   include DevelopmentController if Rails.env.development?
@@ -25,7 +26,7 @@ class ApplicationController < Sinatra::Base
 
   before '/v1/*' do
     primary_path = params['splat'].first.split('/').first
-    ensure_authenticated! unless %w[ping sessions magic-sign-in].include?(primary_path)
+    ensure_authenticated! unless %w[ping sessions magic-sign-in password-resets].include?(primary_path)
   end
 
   after do

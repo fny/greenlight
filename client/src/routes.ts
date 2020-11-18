@@ -88,6 +88,11 @@ const routeMap = {
     component: MagicSignInAuthPage,
     beforeEnter: beforeEnter.redirectHomeIfSignedIn,
   },
+  // passwordResetSubmitPath: {
+  //   path: '/pwdrst/:token',
+  //   component: PasswordResetSubmitPage,
+  //   beforeEnter: beforeEnter.redirectHomeIfSignedIn,
+  // },
   dashboardPath: {
     path: '/dashboard',
     component: DashboardPage,

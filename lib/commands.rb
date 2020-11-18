@@ -101,9 +101,10 @@ module Commands
       nil
     rescue => error
       
-      @error = "#{error.class}: #{error.message}"
-      @error << "\n\n"
-      @error << error.backtrace.join("\n")
+      err_desc = "#{error.class}: #{error.message}"
+      err_backtrace = error.backtrace.join("\n")
+      @error = err_desc + "\n\n" + err_backtrace
+
       Rails.logger.error("Error in Command: #{@error}")
       nil
     end
