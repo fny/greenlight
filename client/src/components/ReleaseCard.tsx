@@ -1,5 +1,4 @@
 import React from 'react'
-import Cookies from 'js-cookie'
 import releaseData from 'src/data/releases'
 import Version from 'src/misc/Version'
 import { Icon, Link } from 'framework7-react'
@@ -7,15 +6,14 @@ import './ReleaseCard.css'
 import { useReducer } from 'reactn'
 import { Trans } from '@lingui/macro'
 import { paths } from 'src/routes'
-
-const LAST_VERSION_COOKIE = '_gl_last_version_seen'
+import CookieJar, { Cookie } from 'src/misc/CookieJar'
 
 function setLastVersionCookie() {
-  Cookies.set(LAST_VERSION_COOKIE, releaseData[0].version)
+  CookieJar.set(Cookie.LAST_VERSION, releaseData[0].version)
 }
 
 function showNewRelease(): boolean {
-  const rawLastVersion = Cookies.get('_gl_last_version_seen')
+  const rawLastVersion = CookieJar.get(Cookie.LAST_VERSION)
   if (!rawLastVersion) {
     return true
   }

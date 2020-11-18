@@ -11,6 +11,7 @@ import * as serviceWorker from './serviceWorker'
 import 'framework7/css/framework7.bundle.css'
 import 'framework7-icons'
 
+import './fonts/Poppins/index.css'
 import './index.css'
 
 import { getCurrentUser } from './api'

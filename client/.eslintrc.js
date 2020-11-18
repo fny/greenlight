@@ -58,5 +58,6 @@ module.exports = {
     "react/sort-comp": "off",
     "react/state-in-constructor": "off",
     "react/static-property-placement": "off",
+    "react/prop-types": "off"
   }
 }

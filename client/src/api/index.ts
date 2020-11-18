@@ -11,7 +11,7 @@ import env from '../env'
 import { transformRecordResponse, recordStore } from './stores'
 import { RecordResponse } from '../types'
 import {
-  User, Location, Model, MedicalEvent, GreenlightStatus,
+  User, Location, Model, MedicalEvent, GreenlightStatus, UserSettings,
 } from '../models'
 
 const BASE_URL = `${env.API_URL}/v1`
@@ -113,6 +113,16 @@ export async function updateUser(user: User, updates: Partial<User>): Promise<Us
 export async function completeWelcomeUser(user: User): Promise<User> {
   const response = await v1.put<RecordResponse<User>>(`/users/${user.id}/complete-welcome`)
   const entity = transformRecordResponse<User>(response.data)
+  assertNotArray(entity)
+  return entity
+}
+
+export async function updateUserSettings(user: User, updates: Partial<UserSettings>) {
+  const response = await v1.patch<RecordResponse<UserSettings>>(`/users/${user.id}/settings`,
+    transformForAPI(updates))
+
+  const entity = transformRecordResponse<UserSettings>(response.data)
+
   assertNotArray(entity)
   return entity
 }

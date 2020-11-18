@@ -12,6 +12,8 @@ import { i18n as globalI18n } from './i18n'
 import { ErrorBoundary } from './ErrorBoundary'
 import OnlineStatus from './components/OnlineStatus'
 import SupportedBrowserBar from './components/SupportedBrowserBar'
+import { isCordova } from './util'
+import FlashMessage from './components/FlashMessage'
 
 function I18nWatchLocale({ children }: { children: React.ReactNode }) {
   const { i18n } = useLingui()
@@ -22,43 +24,39 @@ function I18nWatchLocale({ children }: { children: React.ReactNode }) {
   return <Fragment key={i18n.locale}>{children}</Fragment>
 }
 
+// Framework7 parameters here
+const f7params: Framework7Params = {
+  id: 'com.greenlightready.mobile', // App bundle ID
+  name: 'Greenlight', // App name
+  theme: 'auto', // Automatic theme detection
+  routes,
+}
+
+if (!isCordova()) {
+  f7params.view = {
+    pushState: true,
+    pushStateSeparator: '',
+  }
+}
+
 export default function Main() {
-  // Framework7 parameters here
-  const f7params: Framework7Params = (window as any).cordova
-    ? {
-        id: 'com.greenlightready.mobile', // App bundle ID
-        name: 'Greenlight', // App name
-        theme: 'auto', // Automatic theme detection
-        // App routes
-        routes,
-      }
-    : {
-        id: 'com.greenlightready.mobile', // App bundle ID
-        name: 'Greenlight', // App name
-        theme: 'auto', // Automatic theme detection
-        // App routes
-        routes,
-        view: {
-          pushState: true,
-          pushStateSeparator: '',
-        },
-      }
-
-  console.log('f7params', f7params)
-
   const [locale] = useGlobal('locale')
 
   return (
-    <ErrorBoundary>
-      <I18nProvider i18n={globalI18n}>
-        <I18nWatchLocale>
-          <App key={locale} params={f7params} className="App">
-            <SupportedBrowserBar />
-            <OnlineStatus />
-            <View id="main-view" url="/" main className="safe-areas" />
-          </App>
-        </I18nWatchLocale>
-      </I18nProvider>
-    </ErrorBoundary>
+    <I18nProvider i18n={globalI18n}>
+      <I18nWatchLocale>
+        <App key={locale} params={f7params} className="App">
+          <SupportedBrowserBar />
+          <OnlineStatus />
+          <ErrorBoundary>
+
+            <View id="main-view" url="/" main className="safe-areas">
+              <FlashMessage />
+            </View>
+          </ErrorBoundary>
+        </App>
+      </I18nWatchLocale>
+    </I18nProvider>
+
   )
 }

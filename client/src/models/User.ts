@@ -205,6 +205,13 @@ export class User extends Model {
   }
 
   /**
+   * TODO: This needs to be turned into a proper pattern.
+   */
+  settingsReified() {
+    return this.settings || new UserSettings()
+  }
+
+  /**
    * The names of all the users needing to submit surveys
    */
   usersNotSubmittedText(): string {

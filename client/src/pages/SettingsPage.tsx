@@ -1,12 +1,14 @@
-import React, { useGlobal, useMemo } from 'reactn'
-import { Page, Navbar, List, Icon, ListItem, AccordionContent } from 'framework7-react'
+import React, { useGlobal } from 'reactn'
+import {
+  Page, Navbar, List, ListItem, AccordionContent,
+} from 'framework7-react'
 
 import { toggleLocale, signOut } from 'src/initializers/providers'
-import { defineMessage, t } from '@lingui/macro'
+import { t } from '@lingui/macro'
 import { assertNotNull } from 'src/util'
 import { dynamicPaths, paths } from 'src/routes'
 
-const SettingsPage = ({}) => {
+export default function SettingsPage() {
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
 
@@ -22,7 +24,7 @@ const SettingsPage = ({}) => {
           link={dynamicPaths.editUserPath({ userId: currentUser.id })}
           title={t({ id: 'SettingsPage.profile', message: 'Profile' })}
         />
-      {/*
+        {/*
         {currentUser.isAdmin() && (
           <ListItem accordionItem title={t({ id: 'SettingsPage.admin', message: 'Admin' })}>
             <AccordionContent>
@@ -115,5 +117,3 @@ const SettingsPage = ({}) => {
     </Page>
   )
 }
-
-export default SettingsPage

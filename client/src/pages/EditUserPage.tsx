@@ -1,5 +1,7 @@
-import React, { useGlobal, useMemo, useState } from 'reactn'
-import { Page, Navbar, f7, List, ListInput, Block, Button, ListItem } from 'framework7-react'
+import React, { useGlobal } from 'reactn'
+import {
+  Page, Navbar, f7, List, ListInput, Block, Button, ListItem,
+} from 'framework7-react'
 import { Router } from 'framework7/modules/router/router'
 
 import { defineMessage, t, Trans } from '@lingui/macro'
@@ -10,15 +12,17 @@ import { DateTime } from 'luxon'
 import { store, updateUser } from 'src/api'
 import { reloadCurrentUser } from 'src/initializers/providers'
 
-import { FunctionComponent } from '../types'
 import Framework7 from 'framework7'
 import logger from 'src/logger'
 import { paths } from 'src/routes'
-import { assertNotNull, equalDates, formatPhone, isBlank } from 'src/util'
+import {
+  assertNotNull, equalDates, formatPhone, isBlank,
+} from 'src/util'
 import { User } from 'src/models'
 import SubmissionHandler from 'src/misc/SubmissionHandler'
 import { DATE } from 'src/models/Model'
 import GL from 'src/initializers/GL'
+import { FunctionComponent } from '../types'
 
 interface Props {
   f7route: Router.Route
@@ -77,12 +81,13 @@ const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
     },
     onSubmit: (values) => {
       submissionHandler.submit(async () => {
-        if (!formik.dirty) return
-        await updateUser(user, {
-          ...values,
-          birthDate: values.birthDate ? DateTime.fromJSDate(values.birthDate) : null,
-        })
-        await reloadCurrentUser()
+        if (formik.dirty) {
+          await updateUser(user, {
+            ...values,
+            birthDate: values.birthDate ? DateTime.fromJSDate(values.birthDate) : null,
+          })
+          await reloadCurrentUser()
+        }
         f7router.back()
       })
     },
