@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#00A183" />
 
@@ -10,13 +10,11 @@
       http-equiv="Content-Security-Policy"
       content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src  'self' 'unsafe-inline' *; img-src * 'self' data: blob: https:; font-src * 'self' data:"
     />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet" />
-
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-    <!-- <link rel="manifest" href="/manifest.json" /> -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <!--
       Notice the use of  in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -30,18 +28,24 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <% if (process.env.CORDOVA) { %>
     <script type="text/javascript" src="/cordova.js"></script>
+    <% } else { %>
+    <div id="ie-error" style="display: none;">
+      Internet Explorer is unsupported and will be deprecated in August. Please upgrade to a modern browser like Edge, Chrome, or Firefox.
+      <br />
+      Internet Explorer no es compatible y quedará obsoleto en agosto. Actualice a un navegador moderno como Edge, Chrome o Firefox.
+    </div>
+
+    <script type="text/javascript">
+      // Show IE error if the user is using internet explorer
+      if (window.navigator.userAgent.match(/MSIE|Trident/) !== null) {
+        document.getElementById('ie-error').style.display = 'block';
+        document.getElementById('root').style.display = 'none';
+      }
+    </script>
+    <% } %>
   </body>
 </html>
