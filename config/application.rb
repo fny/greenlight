@@ -20,8 +20,10 @@ require 'action_mailer/railtie'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-Dotenv::Railtie.load
-Dotenv.load(".env.#{Rails.env}.local", '.env.local', ".env.#{Rails.env}", '.env')
+if defined?(Dotenv)
+  Dotenv::Railtie.load
+  Dotenv.load(".env.#{Rails.env}.local", '.env.local', ".env.#{Rails.env}", '.env')
+end
 
 module Greenlight
   class Application < Rails::Application

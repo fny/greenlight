@@ -1,4 +1,4 @@
-import { defineMessage, t } from '@lingui/macro'
+import { defineMessage } from '@lingui/macro'
 import { DateTime } from 'luxon'
 import qs from 'qs'
 

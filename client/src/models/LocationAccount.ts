@@ -6,7 +6,7 @@ import {
 
 export enum PermissionLevels {
   ADMIN = 'admin',
-  NONE = 'none'
+  NONE = 'none',
 }
 
 export class LocationAccount extends Model {

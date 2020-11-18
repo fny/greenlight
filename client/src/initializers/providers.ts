@@ -41,7 +41,8 @@ export function toggleLocale() {
   Cookies.set('_gl_locale', newLocale)
   setGlobal({ locale: newLocale })
   i18n.activate(newLocale)
-  // window.location.reload();
+  // TODO: How do we stop doing this?
+  window.location.reload()
 }
 
 export function cookieLocale(): Locales {
