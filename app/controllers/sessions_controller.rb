@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 module SessionsController
   extend ActiveSupport::Concern
-  include ApplicationHelpers
 
   included do
     post '/v1/sessions' do
@@ -21,7 +20,8 @@ module SessionsController
       success_response
     end
 
-    post '/v1/magic-sign-in/:token' do |token|
+    post '/v1/magic-sign-in/:token' do
+      token = params[:token]
       user = User.find_by!(magic_sign_in_token: token)
       user.save_sign_in!(request.ip)
       @session = Session.new(cookies, user: user, remember_me: request_json[:remember_me])

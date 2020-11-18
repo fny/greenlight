@@ -25,10 +25,16 @@ import AdminUsersPage from './pages/admin/AdminUsersPage'
 import WelcomeSurveyPage from './pages/welcome/WelcomeSurveyPage'
 import { isSignedIn } from './initializers/providers'
 import ReleaseNotesPage from './pages/ReleaseNotesPage'
+import SettingsPage from './pages/SettingsPage'
+// import MapPage from './pages/MapPage'
+import AboutPage from './pages/AboutPage'
+import EditUserPage from './pages/EditUserPage'
 import DukeScheduleTestPage from './pages/DukeScheduleTestPage'
 import LocationPage from './pages/LocationPage'
 import MobileVerificationPage from './pages/MobileVerificationPage'
 import LocationRegistrationPage from './pages/LocationRegistrationPage'
+import OpenSourceLicensesPage from './pages/OpenSourceLicensesPage'
+import NotificationsPage from './pages/NotificationsPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -93,6 +99,21 @@ const routeMap = {
   dashboardPath: {
     path: '/dashboard',
     component: DashboardPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  settingsPath: {
+    path: '/settings',
+    component: SettingsPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  aboutPath: {
+    path: '/about',
+    component: AboutPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  notificationsPath: {
+    path: '/notifications',
+    component: NotificationsPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   welcomePath: {
@@ -171,7 +192,27 @@ const routeMap = {
     path: '/releases',
     component: ReleaseNotesPage,
   },
+  openSourcePath: {
+    path: '/open-source',
+    component: OpenSourceLicensesPage
+  },
+  // mapPath: {
+  //   path: '/map',
+  //   component: MapPage,
+  // },
+  editUserPath: {
+    path: '/users/:userId/edit',
+    component: EditUserPage,
+  },
+  editChildrenPath: {
+    path: '/users/:userId/children/:childId',
+    component: EditUserPage,
+  },
   notFoundPath: {
+    path: '/not-found',
+    component: NotFoundPage,
+  },
+  catchAllPath: {
     path: '(.*)',
     component: NotFoundPage,
   },

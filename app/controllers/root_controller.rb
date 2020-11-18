@@ -3,7 +3,7 @@ module RootController
   extend ActiveSupport::Concern
   included do
     get '/' do
-      { howdy: developer_message }.to_json
+      render json: { howdy: developer_message }
     end
 
     get '/xnp9q8g7nvx9wmq197b0' do
@@ -11,22 +11,20 @@ module RootController
     end
 
     get '/ping' do
-      content_type 'application/plain'
-      'pong'
+      render plain: 'pong'
     end
 
     get '/v1/ping' do
-      content_type 'application/plain'
-      'pong'
+      render plain: 'pong'
     end
 
     get '/version' do
-      {
+      render json: {
         'release_created_at': ENV['HEROKU_RELEASE_CREATED_AT'],
         'release_version': ENV['HEROKU_RELEASE_VERSION'],
         'slug_commit': ENV['HEROKU_SLUG_COMMIT'],
         'slug_description': ENV['HEROKU_SLUG_DESCRIPTION']
-      }.to_json
+      }
     end
   end
 end

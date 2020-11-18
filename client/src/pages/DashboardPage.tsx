@@ -1,33 +1,38 @@
-import React, { getGlobal } from 'reactn'
+import React from 'reactn'
 import {
-  AccordionContent, Page, List, ListItem, Navbar, Link, BlockTitle, NavTitle, NavRight, Icon, Actions, ActionsGroup, ActionsButton, Block,
+  AccordionContent,
+  Page,
+  List,
+  ListItem,
+  Navbar,
+  Link,
+  BlockTitle,
+  NavTitle,
+  NavRight,
+  Icon,
+  Actions,
+  ActionsGroup,
+  ActionsButton,
+  Block,
 } from 'framework7-react'
-import { greeting } from 'src/util'
+import { esExclaim, greeting } from 'src/util'
 import If from 'src/components/If'
 import { dynamicPaths, paths } from 'src/routes'
 import colors from 'src/misc/colors'
 
 import { toggleLocale, signOut } from 'src/initializers/providers'
-import { defineMessage, Trans } from '@lingui/macro'
+import { defineMessage, t, Trans } from '@lingui/macro'
 import { User } from 'src/models'
 
 import { ReactNComponent } from 'reactn/build/components'
 import ReleaseCard from 'src/components/ReleaseCard'
 import UserJDenticon from '../components/UserJDenticon'
 
-function UserList({ users }: { users: User[]}) {
+function UserList({ users }: { users: User[] }) {
   return (
     <List>
       {users.map((user) => (
-        <ListItem
-          key={user.id}
-          accordionItem
-          link="#"
-          title={user.firstName}
-          after={
-        user.greenlightStatus().title()
-      }
-        >
+        <ListItem key={user.id} accordionItem link="#" title={user.firstName} after={user.greenlightStatus().title()}>
           <div slot="media">
             <UserJDenticon user={user} size={29} />
           </div>
@@ -39,7 +44,7 @@ function UserList({ users }: { users: User[]}) {
           ></ListItem> */}
               <ListItem
                 link={dynamicPaths.userGreenlightPassPath(user.id)}
-                title={getGlobal().i18n._(defineMessage({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' }))}
+                title={t({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' })}
               />
               <If test={user.hasNotSubmittedOwnSurvey()}>
                 <ListItem
@@ -67,7 +72,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
   render() {
     const user = this.global.currentUser
     if (!user) {
-      this.$f7router.navigate('/')
+      this.$f7router.navigate(paths.rootPath)
       return <></>
     }
 
@@ -76,7 +81,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
         <Navbar>
           <NavTitle>Greenlight</NavTitle>
           <NavRight>
-            <Link actionsOpen="#actions-group">
+            <Link href={paths.settingsPath}>
               <Icon f7="person_circle" />
             </Link>
           </NavRight>
@@ -84,7 +89,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
 
         <BlockTitle>
           <b>
-            {greeting()}, {user.firstName}!
+            {esExclaim()}{greeting()}, {user.firstName}!
           </b>
         </BlockTitle>
 
@@ -96,8 +101,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
               </div>
               <div className="GLCard-body" style={{ color: colors.greenDark }}>
                 <Trans id="DashboardPage.needs_to_submit">
-                  How are you today? You still need to fill out surveys for
-                  {' '}{user.usersNotSubmittedText()}.
+                  How are you today? You still need to fill out surveys for {user.usersNotSubmittedText()}.
                 </Trans>
               </div>
               <div className="GLCard-action">
@@ -160,11 +164,11 @@ export default class DashboardPage extends ReactNComponent<any, any> {
 
         <If test={user.hasChildren()}>
           <BlockTitle>
-            {
-            user.hasLocationThatRequiresSurvey()
-              ? <Trans id="DashboardPage.your_family">Your Family</Trans>
-              : <Trans id="DashboardPage.your_children">Your Children</Trans>
-          }
+            {user.hasLocationThatRequiresSurvey() ? (
+              <Trans id="DashboardPage.your_family">Your Family</Trans>
+            ) : (
+              <Trans id="DashboardPage.your_children">Your Children</Trans>
+            )}
           </BlockTitle>
           <UserList users={user.usersExpectedToSubmit()} />
         </If>
@@ -173,8 +177,8 @@ export default class DashboardPage extends ReactNComponent<any, any> {
         </BlockTitle>
         <List>
           <ListItem
-            title={this.global.i18n._(defineMessage({ id: 'DashboardPage.duke_testing_title', message: 'Testing at Duke' }))}
-            footer={this.global.i18n._(defineMessage({ id: 'DashboardPage.duke_testing_footer', message: 'Connect to streamlined testing 8am to 5pm any day' }))}
+            title={t({ id: 'DashboardPage.duke_testing_title', message: 'Testing at Duke' })}
+            footer={t({ id: 'DashboardPage.duke_testing_footer', message: 'Connect to streamlined testing 8am to 5pm any day' })}
             link={paths.dukeScheduleTestPage}
           >
             <Icon slot="media" f7="thermometer" />
@@ -183,8 +187,8 @@ export default class DashboardPage extends ReactNComponent<any, any> {
             external
             link="https://www.dcopublichealth.org/services/communicable-diseases/coronavirus-disease-2019/covid-19-testing"
             target="_blank"
-            title={this.global.i18n._(defineMessage({ id: 'DashboardPage.testing_title', message: 'Find other Testing' }))}
-            footer={this.global.i18n._(defineMessage({ id: 'DashboardPage.testing_footer', message: 'Testing Sites Near You' }))}
+            title={t({ id: 'DashboardPage.testing_title', message: 'Find other Testing' })}
+            footer={t({ id: 'DashboardPage.testing_footer', message: 'Testing Sites Near You' })}
           >
             <Icon slot="media" f7="search" />
           </ListItem>
@@ -192,8 +196,8 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           <ListItem
             external
             link="tel:1-877-490-6642"
-            title={this.global.i18n._(defineMessage({ id: 'DashboardPage.triage_title', message: 'Contact COVID-19 Triage' }))}
-            footer={this.global.i18n._(defineMessage({ id: 'DashboardPage.triage_footer', message: 'Call 7am-11pm any day' }))}
+            title={t({ id: 'DashboardPage.triage_title', message: 'Contact COVID-19 Triage' })}
+            footer={t({ id: 'DashboardPage.triage_footer', message: 'Call 7am-11pm any day' })}
           >
             <Icon slot="media" f7="phone" />
           </ListItem>
@@ -201,42 +205,23 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           <ListItem
             external
             link="tel:1-888-600-1685"
-            title={this.global.i18n._(defineMessage({ id: 'DashboardPage.child_care_title', message: 'Child Care Hotline' }))}
-            footer={this.global.i18n._(
-              defineMessage({ id: 'DashboardPage.child_care_footer', message: 'Child care referrals available 8am-5pm Monday-Friday' }),
-            )}
+            title={t({ id: 'DashboardPage.child_care_title', message: 'Child Care Hotline' })}
+            footer={t({
+                id: 'DashboardPage.child_care_footer',
+                message: 'Child care referrals available 8am-5pm Monday-Friday',
+              })}
           >
             <Icon slot="media" f7="phone" />
           </ListItem>
           <ListItem
-            title={this.global.i18n._(defineMessage({ id: 'DashboardPage.support_title', message: 'Email Support' }))}
-            footer={this.global.i18n._(defineMessage({ id: 'DashboardPage.support_footer', message: 'Need help? Email our support team.' }))}
+            title={t({ id: 'DashboardPage.support_title', message: 'Email Support' })}
+            footer={t({ id: 'DashboardPage.support_footer', message: 'Need help? Email our support team.' })}
             external
             link="mailto:help@greenlightready.com"
           >
             <Icon slot="media" f7="envelope" />
           </ListItem>
         </List>
-        <Block>
-          <Actions id="actions-group">
-            <ActionsGroup>
-              <ActionsButton onClick={() => signOut()} color="red">
-                <Trans id="Common.sign_out">Sign Out</Trans>
-              </ActionsButton>
-              <ActionsButton onClick={() => toggleLocale()} color="blue">
-                <Trans id="Common.toggle_locale">
-                  En Español
-                </Trans>
-              </ActionsButton>
-              {user.isAdmin()
-              && (
-              <ActionsButton color="blue" onClick={() => { this.$f7router.navigate(dynamicPaths.adminUsersPath(user.adminLocation__HACK())) }}>
-                Admin Page
-              </ActionsButton>
-              )}
-            </ActionsGroup>
-          </Actions>
-        </Block>
       </Page>
     )
   }

@@ -1,17 +1,14 @@
 import { DateTime } from 'luxon'
-import { joinWords } from 'src/util'
+import { isPresent, joinWords } from 'src/util'
+import { Location, MedicalEvent } from 'src/models'
 import {
-  Model, attribute as attr, relationship, initialize, STRING, DATETIME, DATE,
+  Model, attribute as attr, initialize, STRING, DATETIME, DATE, BOOLEAN, hasMany, hasOne,
 } from './Model'
 import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
-import { MedicalEvent } from './MedicalEvent'
 import { LocationAccount, PermissionLevels } from './LocationAccount'
+import { UserSettings } from './UserSettings'
 
 export class User extends Model {
-  static singular = 'user'
-
-  static plural = 'users'
-
   static reversedNameSort(u1: User, u2: User): number {
     if (u1.reversedName() > u2.reversedName()) return 1
     if (u1.reversedName() < u2.reversedName()) return -1
@@ -53,14 +50,14 @@ export class User extends Model {
   @attr({ type: STRING })
   physicianPhoneNumber: string | null = null
 
+  @attr({ type: BOOLEAN })
+  needsPhysician: boolean | null = null
+
   @attr({ type: STRING })
   locale: 'en' | 'es' | null = null
 
-  @attr({ type: STRING })
-  dailyReminderType: string | null = null
-
   @attr({ type: DATE })
-  birthDate: string | null = null
+  birthDate: DateTime | null = DateTime.fromISO('')
 
   @attr({ type: DATETIME })
   acceptedTermsAt: DateTime = DateTime.fromISO('')
@@ -68,38 +65,41 @@ export class User extends Model {
   @attr({ type: DATETIME })
   completedWelcomeAt: DateTime = DateTime.fromISO('')
 
-  @relationship({ type: 'hasMany', model: 'locationAccount' })
+  @hasMany('LocationAccount')
   locationAccounts: LocationAccount[] = []
 
-  @relationship({ type: 'hasMany', model: 'user' })
+  @hasMany('User')
   children: User[] = []
 
-  @relationship({ type: 'hasMany', model: 'user' })
+  @hasMany('User')
   parents: User[] = []
 
-  @relationship({ type: 'hasMany', model: 'medicalEvent' })
+  @hasMany('MedicalEvent')
   medicalEvents: MedicalEvent[] = []
 
-  @relationship({ type: 'hasMany', model: 'medicalEvent' })
+  @hasMany('MedicalEvent')
   recentMedicalEvents: MedicalEvent[] = []
 
-  @relationship({ type: 'hasOne', model: 'greenlightStatus' })
+  @hasOne('GreenlightStatus')
   lastGreenlightStatus: GreenlightStatus | null = null
 
-  reversedName() {
+  @hasOne('UserSettings')
+  settings: UserSettings | null = null
+
+  reversedName(): string {
     return `${this.lastName}, ${this.firstName}`
   }
 
-  sortedChildren() {
-    return this.children.sort((a, b) => ((a.id < b.id) ? 1 : -1))
+  sortedChildren(): User[] {
+    return this.children.sort((a, b) => (a.id < b.id ? 1 : -1))
   }
 
-  locations__HACK() {
-    return this.locationAccounts.map((la) => la.location).filter((l) => l !== null || l !== undefined)
+  locations__HACK(): Location[] {
+    return this.locationAccounts.map((la) => la.location).filter((l): l is Location => isPresent(l))
   }
 
   /** The users first name. */
-  fullName() {
+  fullName(): string {
     return `${this.firstName} ${this.lastName}`
   }
 
@@ -155,7 +155,9 @@ export class User extends Model {
 
   /** This inclues this user */
   areUsersCleared(): boolean {
-    return this.usersExpectedToSubmit().map((u) => u.isCleared()).every((x) => x === true)
+    return this.usersExpectedToSubmit()
+      .map((u) => u.isCleared())
+      .every((x) => x === true)
   }
 
   //
@@ -200,6 +202,13 @@ export class User extends Model {
       users.push(this)
     }
     return users
+  }
+
+  /**
+   * TODO: This needs to be turned into a proper pattern.
+   */
+  settingsReified() {
+    return this.settings || new UserSettings()
   }
 
   /**

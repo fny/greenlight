@@ -19,7 +19,7 @@ RSpec.describe "Current User Endpoint", type: :request do
 
 
       response 200, 'Current user signed in' do
-        schema MobileUserSerializer::SWAGGER_SCHEMA
+        schema UserSerializer::SWAGGER_SCHEMA
 
         before do |example|
           sign_in(user)

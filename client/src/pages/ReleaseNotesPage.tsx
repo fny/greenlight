@@ -45,7 +45,9 @@ class Release {
   whatsNewList() {
     return (
       <ul>
-        {this.whatsNew.map((item) => <li dangerouslySetInnerHTML={{ __html: item }} />)}
+        {this.whatsNew.map((item) => (
+          <li dangerouslySetInnerHTML={{ __html: item }} />
+        ))}
       </ul>
     )
   }
@@ -53,7 +55,9 @@ class Release {
   bugFixesList() {
     return (
       <ul>
-        {this.bugFixes.map((item) => <li dangerouslySetInnerHTML={{ __html: item }} />)}
+        {this.bugFixes.map((item) => (
+          <li dangerouslySetInnerHTML={{ __html: item }} />
+        ))}
       </ul>
     )
   }
@@ -68,8 +72,9 @@ export default function ReleaseNotesPage() {
         sliding
       />
       <Block>
-        {
-          releases.map((releaseData: ReleaseData) => new Release(releaseData)).map((release: Release) => (
+        {releases
+          .map((releaseData: ReleaseData) => new Release(releaseData))
+          .map((release: Release) => (
             <div>
               <h2>{release.title()}</h2>
               <p style={{ fontWeight: 'bold' }}>
@@ -78,7 +83,9 @@ export default function ReleaseNotesPage() {
               {release.hasNotes() && <p dangerouslySetInnerHTML={{ __html: release.notes }} />}
               {release.hasWhatsNew() && (
                 <>
-                  <p style={{ fontWeight: 'bold' }}><Trans id="ReleaseNotesPage.whats_new">What's New</Trans></p>
+                  <p style={{ fontWeight: 'bold' }}>
+                    <Trans id="ReleaseNotesPage.whats_new">What's New</Trans>
+                  </p>
                   {release.whatsNewList()}
                 </>
               )}
@@ -88,10 +95,8 @@ export default function ReleaseNotesPage() {
                   {release.bugFixesList()}
                 </>
               )}
-
             </div>
-          ))
-        }
+          ))}
       </Block>
     </Page>
   )

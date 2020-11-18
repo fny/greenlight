@@ -75,3 +75,8 @@ export type Entity<T extends Model> = new () => T
 type EntityId = string
 
 export type FunctionComponent<T> = (props: T) => ReactElement
+
+interface F7Props {
+  f7route: Router.Route
+  f7router: Router.Router
+}

@@ -48,7 +48,9 @@ export default class WelcomePage extends ReactNComponent<any, State> {
 
   totalLocations() {
     const user = this.state.currentUser
-    return user.locations__HACK().length + user.children.map((x) => x.locations__HACK().length).reduce((x, y) => x + y, 0)
+    return (
+      user.locations__HACK().length + user.children.map((x) => x.locations__HACK().length).reduce((x, y) => x + y, 0)
+    )
   }
 
   whoDoYouFillSurveysFor() {
@@ -62,13 +64,13 @@ export default class WelcomePage extends ReactNComponent<any, State> {
           {plural(user.children.length, { one: 'child', other: 'children' })}.
         </Trans>
       )
-    } if (fillForSelf) {
+    }
+    if (fillForSelf) {
       return (
-        <Trans id="WelcomePage.fill_for_self">
-          Every day you'll need to fill out symptom surveys for yourself.
-        </Trans>
+        <Trans id="WelcomePage.fill_for_self">Every day you'll need to fill out symptom surveys for yourself.</Trans>
       )
-    } if (fillForChildren) {
+    }
+    if (fillForChildren) {
       return (
         <Trans id="WelcomePage.fill_children">
           Every day you'll need to fill out symptom surveys for your{' '}
@@ -94,9 +96,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
           <h1>
             {esExclaim()}{greeting()}! &nbsp;&nbsp;&nbsp;&nbsp;
             <Link style={{ fontSize: '12px' }} onClick={() => toggleLocale()}>
-              <Trans id="WelcomePage.toggle_locale">
-                En Español
-              </Trans>
+              <Trans id="WelcomePage.toggle_locale">En Español</Trans>
             </Link>
           </h1>
           <Case test={locationCount}>

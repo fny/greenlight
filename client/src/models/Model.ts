@@ -2,13 +2,45 @@
 
 import 'reflect-metadata'
 import { DateTime } from 'luxon'
-import { EntityId, Record } from '../types'
+import { Dict, EntityId, Record } from '../types'
+
+//
+// Attribute Data Types
+//
 
 interface DataType {
+  name: string
   serialize?: Function
   deserialize?: Function
-  orbitType: string
 }
+
+export const STRING: DataType = {
+  name: 'string',
+}
+
+export const NUMBER: DataType = {
+  name: 'number',
+}
+
+export const BOOLEAN: DataType = {
+  name: 'boolean',
+}
+
+export const DATE: DataType = {
+  name: 'date',
+  serialize: (x: DateTime) => x.toFormat('yyyy-MM-dd'),
+  deserialize: (x: string) => DateTime.fromISO(x),
+}
+
+export const DATETIME: DataType = {
+  name: 'date-time',
+  serialize: (x: DateTime) => x.toFormat('yyyy-MM-dd'),
+  deserialize: (x: string) => DateTime.fromISO(x),
+}
+
+//
+// Attributes
+//
 
 interface AttributeDefinition {
   source?: string | string[]
@@ -17,86 +49,105 @@ interface AttributeDefinition {
   type: DataType
 }
 
-interface RelationshipDefinition {
-  type: 'hasOne' | 'hasMany'
-  model: string
-  // Name of inverse model to keep in sync
-  inverse?: string
-}
-
-function debug(obj: any) {
-  return JSON.stringify(obj, (k, v) => (k && v && typeof v !== 'number'
-    ? Array.isArray(v)
-      ? '[object Array]'
-      : `${v}`
-    : v))
-}
-
 export const ATTR_METADATA_KEY = Symbol('gl:attr')
+
+export function attribute(definiton: AttributeDefinition) {
+  const attrDefinition = definiton || {}
+  return (target: Object, propertyKey: string) => {
+    // `target` is the object/class where the property key resides
+
+    // Pull the existing metadata or create an empty object
+    const allMetadata: { [propertyKey: string]: AttributeDefinition } = Reflect.getMetadata(ATTR_METADATA_KEY, target) || {}
+
+    // Ensure allMetadata has propertyKey
+    allMetadata[propertyKey] = allMetadata[propertyKey] || {}
+    const currAttributes = allMetadata[propertyKey]
+
+    Object.keys(attrDefinition).forEach((key) => {
+      (currAttributes as any)[key] = (attrDefinition as any)[key]
+    })
+    // Update the metadata
+    Reflect.defineMetadata(ATTR_METADATA_KEY, allMetadata, target)
+  }
+}
+
+function getAttributes(model: typeof Model): { [k: string]: AttributeDefinition } {
+  return Reflect.getMetadata(ATTR_METADATA_KEY, model.prototype)
+}
+
+//
+// Relationships
+//
+
+interface RelationshipDefinition {
+  model: string
+  type: 'hasOne' | 'hasMany'
+}
+
 export const REL_METADATA_KEY = Symbol('gl:rel')
 
-export const STRING: DataType = {
-  orbitType: 'string',
+export function relationship(definiton: RelationshipDefinition) {
+  const relDefinition = definiton || {}
+  return (target: Object, propertyKey: string) => {
+    // `target` is the object/class where the property key resides
+    // `propertyKey` is the property
+
+    // Pull the existing metadata or create an empty object
+    const allMetadata: { [propertyKey: string]: RelationshipDefinition } = Reflect.getMetadata(REL_METADATA_KEY, target) || {}
+
+    // Ensure allMetadata has propertyKey
+    allMetadata[propertyKey] = allMetadata[propertyKey] || {}
+    const currAttributes = allMetadata[propertyKey]
+
+    Object.keys(relDefinition).forEach((key) => {
+      (currAttributes as any)[key] = (relDefinition as any)[key]
+    })
+    // Update the metadata
+    Reflect.defineMetadata(REL_METADATA_KEY, allMetadata, target)
+  }
 }
 
-export const NUMBER: DataType = {
-  orbitType: 'number',
+export function hasOne(model: string, definition?: Partial<RelationshipDefinition>) {
+  return relationship({ ...definition, model, type: 'hasOne' })
 }
 
-export const BOOLEAN: DataType = {
-  orbitType: 'boolean',
+export function hasMany(model: string, definition?: Partial<RelationshipDefinition>) {
+  return relationship({ ...definition, model, type: 'hasMany' })
 }
 
-export const DATE: DataType = {
-  serialize: (x: DateTime) => x.toFormat('yyyy-MM-dd'),
-  deserialize: (x: string) => DateTime.fromISO(x),
-  orbitType: 'date',
+function getRelationships(model: typeof Model): { [k: string]: AttributeDefinition } {
+  return Reflect.getMetadata(REL_METADATA_KEY, model.prototype)
 }
 
-export const DATETIME: DataType = {
-  serialize: (x: DateTime) => x.toFormat('yyyy-MM-dd'),
-  deserialize: (x: string) => DateTime.fromISO(x),
-  orbitType: 'date-time',
-}
+//
+// Models
+//
 
 class Registry {
-  models: typeof Model[]
-
-  inflections: { [k: string]: string }
+  models: Dict<typeof Model>
 
   constructor() {
-    this.models = []
-    this.inflections = {}
+    this.models = {}
   }
 
   register(...models: (typeof Model)[]) {
     models.forEach((m) => {
-      this.models.push(m)
-      this.inflections[m.singular] = m.singular
-      this.inflections[m.plural] = m.singular
+      this.models[lowerCaseFirstLetter(m.name)] = m
     })
   }
 
-  modelFor(singularOrPlural: string) {
-    for (const model of this.models) {
-      if (model.singular === singularOrPlural || model.plural === singularOrPlural) {
-        return model
-      }
-    }
-    return null
+  modelFor(name: string) {
+    return this.models[lowerCaseFirstLetter(name)] || null
   }
 }
 
 export const ModelRegistry = new Registry()
 
 export class Model {
-  /** The singular name for this model */
-  static singular: string
+  /** The name of this model */
+  static resourceType?: string
 
-  /** The plural name for this model */
-  static plural: string
-
-  /** All entities must have a UUID */
+  /** All entities must have an id that's a string */
   id = ''
 
   /** Raw request data */
@@ -118,15 +169,12 @@ export class Model {
   updatedAt: DateTime = DateTime.fromISO('')
 
   uuid(): EntityId {
-    return `${this.modelName()}-${this.id}`
+    return `${this.resourceType()}-${this.id}`
   }
 
-  modelName() {
-    return Object.getPrototypeOf(this).constructor.singular
-  }
-
-  modelNamePlural() {
-    return Object.getPrototypeOf(this).constructor.plural
+  resourceType() {
+    const { constructor } = Object.getPrototypeOf(this)
+    return constructor.resourceType || lowerCaseFirstLetter(constructor.name)
   }
 
   attributeMetadata() {
@@ -152,14 +200,34 @@ export class Model {
 
     return {
       id: this.id,
-      type: Object.getPrototypeOf(this).constructor.singular,
+      type: (Object.getPrototypeOf(this) as Model).resourceType(),
       attributes,
     }
   }
 }
 
-export function initialize(record: Model, data: any) {
-  _deserialize(Object.getPrototypeOf(record).constructor, data, record)
+//
+// Deserialization
+//
+
+/**
+ * Call this function inside of the constructor for an entity to deserlaize
+ * a data payload and assign it to the entities attributes.
+ *
+ * @param record
+ * @param data
+ *
+ * @example
+ *
+ *   class User extends Model {
+ *     constructor(data?: any) {
+ *       super()
+ *       initialize(this, data)
+ *     }
+ *   }
+ */
+export function initialize(entity: Model, data: any) {
+  _deserialize(Object.getPrototypeOf(entity).constructor, data, entity)
 }
 
 export function deserializeJSONAPI<T extends Model>(record: Record<T>): T {
@@ -214,7 +282,7 @@ function _deserialize(model: typeof Model, data: any, this_?: Model) {
         }
         (record as any)[property] = value.map((v) => new model(v))
       } else {
-        const model = ModelRegistry.modelFor(relDef.model)
+        const { model } = relDef
         if (!model) {
           throw new Error(`Couldn't find model for ${relDef.model}`)
         }
@@ -226,55 +294,23 @@ function _deserialize(model: typeof Model, data: any, this_?: Model) {
       continue
     }
 
-    throw new Error(`No matching attribute or relationship ${property} on type ${model.singular}`)
+    throw new Error(`No matching attribute or relationship ${property} on type ${model.name}`)
   }
   return record
 }
 
-export function attribute(definiton: AttributeDefinition) {
-  const attrDefinition = definiton || {}
-  return (target: Object, propertyKey: string) => {
-    // `target` is the object/class where the property key resides
+//
+// Helpers
+//
 
-    // Pull the existing metadata or create an empty object
-    const allMetadata: { [propertyKey: string]: AttributeDefinition } = Reflect.getMetadata(ATTR_METADATA_KEY, target) || {}
-
-    // Ensure allMetadata has propertyKey
-    allMetadata[propertyKey] = allMetadata[propertyKey] || {}
-    const currAttributes = allMetadata[propertyKey]
-
-    Object.keys(attrDefinition).forEach((key) => {
-      (currAttributes as any)[key] = (attrDefinition as any)[key]
-    })
-    // Update the metadata
-    Reflect.defineMetadata(ATTR_METADATA_KEY, allMetadata, target)
-  }
+function debug(obj: any) {
+  return JSON.stringify(obj, (k, v) => (k && v && typeof v !== 'number'
+    ? Array.isArray(v)
+      ? '[object Array]'
+      : `${v}`
+    : v))
 }
 
-export function relationship(definiton: RelationshipDefinition) {
-  const attrDefinition = definiton || {}
-  return (target: Object, propertyKey: string) => {
-    // `target` is the object/class where the property key resides
-
-    // Pull the existing metadata or create an empty object
-    const allMetadata: { [propertyKey: string]: RelationshipDefinition } = Reflect.getMetadata(REL_METADATA_KEY, target) || {}
-
-    // Ensure allMetadata has propertyKey
-    allMetadata[propertyKey] = allMetadata[propertyKey] || {}
-    const currAttributes = allMetadata[propertyKey]
-
-    Object.keys(attrDefinition).forEach((key) => {
-      (currAttributes as any)[key] = (attrDefinition as any)[key]
-    })
-    // Update the metadata
-    Reflect.defineMetadata(REL_METADATA_KEY, allMetadata, target)
-  }
-}
-
-function getAttributes(model: typeof Model): { [k: string]: AttributeDefinition } {
-  return Reflect.getMetadata(ATTR_METADATA_KEY, model.prototype)
-}
-
-function getRelationships(model: typeof Model): { [k: string]: AttributeDefinition } {
-  return Reflect.getMetadata(REL_METADATA_KEY, model.prototype)
+function lowerCaseFirstLetter(str: string) {
+  return str.charAt(0).toLowerCase() + str.slice(1)
 }

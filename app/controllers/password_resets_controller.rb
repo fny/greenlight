@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 module PasswordResetsController
   extend ActiveSupport::Concern
-  include ApplicationHelpers
 
   included do
     post '/v1/password-resets' do
@@ -24,16 +23,16 @@ module PasswordResetsController
       success_response
     end
 
-    get '/v1/password-resets/:token/valid' do |token|
-      if PasswordReset.token_valid?(token)
+    get '/v1/password-resets/:token/valid' do
+      if PasswordReset.token_valid?(params.fetch(:token))
         success_response
       else
         raise UnauthorizedError
       end
     end
 
-    post '/v1/password-resets/:token' do |token|
-      PasswordReset.reset_password!(token, request_json[:password])
+    post '/v1/password-resets/:token' do
+      PasswordReset.reset_password!(params.fetch(:token), request_json[:password])
       success_response
     end
   end

@@ -4,12 +4,13 @@ import {
 import { deleteSession, getCurrentUser } from 'src/api'
 import { User } from 'src/models'
 import { i18n, Locales } from 'src/i18n'
-import Cookies from 'js-cookie'
+import CookieJar, { Cookie } from 'src/misc/CookieJar'
 import Honeybadger from './honeybadger'
 
 setGlobal({
   locale: cookieLocale(),
   i18n,
+  flashMessage: '',
   // This is used for testing reducers
   x: 0,
 })
@@ -19,8 +20,17 @@ export function isSignedIn() {
   return user !== null && user !== undefined
 }
 
-export function currentUser() {
+export function currentUser(): User | null {
   return getGlobal().currentUser
+}
+
+export function currentUserAsserted(router: any) { // TODO: Daniel, can you fix this type?
+  const user = getGlobal().currentUser
+  if (user) {
+    router.navigate('/')
+    setGlobal({ flashMessage: 'No current user' })
+  }
+  return user
 }
 
 export async function reloadCurrentUser(): Promise<User> {
@@ -38,7 +48,7 @@ export async function signOut() {
 
 export function toggleLocale() {
   const newLocale = cookieLocale() === 'en' ? 'es' : 'en'
-  Cookies.set('_gl_locale', newLocale)
+  CookieJar.set(Cookie.LOCALE, newLocale)
   setGlobal({ locale: newLocale })
   i18n.activate(newLocale)
   // TODO: How do we stop doing this?
@@ -46,7 +56,7 @@ export function toggleLocale() {
 }
 
 export function cookieLocale(): Locales {
-  const locale = Cookies.get('_gl_locale') || 'en'
+  const locale = CookieJar.get(Cookie.LOCALE) || 'en'
   return locale as Locales
 }
 

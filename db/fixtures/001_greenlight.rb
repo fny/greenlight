@@ -37,7 +37,7 @@ parents = [
     last_name: 'Song',
     email: 'supearle0518@gmail.com',
     mobile_number: '+19167985029',
-    children: [],
+    children: [%w[Mango Banana], %w[Pineapple Banana]],
     is_teacher: true
   },  {
     first_name: 'Chiquita',
@@ -94,7 +94,7 @@ parents_children = []
 parents.each do |p|
   parent = extract_keys(p, [:first_name, :last_name, :email, :mobile_number])
   parent[:id] = user_id_seq.next()
-  parent[:password_digest] = BCrypt::Password.create('LastMinuteTestBH', cost: 5)
+  parent[:password_digest] = BCrypt::Password.create('asdfasdf', cost: 5)
   users << parent
   if p.fetch(:is_teacher)
     location_accounts << {

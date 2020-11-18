@@ -11,6 +11,7 @@ AllCops:
     - 'rubocop/**/*'
     - 'vendor/**/*'
     - 'node_modules/**/*'
+    - 'db/migrate/**/*'
     - 'db/fixtures/**/*'
     - 'db/schema.rb'
     - 'tmp/**/*'

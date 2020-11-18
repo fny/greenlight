@@ -7,14 +7,14 @@ require 'active_model/railtie'
 # require 'active_job/railtie'
 require 'active_record/railtie'
 # require 'active_storage/engine'
-# require 'action_controller/railtie'
+require 'action_controller/railtie'
 require 'action_mailer/railtie'
 # require 'action_mailbox/engine'
 # require 'action_text/engine'
-# require 'action_view/railtie'
+require 'action_view/railtie'
 # require 'action_cable/engine'
 # require 'sprockets/railtie'
-# require 'rails/test_unit/railtie'
+require 'rails/test_unit/railtie'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -27,10 +27,6 @@ end
 
 module Greenlight
   class Application < Rails::Application
-
-    endpoint ->(env) { ApplicationController.call(env) }
-
-
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
@@ -41,10 +37,12 @@ module Greenlight
 
     config.api_only = true
     config.autoload_paths += Dir["#{config.root}/lib"]
+    config.middleware.use ActionDispatch::Cookies
+
     config.generators do |g|
       g.test_framework :rspec, fixture: true
     end
 
-    config.skylight.probes += %w[sinatra redis]
+    config.skylight.probes += %w[redis]
   end
 end

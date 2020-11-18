@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 class GreenlightStatusSerializer < ApplicationSerializer
-  attribute :status
-
+  set_type :greenlight_status
   attribute :status
   attribute :reason
   attribute :submission_date
@@ -10,7 +9,7 @@ class GreenlightStatusSerializer < ApplicationSerializer
 
   attribute :created_at
   attribute :updated_at
-
+  attribute :deleted_at
 
   has_one :user
 end

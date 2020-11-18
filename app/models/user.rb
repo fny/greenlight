@@ -47,6 +47,8 @@ class User < ApplicationRecord
   has_many :locations, through: :location_accounts
   has_many :cohorts, through: :cohort_user
 
+  has_one :settings, class_name: 'UserSettings', inverse_of: :user
+
   # Last Greenlight statuse submitted by the user
   has_one :last_greenlight_status,
           -> { order('created_at DESC') },
@@ -239,7 +241,6 @@ class User < ApplicationRecord
     end
   end
 
-
   def save_sign_in!(ip)
     self.last_sign_in_ip = self.current_sign_in_ip
     self.current_sign_in_ip = ip
@@ -330,6 +331,14 @@ class User < ApplicationRecord
 
   def submitted_for_today?
     !GreenlightStatus.submittable_for?(id)
+  end
+
+  #
+  # Misc
+  #
+
+  def settings
+    super || build_settings(id: SecureRandom.uuid)
   end
 
   private

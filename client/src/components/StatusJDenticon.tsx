@@ -1,9 +1,9 @@
 import React from 'react'
 import * as jdenticon from 'jdenticon'
 import { DateTime } from 'luxon'
-import { GREENLIGHT_STATUSES } from '../models/GreenlightStatus'
+import { GreenlightStatusTypes } from '../models/GreenlightStatus'
 
-const configs: { [k in GREENLIGHT_STATUSES]: jdenticon.JdenticonConfig } = {
+const configs: { [k in GreenlightStatusTypes]: jdenticon.JdenticonConfig } = {
   recovery: {
     hues: [328],
     lightness: {
@@ -68,7 +68,7 @@ const configs: { [k in GREENLIGHT_STATUSES]: jdenticon.JdenticonConfig } = {
 
 type Props = {
   date: DateTime
-  status: GREENLIGHT_STATUSES
+  status: GreenlightStatusTypes
   size: number
 }
 

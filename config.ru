@@ -25,5 +25,4 @@ if ENV['SERVE_BUILD']
   routes['/'] = Rack::Directory.new('client/build')
   routes['/api'] = Rails.application
 end
-
 run Rack::URLMap.new(routes)

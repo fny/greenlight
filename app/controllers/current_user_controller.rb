@@ -3,10 +3,10 @@ module CurrentUserController
   extend ActiveSupport::Concern
   included do
     get '/v1/current-user' do
-      MobileUserSerializer.new(
+      render json: UserSerializer.new(
         current_user,
-        include: MobileUserSerializer::COMMON_INCLUDES
-      ).serialized_json
+        include: UserSerializer::PERSONAL_INCLUDES
+      )
     end
   end
 end

@@ -17,6 +17,7 @@ declare module 'reactn/default' {
     locale: 'en' | 'es'
     currentUser: User | null
     i18n: I18n
+    flashMessage: string
     isAPIOnline?: boolean
     isInternetOnline?: boolean
     x: number
