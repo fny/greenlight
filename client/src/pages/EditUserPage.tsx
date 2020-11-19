@@ -2,7 +2,6 @@ import React, { useGlobal } from 'reactn'
 import {
   Page, Navbar, f7, List, ListInput, Block, Button, ListItem,
 } from 'framework7-react'
-import { Router } from 'framework7/modules/router/router'
 
 import { t, Trans } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
@@ -13,17 +12,13 @@ import { store, updateUser } from 'src/api'
 import { reloadCurrentUser } from 'src/initializers/providers'
 
 import { paths } from 'src/routes'
+
 import {
   assertNotNull, formatPhone, isBlank,
 } from 'src/util'
 import { User } from 'src/models'
 import SubmissionHandler from 'src/misc/SubmissionHandler'
-import { FunctionComponent } from '../types'
-
-interface Props {
-  f7route: Router.Route
-  f7router: Router.Router
-}
+import { FunctionComponent, F7Props } from '../types'
 
 interface EditUserInput {
   firstName: string
@@ -48,7 +43,7 @@ const schema = Yup.object<EditUserInput>().shape({
 
 const submissionHandler = new SubmissionHandler(f7)
 
-const EditUserPage: FunctionComponent<Props> = ({ f7route, f7router }) => {
+const EditUserPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
 

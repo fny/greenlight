@@ -60,7 +60,7 @@ module APIHelpers
     errors[:meta] = {
       type: command.class.to_s,
     }
-    errors.to_json
+    render json: errors
   end
 
   def success_response

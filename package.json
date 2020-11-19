@@ -12,7 +12,6 @@
     "run-cordova-browser": "npm run build-cordova && cd cordova && cordova run browser",
     "heroku-postbuild-future": "REACT_APP_HEROKU_APP_NAME=$HEROKU_APP_NAME npm run build-client",
     "cordova-init": "cd cordova && cordova platform add ios && cordova platform add android",
-    "heroku-postbuild": "REACT_APP_HEROKU_APP_NAME=$HEROKU_APP_NAME npm run build-client",
     "run-client": "cd client && npm start",
     "run-server": "rails s",
     "run-service-worker": "bundle exec sidekiq",
