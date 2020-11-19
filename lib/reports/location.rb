@@ -28,9 +28,9 @@ module Reports
     #     LEFT JOIN users ON greenlight_statuses.user_id = users.id
     #       LEFT JOIN location_accounts ON location_accounts.user_id = users.id
     #         WHERE location_accounts.location_id = 2 AND submission_date >= '2020-11-09'
-    #     ORDER BY submission_date DESC
     #   ) AS stats
     # GROUP BY stats.submission_date
+    # ORDER BY submission_date DESC
     def survey
       return @survey if @survey.present?
 
