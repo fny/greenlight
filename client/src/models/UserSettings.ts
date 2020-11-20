@@ -9,6 +9,8 @@ export enum DailyReminderType {
 }
 
 export class UserSettings extends Model {
+  static modelName = 'userSettings'
+
   constructor(data?: any) {
     super()
     initialize(this, data)

@@ -11,6 +11,8 @@ export enum PermissionLevels {
 }
 
 export class LocationAccount extends Model {
+  static modelName = 'locationAccount'
+
   constructor(data?: any) {
     super()
     initialize(this, data)
