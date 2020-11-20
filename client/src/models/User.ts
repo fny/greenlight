@@ -9,6 +9,8 @@ import { LocationAccount, PermissionLevels } from './LocationAccount'
 import { UserSettings } from './UserSettings'
 
 export class User extends Model {
+  static modelName = 'user'
+
   static reversedNameSort(u1: User, u2: User): number {
     if (u1.reversedName() > u2.reversedName()) return 1
     if (u1.reversedName() < u2.reversedName()) return -1

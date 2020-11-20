@@ -132,7 +132,7 @@ class Registry {
 
   register(...models: (typeof Model)[]) {
     models.forEach((m) => {
-      this.models[lowerCaseFirstLetter(m.name)] = m
+      this.models[lowerCaseFirstLetter(m.modelName)] = m
     })
   }
 
@@ -145,7 +145,7 @@ export const ModelRegistry = new Registry()
 
 export class Model {
   /** The name of this model */
-  static resourceType?: string
+  static modelName: string
 
   /** All entities must have an id that's a string */
   id = ''
@@ -177,7 +177,7 @@ export class Model {
 
   resourceType() {
     const { constructor } = Object.getPrototypeOf(this)
-    return constructor.resourceType || lowerCaseFirstLetter(constructor.name)
+    return constructor.resourceType || lowerCaseFirstLetter(constructor.modelName)
   }
 
   attributeMetadata() {
@@ -297,7 +297,7 @@ function _deserialize(model: typeof Model, data: any, this_?: Model) {
       continue
     }
 
-    throw new Error(`No matching attribute or relationship ${property} on type ${model.name}`)
+    throw new Error(`No matching attribute or relationship ${property} on type ${model.modelName}`)
   }
   return record
 }
