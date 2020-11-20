@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 RSpec.describe "Debug", type: :request do
 
-  it "reads, writes, and deletes cookies" do
+  pending "reads, writes, and deletes cookies" do
     post_json '/debug/cookies'
     expect_success_response
     expect(response.cookies['test']).to eq('test')

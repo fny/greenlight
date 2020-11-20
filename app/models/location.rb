@@ -6,7 +6,7 @@ class Location < ApplicationRecord
     remind_mon remind_tue remind_wed remind_thu remind_fri remind_sat remind_sun
   ]
 
-  belongs_to :created_by, class_name: 'User'
+  belongs_to :created_by, class_name: 'User', optional: true
   has_many :location_accounts
   has_many :cohorts
   has_many :users, through: :location_accounts
