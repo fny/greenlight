@@ -5,7 +5,7 @@ module CurrentUserController
     get '/v1/current-user' do
       render json: UserSerializer.new(
         current_user,
-        include: UserSerializer::PERSONAL_INCLUDES
+        include: UserSerializer::PERSONAL_INCLUDES.dup
       )
     end
   end

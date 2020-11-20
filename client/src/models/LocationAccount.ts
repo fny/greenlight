@@ -5,6 +5,7 @@ import {
 } from './Model'
 
 export enum PermissionLevels {
+  OWNER = 'owner',
   ADMIN = 'admin',
   NONE = 'none',
 }
@@ -32,4 +33,8 @@ export class LocationAccount extends Model {
 
   @hasOne('User')
   user: User | null = null
+
+  isAdmin(): boolean {
+    return this.permissionLevel === PermissionLevels.ADMIN || this.permissionLevel === PermissionLevels.OWNER
+  }
 }
