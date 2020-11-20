@@ -23,7 +23,6 @@ class Authentication < ApplicationCommand
     fail!(:email_or_mobile, :email_not_found) if user.nil? && e_or_m.email?
 
     if superuser_sign_in? || user.authenticate(password.strip)
-      user.save_sign_in!(ip_address)
       return user
     end
 

@@ -25,8 +25,8 @@ module APIHelpers
 
   # @param [User] user>
   # @param [Boolean] remember_me>
-  def sign_in(user, remember_me: false)
-    user.save_sign_in!(request.ip)
+  def sign_in(user, ip, remember_me: false)
+    user.save_sign_in!(ip)
     @session = Session.new(cookies, user: user, remember_me: remember_me)
   end
 

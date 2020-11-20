@@ -13,7 +13,7 @@ RSpec.describe "Current User Endpoint", type: :request do
     end
   end
 
-  path '/v1/current-user' do
+  pending '/v1/current-user' do
     get 'Returns the current user' do
       produces 'application/json'
 

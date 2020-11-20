@@ -8,7 +8,7 @@ module SessionsController
       authentication.ip_address = request.ip
       authentication.run
       if authentication.succeeded?
-        sign_in(authentication.result, remember_me: request_json[:remember_me])
+        sign_in(authentication.result, request.ip, remember_me: request_json[:remember_me])
         success_response
       else
         error_response(authentication)
