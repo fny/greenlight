@@ -121,7 +121,6 @@ export default class extends ReactNComponent<any, State> {
           title={this.global.i18n._(
             defineMessage({ id: 'WelcomeChildPage.review_child_title', message: t`Review ${child.firstName}'s Info` }),
           )}
-          backLink
         />
 
         <Case test>

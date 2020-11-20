@@ -14,7 +14,7 @@ export default class ForgotPasswordPage extends React.Component<any, any> {
   render() {
     return (
       <Page className="ForgotPasswordPage" noToolbar noSwipeback loginScreen>
-        <Navbar title="Forgot Password" backLink="Back" />
+        <Navbar title="Forgot Password" />
         <List form>
           <Block>
             <Trans id="ForgotPasswordPage.instructions">

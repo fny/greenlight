@@ -3,13 +3,13 @@ import { Navbar, Page, Block } from 'framework7-react'
 import releases, { ReleaseData } from 'src/data/releases'
 import { defineMessage, Trans } from '@lingui/macro'
 import { getGlobal } from 'reactn'
-import { Locales } from '@lingui/core'
 import { DateTime } from 'luxon'
+import { GLLocales } from 'src/i18n'
 
 class Release {
   releaseData: ReleaseData
 
-  locale: Locales
+  locale: GLLocales
 
   whatsNew: string[]
 
@@ -68,7 +68,6 @@ export default function ReleaseNotesPage() {
     <Page className="ReleaseNotesPage" noToolbar>
       <Navbar
         title={getGlobal().i18n._(defineMessage({ id: 'ReleaseNotesPage.title', message: 'Greenlight Release Notes' }))}
-        backLink="Back"
         sliding
       />
       <Block>

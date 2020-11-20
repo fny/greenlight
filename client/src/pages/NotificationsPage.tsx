@@ -80,7 +80,6 @@ export default function NotificationsPage(props: F7Props) {
     <Page>
       <Navbar
         title={t({ id: 'NotificationsPage.title', message: 'Notifications' })}
-        backLink
       />
       <Block>
         <BlockTitle>
@@ -147,7 +146,7 @@ export default function NotificationsPage(props: F7Props) {
                   />
                   <FormikItem
                     title={t({ id: 'Weekday.tuesday', message: 'Tuesday' })}
-                    name="remindTues"
+                    name="remindTue"
                     checkbox
                     formik={formik}
                   />

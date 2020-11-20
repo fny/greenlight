@@ -78,7 +78,6 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
             defineMessage({ id: 'SignInPage.title', message: 'Sign In' }),
           )
 }
-          backLink="Back"
         />
 
         <div style={{ marginTop: '20px' }} className="greenlight-logo">

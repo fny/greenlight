@@ -73,7 +73,7 @@ class UsersList extends React.Component<Props, any> {
     const grouped = this.groupByLetter()
     return (
       <Page>
-        <Navbar title="Users" backLink="Back" backLinkUrl={paths.dashboardPath}>
+        <Navbar title="Users">
           <Subnavbar inner={false}>
             <Searchbar
               searchContainer=".search-list"

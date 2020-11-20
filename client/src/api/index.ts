@@ -7,6 +7,8 @@ import {
 import Honeybadger from 'honeybadger-js'
 
 import logger from 'src/logger'
+import { transform } from 'lodash'
+import { LocationAccount } from 'src/models/LocationAccount'
 import env from '../env'
 import { transformRecordResponse, recordStore } from './stores'
 import { RecordResponse } from '../types'
@@ -35,7 +37,7 @@ v1.interceptors.response.use(
     return response
   },
   (error) => {
-    logger.dev('[Response Error]', error)
+    logger.dev('[Response Error]', error, error.response, 'ji')
 
     if (error.response) {
       const response = error.response as AxiosResponse
@@ -88,6 +90,31 @@ export async function magicSignIn(token: string, rememberMe: boolean) {
 }
 
 //
+// Locations
+//
+
+export async function getLocation(id: string): Promise<Location> {
+  return getResource<Location>(`/locations/${id}`)
+}
+
+export async function createLocation(attrs: Partial<Location>): Promise<Location> {
+  const response = await v1.post<RecordResponse<Location>>('/locations',
+    transformForAPI(attrs))
+
+  const entity = transformRecordResponse<Location>(response.data)
+  assertNotArray(entity)
+  return entity
+}
+
+export async function joinLocation(location: Location): Promise<LocationAccount> {
+  const response = await v1.post<RecordResponse<LocationAccount>>(`/locations/${location.id}/join`)
+
+  const entity = transformRecordResponse<LocationAccount>(response.data)
+  assertNotArray(entity)
+  return entity
+}
+
+//
 // Users
 //
 
@@ -117,12 +144,17 @@ export async function completeWelcomeUser(user: User): Promise<User> {
   return entity
 }
 
+export async function createUserAndSignIn(user: Partial<User>) {
+  const response = await v1.post<RecordResponse<User>>('/users/create-and-sign-in', user)
+  const entity = transformRecordResponse<User>(response.data)
+  assertNotArray(entity)
+  return entity
+}
+
 export async function updateUserSettings(user: User, updates: Partial<UserSettings>) {
   const response = await v1.patch<RecordResponse<UserSettings>>(`/users/${user.id}/settings`,
     transformForAPI(updates))
-
   const entity = transformRecordResponse<UserSettings>(response.data)
-
   assertNotArray(entity)
   return entity
 }

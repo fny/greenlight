@@ -44,5 +44,6 @@ module Greenlight
     end
 
     config.skylight.probes += %w[redis]
+    config.filter_parameters += %w[password password_confirmation password_digest]
   end
 end

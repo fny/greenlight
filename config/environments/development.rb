@@ -37,22 +37,27 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  # config.log_level = :fatal
 
   config.hosts += %w[api-dev.greenlightready.com api.greenlightready.net]
 
-  config.middleware.use PrettyJsonResponse
+  # config.middleware.use PrettyJsonResponse
 
-  config.after_initialize do
-    ActiveRecord::Base.logger = Rails.logger.clone
-    ActiveRecord::Base.logger.level = Logger::INFO
-  end
+  # config.log_level = :debug
+
+  # config.after_initialize do
+  #   ActiveRecord::Base.logger = Rails.logger.clone
+  #   ActiveRecord::Base.logger.level = Logger::INFO
+  # end
 
   config.after_initialize do
     config.colorize_logging = true
     Bullet.enable = true
     Bullet.rails_logger = true
   end
+
+  # we recommend you use mailcatcher https://github.com/sj26/mailcatcher
+  config.action_mailer.smtp_settings = { address: "localhost", port: 1025 }
+  config.action_mailer.raise_delivery_errors = true
 
   Pony.options = {
     via: :smtp,

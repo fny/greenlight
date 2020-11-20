@@ -3,8 +3,9 @@ import {
 } from 'reactn'
 import { deleteSession, getCurrentUser } from 'src/api'
 import { User } from 'src/models'
-import { i18n, Locales } from 'src/i18n'
+import { i18n, GLLocales } from 'src/i18n'
 import CookieJar, { Cookie } from 'src/misc/CookieJar'
+import logger from 'src/logger'
 import Honeybadger from './honeybadger'
 
 setGlobal({
@@ -41,23 +42,23 @@ export async function reloadCurrentUser(): Promise<User> {
 
 export async function signOut() {
   await deleteSession()
-  Honeybadger.resetContext()
-  setGlobal({ currentUser: null });
+  Honeybadger.resetContext();
+  // TODO: There should be a way of doing this without a hard redirect
   (window.location as any) = '/'
 }
 
 export function toggleLocale() {
-  const newLocale = cookieLocale() === 'en' ? 'es' : 'en'
-  CookieJar.set(Cookie.LOCALE, newLocale)
-  setGlobal({ locale: newLocale })
-  i18n.activate(newLocale)
-  // TODO: How do we stop doing this?
-  window.location.reload()
+  // const newLocale = cookieLocale() === 'en' ? 'es' : 'en'
+  // CookieJar.set(Cookie.LOCALE, newLocale)
+  // setGlobal({ locale: newLocale })
+  // i18n.activate(newLocale)
+  // // TODO: How do we stop doing this?
+  // window.location.reload()
 }
 
-export function cookieLocale(): Locales {
+export function cookieLocale(): GLLocales {
   const locale = CookieJar.get(Cookie.LOCALE) || 'en'
-  return locale as Locales
+  return locale as GLLocales
 }
 
 i18n.activate(cookieLocale())
