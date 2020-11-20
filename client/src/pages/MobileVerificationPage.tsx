@@ -1,5 +1,7 @@
 import React, { useState } from 'reactn'
-import { f7, Page, Navbar, Block, Button, List, ListInput, ListItem } from 'framework7-react'
+import {
+  f7, Page, Navbar, Block, Button, List, ListInput, ListItem,
+} from 'framework7-react'
 import { Trans, t } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
 import ReactCodeInput from 'react-verification-code-input'
@@ -92,9 +94,9 @@ const MobileVerificationPage: FunctionComponent<F7Props> = () => {
               errorMessage={
                 !verificationCodeInput.isValid && verificationCodeInput.touched
                   ? t({
-                      id: 'MobileVerificationPage.verification_code_required',
-                      message: 'Verification Code is Required',
-                    })
+                    id: 'MobileVerificationPage.verification_code_required',
+                    message: 'Verification Code is Required',
+                  })
                   : undefined
               }
               errorMessageForce
@@ -103,9 +105,7 @@ const MobileVerificationPage: FunctionComponent<F7Props> = () => {
                 <ReactCodeInput
                   fields={6}
                   className="verification-input"
-                  onChange={(v) =>
-                    setVerificationCodeInput((originalValue) => ({ ...originalValue, value: v, isValid: false }))
-                  }
+                  onChange={(v) => setVerificationCodeInput((originalValue) => ({ ...originalValue, value: v, isValid: false }))}
                   onComplete={(v) => setVerificationCodeInput({ value: v, isValid: true, touched: true })}
                 />
               </div>
@@ -133,7 +133,6 @@ const MobileVerificationPage: FunctionComponent<F7Props> = () => {
                 fill
                 onClick={() => {
                   setVerificationCodeInput((v) => ({ ...v, touched: true }))
-                  console.log('aaa')
                 }}
               >
                 <Trans id="Common.submit">Submit</Trans>

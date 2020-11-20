@@ -51,6 +51,10 @@ const REASONS = {
       title: 'Please Stay Home',
       message: 'After a COVID-19 exposure, {you} will need to stay home for 14 days from first contact. You will be cleared to return in {days} on {date}.',
     },
+    recovery_covid_exposure: {
+      title: 'Please Stay Home',
+      message: 'After a COVID-19 exposure, {you} will need to stay home for 14 days from first contact. You will be cleared to return in {days} on {date}.',
+    },
     recovery_diagnosed_asymptomatic: {
       title: 'Please Stay Home',
       message: '{You} can return 10 days if no symptoms develop. {You} should be able to return in {days} on {date}.',
@@ -69,10 +73,14 @@ const REASONS = {
     },
     recovery_return_tomorrow: {
       title: 'One More Day!',
-      message: 'The recovery period is almost done! {You} should stay home today, but {you} should be cleared to return tomorrow.',
+      message: 'The recovery period is almost done! {You} should stay home today, but {you} should be cleared to return tomorrow if your symptoms continue to improve.',
     },
   },
   es: {
+    recovery_covid_exposure: {
+      title: 'Por favor, quédese en casa',
+      message: 'Después de una exposición al COVID-19, {usted} necesita quedarse en casa durante 14 días desde el primer contacto. {Usted} tendrá autorización para regresar en {días} el {date}.',
+    },
     recovery_asymptomatic_covid_exposure: {
       title: 'Por favor, quédese en casa',
       message: 'Después de una exposición al COVID-19, {usted} necesita quedarse en casa durante 14 días desde el primer contacto. {Usted} tendrá autorización para regresar en {días} el {date}.',

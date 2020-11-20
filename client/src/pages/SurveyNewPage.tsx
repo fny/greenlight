@@ -331,7 +331,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     if (submittingFor === null) {
       return (
         <Page>
-          <Navbar title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.already_submitted_title', message: 'Already Submitted' }))} backLink={this.global.i18n._(defineMessage({ id: 'Common.back', message: 'Back' }))} />
+          <Navbar title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.already_submitted_title', message: 'Already Submitted' }))} />
           <Block>
             <Trans id="SurveyNewPage.already_submitted_message">
               All surveys have already been submitted for today. Please check back later!
@@ -345,7 +345,6 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       <Page>
         <Navbar
           title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.title', message: t`Symptom Survey: ${submittingFor.fullName()}` }))}
-          backLink={this.global.i18n._(defineMessage({ id: 'Common.back', message: 'Back' }))}
         />
 
         {

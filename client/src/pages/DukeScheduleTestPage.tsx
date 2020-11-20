@@ -10,7 +10,6 @@ export default function DukeScheduleTestPage() {
     <Page>
       <Navbar
         title={getGlobal().i18n._(defineMessage({ id: 'DukeScheduleTestPage.title', message: 'Schedule a Test' }))}
-        backLink={getGlobal().i18n._(defineMessage({ id: 'Common.back', message: 'Back' }))}
       />
       <Block strong>
         <p>

@@ -44,7 +44,6 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
       <Page>
         <Navbar
           title={this.global.i18n._(defineMessage({ id: 'WelcomeSurveyPage.title', message: 'Symptom Surveys' }))}
-          backLink={this.global.i18n._(defineMessage({ id: 'Common.back', message: 'Back' }))}
         />
 
         <BlockTitle>
@@ -55,17 +54,14 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
         <Block>
           <p>
             <Trans id="WelcomeSurveyPage.thank_you">
-              Thanks for reviewing that information!
+              Thanks for providing that information!
             </Trans>
           </p>
 
           <p>
             <Trans id="WelcomeSurvyePage.instructions">
               Greenlight helps keep your community safe by monitoring everyone's health.
-              We need your help! You should fill out this survey every day especially
-              when
-              {joinWords(this.user.usersExpectedToSubmit().map((u) => (u === this.user ? this.user.you__HACK() : u.firstName)), 'or')}
-              does not feel well.
+              We need your help! You should fill out this survey every day especially.
             </Trans>
           </p>
           <br />

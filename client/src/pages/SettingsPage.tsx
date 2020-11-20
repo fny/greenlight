@@ -16,7 +16,6 @@ export default function SettingsPage() {
     <Page>
       <Navbar
         title={t({ id: 'SettingsPage.title', message: 'Settings' })}
-        backLink
         sliding
       />
       <List accordionList noHairlines>

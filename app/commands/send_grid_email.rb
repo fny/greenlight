@@ -24,7 +24,7 @@ class SendGridEmail < ApplicationCommand
     @pony_payload[:subject] = self.subject
     @pony_payload[:body] = self.text if self.text
     @pony_payload[:html_body] = self.html if self.html
-    @pony_payload[:text_part_charset] = 'UTF-8'
+    @pony_payload[:text_part_charset] = 'UTF-8' if self.text
     @pony_payload
   end
 

@@ -9,7 +9,7 @@ import releaseData from 'src/data/releases'
 
 const SettingsPage = () => (
   <Page>
-    <Navbar title={t({ id: 'AboutPage.title', message: 'About' })} backLink />
+    <Navbar title={t({ id: 'AboutPage.title', message: 'About' })} />
     <List noHairlines>
       <ListItem
         title={t({ id: 'AboutPage.greenlight_version', message: 'Greenlight Version' })}

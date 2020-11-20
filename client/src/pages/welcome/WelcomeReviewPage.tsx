@@ -99,7 +99,6 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
       <Page>
         <Navbar
           title={this.global.i18n._(defineMessage({ id: 'WelcomeReviewPage.review_info', message: 'Review Your Info' }))}
-          backLink
         />
         <Block>
           <p>

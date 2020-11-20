@@ -41,11 +41,10 @@ const schema = Yup.object<EditUserInput>().shape({
   }),
 })
 
-const submissionHandler = new SubmissionHandler(f7)
-
-const EditUserPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
+const UserEditPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
+  const submissionHandler = new SubmissionHandler(f7)
 
   const { userId } = f7route.params
 
@@ -86,7 +85,7 @@ const EditUserPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
 
   return (
     <Page>
-      <Navbar title={t({ id: 'EditUserPage.title', message: 'Edit User' })} backLink />
+      <Navbar title={t({ id: 'EditUserPage.title', message: 'Edit User' })} />
 
       <FormikProvider value={formik}>
         <List form id="EditUserPage-form" onSubmit={formik.handleSubmit} noHairlines>
@@ -193,4 +192,4 @@ const EditUserPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
   )
 }
 
-export default EditUserPage
+export default UserEditPage

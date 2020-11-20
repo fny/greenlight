@@ -73,7 +73,7 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
   render() {
     return (
       <Page className="MagicSignInPage" noToolbar noSwipeback loginScreen>
-        <Navbar title={this.global.i18n._(defineMessage({ id: 'MagicSignInPage.title', message: 'Magic Sign In' }))} backLink="Back" />
+        <Navbar title={this.global.i18n._(defineMessage({ id: 'MagicSignInPage.title', message: 'Magic Sign In' }))} />
         <div className="greenlight-logo">
           Greenlight
           <span>.</span>
