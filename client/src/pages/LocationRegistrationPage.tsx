@@ -1,5 +1,7 @@
 import React from 'reactn'
-import { f7, Page, Navbar, Block, Button, List, ListInput } from 'framework7-react'
+import {
+  f7, Page, Navbar, Block, Button, List, ListInput,
+} from 'framework7-react'
 import { Trans, t } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
 import * as Yup from 'yup'

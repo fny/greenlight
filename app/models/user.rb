@@ -10,6 +10,12 @@
 # needsToSubmitSomeonesSurvey
 
 class User < ApplicationRecord
+  self.permitted_params = %i[
+    first_name last_name email password mobile_number mobile_carrier locale
+    zip_code time_zone birth_date physician_name physician_phone_number
+    daily_reminder_type needs_physician
+  ]
+
   extend Enumerize
   extend Memoist
   include PasswordResetable
@@ -71,12 +77,6 @@ class User < ApplicationRecord
   before_save :timestamp_password
 
   before_save { self.email&.downcase! }
-
-  self.permitted_params = %i[
-    first_name last_name email password mobile_number mobile_carrier locale
-    zip_code time_zone birth_date physician_name physician_phone_number
-    daily_reminder_type needs_physician
-  ]
 
   def self.create_account!(
     first_name:, last_name:, location:, role:,
@@ -267,7 +267,10 @@ class User < ApplicationRecord
 
   # @param [Location] location
   def admin_at?(location)
-    location_accounts.exists?(location_id: location.id, permission_level: LocationAccount::ADMIN)
+    # HACK: This should be one query
+    hack1 = location_accounts.exists?(location_id: location.id, permission_level: LocationAccount::ADMIN)
+    hack2 = location_accounts.exists?(location_id: location.id, permission_level: LocationAccount::OWNER)
+    hack1 || hack2
   end
 
   def parent?
@@ -306,7 +309,7 @@ class User < ApplicationRecord
           location_accounts
         where
           user_id = :admin_id
-          and permission_level = 'admin'
+          and (permission_level = 'admin' or permission_level = 'owner')
         intersect
         select
           location_id

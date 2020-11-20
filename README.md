@@ -72,7 +72,7 @@ Visual Studio Code is recommended with the following plugins:
 - [Ruby](https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby)
 - [Ruby Solargraph](https://marketplace.visualstudio.com/items?itemName=castwide.solargraph)
 - [Sync Scroll](https://marketplace.visualstudio.com/items?itemName=dqisme.sync-scroll) for language files
-- [YARD Documentor](https://marketplace.visualstudio.com/items?itemName=pavlitsky.yard)
+- [YARD Documentor](https://marketplace.visualstudio.com/items?itemName=pavlitsky.yard) press Ctrl+Alt+Enter (Option+Command+Enter on macOS) or invoke Document with YARD from the command palette.
 
 If you're coming from Sublime, [this extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.sublime-keybindings) might come in handy.
 
@@ -312,3 +312,23 @@ It should be well known if an endpoint retuns a single value or not
 ### Pagination Meta
 
 ### Extensions
+
+
+### Wishlist
+
+ - Override current status
+ - Fix the spanish
+ - Be able to submit a test result
+ - Fix greenlightdurham.com to link to app
+ - Pass page for all children
+ - Be able to idenify owners
+ - Easy approval form
+ - Owners are admins
+ - Be able to add, remove, and list locations
+ - Forgot password views
+ - Ask for number of employees if > 70, show contact us message
+ - Add form for requests
+ - Change COVID relief payments to financial assistance
+ - Add TOS for business customers
+ - Simplify TOS
+ - Add privacy policy page

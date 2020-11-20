@@ -5,7 +5,7 @@ import { Trans } from '@lingui/macro'
 export default function NotFoundPage() {
   return (
     <Page>
-      <Navbar title="Not found" backLink="Back" />
+      <Navbar title="Not found" />
       <Block strong>
         <p>
           <Trans id="NotFoundPage.sorry">Sorry</Trans>

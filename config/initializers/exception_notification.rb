@@ -20,8 +20,8 @@ ExceptionNotification.configure do |config|
   # Email notifier sends notifications by email.
   config.add_notifier :email, {
     email_prefix: '[Greenlight Error] ',
-    sender_address: %{"Notifier" <notifier@example.com>},
-    exception_recipients: Greenlight::EXCEPTION_RECIPIENTS.split(','),
+    sender_address: %{"Oh Shit" <errors@greenlightready.com>},
+    exception_recipients: ['faraz@greenlightready.com'],
     smtp_settings: {
       address: 'smtp.sendgrid.net',
       port: 587,
@@ -32,14 +32,14 @@ ExceptionNotification.configure do |config|
     }
   }
 
-  config.add_notifier(:pony,
-    ->(exception, options) {
-      SendGridEmail.new(
-        to: Greenlight::EXCEPTION_RECIPIENTS.split(',')[0],
-        subject: "Exception",
-        text: "Something goes wrong: #{exception.message}"
-      ).run
-    })
+  # config.add_notifier(:pony,
+  #   ->(exception, options) {
+  #     SendGridEmail.new(
+  #       to: Greenlight::EXCEPTION_RECIPIENTS.split(',')[0],
+  #       subject: "Exception",
+  #       text: "Something goes wrong: #{exception.message}"
+  #     ).run
+  #   })
   # Campfire notifier sends notifications to your Campfire room. Requires 'tinder' gem.
   # config.add_notifier :campfire, {
   #   subdomain: 'my_subdomain',

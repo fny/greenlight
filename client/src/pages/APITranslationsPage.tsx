@@ -10,7 +10,7 @@ import { Trans } from '@lingui/macro'
 export default function APITranslationPage() {
   return (
     <Page>
-      <Navbar title="Not found" backLink="Back" />
+      <Navbar title="Not found" />
       <BlockTitle>Sessions</BlockTitle>
       <Block>
         <p>

@@ -11,7 +11,7 @@ function dateString(date: string) {
 export default function GiphySchedulePage() {
   return (
     <Page>
-      <Navbar title="Giphys on Deck" backLink="Back" />
+      <Navbar title="Giphys on Deck" />
       <Block strong>
         Here's what's coming up.
         {Object.entries(giphySchedule).map(([date, id]) => (

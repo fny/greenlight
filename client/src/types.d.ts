@@ -76,7 +76,9 @@ type EntityId = string
 
 export type FunctionComponent<T> = (props: T) => ReactElement
 
-interface F7Props {
+export interface F7Props {
   f7route: Router.Route
   f7router: Router.Router
 }
+
+export type FormikInstance<T> = FormikState<T> & FormikComputedProps<T> & FormikHelpers<T> & FormikHandlers

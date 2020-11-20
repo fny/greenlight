@@ -9,7 +9,7 @@ import { NoCurrentUserError } from 'src/errors'
 import { User } from 'src/models'
 import { paths } from 'src/routes'
 import { reasonMessage, reasonTitle } from 'src/misc/reasons'
-import doctorsImages from 'src/images/doctors.svg'
+import doctorsImage from 'src/images/doctors.svg'
 
 export default class SurveyThankYouPage extends ReactNComponent<any, any> {
   currentUser: User
@@ -82,7 +82,7 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
           </ul>
           <br />
           <p>
-            <img alt="Doctors" src="/images/doctors.svg" />
+            <img alt="Doctors" src={doctorsImage} />
           </p>
           <Button large fill href={paths.dashboardPath}>
             <Trans id="Common.back_home">
@@ -125,7 +125,7 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
             ))
           }
           <p>
-            <img alt="Doctors" src={doctorsImages} />
+            <img alt="Doctors" src={doctorsImage} />
           </p>
           <Button large fill href={paths.dashboardPath}>
             <Trans id="Common.back_home">
@@ -147,7 +147,7 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
           title={title}
         />
         <BlockTitle>
-          Status:
+          Status:{' '}
           {this.currentUser.greenlightStatus().title()}
         </BlockTitle>
         <Block>
@@ -156,7 +156,7 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
           </p>
           <br />
           <p>
-            <img alt="Doctors" src="/images/doctors.svg" />
+            <img alt="Doctors" src={doctorsImage} />
           </p>
           <br />
           <Button large fill href={paths.dashboardPath}>

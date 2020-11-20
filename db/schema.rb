@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_15_233613) do
+ActiveRecord::Schema.define(version: 2020_11_20_085426) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,6 +96,20 @@ ActiveRecord::Schema.define(version: 2020_11_15_233613) do
     t.boolean "hidden", default: true, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "daily_reminder_time", default: 7, null: false
+    t.boolean "remind_mon", default: true, null: false
+    t.boolean "remind_tue", default: true, null: false
+    t.boolean "remind_wed", default: true, null: false
+    t.boolean "remind_thu", default: true, null: false
+    t.boolean "remind_fri", default: true, null: false
+    t.boolean "remind_sat", default: true, null: false
+    t.boolean "remind_sun", default: true, null: false
+    t.integer "employee_count"
+    t.datetime "approved_at"
+    t.bigint "created_by_id"
+    t.string "registration_code"
+    t.string "registration_code_downcase"
+    t.index ["created_by_id"], name: "index_locations_on_created_by_id"
     t.index ["permalink"], name: "index_locations_on_permalink", unique: true
   end
 
@@ -219,6 +233,7 @@ ActiveRecord::Schema.define(version: 2020_11_15_233613) do
   add_foreign_key "location_accounts", "users", column: "deleted_by_id", on_delete: :nullify
   add_foreign_key "location_accounts", "users", column: "updated_by_id", on_delete: :nullify
   add_foreign_key "location_accounts", "users", on_delete: :cascade
+  add_foreign_key "locations", "users", column: "created_by_id"
   add_foreign_key "medical_events", "greenlight_statuses", on_delete: :cascade
   add_foreign_key "medical_events", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "medical_events", "users", column: "deleted_by_id", on_delete: :nullify

@@ -28,13 +28,17 @@ import ReleaseNotesPage from 'src/pages/ReleaseNotesPage'
 import SettingsPage from 'src/pages/SettingsPage'
 import CovidCountyMapPage from 'src/pages/CovidCountyMapPage'
 import AboutPage from 'src/pages/AboutPage'
-import EditUserPage from 'src/pages/EditUserPage'
+import UserEditPage from 'src/pages/UserEditPage'
 import DukeScheduleTestPage from 'src/pages/DukeScheduleTestPage'
 import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
 import NotificationsPage from 'src/pages/NotificationsPage'
 import LocationPage from './pages/LocationPage'
 import MobileVerificationPage from './pages/MobileVerificationPage'
 import LocationRegistrationPage from './pages/LocationRegistrationPage'
+import NCStatewideStatsPage from './pages/NCStatewideStatsPage'
+import { Dict } from './types'
+import LocationsNewPage from './pages/LocationsNewPage'
+import UsersNewPage from './pages/UsersNewPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -122,6 +126,10 @@ const routeMap = {
     component: WelcomePage,
     beforeEnter: beforeEnter.requireSignIn,
   },
+  splashPath: {
+    path: '/splash',
+    component: SplashPage,
+  },
   welcomeReviewPath: {
     path: '/welcome/review',
     component: WelcomeReviewPage,
@@ -160,13 +168,14 @@ const routeMap = {
   userGreenlightPassPath: {
     path: '/users/:userId/greenlight-pass',
     component: UserGreenlightPassPage,
+    beforeEnter: beforeEnter.requireSignIn,
   },
   locationPath: {
-    path: '/l/:location',
+    path: '/l/:locationId',
     component: LocationPage,
   },
   locationRegistrationPath: {
-    path: '/l/:location/registrations',
+    path: '/l/:locationId/registrations',
     component: LocationRegistrationPage,
   },
   mobileVerificationPath: {
@@ -176,14 +185,20 @@ const routeMap = {
   adminUsersPath: {
     path: '/admin/locations/:locationId/users',
     component: AdminUsersPage,
+    beforeEnter: beforeEnter.requireSignIn,
   },
   debugPath: {
     path: '/debug',
     component: DebugPage,
   },
-  dukeScheduleTestPage: {
+  dukeScheduleTestPath: {
     path: '/schedule-test-at-duke',
     component: DukeScheduleTestPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  ncStatewideStatsPath: {
+    path: '/nc-statewide-stats',
+    component: NCStatewideStatsPage,
   },
   giphySchedulePath: {
     path: '/giphy-schedule',
@@ -201,17 +216,29 @@ const routeMap = {
     path: '/covid-county-map',
     component: CovidCountyMapPage,
   },
+  newUserPath: {
+    path: '/users/new',
+    component: UsersNewPage,
+  },
+  newLocationUserPath: {
+    path: '/l/:permalink/code/:registrationCode',
+    component: UsersNewPage,
+  },
   editUserPath: {
     path: '/users/:userId/edit',
-    component: EditUserPage,
+    component: UserEditPage,
   },
   editChildrenPath: {
     path: '/users/:userId/children/:childId',
-    component: EditUserPage,
+    component: UserEditPage,
   },
   notFoundPath: {
     path: '/not-found',
     component: NotFoundPage,
+  },
+  durhamRegistationPath: {
+    path: '/durham',
+    component: LocationsNewPage,
   },
   catchAllPath: {
     path: '(.*)',
