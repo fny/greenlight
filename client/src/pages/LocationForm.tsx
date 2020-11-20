@@ -138,9 +138,9 @@ export default function LocationForm({ location, f7router }: { location?: Locati
           Your employees can now create their accounts by visitng the following
           link:
           <br />
-          <a href={url}>{url}</a>
+          <b>{url}</b>
           <br /><br />
-          They can also sign up by visiting <a href="https://app.greenlightready.com">the app</a>,{' '}
+          They can also sign up by visiting the app,{' '}
           clicking create account, and signing in with the following location id
           and registration code:
           <br /><br />
