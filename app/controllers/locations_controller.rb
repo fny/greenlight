@@ -15,7 +15,7 @@ module LocationsController
       return [] unless location || !current_user.admin_at?(location)
 
       render json: UserSerializer.new(
-        location.users.where.not(id: current_user.id).includes(:location_accounts, :last_greenlight_status), include: UserSerializer::ADMIN_INCLUDES
+        location.users.where.not(id: current_user.id).includes(:location_accounts, :last_greenlight_status), include: UserSerializer::ADMIN_INCLUDES.dup
       )
     end
 

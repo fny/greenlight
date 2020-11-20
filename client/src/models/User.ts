@@ -118,11 +118,6 @@ export class User extends Model {
     return this.locationAccounts[0]?.permissionLevel === PermissionLevels.ADMIN
   }
 
-  // HACK
-  adminLocation__HACK() {
-    return this.locationAccounts[0]?.locationId
-  }
-
   /** Has the user completed the welcome sequence? */
   hasCompletedWelcome() {
     return this.completedWelcomeAt !== null && this.completedWelcomeAt.isValid
@@ -271,5 +266,15 @@ export class User extends Model {
       }
     }
     return users
+  }
+
+  isAdminSomewhere(): boolean {
+    return this.adminLocations().length > 0
+  }
+
+  adminLocations(): Location[] {
+    return this.locationAccounts
+      .filter((la) => la.isAdmin() && la.location !== null)
+      .map((la) => la.location) as Location[]
   }
 }
