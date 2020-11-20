@@ -1,0 +1,39 @@
+<% survey_report = @report[:survey] %>
+<% status_report = @report[:status] %>
+
+<h1><%= @location.name %> Report</h1>
+<%= link_to "< Back", admin_reports_path %>
+
+<h5>Survey</h5>
+<p>Users who filled survey during the last 3 weeks</p>
+<table>
+  <thead>
+    <th>Date</th>
+    <th># Users</th>
+  </thead>
+  <tbody>
+    <% survey_report.each do |survey_day| %>
+      <tr>
+        <td><%= survey_day[:date] %></td>
+        <td><%= survey_day[:count] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h5>Status</h5>
+<p>Number of users at different statuses</p>
+<table>
+  <thead>
+    <th>Status</th>
+    <th># Users</th>
+  </thead>
+  <tbody>
+    <% status_report.each do |status, count| %>
+      <tr>
+        <td><%= status %></td>
+        <td><%= count %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

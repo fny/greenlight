@@ -1,0 +1,10 @@
+<h1>Location Reports</h1>
+<p>Select a location</p>
+
+<ul style="list-style: none;">
+  <% @locations.each do |location| %>
+    <li>
+      <%= link_to location.name, admin_report_path(location) %>
+    </li>
+  <% end %>
+</ul>
