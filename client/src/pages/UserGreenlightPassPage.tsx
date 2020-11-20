@@ -34,7 +34,7 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
 
         <Block className="text-center">
           <h1>
-            Lucy Greene{/* {user.fullName()} */}
+            {user.fullName()}
             {' '}
             <Chip text={status.title().toUpperCase()} />
           </h1>

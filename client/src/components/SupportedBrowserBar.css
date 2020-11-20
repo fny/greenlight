@@ -4,6 +4,7 @@
   color: #0A322B;
   font-weight: bold;
   background-color: #ffacd3;
+  display: none;
 }
 
 .SupportedBrowserBar .close {

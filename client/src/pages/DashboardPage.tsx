@@ -181,7 +181,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
 
           <ListItem
             external
-            link=""
+            link={paths.chwRequestPath}
             title={t({ id: 'DashboardPage.asfff', message: 'Connect to Care' })}
             footer={t({
               id: 'asdf',
