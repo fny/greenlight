@@ -24,7 +24,7 @@ module APIHelpers
   end
 
   def current_locale
-    request.headers['HTTP_ACCEPT_LANGUAGE'] || current_user.locale
+    request.headers['HTTP_X_GL_LOCALE'] || current_user.locale
   end
 
   # @param [User] user>
@@ -61,7 +61,9 @@ module APIHelpers
 
   def error_response(command)
     response.status = 422
-    errors = JSONAPI::Errors.serialize(JSONAPI::Errors::ActiveModelInvalid.new(errors: command.errors)).to_h
+    errors = JSONAPI::Errors.serialize(
+      JSONAPI::Errors::ActiveModelInvalid.new(errors: command.errors)
+    ).to_h
     errors[:meta] = {
       type: command.class.to_s,
     }
