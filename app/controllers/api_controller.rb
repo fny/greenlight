@@ -14,7 +14,7 @@ class APIController < ActionController::API
   before_action do
     @session = Session.new(cookies)
     Time.zone = current_user.time_zone
-    I18n.locale = current_user.locale
+    I18n.locale = current_locale
 
     request.env['exception_notifier.exception_data'] = {
       current_user: current_user

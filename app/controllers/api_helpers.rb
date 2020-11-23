@@ -23,6 +23,10 @@ module APIHelpers
     @current_user
   end
 
+  def current_locale
+    request.headers['HTTP_ACCEPT_LANGUAGE'] || current_user.locale
+  end
+
   # @param [User] user>
   # @param [Boolean] remember_me>
   def sign_in(user, ip, remember_me: false)

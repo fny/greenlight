@@ -1,13 +1,14 @@
-module RandomStream
+module RandomWords
   COLORS = %w[
     red orange yellow green blue purple brown
     pink orange teal jade ruby lime teal violet
     silver gold navy brave calm gentle happy jolly kind
     big silly witty good best brainy calm clever
     clean lucky long modern odd open rich smiling
-    splendid zany wild big full free local new speical strong
+    splendid zany wild big full free local new special strong
     real
   ].uniq.freeze
+
   THINGS = %w[
     dream season music dance song drum buzz bloom jump move groove wave spring
     peak

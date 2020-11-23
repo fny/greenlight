@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Location < ApplicationRecord
   self.permitted_params = %i[
     name category permalink phone_number email website zip_code hidden
@@ -16,7 +17,8 @@ class Location < ApplicationRecord
   # has_many :staff
 
   validates :phone_number, phone: { countries: :us }, allow_nil: true
-  before_save :set_registration_code
+  before_create :set_registration_code
+
   def self.find_by_id_or_permalink(id)
     find_by(id: id) || find_by(permalink: id)
   end
@@ -63,8 +65,9 @@ class Location < ApplicationRecord
     true
   end
 
-  def users_to_invite
-    users_to_notify.filter { |u| u.completed_welcome_at.blank? }
+  def registration_code=(code)
+    self[:registration_code] = code
+    self.registration_code_downcase = code.downcase
   end
 
   # Any users that should recieve a notification
@@ -89,25 +92,25 @@ class Location < ApplicationRecord
   end
 
   def generate_registration_code
-    thing = RandomStream.things.capitalize
-    color = RandomStream.colors.capitalize
+    thing = RandomWords.things.capitalize
+    color = RandomWords.colors.capitalize
     number = (SecureRandom.random_number(9e1) + 1e1).to_i
     # letter = (('a'..'z').to_a - ['l']).sample
     "#{color}#{thing}#{number}"
   end
 
-  def set_registration_code
-    code = generate_registration_code
-    self.registration_code = code
-    self.registration_code_downcase = code.downcase
-  end
-
   def refresh_registration_code!
     code = generate_registration_code
-    update_columns({
+    update_columns({ # rubocop:disable Rails/SkipsModelValidations
       registration_code: code,
       registration_code_downcase: code.downcase
     })
+  end
+
+  private
+
+  def set_registration_code
+    self.registration_code = generate_registration_code
   end
 end
 
