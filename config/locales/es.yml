@@ -12,8 +12,7 @@ es:
       subject: ✨ Recordatorio Diario para Greenlight
       title: Enviar Encuesta a Greenlight
       body: |
-        Recordándole que envíe encuestas de síntomas
-        para %{people} por Greenlight para WG Pearson.
+        Recordándole que envíe encuestas de síntomas por Greenlight.
       action: Haga Clic Aquí para Iniciar Sesión y Enviar su Encuesta
       closing: Disfruta tu día,
   texts:
