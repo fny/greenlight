@@ -1,17 +1,20 @@
+import { useField } from 'formik'
 import { ListItem } from 'framework7-react'
 import React from 'react'
 import { assertNotUndefined } from 'src/util'
 
-export default function FormikItem(props: ListItem.Props & { formik: any }) {
+export default function FormikItem(props: ListItem.Props) {
   assertNotUndefined(props.name)
+  const [field] = useField(props.name)
   const newProps = {
-    ...props, onChange: props.formik.handleChange, name: props.name,
+    ...props,
+    onChange: field.onChange,
+    name: props.name,
   }
 
   if (props.checkbox) {
-    newProps.checked = props.formik.values[props.name]
+    newProps.checked = field.value
   }
-  delete newProps.formik
   // eslint-disable-next-line react/jsx-props-no-spreading
   return <ListItem {...newProps} />
 }
