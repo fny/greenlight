@@ -6,7 +6,7 @@ import {
   Page,
   Block,
   Button,
-  Navbar, BlockTitle,
+  Navbar, BlockTitle, f7,
 } from 'framework7-react'
 
 import { joinWords } from 'src/util'
@@ -19,6 +19,8 @@ import { defineMessage, Trans } from '@lingui/macro'
 import { completeWelcomeUser } from 'src/api'
 
 import onlineCheckupImage from 'src/images/online-checkup.svg'
+import SubmissionHandler from 'src/misc/SubmissionHandler'
+import { reloadCurrentUser } from 'src/initializers/providers'
 
 interface State {
   termsOpened: boolean
@@ -35,15 +37,13 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
       throw new NoCurrentUserError()
     }
     this.user = this.global.currentUser
-
-    completeWelcomeUser(this.user)
   }
 
   render() {
     return (
       <Page>
         <Navbar
-          title={this.global.i18n._(defineMessage({ id: 'WelcomeSurveyPage.title', message: 'Symptom Surveys' }))}
+          title={this.global.i18n._(defineMessage({ id: 'WelcomeSurveyPage.title', message: 'Daily Checkins' }))}
         />
 
         <BlockTitle>
@@ -53,16 +53,33 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
         </BlockTitle>
         <Block>
           <p>
-            <Trans id="WelcomeSurveyPage.thank_you">
-              Thanks for providing that information!
-            </Trans>
-          </p>
+            {
+              this.user.isOwnerSomewhere() ? (
+                <Trans id="WelcomeSurveyPage.thank_you">
+                  Thanks for providing that information!
+                </Trans>
+              ) : (
+                <Trans id="WelcomeSurveyPage.thank_you_ower">
+                  Congratulations on registering your business!
+                </Trans>
+              )
 
+            }
+
+          </p>
           <p>
-            <Trans id="WelcomeSurvyePage.instructions">
-              Greenlight helps keep your community safe by monitoring everyone's health.
-              We need your help! You should fill out this survey every day especially.
-            </Trans>
+            {
+            this.user.isOwnerSomewhere() ? (
+              <Trans id="WelcomeSurveyPage.instructions_owner">
+                Greenlight helps you keep your community safe by monitoring everyone’s safety, connecting individuals to services and information, and minimizing the risk of an outbreak at your business. We need your help to make sure we can keep your community safe! To kick things off, you and your employees should check-in every day.
+              </Trans>
+            ) : (
+              <Trans id="WelcomeSurvyePage.instructions">
+                Greenlight helps keep your community safe by monitoring everyone's health.
+                We need your help! You should fill out this survey every day.
+              </Trans>
+            )
+          }
           </p>
           <br />
           <img src={onlineCheckupImage} alt="Daily Check-In" />
@@ -74,8 +91,17 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
           </Trans>
           <br />
           <br />
-          <Button href={paths.userSeqSurveysNewPath} fill>
-            <Trans id="WelcomeSurveyPage.continue">Continue to Surveys</Trans>
+          <Button
+            onClick={async () => {
+              new SubmissionHandler(f7).submit(async () => {
+                await completeWelcomeUser(this.user)
+                await reloadCurrentUser()
+                this.$f7router.navigate(paths.userSeqSurveysNewPath)
+              })
+            }}
+            fill
+          >
+            <Trans id="WelcomeSurveyPage.continue">Continue to Check-in</Trans>
           </Button>
         </Block>
       </Page>

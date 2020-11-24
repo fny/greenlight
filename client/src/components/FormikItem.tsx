@@ -7,9 +7,9 @@ export default function FormikItem(props: ListItem.Props) {
   assertNotUndefined(props.name)
   const [field] = useField(props.name)
   const newProps = {
-    ...props,
     onChange: field.onChange,
     name: props.name,
+    ...props,
   }
 
   if (props.checkbox) {

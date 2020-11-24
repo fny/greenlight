@@ -8,15 +8,7 @@ module SessionsController
       authentication.ip_address = request.ip
       authentication.run
       if authentication.succeeded?
-<<<<<<< HEAD
-<<<<<<< HEAD
-        sign_in(authentication.result, remember_me: request_json[:remember_me])
-=======
         sign_in(authentication.result, request.ip, remember_me: request_json[:remember_me])
->>>>>>> d8fa45b666bb502386122af2b8b55a80b442e03a
-=======
-        sign_in(authentication.result, request.ip, remember_me: request_json[:remember_me])
->>>>>>> staging
         success_response
       else
         error_response(authentication)
@@ -31,7 +23,7 @@ module SessionsController
     post '/v1/magic-sign-in/:token', auth: false do
       token = params[:token]
       user = User.find_by!(magic_sign_in_token: token)
-      sign_in(user, remember_me: request_json[:remember_me])
+      sign_in(user, request.ip, remember_me: request_json[:remember_me])
       success_response
     end
 

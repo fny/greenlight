@@ -60,21 +60,32 @@ export default class WelcomePage extends ReactNComponent<any, State> {
     if (fillForSelf && fillForChildren) {
       return (
         <Trans id="WelcomePage.fill_for_self_and_children">
-          Every day you'll need to fill out symptom surveys for you and your{' '}
+          Every day you'll need to check in and fill out symptom surveys for you and your{' '}
           {plural(user.children.length, { one: 'child', other: 'children' })}.
         </Trans>
       )
     }
     if (fillForSelf) {
       return (
-        <Trans id="WelcomePage.fill_for_self">Every day you'll need to fill out symptom surveys for yourself.</Trans>
+        <Trans id="WelcomePage.fill_for_self">
+          Every day you'll need to check in and fill out a survey.
+        </Trans>
       )
     }
-    if (fillForChildren) {
+
+    if (fillForChildren && !fillForSelf) {
       return (
         <Trans id="WelcomePage.fill_children">
           Every day you'll need to fill out symptom surveys for your{' '}
           {plural(user.children.length, { one: 'child', other: 'children' })}.
+        </Trans>
+      )
+    }
+
+    if (!fillForSelf) {
+      return (
+        <Trans id="WelcomePage.fill_for_self_optional">
+          Every day you can choose to fill out symptom surveys.
         </Trans>
       )
     }
@@ -101,22 +112,21 @@ export default class WelcomePage extends ReactNComponent<any, State> {
           </h1>
           <Case test={locationCount}>
             <When value={0}>
-              <Trans id="WelcomePage.account_misconfigured">
-                Your account hasn't been configured properly. Please contact us at help@greenlightready.com.
-              </Trans>
+              <p>
+                <Trans id="WelcomePage.welcome_solo">
+                  Hi {user.firstName}! Welcome to Greenlight's secure COVID-19 monitoring platform.
+                </Trans>
+              </p>
             </When>
             <When>
               <p>
                 <Trans id="WelcomePage.welcome">
-                  Hi {user.firstName}! You've been added
-                  by {plural(this.totalLocations(), { one: '# location', other: '# locations' })} to Greenlight's secure COVID-19 monitoring platform.
+                  Hi {user.firstName}! You're connected to {plural(this.totalLocations(), { one: '# location', other: '# locations' })} to Greenlight's secure COVID-19 monitoring platform.
                 </Trans>
               </p>
               <p>
                 <Trans id="WelcomePage.instructions">
-                  {this.whoDoYouFillSurveysFor()}
-                  We will not share any data without your
-                  permission.
+                  {this.whoDoYouFillSurveysFor()} We will not share any data without your permission.
                 </Trans>
               </p>
             </When>

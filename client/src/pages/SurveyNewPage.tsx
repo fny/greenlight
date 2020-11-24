@@ -344,7 +344,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     return (
       <Page>
         <Navbar
-          title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.title', message: t`Symptom Survey: ${submittingFor.fullName()}` }))}
+          title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.title', message: t`Daily Check-ins: ${submittingFor.fullName()}` }))}
         />
 
         {

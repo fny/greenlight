@@ -128,7 +128,7 @@ export default class extends ReactNComponent<any, State> {
           <When value={user.sortedChildren()[0] === child}>
             <Block>
               <Trans id="WelcomeChildPage.review_children">
-                We've found {plural(user.children.length, { one: 'child', other: 'children' })}
+                We've found {plural(user.children.length, { one: '# child', other: '# children' })}
                 associated with you: {this.childrenNames()}. Let's take a moment to review their information.
               </Trans>
               <br />

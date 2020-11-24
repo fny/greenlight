@@ -135,8 +135,7 @@ const UserEditPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
             onInput={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-
-          <ListInput
+          {/* <ListInput
             label={t({ id: 'EditUserPage.date_of_birth_label', message: 'Date of Birth' })}
             value={isBlank(formik.values.birthDate) ? [] : [formik.values.birthDate]}
             type="datepicker"
@@ -179,7 +178,7 @@ const UserEditPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
             title={t({ id: 'EditUserPage.need_help_finding_physician', message: 'Need help finding a physician?' })}
             checked={formik.values.needsPhysician}
             onChange={formik.handleChange}
-          />
+          /> */}
 
           <Block>
             <Button type="submit" outline fill>

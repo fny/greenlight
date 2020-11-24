@@ -41,7 +41,7 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
         <Block>
           <p>
             <Trans id="SurveyThankYouPage.thank_you">
-              Thanks for submitting your survey! Here's something we hope will make you smile. 😃
+              Thanks for checking in! Here's something we hope will make you smile. 😃
             </Trans>
           </p>
           <GiphyForToday />

@@ -1,6 +1,7 @@
 import { t } from '@lingui/macro'
 import Framework7 from 'framework7'
 import logger from 'src/logger'
+import { JSONAPIError } from 'src/types'
 
 export default class SubmissionHandler {
   f7: Framework7
@@ -34,7 +35,18 @@ export default class SubmissionHandler {
     } catch (error) {
       this.f7.dialog.close()
       logger.error(error)
-      this.f7.dialog.alert(this.onErrorTitle, this.onErrorMessage)
+      if (error.response) {
+        this.f7.dialog.alert(this.processErrors(error) || this.onErrorMessage, this.onErrorTitle)
+      } else {
+        this.f7.dialog.alert(this.onErrorMessage, this.onErrorTitle)
+      }
     }
+  }
+
+  processErrors(error: any) {
+    if (error.response.status === 422) {
+      return error.response.data.errors.map((x: JSONAPIError) => x.detail).join(', ')
+    }
+    return null
   }
 }

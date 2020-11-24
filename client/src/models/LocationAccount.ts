@@ -39,4 +39,8 @@ export class LocationAccount extends Model {
   isAdmin(): boolean {
     return this.permissionLevel === PermissionLevels.ADMIN || this.permissionLevel === PermissionLevels.OWNER
   }
+
+  isOwner(): boolean {
+    return this.permissionLevel === PermissionLevels.OWNER
+  }
 }

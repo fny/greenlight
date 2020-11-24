@@ -44,7 +44,7 @@ function UserList({ users }: { users: User[] }) {
               <If test={user.hasNotSubmittedOwnSurvey()}>
                 <ListItem
                   link={dynamicPaths.userSurveysNewPath(user.id, { single: true })}
-                  title="Submit Symptom Survey"
+                  title={t({ id: 'DashboardPage.check_in', message: 'Check In' })}
                 />
               </If>
               {/* <ListItem
@@ -96,7 +96,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
               </div>
               <div className="GLCard-body" style={{ color: colors.greenDark }}>
                 <Trans id="DashboardPage.needs_to_submit">
-                  How are you today? You still need to fill out surveys for {user.usersNotSubmittedText()}.
+                  How are you today? You still need to check in {user.usersNotSubmittedText()}.
                 </Trans>
               </div>
               <div className="GLCard-action">
@@ -127,8 +127,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
               </div>
               <div className="GLCard-body" style={{ color: colors.greenDark }}>
                 <Trans id="DashboardPage.needs_to_submit_for_tomorrow">
-                  Get ready for tomorrow! You need to fill out surveys for
-                  {' '}{user.usersNotSubmittedForTomorrowText()}.
+                  Get ready for tomorrow! You need to check in {user.usersNotSubmittedForTomorrowText()}.
                 </Trans>
               </div>
               <div className="GLCard-action">
@@ -159,11 +158,14 @@ export default class DashboardPage extends ReactNComponent<any, any> {
 
         <If test={user.hasChildren()}>
           <BlockTitle>
-            {user.hasLocationThatRequiresSurvey() ? (
+            {/* User is a worker and has children */}
+            {user.hasLocationThatRequiresSurvey() && user.isParent() &&
               <Trans id="DashboardPage.your_family">Your Family</Trans>
-            ) : (
-              <Trans id="DashboardPage.your_children">Your Children</Trans>
-            )}
+            }
+            {/* User is only a parent */}
+            {user.isParent() && <Trans id="DashboardPage.your_children">Your Children</Trans>}
+            {/* User is not a parent */}
+            {!user.isParent() && <Trans id="DashboardPage.your_status">Your Status</Trans>}
           </BlockTitle>
           <UserList users={user.usersExpectedToSubmit()} />
         </If>
@@ -180,11 +182,10 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           </ListItem>
 
           <ListItem
-            external
             link={paths.chwRequestPath}
-            title={t({ id: 'DashboardPage.asfff', message: 'Connect to Care' })}
+            title={t({ id: 'DashboardPage.connect_to_care_title', message: 'Connect to Care' })}
             footer={t({
-              id: 'asdf',
+              id: 'DashboardPage.connect_to_care_footer',
               message: 'Send a care request to a community health worker.',
             })}
           >
@@ -199,21 +200,17 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           >
             <Icon slot="media" f7="phone" />
           </ListItem>
-          <ListItem
-<<<<<<< HEAD
-            external
-=======
->>>>>>> staging
+          {/* <ListItem
             link={paths.ncStatewideStatsPath}
             // link="tel:1-877-490-6642"
-            title={t({ id: 'DashboardPage.ffasfa', message: 'NC COVID-19 Data' })}
-            footer={t({ id: 'DashboardPage.affafa', message: 'COVID-19 maps and statistics from across the state' })}
+            title={t({ id: 'DashboardPage.nc_covid_data_title', message: 'NC COVID-19 Data' })}
+            footer={t({ id: 'DashboardPage.nc_covid_data_footer', message: 'COVID-19 maps and statistics from across the state' })}
           >
             <Icon slot="media" f7="graph_square" />
-          </ListItem>
+          </ListItem> */}
           <ListItem
-            title={t({ id: 'DashboardPage.support_titless', message: 'Contact Support' })}
-            footer={t({ id: 'DashboardPage.support_footerss', message: 'Have any questions? Message our support team.' })}
+            title={t({ id: 'DashboardPage.support_title', message: 'Contact Support' })}
+            footer={t({ id: 'DashboardPage.support_footer', message: 'Have any questions? Message our support team.' })}
             external
             link="mailto:help@greenlightready.com"
           >
@@ -232,9 +229,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
             <Icon slot="media" f7="phone" />
           </ListItem>
           <ListItem
-            external
-            link="https://www.dcopublichealth.org/services/communicable-diseases/coronavirus-disease-2019/covid-19-testing"
-            target="_blank"
+            link={paths.ncTestingLocationsPath}
             title={t({ id: 'DashboardPage.testing_title', message: 'Find other Testing' })}
             footer={t({ id: 'DashboardPage.testing_footer', message: 'Testing Sites Near You' })}
           >

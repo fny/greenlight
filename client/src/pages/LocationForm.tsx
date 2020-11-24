@@ -1,7 +1,7 @@
 import { t, Trans } from '@lingui/macro'
 import {
   Block,
-  BlockTitle, Button, f7, List, ListItem, ListItemCell, ListItemRow,
+  BlockTitle, Button, f7, Link, List, ListItem, ListItemCell, ListItemRow,
 } from 'framework7-react'
 
 import { Router } from 'framework7/modules/router/router'
@@ -16,23 +16,23 @@ import 'yup-phone'
 import SubmissionHandler from 'src/misc/SubmissionHandler'
 import { useFormik, FormikProvider } from 'formik'
 import { reloadCurrentUser } from 'src/initializers/providers'
-import { createLocation, createUserAndSignIn } from 'src/api'
+import { createLocation } from 'src/api'
 import { assertNotNull, isBlank, isPresent } from 'src/util'
 import { useGlobal } from 'reactn'
 import { paths } from 'src/routes'
 
 class LocationInput {
-  name: string | null = null
+  name: string = ''
 
-  zipCode: string | null = null
+  zipCode: string = ''
 
-  email: string | null = null
+  email: string = ''
 
-  phoneNumber: string | null = null
+  phoneNumber: string = ''
 
-  website: string | null = null
+  website: string = ''
 
-  permalink: string | null = null
+  permalink: string = ''
 
   category: LocationCategories | null = null
 
@@ -57,37 +57,17 @@ class LocationInput {
   remindSun = true
 }
 
-export default function LocationForm({ location, f7router }: { location?: Location; f7router: Router.Router }) {
-  const [almostFinished, setAlmostFinished] = useState(false)
+const cantBeBlankMessage = t({ id: 'Form.error_blank', message: "Can't be blank" })
+const invalidMessage = t({ id: 'Form.error_invalid', message: 'Is invalid' })
+
+export default function LocationForm({ location, f7router }: { location?: Location, f7router: Router.Router}) {
+  const [locationCreated, setLocationCreated] = useState(false)
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
-  const cantBeBlankMessage = t({ id: 'Form.error_blank', message: "Can't be blank" })
-  const invalidMessage = t({ id: 'Form.error_invalid', message: 'Is invalid' })
 
   const submissionHandler = new SubmissionHandler(f7)
-
   const formik = useFormik<LocationInput>({
-    validationSchema: Yup.object<LocationInput>().shape({
-      name: Yup.string().required(cantBeBlankMessage),
-      // website: Yup.string(),
-      // email: Yup.string()
-      //   .email(invalidMessage).nullable(),
-      // phoneNumber: Yup.string()
-      //   .phone('US', undefined, t({ id: 'Form.error_invalid', message: 'Is invalid' })).nullable(),
-      permalink: Yup.string()
-        .matches(/^[a-z0-9-]+$/, {
-          message: t({ id: 'Form.error_invalid2', message: 'only lowercase letters, dashes for spaces, and numbers' }),
-        })
-        .min(3)
-        .required(cantBeBlankMessage),
-      zipCode: Yup.string()
-        .matches(/^\d{5}$/, {
-          excludeEmptyString: true,
-          message: t({ id: 'EditUserPage.invalid_zip_code', message: 'Zip code should be 5 digits' }),
-        })
-        .nullable(),
-      employeeCount: Yup.number().min(1).required(cantBeBlankMessage),
-    }),
+    validationSchema: schema,
     initialValues: new LocationInput(),
     onSubmit: (values) => {
       submissionHandler.submit(async () => {
@@ -97,13 +77,14 @@ export default function LocationForm({ location, f7router }: { location?: Locati
             dailyReminderTime: values.dailyReminderHour + (values.dailyReminderAMPM === 'pm' ? 12 : 0),
           })
           await reloadCurrentUser()
-          setAlmostFinished(true)
+          setLocationCreated(true)
         }
       })
     },
   })
 
-  if (!almostFinished) {
+  if (!locationCreated) {
+    const ownerCount = currentUser.locationAccounts.filter((x) => x.permissionLevel === 'owner').length
     return (
       <FormikProvider value={formik}>
         <List
@@ -113,146 +94,153 @@ export default function LocationForm({ location, f7router }: { location?: Locati
             formik.handleSubmit(e)
           }}
         >
-          <LocationBlock formik={formik} />
-          <LocationNotificationsBlock formik={formik} />
+          <Block>
+            <BlockTitle>
+              <Trans id="LocationsNewPage.business_info_title">
+                Your Business's Information
+              </Trans>
+            </BlockTitle>
+
+            <Trans id="LocationsNewPage.business_info_instructions">
+              Please fill out the form below with information about your business.
+            </Trans>
+
+            {ownerCount > 0 && (
+            <span>{' '}
+              <Trans id="LocationsNewPage.business_info_business_count">
+                Note you already have registered {ownerCount} business. If you're having trouble with access send us an email help@greenlightready.com
+              </Trans>
+            </span>
+            )}
+            <BusinessLocationFields formik={formik} />
+            <BusinessNotificationFields formik={formik} />
+          </Block>
           <Button fill type="submit">
-            <Trans id="LocationForm.create_location">Create Your Location</Trans>
+            <Trans id="BusinessLocationForm.create_location">Create Your Location</Trans>
           </Button>
         </List>
       </FormikProvider>
     )
-  } else {
-    const location = currentUser?.locations__HACK()[currentUser?.locations__HACK().length - 1]
-
-    if (!location) {
-      return (
-        <Block>
-          <h1>Your Location Has Been Created</h1>
-          <p>
-            Check your email for more information about how to register your employees. For now, let's fill out your
-            first survey.
-          </p>
-          <Button fill href={paths.welcomeSurveyPath}>
-            Learn About Surveys
-          </Button>
-        </Block>
-      )
-    }
-
-    const url = `https://app.greenlightready.com/l/${location.permalink}/code/${location.registrationCode}`
-
-    return (
-      <Block>
-        <h1>Your Location Has Been Created</h1>
-        <p>
-          Your employees can now create their accounts by visitng the following link:
-          <br />
-          <b>{url}</b>
-          <br />
-          <br />
-          They can also sign up by visiting the app, clicking create account, and signing in with the following location
-          id and registration code:
-          <br />
-          <br />
-          Location ID: {location.permalink}
-          <br />
-          Registration Code: {location.registrationCode} (case insensitive)
-          <br />
-          <br />
-          If you have any questions, feel free to email us at help@greenlightready.com
-          <br />
-          <br />
-          You will also receive an email with these instructions.
-        </p>
-        <Button fill href={paths.welcomeSurveyPath}>
-          Learn About Surveys
-        </Button>
-      </Block>
-    )
   }
+  location = currentUser?.locations__HACK()[currentUser?.locations__HACK().length - 1]
+
+  assertNotNull(location)
+
+  return (
+    <Block>
+      <h1>
+        <Trans id="LocationsNewPage.business_created">
+          Your Business Has Been Registered
+        </Trans>
+      </h1>
+      <p>
+        <Trans id="LocationsNewPage.business_created_instructions1">
+          Your employees can now create their accounts by visitng the following
+          link:
+        </Trans>
+      </p>
+      <p style={{ fontWeight: 'bold' }}>{location.registrationWithCodeURL()}</p>
+      <p>
+        <Trans id="LocationsNewPage.business_created_instructions2">
+          They can also sign up by visiting the app,
+          clicking create account, and signing in with the following location id
+          and registration code:
+        </Trans>
+      </p>
+      <ul>
+        <li>
+          <Trans id="LocationsNewPage.business_created_business_id">
+            Business ID: {location.permalink}
+          </Trans>
+        </li>
+        <li>
+          <Trans id="LocationsNewPage.business_created_registration_code">
+            Registration Code: {location.permalink}(case insensitive)
+          </Trans>
+        </li>
+      </ul>
+      <p>
+        <Trans id="LocationsNewPage.business_created_instructions3">
+          You will also receive an email with these instructions.
+          If you have any questions, feel free to email us at
+          <Link href="mailto:help@greenlightready.com" external>help@greenlightready.com</Link>
+        </Trans>
+      </p>
+
+      <Button fill href={paths.welcomeSurveyPath}>
+        <Trans id="LocationsNewPage.surveys_button">
+          Learn About Surveys
+        </Trans>
+      </Button>
+    </Block>
+  )
 }
 
-function LocationBlock({ formik }: { formik: FormikInstance<any> }) {
-  const [currentUser] = useGlobal('currentUser')
-  assertNotNull(currentUser)
-  const ownerCount = currentUser.locationAccounts.filter((x) => x.permissionLevel === 'owner').length
+function BusinessLocationFields({ formik }: { formik: FormikInstance<any>}) {
   return (
     <>
-      <Block>
-        <BlockTitle>Your Business's Information</BlockTitle>
-        Please fill out the form below with information about your business.{' '}
-        {ownerCount > 0 && (
-          <span>
-            Note you already have registered {ownerCount} business. If you're having trouble with access send us an
-            email help@greenlightready.com
-          </span>
-        )}
-      </Block>
-      <List
-        noHairlines
-        form
-        onSubmit={() => {
-          formik.submitForm()
-        }}
-      >
-        <FormikInput label={t({ id: 'Forms.location_name', message: 'Location Name' })} name="name" type="text" />
+      <List noHairlines form onSubmit={() => { formik.submitForm() }}>
         <FormikInput
-          label={t({ id: 'Forms.location_id', message: 'Location ID (Used for Links)' })}
+          label={t({ id: 'BusinessLocationForm.business_name', message: 'Business Name' })}
+          name="name"
+          type="text"
+          floatingLabel
+        />
+        <FormikInput
+          label={t({ id: 'BusinessLocationForm.business_id', message: 'Business ID (Used for Links)' })}
           name="permalink"
           placeholder="Lowercase letters, numbers, and dashes only"
           type="text"
+          floatingLabel
         />
-        {isPresent(formik.values.permalink) && isBlank(formik.errors.permalink) && (
-          <ListItem>
+        {isPresent(formik.values.permalink) && isBlank(formik.errors.permalink)
+        && (
+        <ListItem>
+          <Trans id="BusinessLocationForm.registrastion_link_url">
             Users will be able to register for your location by visiting:
-            <br />
-            https://app.greenlightready.com/l/{formik.values.permalink}
-          </ListItem>
+            glit.me/l/{formik.values.permalink}
+          </Trans>
+        </ListItem>
         )}
-        <FormikInput label={t({ id: 'Forms.zip_code', message: 'Zip Code' })} name="zipCode" type="text" />
-        <FormikInput label="Number of employees" name="employeeCount" type="number" min={1} />
-        {formik.values.employeeCount >= 70 && (
-          <ListItem>
-            Given your business's size, we recommend that you contact as after registration: help@greenlightready.com
-          </ListItem>
-        )}
-        {/* <FormikInput
-          label={t({ id: 'Forms.email_optional', message: 'Email (Optional)' })}
-          name="email"
-          type="email"
+        <FormikInput
+          label={t({ id: 'BusinessLocationForm.zip_code', message: 'Zip Code' })}
+          name="zipCode"
+          type="text"
+          floatingLabel
         />
         <FormikInput
-          label={t({ id: 'Forms.phone_number_optional', message: 'Phone Number (Optional)' })}
-          name="phoneNumber"
-          type="tel"
-        /> */}
+          label={t({ id: 'BusinessLocationForm.number_of_employees', message: 'Number of Employees' })}
+          name="employeeCount"
+          type="number"
+          min={1}
+          floatingLabel
+        />
       </List>
     </>
   )
 }
 
-function LocationNotificationsBlock({ formik }: { formik: FormikInstance<any> }) {
+function BusinessNotificationFields({ formik }: { formik: FormikInstance<any>}) {
   return (
     <Block>
       <BlockTitle>
-        <Trans id="NotificationsPage.daily_reminders_title">Daily Reminders</Trans>
+        <Trans id="BusinessNotificationsForm.daily_reminders_title">
+          Daily Reminders
+        </Trans>
       </BlockTitle>
       <p>
-        <Trans id="LocationsNewPage.days_to_remind_footer">
-          We send daily reminders to you and your employees to fill out their symptom surveys. We recommend that they
-          fill them out daily. After employees sign up, they can change the time and days they're notified.
+        <Trans id="BusinessNotificationsForm.days_to_remind_footer">
+          We send daily reminders to you and your employees to fill out their symptom surveys. We recommend that they fill them out daily.
+          After employees sign up, they can change the time and days they're notified.
         </Trans>
       </p>
-      <List accordionList form onSubmit={formik.handleSubmit} noHairlines>
-        <ListItem
-          title={t({
-            id: 'LocationsNewPage.time_to_remind',
-            message: 'What time would you like send survey reminders?',
-          })}
-        />
+      <List accordionList noHairlines>
+        <p>
+          {t({ id: 'BusinessNotificationsForm.time_to_remind', message: 'What time would you like send survey reminders?' })}
+        </p>
         <ListItemRow>
           <ListItemCell>
-            <FormikInput name="dailyReminderHour" label="Hour" type="number" min="1" max="12" />
+            <FormikInput name="dailyReminderHour" label={t({ id: 'Common.hour', message: 'Hour' })} type="number" min="1" max="12" />
           </ListItemCell>
           <ListItemCell>
             <FormikInput name="dailyReminderAMPM" label="AM/PM" type="select">
@@ -262,21 +250,64 @@ function LocationNotificationsBlock({ formik }: { formik: FormikInstance<any> })
           </ListItemCell>
         </ListItemRow>
         <List style={{ marginTop: 0 }}>
-          <ListItem
-            title={t({
-              id: 'LocationsNewPage.days_to_remind',
-              message: 'What days would you like send survey reminders?',
-            })}
+          <p>
+            {t({ id: 'BusinessNotificationsForm.days_to_remind', message: 'What days would you like send survey reminders?' })}
+          </p>
+          <FormikItem
+            title={t({ id: 'Weekday.monday', message: 'Monday' })}
+            name="remindMon"
+            checkbox
           />
-          <FormikItem title={t({ id: 'Weekday.monday', message: 'Monday' })} name="remindMon" checkbox />
-          <FormikItem title={t({ id: 'Weekday.tuesday', message: 'Tuesday' })} name="remindTue" checkbox />
-          <FormikItem title={t({ id: 'Weekday.wednesday', message: 'Wednesday' })} name="remindWed" checkbox />
-          <FormikItem title={t({ id: 'Weekday.thursday', message: 'Thursday' })} name="remindThu" checkbox />
-          <FormikItem title={t({ id: 'Weekday.friday', message: 'Friday' })} name="remindFri" checkbox />
-          <FormikItem title={t({ id: 'Weekday.saturday', message: 'Saturday' })} name="remindSat" checkbox />
-          <FormikItem title={t({ id: 'Weekday.sunday', message: 'Sunday' })} name="remindSun" checkbox />
+          <FormikItem
+            title={t({ id: 'Weekday.tuesday', message: 'Tuesday' })}
+            name="remindTue"
+            checkbox
+          />
+          <FormikItem
+            title={t({ id: 'Weekday.wednesday', message: 'Wednesday' })}
+            name="remindWed"
+            checkbox
+          />
+          <FormikItem
+            title={t({ id: 'Weekday.thursday', message: 'Thursday' })}
+            name="remindThu"
+            checkbox
+          />
+          <FormikItem
+            title={t({ id: 'Weekday.friday', message: 'Friday' })}
+            name="remindFri"
+            checkbox
+          />
+          <FormikItem
+            title={t({ id: 'Weekday.saturday', message: 'Saturday' })}
+            name="remindSat"
+            checkbox
+          />
+          <FormikItem
+            title={t({ id: 'Weekday.sunday', message: 'Sunday' })}
+            name="remindSun"
+            checkbox
+          />
         </List>
       </List>
     </Block>
   )
 }
+
+const schema = Yup.object<LocationInput>().shape({
+  name: Yup.string().required(cantBeBlankMessage),
+  // website: Yup.string(),
+  // email: Yup.string()
+  //   .email(invalidMessage).nullable(),
+  // phoneNumber: Yup.string()
+  //   .phone('US', undefined, t({ id: 'Form.error_invalid', message: 'Is invalid' })).nullable(),
+  permalink: Yup.string()
+    .matches(/^[a-z0-9-]+$/, { message: t({ id: 'LocationForm.permalink_error', message: 'only lowercase letters, dashes for spaces, and numbers' }) })
+    .min(3)
+    .required(cantBeBlankMessage),
+  zipCode: Yup.string().matches(/^\d{5}$/, {
+    excludeEmptyString: false,
+    message: t({ id: 'LocationForm.invalid_zip_code', message: 'Zip code should be 5 digits' }),
+  }).required(cantBeBlankMessage),
+  employeeCount: Yup.number().min(1).required(cantBeBlankMessage).typeError(t({ id: 'LocationForm.employee_count_error', message: 'Please specify a number' })),
+})

@@ -119,7 +119,6 @@ export default class extends ReactNComponent<any, State> {
                   Next you'll review your children.
                 </Trans>
               </p>
-
             </When>
             <When value={false}>
               <p>

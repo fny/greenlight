@@ -34,12 +34,11 @@ import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
 import NotificationsPage from 'src/pages/NotificationsPage'
 import LocationPage from './pages/LocationPage'
 import MobileVerificationPage from './pages/MobileVerificationPage'
-import LocationRegistrationPage from './pages/LocationRegistrationPage'
 import NCStatewideStatsPage from './pages/NCStatewideStatsPage'
-import { Dict } from './types'
 import LocationsNewPage from './pages/LocationsNewPage'
 import UsersNewPage from './pages/UsersNewPage'
 import CHWRequestPage from './pages/CHWRequestPage'
+import NCTestLocationsPage from './NCTestLocationsPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -175,10 +174,6 @@ const routeMap = {
     path: '/l/:locationId',
     component: LocationPage,
   },
-  locationRegistrationPath: {
-    path: '/l/:locationId/registrations',
-    component: LocationRegistrationPage,
-  },
   mobileVerificationPath: {
     path: '/mobile-verifications',
     component: MobileVerificationPage,
@@ -201,6 +196,11 @@ const routeMap = {
     path: '/nc-statewide-stats',
     component: NCStatewideStatsPage,
     beforeEnter: beforeEnter.requireSignIn,
+  },
+  ncTestingLocationsPath: {
+    path: '/nc-test-locations',
+    component: NCTestLocationsPage,
+    // beforeEnter: beforeEnter.requireSignIn,
   },
   giphySchedulePath: {
     path: '/giphy-schedule',

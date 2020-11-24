@@ -257,7 +257,7 @@ export class User extends Model {
 
   usersExpectedToSubmit() {
     const users: User[] = []
-    return [this]
+
     if (this.hasLocationThatRequiresSurvey()) {
       users.push(this)
     }
@@ -272,6 +272,16 @@ export class User extends Model {
 
   isAdminSomewhere(): boolean {
     return this.adminLocations().length > 0
+  }
+
+  isOwnerSomewhere(): boolean {
+    return this.ownerLocations().length > 0
+  }
+
+  ownerLocations(): Location[] {
+    return this.locationAccounts
+      .filter((la) => la.isOwner() && la.location !== null)
+      .map((la) => la.location) as Location[]
   }
 
   adminLocations(): Location[] {

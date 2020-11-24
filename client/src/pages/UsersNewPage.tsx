@@ -7,14 +7,15 @@ import {
 
 import welcomeDoctorImage from 'src/images/welcome-doctor.svg'
 import {
-  Page, Block, Sheet, Row, Button, Col, Link, PageContent, Toolbar, List, ListInput,
+  Page, Block, Sheet, Row, Button, Col, Link, PageContent, Toolbar, List, ListInput, Navbar,
 } from 'framework7-react'
-import { Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import { toggleLocale } from 'src/initializers/providers'
 import { User, Location } from 'src/models'
 import { F7Props } from 'src/types'
 import { getLocation, joinLocation } from 'src/api'
 import { paths } from 'src/routes'
+import NavbarSplashLink from 'src/components/NavbarSplashLink'
 import UserForm from './UsersForm'
 import LoadingPage from './LoadingPage'
 
@@ -33,10 +34,8 @@ export default function UsersNewPage(props: F7Props) {
   // setMyCode(registrationCode)
   const [currentUser] = useGlobal('currentUser')
   useEffect(() => {
-    // HACK: This actually reveals the permalink since its in the payload
+    // HACK: This actually reveals the registration code since its in the response payload
     if (!permalink) return
-    console.log(permalink)
-    console.log(location)
     getLocation(permalink).then(setLocation).catch(setError)
   }, [permalink])
 
@@ -49,21 +48,45 @@ export default function UsersNewPage(props: F7Props) {
   if (!permalink || !registrationCode || error) {
     return (
       <Page>
+        <Navbar title={t({ id: 'BusinessRegistration.lookup_business_title', message: 'Look Up Business' })}>
+          <NavbarSplashLink slot="left" />
+        </Navbar>
         <Block>
-          <h1>Look Up A Business</h1>
           <p>
-            You should have received a link from or code from your business or school.
-            If you received a code, enter it below. The code is not case sensitive.
+            <Trans id="BusinessRegistration.lookup_business_instructions">
+              You should have received a link from or code from your business or school.
+              If you received a code, enter it below. The code is not case sensitive.
+            </Trans>
           </p>
           {
-            error && <p style={{ color: 'red' }}>There was an error looking up the business. Please make sure your information is correct.</p>
+            error && (
+            <p style={{ color: 'red' }}>
+              <Trans id="BusinessRegistration.lookup_error">
+                There was an error looking up the business. Please make sure your information is correct.
+              </Trans>
+            </p>
+            )
           }
           <List noHairlines>
-            <ListInput type="text" label="Location ID" placeholder="Location ID" required onChange={(e) => setMyPermalink(e.target.value)} />
-            <ListInput type="text" label="Registration Code" placeholder="Enter Your Registration Code Here" required onChange={(e) => setMyCode(e.target.value)} />
+            <ListInput
+              type="text"
+              label={t({ id: 'BusinessRegistration.business_id', message: 'Business ID' })}
+              placeholder={t({ id: 'BusinessRegistration.business_id', message: 'Business ID' })}
+              required
+              onChange={(e) => setMyPermalink(e.target.value)}
+            />
+            <ListInput
+              type="text"
+              label={t({ id: 'BusinessRegistration.registration_code_label', message: 'Registration Code' })}
+              placeholder={t({ id: 'BusinessRegistration.registration_code_placeholder', message: 'Enter your registration code' })}
+              required
+              onChange={(e) => setMyCode(e.target.value)}
+            />
             <br />
             <Button href={`/l/${myPermalink}/code/${myCode}`} fill>
-              Lookup Location
+              <Trans id="BusinessRegistration.lookup_location">
+                Lookup Location
+              </Trans>
             </Button>
           </List>
         </Block>
@@ -73,37 +96,96 @@ export default function UsersNewPage(props: F7Props) {
 
   if (currentUser && location && currentUser.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0) {
     return (
-      <Block>
-        <h1>Registered for This Location</h1>
-        <p>
-          You are registered to submit survey to {location.name}.
-        </p>
-        {
+      <Page>
+        <Navbar title={
+          t({ id: 'BusinessRegistered.success_title', message: 'Account Linked' })
+          }
+        >
+          <NavbarSplashLink slot="left" />
+        </Navbar>
+        <Block>
+          <h1>
+            <Trans id="BusinessRegistered.success_header">
+              Registered for {location.name}
+            </Trans>
+          </h1>
+          <p>
+            <Trans id="BusinessRegistered.success_message">
+              You are registered to submit check in to {location.name}.
+            </Trans>
+          </p>
+          {
           currentUser.hasCompletedWelcome()
-            ? <Button fill href={paths.dashboardPath}>Return to Dashboard</Button>
-            : <Button fill href={paths.welcomeSurveyPath}>Submit Your First Survey</Button>
+            ? (
+              <Button fill href={paths.dashboardPath}>
+                <Trans id="BusinessRegistered.return_to_dashboard">
+                  Return to Dashboard
+                </Trans>
+              </Button>
+            )
+            : (
+              <Button fill href={paths.welcomeSurveyPath}>
+                <Trans id="BusinessRegistered.submit_first_survey">
+                  Submit Your First Survey
+                </Trans>
+              </Button>
+            )
         }
 
-      </Block>
+        </Block>
+      </Page>
     )
   }
 
   if (currentUser && location) {
     return (
-      <Block>
-        <h1>Join {location.name}</h1>
-        <p>
-          Click the button below to allow {location.name} to receive your survey results.
-        </p>
-        {error2 && <p>Something went wrong. Please try again or contact us at help@greenlightready.com</p>}
-        <Button
-          fill
-          onClick={() => {
-            joinLocation(location).then(() => { window.location.reload() }).catch(setError2)
-          }}
-        >Join Business
-        </Button>
-      </Block>
+      <Page>
+        <Navbar title={t({ id: 'BusinessRegistered.connect_title', message: 'Connect with a Business' })}>
+          <NavbarSplashLink slot="left" />
+        </Navbar>
+        <Block>
+          <h1>
+            <Trans id="BusinessRegistered.connect_heading">
+              Link to {location.name}
+            </Trans>
+          </h1>
+          <p>
+            <Trans id="BusinessRegistered.connect_message1">
+              Thank you for creating your account! {location.name} has
+              decided to implement Greenlight Durham and may
+              require that you complete daily check-in’s to work on
+              site. You have the option to share your daily check-in
+              status with {location.name} through Greenlight. Note that only
+              your status (green, yellow, pink) is shared with {location.name},
+              not your detailed symptoms or medical information.
+              Even if you agree to share updates with {location.name} at this
+              time, you can stop sharing updates at any time.
+            </Trans>
+          </p>
+          <p>
+            <Trans id="BusinessRegistered.connect_message2">
+              Click the button below to allow {location.name} to receive your check-in status.
+            </Trans>
+          </p>
+          {error2 && (
+          <p>
+            <Trans id="BusinessRegistered.connect_error">
+              Something went wrong. Please try again or contact us at help@greenlightready.com
+            </Trans>
+          </p>
+          )}
+          <Button
+            fill
+            onClick={() => {
+              joinLocation(location).then(() => { window.location.reload() }).catch(setError2)
+            }}
+          >
+            <Trans id="BusinessRegistered.join_business">
+              Join Business
+            </Trans>
+          </Button>
+        </Block>
+      </Page>
     )
   }
 
@@ -112,6 +194,9 @@ export default function UsersNewPage(props: F7Props) {
     assertNotUndefined(location)
     return (
       <Page>
+        <Navbar title={t({ id: 'BusinessRegistered.new_account', message: 'Create a New Account' })}>
+          <NavbarSplashLink slot="left" />
+        </Navbar>
         <Block>
           <h1>Create Your Account</h1>
           <p>
@@ -134,14 +219,16 @@ export default function UsersNewPage(props: F7Props) {
             </Link> */}
           </h1>
           <p>
-            You're about to join Greenlight's secure COVID-19 monitoring platform.
-            Every day you'll need to fill out symptom surveys for yourself.
-            You will also get access to health and social support in your community.
+            <Trans id="BusinessRegistered.welcome1">
+              You're about to join Greenlight's secure COVID-19 monitoring platform.
+              Every day you'll need to fill out symptom surveys for yourself.
+              You will also get access to health and social support in your community.
+            </Trans>
           </p>
           <p>
-            Your data is secure and stored by a HIPAA and FERPA-compliant cloud provider.
-            {' '}
-            <i>We will not share any data without your permission.</i>
+            <Trans id="BusinessRegistered.welcome2">
+              Your data is secure and stored by a HIPAA and FERPA-compliant cloud provider. <i>We will not share any data without your permission.</i>
+            </Trans>
           </p>
           <img alt="Welcome to Greenlight!" src={welcomeDoctorImage} />
           <p>
