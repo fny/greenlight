@@ -23,10 +23,14 @@ module APIHelpers
     @current_user
   end
 
+  def current_locale
+    request.headers['HTTP_X_GL_LOCALE'] || current_user.locale
+  end
+
   # @param [User] user>
   # @param [Boolean] remember_me>
-  def sign_in(user, remember_me: false)
-    user.save_sign_in!(request.ip)
+  def sign_in(user, ip, remember_me: false)
+    user.save_sign_in!(ip)
     @session = Session.new(cookies, user: user, remember_me: remember_me)
   end
 
@@ -57,7 +61,9 @@ module APIHelpers
 
   def error_response(command)
     response.status = 422
-    errors = JSONAPI::Errors.serialize(JSONAPI::Errors::ActiveModelInvalid.new(errors: command.errors)).to_h
+    errors = JSONAPI::Errors.serialize(
+      JSONAPI::Errors::ActiveModelInvalid.new(errors: command.errors)
+    ).to_h
     errors[:meta] = {
       type: command.class.to_s,
     }

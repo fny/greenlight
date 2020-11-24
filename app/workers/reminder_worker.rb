@@ -7,7 +7,7 @@ class ReminderWorker < ApplicationWorker
         <%= I18n.t('emails.reminder.salutation', name: user.first_name) %>
       </p>
       <p>
-        <%= I18n.t('emails.reminder.body', users: user.needs_to_submit_survey_for) %>
+        <%= I18n.t('emails.reminder.body') %>
       </p>
       <p style="font-weight:bold">
         <a href="<%= Greenlight::SHORT_URL %>">

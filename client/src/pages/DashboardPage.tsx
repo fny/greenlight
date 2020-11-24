@@ -200,7 +200,10 @@ export default class DashboardPage extends ReactNComponent<any, any> {
             <Icon slot="media" f7="phone" />
           </ListItem>
           <ListItem
+<<<<<<< HEAD
             external
+=======
+>>>>>>> staging
             link={paths.ncStatewideStatsPath}
             // link="tel:1-877-490-6642"
             title={t({ id: 'DashboardPage.ffasfa', message: 'NC COVID-19 Data' })}

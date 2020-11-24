@@ -3,7 +3,7 @@ module Commands
   # Base class that all commands inherit from
   class Base
     include ActiveAttr::Model
-    
+
     STATES = [
       # The command has not been run yet.
       :not_run,
@@ -100,7 +100,7 @@ module Commands
       @succeeded = false
       nil
     rescue => error
-      
+
       err_desc = "#{error.class}: #{error.message}"
       err_backtrace = error.backtrace.join("\n")
       @error = err_desc + "\n\n" + err_backtrace
@@ -110,11 +110,15 @@ module Commands
     end
 
     # Call this to force a failure during `#work`
+    # Takes either one or two args.
+    # If there one arg, that error is added to the base
+    # If there are two args, the attribute is the first item, the error is the
+    # second.
     def fail!(*args)
-      if args.length == 1 
-        errors.add(:base, message: args[0])
+      if args.length == 1
+        errors.add(:base, args[0])
       elsif args.length == 2
-        errors.add(args[0], message: args[1])
+        errors.add(args[0], args[1])
       else
         raise ArgumentError.new("Too many arguments given (#{args.length}): #{args}")
       end
@@ -174,7 +178,7 @@ module Commands
         float: Float,
         object: Object,
         string: String
-      }
+      }.freeze
 
       # Returns the ActiveAttr type for the provided SimpleForm type
       def active_attr_type

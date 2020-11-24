@@ -14,7 +14,7 @@ class APIController < ActionController::API
   before_action do
     @session = Session.new(cookies)
     Time.zone = current_user.time_zone
-    I18n.locale = current_user.locale
+    I18n.locale = current_locale
 
     request.env['exception_notifier.exception_data'] = {
       current_user: current_user
@@ -24,11 +24,11 @@ class APIController < ActionController::API
   before_action do
     split_path = request.path.split('/')
     # Remember! split_path[0] == "" since paths start with a /
-
     next if %w[ping sessions magic-sign-in password-resets].include?(split_path[2])
     next if %w[ping version xnp9q8g7nvx9wmq197b0 dev].include?(split_path[1])
     next if request.path == '/v1/users/create-and-sign-in'
     next if request.path.starts_with?('/v1/locations') && split_path.length == 4
+
     ensure_authenticated!
   end
 

@@ -32,7 +32,7 @@ module UsersController
       user = User.new(User.restrict_params(request_json))
       if user.save
         set_status_created
-        sign_in(user)
+        sign_in(user, request.ip)
         render json: UserSerializer.new(user)
       else
         error_response(user)

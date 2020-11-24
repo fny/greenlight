@@ -77,6 +77,8 @@ gem 'phonelib'
 gem 'plivo'
 # The express way to send email
 gem 'pony'
+# Rails Locale Data Repository
+gem 'rails-i18n', '~> 6.0.0'
 # Advanced seed data handling for Rails
 gem 'seed-fu', '~> 2.3'
 # Control flow tracing.

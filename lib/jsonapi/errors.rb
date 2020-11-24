@@ -7,8 +7,6 @@ module JSONAPI
         errors: errors
       }
     end
-
-    
     module_function :serialize
   end
 end
