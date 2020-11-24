@@ -39,6 +39,8 @@ export const GREENLIGHT_COLORS = {
 }
 
 export class GreenlightStatus extends Model {
+  static modelName = 'greenlightStatus'
+
   static newUnknown(): GreenlightStatus {
     return new GreenlightStatus({ status: GreenlightStatusTypes.UNKNOWN })
   }

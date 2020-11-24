@@ -63,7 +63,7 @@ export default function UsersNewPage(props: F7Props) {
             <ListInput type="text" label="Registration Code" placeholder="Enter Your Registration Code Here" required onChange={(e) => setMyCode(e.target.value)} />
             <br />
             <Button href={`/l/${myPermalink}/code/${myCode}`} fill>
-              Lookup Location {`/l/${myPermalink}/code/${myCode}`}
+              Lookup Location
             </Button>
           </List>
         </Block>

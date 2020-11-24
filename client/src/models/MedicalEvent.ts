@@ -20,6 +20,8 @@ export enum MedicalEventTypes {
 }
 
 export class MedicalEvent extends Model {
+  static modelName = 'medicalEvent'
+
   static SYMPTOMS = [
     MedicalEventTypes.FEVER,
     MedicalEventTypes.NEW_COUGH,

@@ -26,6 +26,8 @@ export const LOCATION_CATEGORIES: LocationCategories[] = [
 ]
 
 export class Location extends Model {
+  static modelName = 'location'
+
   constructor(data?: any) {
     super()
     initialize(this, data)

@@ -16,7 +16,11 @@ class LocationAccount < ApplicationRecord
   extend Enumerize
   belongs_to :user
   belongs_to :location
+<<<<<<< HEAD
   belongs_to :created_by, class_name: 'User'
+=======
+  belongs_to :created_by, class_name: 'User', optional: true
+>>>>>>> d8fa45b666bb502386122af2b8b55a80b442e03a
 
   enumerize :role, in: ROLES
   enumerize :permission_level, in: PERMISSION_LEVELS, default: NONE

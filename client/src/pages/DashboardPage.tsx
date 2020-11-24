@@ -181,7 +181,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
 
           <ListItem
             external
-            link=""
+            link={paths.chwRequestPath}
             title={t({ id: 'DashboardPage.asfff', message: 'Connect to Care' })}
             footer={t({
               id: 'asdf',
@@ -201,6 +201,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           </ListItem>
           <ListItem
             external
+            link={paths.ncStatewideStatsPath}
             // link="tel:1-877-490-6642"
             title={t({ id: 'DashboardPage.ffasfa', message: 'NC COVID-19 Data' })}
             footer={t({ id: 'DashboardPage.affafa', message: 'COVID-19 maps and statistics from across the state' })}
@@ -213,7 +214,7 @@ export default class DashboardPage extends ReactNComponent<any, any> {
             external
             link="mailto:help@greenlightready.com"
           >
-            <Icon slot="media" f7="message" />
+            <Icon slot="media" f7="envelope" />
           </ListItem>
           {/* https://ncchildcare.ncdhhs.gov/Portals/0/documents/pdf/P/Parent_and_Families_School_Age_Child_Care.pdf?ver=2020-08-26-122445-963 */}
           <ListItem
