@@ -49,20 +49,19 @@ class UsersList extends React.Component<Props, any> {
           link={`/users/${user.id}/covid-test`}
           title="Submit COVID Test"
         ></ListItem> */}
-            {user.hasNotSubmittedOwnSurvey() && (
-            <ListItem
-              link={dynamicPaths.userSurveysNewPath(user.id, { redirect: this.props.route.path })}
-              title="Check-In"
-            />
-            )}
-            <ListItem
-              link={dynamicPaths.userGreenlightPassPath(user.id)}
-              title={getGlobal().i18n._(defineMessage({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' }))}
-            />
-            {/* <ListItem
-          link={`/users/${user.id}/absence`}
-          title="Schedule Absence"
-        ></ListItem> */}
+            {
+            user.hasNotSubmittedOwnSurvey() ? (
+              <ListItem
+                link={dynamicPaths.userSurveysNewPath(user.id, { redirect: this.props.route.path })}
+                title="Check-In"
+              />
+            ) : (
+              <ListItem
+                link={dynamicPaths.userGreenlightPassPath(user.id)}
+                title={getGlobal().i18n._(defineMessage({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' }))}
+              />
+            )
+          }
           </List>
         </AccordionContent>
       </ListItem>

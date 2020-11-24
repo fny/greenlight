@@ -24,19 +24,6 @@ export default function SettingsPage() {
           link={dynamicPaths.editUserPath({ userId: currentUser.id })}
           title={t({ id: 'SettingsPage.profile', message: 'Profile' })}
         />
-        {/*
-        {currentUser.isAdmin() && (
-          <ListItem accordionItem title={t({ id: 'SettingsPage.admin', message: 'Admin' })}>
-            <AccordionContent>
-              <List>
-                <ListItem
-                  link="/admin/plumbing"
-                  title={t({ id: 'SettingsPage.ACMEPlumbing', message: 'ACME Plumbing' })}
-                />
-              </List>
-            </AccordionContent>
-          </ListItem>
-        )} */}
 
         {currentUser.hasChildren() && (
           <ListItem

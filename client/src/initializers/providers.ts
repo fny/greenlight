@@ -5,13 +5,12 @@ import { deleteSession, getCurrentUser } from 'src/api'
 import { User } from 'src/models'
 import { i18n, GLLocales } from 'src/i18n'
 import CookieJar, { Cookie } from 'src/misc/CookieJar'
-import logger from 'src/logger'
 import Honeybadger from './honeybadger'
 
 setGlobal({
   locale: cookieLocale(),
   i18n,
-  flashMessage: '',
+  currentUser: null,
   // This is used for testing reducers
   x: 0,
 })
@@ -48,12 +47,12 @@ export async function signOut() {
 }
 
 export function toggleLocale() {
-  // const newLocale = cookieLocale() === 'en' ? 'es' : 'en'
-  // CookieJar.set(Cookie.LOCALE, newLocale)
-  // setGlobal({ locale: newLocale })
-  // i18n.activate(newLocale)
+  const newLocale = cookieLocale() === 'en' ? 'es' : 'en'
+  CookieJar.set(Cookie.LOCALE, newLocale)
+  setGlobal({ locale: newLocale })
+  i18n.activate(newLocale)
   // // TODO: How do we stop doing this?
-  // window.location.reload()
+  window.location.reload()
 }
 
 export function cookieLocale(): GLLocales {

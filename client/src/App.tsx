@@ -13,7 +13,6 @@ import { ErrorBoundary } from './ErrorBoundary'
 import OnlineStatus from './components/OnlineStatus'
 import SupportedBrowserBar from './components/SupportedBrowserBar'
 import { isCordova } from './util'
-import FlashMessage from './components/FlashMessage'
 
 function I18nWatchLocale({ children }: { children: React.ReactNode }) {
   const { i18n } = useLingui()
@@ -28,7 +27,7 @@ function I18nWatchLocale({ children }: { children: React.ReactNode }) {
 const f7params: Framework7Params = {
   id: 'com.greenlightready.mobile', // App bundle ID
   name: 'Greenlight', // App name
-  theme: 'auto', // Automatic theme detection
+  theme: 'ios', // Automatic theme detection
   routes,
 }
 
@@ -49,14 +48,10 @@ export default function Main() {
           <SupportedBrowserBar />
           <OnlineStatus />
           <ErrorBoundary>
-
-            <View id="main-view" url="/" main className="safe-areas">
-              <FlashMessage />
-            </View>
+            <View id="main-view" url="/" main className="safe-areas" />
           </ErrorBoundary>
         </App>
       </I18nWatchLocale>
     </I18nProvider>
-
   )
 }

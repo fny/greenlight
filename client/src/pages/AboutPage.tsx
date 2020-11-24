@@ -31,7 +31,7 @@ const SettingsPage = () => (
         title={t({ id: 'AboutPage.open_source_licenses', message: 'Open Source Licenses' })}
       />
       <ListItem
-        link="https://greenlighted.org/privacy"
+        link="https://docs.google.com/document/d/1kC7hXtFM2CftY7qegAEgStgw0auzM0t1BdKCoiS6uLM/?usp=sharing"
         title={t({ id: 'AboutPage.privacy_policy', message: 'Privacy Policy' })}
         external
       />

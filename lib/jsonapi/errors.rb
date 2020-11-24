@@ -2,10 +2,14 @@
 module JSONAPI
   module Errors
     def serialize(errors)
-      errors = (errors.is_a?(Array) ? errors : [ errors ]).map(&:to_h)
-      {
-        errors: errors
-      }
+      case errors
+      when JSONAPI::Errors::ActiveModelInvalid
+        { errors: errors.to_h }
+      when Array
+        { errors: errors.map(&:to_h) }
+      else
+        { errors: [ errors.to_h ] }
+      end
     end
     module_function :serialize
   end

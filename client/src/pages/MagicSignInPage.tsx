@@ -16,6 +16,8 @@ import { Dict } from 'src/types'
 import { createMagicSignIn } from 'src/api'
 import { assertNotNull } from 'src/util'
 import logger from 'src/logger'
+import { paths } from 'src/routes'
+import NavbarSplashLink from 'src/components/NavbarSplashLink'
 
 interface State {
   emailOrMobile: string
@@ -73,7 +75,11 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
   render() {
     return (
       <Page className="MagicSignInPage" noToolbar noSwipeback loginScreen>
-        <Navbar title={this.global.i18n._(defineMessage({ id: 'MagicSignInPage.title', message: 'Magic Sign In' }))} />
+        <Navbar
+          title={this.global.i18n._(defineMessage({ id: 'MagicSignInPage.title', message: 'Magic Sign In' }))}
+        >
+          <NavbarSplashLink slot="left" />
+        </Navbar>
         <div className="greenlight-logo">
           Greenlight
           <span>.</span>

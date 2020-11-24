@@ -87,13 +87,7 @@ export default function NotificationsPage(props: F7Props) {
 
   return (
     <Page>
-<<<<<<< HEAD
-      <Navbar
-        title={t({ id: 'NotificationsPage.title', message: 'Notifications' })}
-      />
-=======
       <Navbar title={t({ id: 'NotificationsPage.title', message: 'Notifications' })} />
->>>>>>> d8fa45b666bb502386122af2b8b55a80b442e03a
       <Block>
         <BlockTitle>
           <Trans id="NotificationsPage.daily_reminders_title">Daily Reminders</Trans>
@@ -113,93 +107,6 @@ export default function NotificationsPage(props: F7Props) {
                   {t({ id: 'DailyReminder.send_via_email', message: 'Send Reminders via Email' })}
                 </option>
               )}
-<<<<<<< HEAD
-            <option value={DailyReminderType.NONE}>
-              {t({ id: 'DailyReminder.disable_all', message: 'Disable All Reminders' })}
-            </option>
-          </FormikInput>
-          <FormikItem
-            name="overrideLocationReminders"
-            title={t({ id: 'NotificationsPage.override_location_reminders_title', message: 'Set my own reminder times' })}
-            footer={t({ id: 'NotificationsPage.override_location_reminders_footer', message: 'Set my own reminder times' })}
-            formik={formik}
-            checkbox
-          />
-          {formik.values.overrideLocationReminders && (
-          <ListItemRow>
-            <ListItemCell>
-              <FormikInput name="dailyReminderHour" label="Hour" type="number" min="1" max="12" formik={formik} />
-            </ListItemCell>
-            <ListItemCell>
-              <FormikInput
-                name="dailyReminderAMPM"
-                label="AM/PM"
-                type="select"
-                formik={formik}
-              >
-                <option value="am">AM</option>
-                <option value="pm">PM</option>
-              </FormikInput>
-
-            </ListItemCell>
-          </ListItemRow>
-          ) }
-          { formik.values.overrideLocationReminders
-              && (
-                <List>
-                  <ListItem title={t({ id: 'NotificationsPage.days_to_remind', message: 'What days would you like to be reminded?' })} />
-                  <FormikItem
-                    title={t({ id: 'Weekday.monday', message: 'Monday' })}
-                    name="remindMon"
-                    onChange={formik.handleChange}
-                    checkbox
-                    formik={formik}
-                  />
-                  <FormikItem
-                    title={t({ id: 'Weekday.tuesday', message: 'Tuesday' })}
-                    name="remindTue"
-                    checkbox
-                    formik={formik}
-                  />
-                  <FormikItem
-                    title={t({ id: 'Weekday.wednesday', message: 'Wednesday' })}
-                    name="remindWed"
-                    checkbox
-                    formik={formik}
-                  />
-                  <FormikItem
-                    title={t({ id: 'Weekday.thursday', message: 'Thursday' })}
-                    name="remindThu"
-                    checkbox
-                    formik={formik}
-                  />
-                  <FormikItem
-                    title={t({ id: 'Weekday.friday', message: 'Friday' })}
-                    name="remindFri"
-                    checkbox
-                    formik={formik}
-                  />
-                  <FormikItem
-                    title={t({ id: 'Weekday.saturday', message: 'Saturday' })}
-                    name="remindSat"
-                    checkbox
-                    formik={formik}
-                  />
-                  <FormikItem
-                    title={t({ id: 'Weekday.sunday', message: 'Sunday' })}
-                    name="remindSun"
-                    checkbox
-                    formik={formik}
-                  />
-                </List>
-              )}
-          <Block>
-            <Button type="submit" outline fill>
-              <Trans id="Common.submit">Submit</Trans>
-            </Button>
-          </Block>
-        </List>
-=======
               <option value={DailyReminderType.NONE}>
                 {t({ id: 'DailyReminder.disable_all', message: 'Disable All Reminders' })}
               </option>
@@ -258,7 +165,6 @@ export default function NotificationsPage(props: F7Props) {
             </Block>
           </List>
         </FormikProvider>
->>>>>>> d8fa45b666bb502386122af2b8b55a80b442e03a
       </Block>
     </Page>
   )

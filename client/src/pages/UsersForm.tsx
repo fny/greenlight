@@ -1,7 +1,7 @@
 import { t, Trans } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
 import {
-  Button, f7, List, ListItem, Toggle,
+  Button, f7, List, ListInput, ListItem, Toggle,
 } from 'framework7-react'
 import { Router } from 'framework7/modules/router/router'
 import React, { useState } from 'react'
@@ -20,35 +20,21 @@ class UserInput {
 
   email: string = ''
 
-  mobileNumber: string = ''
+  mobileNumber: string= ''
 
-  password: string = ''
+  password: string= ''
 
-  physicanName: string = ''
-
-  physicianPhoneNumber: string = ''
-
-  needsPhysician: boolean = false
-
-  locale: GLLocales = 'en'
+  locale: GLLocales= 'en'
 }
 
-export default function UserForm({ user, f7router }: { user?: User; f7router: Router.Router }) {
-  const submissionHandler = new SubmissionHandler(f7)
+export default function UserForm({ user, f7router }: { user?: User, f7router: Router.Router}) {
+  const [locale] = useGlobal('locale')
   const [revealPassword, setRevealPassword] = useState(false)
-  const [locale, setLocale] = useGlobal('locale')
+
+  const submissionHandler = new SubmissionHandler(f7)
+
   const formik = useFormik<UserInput>({
-    validationSchema: Yup.object<UserInput>().shape({
-      firstName: Yup.string().required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
-      lastName: Yup.string().required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
-      email: Yup.string()
-        .email(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
-        .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
-      mobileNumber: Yup.string()
-        .phone('US', undefined, t({ id: 'Form.error_invalid', message: 'Is invalid' }))
-        .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
-      password: Yup.string().min(8),
-    }),
+    validationSchema: schema,
     initialValues: new UserInput(),
     onSubmit: (values) => {
       submissionHandler.submit(async () => {
@@ -73,31 +59,71 @@ export default function UserForm({ user, f7router }: { user?: User; f7router: Ro
           formik.submitForm()
         }}
       >
-        <FormikInput label={t({ id: 'Forms.first_name', message: 'First Name' })} name="firstName" type="text" />
-        <FormikInput label={t({ id: 'Forms.last_name', message: 'Last Name' })} name="lastName" type="text" />
-        <FormikInput label={t({ id: 'Forms.email', message: 'Email' })} name="email" type="email" />
+        <FormikInput
+          label={t({ id: 'Forms.first_name', message: 'First Name' })}
+          name="firstName"
+          type="text"
+          floatingLabel
+        />
+        <FormikInput
+          label={t({ id: 'Forms.last_name', message: 'Last Name' })}
+          name="lastName"
+          type="text"
+          floatingLabel
+        />
+        <FormikInput
+          label={t({ id: 'Forms.email', message: 'Email' })}
+          name="email"
+          type="email"
+          floatingLabel
+        />
         <FormikInput
           label={t({ id: 'Forms.mobile_number', message: 'Mobile Number' })}
           name="mobileNumber"
           type="tel"
+          floatingLabel
         />
 
         <FormikInput
           label={t({ id: 'Forms.password', message: 'Password' })}
           name="password"
           type={revealPassword ? 'text' : 'password'}
+          floatingLabel
         />
 
         <ListItem>
-          <span>Reveal Password</span>
+          <span><Trans id="Forms.reveal_password">Reveal Password</Trans></span>
           <Toggle color="green" checked={revealPassword} onChange={() => setRevealPassword(!revealPassword)} />
         </ListItem>
-        <br />
-        <br />
-        <Button type="submit" outline fill>
+        <ListInput
+          label={t({ id: 'Forms.language', message: 'Language' })}
+          type="select"
+          defaultValue={locale}
+        >
+          <option value="en">
+            {t({ id: 'Common.english', message: 'English' })}
+          </option>
+          <option value="es">
+            {t({ id: 'Common.spanish', message: 'Español' })}
+          </option>
+        </ListInput>
+
+        <Button style={{ marginTop: '1rem' }} type="submit" outline fill>
           <Trans id="Common.register">Register</Trans>
         </Button>
       </List>
     </FormikProvider>
   )
 }
+
+const schema = Yup.object<UserInput>().shape({
+  firstName: Yup.string().required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
+  lastName: Yup.string().required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
+  email: Yup.string()
+    .email(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
+    .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
+  mobileNumber: Yup.string()
+    .phone('US', undefined, t({ id: 'Form.error_invalid', message: 'Is invalid' }))
+    .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
+  password: Yup.string().min(8, t({ id: 'Form.password_invalid', message: 'must be at least 8 characters' })),
+})

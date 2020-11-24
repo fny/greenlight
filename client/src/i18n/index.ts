@@ -1,8 +1,8 @@
 import { i18n } from '@lingui/core'
 
 import * as plurals from 'make-plural/plurals'
-import en from './locales/en/messages'
-import es from './locales/es/messages'
+import en from './locales/en'
+import es from './locales/es'
 
 export { i18n }
 

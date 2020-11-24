@@ -7,14 +7,15 @@ import {
 
 import welcomeDoctorImage from 'src/images/welcome-doctor.svg'
 import {
-  Page, Block, Sheet, Row, Button, Col, Link, PageContent, Toolbar, List, ListInput,
+  Page, Block, Sheet, Row, Button, Col, Link, PageContent, Toolbar, List, ListInput, Navbar,
 } from 'framework7-react'
-import { Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import { toggleLocale } from 'src/initializers/providers'
 import { User, Location } from 'src/models'
 import { F7Props } from 'src/types'
 import { getLocation, joinLocation } from 'src/api'
 import { paths } from 'src/routes'
+import NavbarSplashLink from 'src/components/NavbarSplashLink'
 import UserForm from './UsersForm'
 import LoadingPage from './LoadingPage'
 
@@ -33,10 +34,8 @@ export default function UsersNewPage(props: F7Props) {
   // setMyCode(registrationCode)
   const [currentUser] = useGlobal('currentUser')
   useEffect(() => {
-    // HACK: This actually reveals the permalink since its in the payload
+    // HACK: This actually reveals the registration code since its in the response payload
     if (!permalink) return
-    console.log(permalink)
-    console.log(location)
     getLocation(permalink).then(setLocation).catch(setError)
   }, [permalink])
 
@@ -49,11 +48,15 @@ export default function UsersNewPage(props: F7Props) {
   if (!permalink || !registrationCode || error) {
     return (
       <Page>
+        <Navbar title={t({ id: 'BusinessRegistration.lookup_business_title', message: 'Look Up Business' })}>
+          <NavbarSplashLink slot="left" />
+        </Navbar>
         <Block>
-          <h1>Look Up A Business</h1>
           <p>
-            You should have received a link from or code from your business or school.
-            If you received a code, enter it below. The code is not case sensitive.
+            <Trans id="BusinessRegistration.lookup_business_instructions">
+              You should have received a link from or code from your business or school.
+              If you received a code, enter it below. The code is not case sensitive.
+            </Trans>
           </p>
           {
             error && <p style={{ color: 'red' }}>There was an error looking up the business. Please make sure your information is correct.</p>
@@ -73,18 +76,28 @@ export default function UsersNewPage(props: F7Props) {
 
   if (currentUser && location && currentUser.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0) {
     return (
-      <Block>
-        <h1>Registered for This Location</h1>
-        <p>
-          You are registered to submit survey to {location.name}.
-        </p>
-        {
+      <Page>
+        <Navbar title={
+          t({ id: 'UsersNewPage.location_id', message: '' })
+          }
+        >
+          <NavbarSplashLink slot="left" />
+        </Navbar>
+        <Block>
+          <h1>
+            Registered for {location.name}
+          </h1>
+          <p>
+            You are registered to submit survey to {location.name}.
+          </p>
+          {
           currentUser.hasCompletedWelcome()
             ? <Button fill href={paths.dashboardPath}>Return to Dashboard</Button>
             : <Button fill href={paths.welcomeSurveyPath}>Submit Your First Survey</Button>
         }
 
-      </Block>
+        </Block>
+      </Page>
     )
   }
 
@@ -92,6 +105,17 @@ export default function UsersNewPage(props: F7Props) {
     return (
       <Block>
         <h1>Join {location.name}</h1>
+        <p>Thank you for creating your account! Taco has
+          decided to implement Greenlight Durham and may
+          require that you complete daily check-in’s to work on
+          site. You have the option to share your daily check-in
+          status with Taco through Greenlight. Note that only
+          your status (green, yellow, pink) is shared with {location.name},
+          not your detailed symptoms or medical information.
+          Even if you agree to share updates with Taco at this
+          time, you can stop sharing updates at any time. Click
+          below to allow Taco to receive your check-in status.
+        </p>
         <p>
           Click the button below to allow {location.name} to receive your survey results.
         </p>

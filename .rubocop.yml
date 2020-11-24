@@ -25,6 +25,9 @@ Cop/AvoidKeywordArgumentsInSidekiqWorkers:
   Include:
     - 'app/workers/**/*'
 
+Layout/FirstHashElementIndentation:
+  Enabled: false
+
 Metrics/AbcSize:
   Enabled: false
 
@@ -33,6 +36,9 @@ Metrics/BlockLength:
 
 Metrics/ClassLength:
   Enabled: false
+
+Metrics/CyclomaticComplexity:
+    Enabled: false
 
 Metrics/MethodLength:
   Enabled: false
@@ -91,7 +97,6 @@ Style/MutableConstant:
 
 Style/Lambda:
   Enabled: false
-
 
 Style/CommentedKeyword:
   Enabled: false

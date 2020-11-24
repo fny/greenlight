@@ -7,7 +7,7 @@ module JSONAPI
       attr_reader :errors
 
       # @param [ActiveModel::Errors] errors
-      def initialize(errors: ActiveModel::Errors.new)
+      def initialize(errors: ActiveModel::Errors.new) # rubocop:disable Lint/MissingSuper
         @errors = errors
         @status = 422
         @title = 'Invalid request'

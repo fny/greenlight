@@ -44,7 +44,7 @@ function UserList({ users }: { users: User[] }) {
               <If test={user.hasNotSubmittedOwnSurvey()}>
                 <ListItem
                   link={dynamicPaths.userSurveysNewPath(user.id, { single: true })}
-                  title="Submit Symptom Survey"
+                  title={t({ id: 'DashboardPage.check_in', message: 'Check In' })}
                 />
               </If>
               {/* <ListItem
@@ -182,9 +182,9 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           <ListItem
             external
             link={paths.chwRequestPath}
-            title={t({ id: 'DashboardPage.asfff', message: 'Connect to Care' })}
+            title={t({ id: 'DashboardPage.connect_to_care_title', message: 'Connect to Care' })}
             footer={t({
-              id: 'asdf',
+              id: 'DashboardPage.connect_to_care_footer',
               message: 'Send a care request to a community health worker.',
             })}
           >
@@ -200,20 +200,17 @@ export default class DashboardPage extends ReactNComponent<any, any> {
             <Icon slot="media" f7="phone" />
           </ListItem>
           <ListItem
-<<<<<<< HEAD
             external
-=======
->>>>>>> staging
             link={paths.ncStatewideStatsPath}
             // link="tel:1-877-490-6642"
-            title={t({ id: 'DashboardPage.ffasfa', message: 'NC COVID-19 Data' })}
-            footer={t({ id: 'DashboardPage.affafa', message: 'COVID-19 maps and statistics from across the state' })}
+            title={t({ id: 'DashboardPage.nc_covid_data_title', message: 'NC COVID-19 Data' })}
+            footer={t({ id: 'DashboardPage.nc_covid_data_footer', message: 'COVID-19 maps and statistics from across the state' })}
           >
             <Icon slot="media" f7="graph_square" />
           </ListItem>
           <ListItem
-            title={t({ id: 'DashboardPage.support_titless', message: 'Contact Support' })}
-            footer={t({ id: 'DashboardPage.support_footerss', message: 'Have any questions? Message our support team.' })}
+            title={t({ id: 'DashboardPage.support_title', message: 'Contact Support' })}
+            footer={t({ id: 'DashboardPage.support_footer', message: 'Have any questions? Message our support team.' })}
             external
             link="mailto:help@greenlightready.com"
           >

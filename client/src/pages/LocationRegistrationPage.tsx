@@ -44,10 +44,7 @@ const LocationRegistrationPage: FunctionComponent<F7Props> = () => {
       registrationCode: '',
     },
     onSubmit: (values) => {
-      submissionHandler.submit(async () => {
-        console.log('submit', values)
-        return Promise.resolve()
-      })
+      submissionHandler.submit(async () => Promise.resolve())
     },
   })
 

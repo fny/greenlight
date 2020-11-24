@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import {
   assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
 } from 'src/util'
@@ -28,6 +28,7 @@ export const v1 = axios.create({
 
 v1.interceptors.request.use((request) => {
   logger.dev(`[Request] ${request.method} ${request.url}`)
+  request.headers['X-GL-Locale'] = getGlobal().locale
   return request
 })
 
@@ -37,7 +38,7 @@ v1.interceptors.response.use(
     return response
   },
   (error) => {
-    logger.dev('[Response Error]', error, error.response, 'ji')
+    logger.dev('[Response Error]', error, error.response)
 
     if (error.response) {
       const response = error.response as AxiosResponse

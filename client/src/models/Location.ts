@@ -89,4 +89,8 @@ export class Location extends Model {
 
   @attr({ type: STRING })
   registrationCode: string | null = ''
+
+  registrationWithCodeURL() {
+    return `glit.me/l/${this.permalink}/code/${this.registrationCode}`
+  }
 }
