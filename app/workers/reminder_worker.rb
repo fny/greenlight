@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 class ReminderWorker < ApplicationWorker
+  sidekiq_options retry: 0
+
   def html_template
     Erubi::Engine.new(<<~HTML
       <h2><%= I18n.t('emails.reminder.title') %></h2>
@@ -30,8 +32,16 @@ class ReminderWorker < ApplicationWorker
   end
 
   def perform(user_id)
-    user = User.find_by!(id: user_id)
-    user.reset_magic_sign_in_token!
+    user = User.find(user_id)
+    if user.email_confirmation_sent_at&.today?
+      return
+    end
+
+    if user.inferred_status.status != GreenlightStatus::UNKNOWN
+      return
+    end
+
+    user.update_columns(email_confirmation_sent_at: Time.now)
 
     # if user.needs_to_submit_survey_for.empty?
     #   return
