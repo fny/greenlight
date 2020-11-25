@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class ScheduledReminderWorker < ApplicationWorker
+  REMINDER_DAYS = %i[
+    remind_sun remind_mon remind_tue remind_wed remind_thu remind_fri remind_sat
+  ].freeze
+
   sidekiq_options retry: 3
 
   def perform
@@ -14,18 +18,18 @@ class ScheduledReminderWorker < ApplicationWorker
     reminder_query[reminder_day] = true
 
     user_ids = UserSettings.where(
-      query
+      reminder_query
     ).where.not(
       daily_reminder_type: 'none',
       override_location_reminders: true
     ).pluck(:user_id).to_set
 
     user_ids_from_location = Location.where(
-      query
+      reminder_query
     ).all.flat_map { |x| x.users_to_notify.to_a }.map(&:id)
 
     user_ids = user_ids.merge(user_ids_from_location)
 
-    user_ids.map { |user_id| ReminderWorker.new.perform(user_id) }
+    user_ids.each { |user_id| ReminderWorker.perform_async(user_id) }
   end
 end

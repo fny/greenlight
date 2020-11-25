@@ -24,6 +24,22 @@ export default function SettingsPage() {
           link={dynamicPaths.editUserPath({ userId: currentUser.id })}
           title={t({ id: 'SettingsPage.profile', message: 'Profile' })}
         />
+        {currentUser.locations__HACK().length > 0 && (
+          <ListItem
+            accordionItem
+            title={t({ id: 'SettingsPage.my_locations', message: 'My Locations' })}
+          >
+            <AccordionContent>
+              <List>
+                {currentUser.locations__HACK().map((location) => (
+                  <ListItem
+                    title={location.name || ''}
+                  />
+                ))}
+              </List>
+            </AccordionContent>
+          </ListItem>
+        )}
 
         {currentUser.hasChildren() && (
           <ListItem
@@ -35,7 +51,7 @@ export default function SettingsPage() {
                 {currentUser.sortedChildren().map((child) => (
                   <ListItem
                     key={child.id}
-                    link={`/users/${child.id}`}
+                    link={dynamicPaths.editUserPath({ userId: child.id })}
                     title={child.firstName}
                   />
                 ))}

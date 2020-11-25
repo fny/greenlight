@@ -10,12 +10,10 @@ import {
   Page, Block, Sheet, Row, Button, Col, Link, PageContent, Toolbar, List, ListInput, Navbar,
 } from 'framework7-react'
 import { t, Trans } from '@lingui/macro'
-import { toggleLocale } from 'src/initializers/providers'
 import { User, Location } from 'src/models'
 import { F7Props } from 'src/types'
 import { getLocation, joinLocation } from 'src/api'
 import { paths } from 'src/routes'
-import NavbarSplashLink from 'src/components/NavbarSplashLink'
 import UserForm from './UsersForm'
 import LoadingPage from './LoadingPage'
 
@@ -48,9 +46,7 @@ export default function UsersNewPage(props: F7Props) {
   if (!permalink || !registrationCode || error) {
     return (
       <Page>
-        <Navbar title={t({ id: 'BusinessRegistration.lookup_business_title', message: 'Look Up Business' })}>
-          <NavbarSplashLink slot="left" />
-        </Navbar>
+        <Navbar title={t({ id: 'BusinessRegistration.lookup_business_title', message: 'Look Up Business' })} backLink />
         <Block>
           <p>
             <Trans id="BusinessRegistration.lookup_business_instructions">
@@ -97,12 +93,12 @@ export default function UsersNewPage(props: F7Props) {
   if (currentUser && location && currentUser.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0) {
     return (
       <Page>
-        <Navbar title={
+        <Navbar
+          title={
           t({ id: 'BusinessRegistered.success_title', message: 'Account Linked' })
           }
-        >
-          <NavbarSplashLink slot="left" />
-        </Navbar>
+          backLink
+        />
         <Block>
           <h1>
             <Trans id="BusinessRegistered.success_header">
@@ -140,9 +136,7 @@ export default function UsersNewPage(props: F7Props) {
   if (currentUser && location) {
     return (
       <Page>
-        <Navbar title={t({ id: 'BusinessRegistered.connect_title', message: 'Connect with a Business' })}>
-          <NavbarSplashLink slot="left" />
-        </Navbar>
+        <Navbar title={t({ id: 'BusinessRegistered.connect_title', message: 'Connect with a Business' })} backLink />
         <Block>
           <h1>
             <Trans id="BusinessRegistered.connect_heading">
@@ -194,9 +188,7 @@ export default function UsersNewPage(props: F7Props) {
     assertNotUndefined(location)
     return (
       <Page>
-        <Navbar title={t({ id: 'BusinessRegistered.new_account', message: 'Create a New Account' })}>
-          <NavbarSplashLink slot="left" />
-        </Navbar>
+        <Navbar title={t({ id: 'BusinessRegistered.new_account', message: 'Create a New Account' })} backLink />
         <Block>
           <h1>Create Your Account</h1>
           <p>

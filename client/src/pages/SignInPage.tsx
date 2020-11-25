@@ -19,7 +19,6 @@ import { createSession, getCurrentUser } from 'src/api'
 import { t, Trans } from '@lingui/macro'
 import { paths, dynamicPaths } from 'src/routes'
 import { F7Props } from 'src/types'
-import NavbarSplashLink from 'src/components/NavbarSplashLink'
 
 export default function SignInPage(props: F7Props) {
   const emailOrMobileRef = React.createRef<EmailOrPhoneListInput>()
@@ -68,8 +67,6 @@ export default function SignInPage(props: F7Props) {
       <Navbar
         title={t({ id: 'SignInPage.title', message: 'Sign In' })}
       >
-        <NavbarSplashLink slot="left" />
-
         <Link href={paths.magicSignInPath} slot="right">
           <Trans id="SignInPage.with_magic">with Magic ✨</Trans>
         </Link>

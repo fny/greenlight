@@ -115,9 +115,20 @@ export class User extends Model {
     return this.hasChildren()
   }
 
-  // HACK
-  isAdmin(): boolean {
-    return this.locationAccounts[0]?.permissionLevel === PermissionLevels.ADMIN
+  isAdminAt(location: Location): boolean {
+    const la = this.accountFor(location)
+    if (!la) return false
+    return la.isAdmin()
+  }
+
+  isOwnerAt(location: Location): boolean {
+    const la = this.accountFor(location)
+    if (!la) return false
+    return la.isOwner()
+  }
+
+  accountFor(location: Location): LocationAccount | null {
+    return this.locationAccounts.find((la) => la.id === location.id) || null
   }
 
   /** Has the user completed the welcome sequence? */

@@ -4,7 +4,7 @@ import {
 } from './Model'
 
 export enum LocationCategories {
-  SCHOOOL = 'school',
+  SCHOOL = 'school',
   RESTAUARNT = 'restaurant',
   ENTERTAINMENT = 'enterainment',
   NONPROFIT = 'nonprofit',
@@ -15,7 +15,7 @@ export enum LocationCategories {
 }
 
 export const LOCATION_CATEGORIES: LocationCategories[] = [
-  LocationCategories.SCHOOOL,
+  LocationCategories.SCHOOL,
   LocationCategories.RESTAUARNT,
   LocationCategories.ENTERTAINMENT,
   LocationCategories.NONPROFIT,

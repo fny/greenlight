@@ -17,7 +17,6 @@ import { createMagicSignIn } from 'src/api'
 import { assertNotNull } from 'src/util'
 import logger from 'src/logger'
 import { paths } from 'src/routes'
-import NavbarSplashLink from 'src/components/NavbarSplashLink'
 
 interface State {
   emailOrMobile: string
