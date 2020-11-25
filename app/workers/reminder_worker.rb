@@ -33,7 +33,7 @@ class ReminderWorker < ApplicationWorker
 
   def perform(user_id)
     user = User.find(user_id)
-    if user.email_confirmation_sent_at&.today?
+    if user.daily_reminder_sent_at&.today?
       return
     end
 
@@ -41,7 +41,7 @@ class ReminderWorker < ApplicationWorker
       return
     end
 
-    user.update_columns(email_confirmation_sent_at: Time.now)
+    user.update_columns(daily_reminder_sent_at: Time.now)
 
     # if user.needs_to_submit_survey_for.empty?
     #   return
