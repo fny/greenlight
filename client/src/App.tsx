@@ -27,7 +27,7 @@ function I18nWatchLocale({ children }: { children: React.ReactNode }) {
 const f7params: Framework7Params = {
   id: 'com.greenlightready.mobile', // App bundle ID
   name: 'Greenlight', // App name
-  theme: 'ios', // Automatic theme detection
+  theme: 'auto', // Automatic theme detection
   routes,
 }
 
