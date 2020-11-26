@@ -10,6 +10,7 @@ class APIController < ActionController::API
   include PasswordResetsController
   include UsersController
   include CurrentUserController
+  include SmokeTestsController
 
   before_action do
     @session = Session.new(cookies)
@@ -25,7 +26,7 @@ class APIController < ActionController::API
     split_path = request.path.split('/')
     # Remember! split_path[0] == "" since paths start with a /
 
-    next if %w[ping sessions magic-sign-in password-resets].include?(split_path[2])
+    next if %w[ping sessions magic-sign-in password-resets smoke-tests].include?(split_path[2])
     next if %w[ping version xnp9q8g7nvx9wmq197b0 dev].include?(split_path[1])
     next if request.path == '/v1/users/create-and-sign-in'
     next if request.path.starts_with?('/v1/locations') && split_path.length == 4
