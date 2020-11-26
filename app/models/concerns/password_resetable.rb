@@ -3,7 +3,7 @@ module PasswordResetable
   extend ActiveSupport::Concern
 
   included do
-    has_one :password_reset
+    has_one :password_reset, dependent: :destroy
   end
 
   def generate_password_token!
