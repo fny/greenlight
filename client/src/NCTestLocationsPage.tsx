@@ -10,7 +10,7 @@ export default function NCTestLocationsPage() {
       />
       <style dangerouslySetInnerHTML={{
         __html: `
-        .expand {position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: red }
+        .expand {position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
         .expand iframe {display: block; width: 100%; height: 100%; border: none;}
     `,
       }}

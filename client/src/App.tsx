@@ -13,6 +13,7 @@ import { ErrorBoundary } from './ErrorBoundary'
 import OnlineStatus from './components/OnlineStatus'
 import SupportedBrowserBar from './components/SupportedBrowserBar'
 import { isCordova } from './util'
+import SidePanel from './components/SidePanel'
 
 function I18nWatchLocale({ children }: { children: React.ReactNode }) {
   const { i18n } = useLingui()

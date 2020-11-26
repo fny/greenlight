@@ -10,6 +10,7 @@ import { User } from 'src/models'
 import { paths } from 'src/routes'
 import { reasonMessage, reasonTitle } from 'src/misc/reasons'
 import doctorsImage from 'src/images/doctors.svg'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 export default class SurveyThankYouPage extends ReactNComponent<any, any> {
   currentUser: User
@@ -36,7 +37,9 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
       <Page>
         <Navbar
           title={this.global.i18n._(defineMessage({ id: 'SurveyThankYouPage.cleared_title', message: 'All Clear!' }))}
-        />
+        >
+          <NavbarHomeLink slot="left" />
+        </Navbar>
 
         <Block>
           <p>
@@ -61,7 +64,9 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
       <Page>
         <Navbar
           title={this.global.i18n._(defineMessage({ id: 'SurveyThankYouPage.more_to_submit_title', message: 'More to Submit' }))}
-        />
+        >
+          <NavbarHomeLink slot="left" />
+        </Navbar>
         <Block>
           <p style={{ fontWeight: 'bold' }}>
             <Trans id="SurveyThankYouPage.more_to_submit_message">
@@ -99,7 +104,9 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
       <Page>
         <Navbar
           title={getGlobal().i18n._(defineMessage({ id: 'SurveyThankYouPage.not_all_cleared_title', message: 'Connect to Services' }))}
-        />
+        >
+          <NavbarHomeLink slot="left" />
+        </Navbar>
         <Block>
           <p style={{ fontWeight: 'bold' }}>
             <Trans id="SurveyThankYouPage.not_all_cleared_heading">Not everyone was cleared.</Trans>
@@ -145,7 +152,9 @@ export default class SurveyThankYouPage extends ReactNComponent<any, any> {
       <Page>
         <Navbar
           title={title}
-        />
+        >
+          <NavbarHomeLink slot="left" />
+        </Navbar>
         <BlockTitle>
           Status:{' '}
           {this.currentUser.greenlightStatus().title()}

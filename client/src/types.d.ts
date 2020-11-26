@@ -1,4 +1,5 @@
 import { ReactElement } from 'reactn'
+import { Router } from 'framework7/modules/router/router'
 
 import { Model } from './models'
 

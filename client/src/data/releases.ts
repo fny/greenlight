@@ -27,6 +27,7 @@ const releaseData: ReleaseData[] = [
       'You can now send requests to community health workers.',
       'Administrators can now promote other people to administrators.',
       'You can now join other businesses on Green.',
+      'We added a button so you can easily return to the home screen from most pages.',
     ],
     whatsNewEs: [
       '¡Vuelve el español!',

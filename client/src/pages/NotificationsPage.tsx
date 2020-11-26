@@ -23,6 +23,7 @@ import SubmissionHandler from 'src/misc/SubmissionHandler'
 import { updateUserSettings } from 'src/api'
 import { reloadCurrentUser } from 'src/initializers/providers'
 import { DailyReminderType } from 'src/models/UserSettings'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 interface NotificationsForm {
   dailyReminderType: DailyReminderType
@@ -87,7 +88,9 @@ export default function NotificationsPage(props: F7Props) {
 
   return (
     <Page>
-      <Navbar title={t({ id: 'NotificationsPage.title', message: 'Notifications' })} />
+      <Navbar title={t({ id: 'NotificationsPage.title', message: 'Notifications' })}>
+        <NavbarHomeLink slot="left" />
+      </Navbar>
       <Block>
         <BlockTitle>
           <Trans id="NotificationsPage.daily_reminders_title">Daily Reminders</Trans>

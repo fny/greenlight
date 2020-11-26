@@ -8,6 +8,7 @@ import { t } from '@lingui/macro'
 import { assertNotNull } from 'src/util'
 import { dynamicPaths, paths } from 'src/routes'
 import { User } from 'src/models'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 export default function SettingsPage() {
   const [currentUser] = useGlobal('currentUser')
@@ -18,7 +19,10 @@ export default function SettingsPage() {
       <Navbar
         title={t({ id: 'SettingsPage.title', message: 'Settings' })}
         sliding
-      />
+      >
+        <NavbarHomeLink slot="left" />
+      </Navbar>
+
       <List accordionList noHairlines>
         <ListItem
           link={dynamicPaths.editUserPath({ userId: currentUser.id })}

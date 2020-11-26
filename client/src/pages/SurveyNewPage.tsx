@@ -26,6 +26,7 @@ import difficultyBreathing from 'src/images/symptoms/difficulty-breathing.svg'
 import difficultyBreathingBright from 'src/images/symptoms/difficulty-breathing-bright.svg'
 import tasteSmell from 'src/images/symptoms/taste-smell.svg'
 import tasteSmellBright from 'src/images/symptoms/taste-smell-bright.svg'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { Case, When } from '../components/Case'
 import DatedYesNoButton from '../components/DatedYesNoButton'
 
@@ -331,7 +332,9 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     if (submittingFor === null) {
       return (
         <Page>
-          <Navbar title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.already_submitted_title', message: 'Already Submitted' }))} />
+          <Navbar title={this.global.i18n._(defineMessage({ id: 'SurveyNewPage.already_submitted_title', message: 'Already Submitted' }))}>
+            <NavbarHomeLink slot="left" />
+          </Navbar>
           <Block>
             <Trans id="SurveyNewPage.already_submitted_message">
               All surveys have already been submitted for today. Please check back later!

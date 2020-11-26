@@ -5,6 +5,7 @@ import {
 } from 'framework7-react'
 import React from 'react'
 import { useGlobal } from 'reactn'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 export default function CHWRequestPage() {
   const [locale] = useGlobal('locale')
@@ -13,7 +14,9 @@ export default function CHWRequestPage() {
 
   return (
     <Page>
-      <Navbar title={t({ id: 'CHWRequestPage.title', message: 'Care Request' })} />
+      <Navbar title={t({ id: 'CHWRequestPage.title', message: 'Care Request' })}>
+        <NavbarHomeLink slot="left" />
+      </Navbar>
       <style dangerouslySetInnerHTML={{
         __html: `
         .expand {position: absolute; top: 40px; left: 0; right: 0; bottom: 0; }

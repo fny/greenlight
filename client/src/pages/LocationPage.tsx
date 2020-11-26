@@ -35,6 +35,7 @@ const LocationPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
       <Page>
         <Block>
           Something went wrong.
+          <Link href={paths.rootPath}>Return to Home Screen</Link>
         </Block>
       </Page>
     )
@@ -66,6 +67,7 @@ const LocationPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
             Register
           </Trans>
         </Button>
+        <Link href={paths.rootPath}>Return to Home Screen</Link>
       </Block>
     </Page>
   )

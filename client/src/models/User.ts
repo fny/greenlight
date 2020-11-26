@@ -128,7 +128,7 @@ export class User extends Model {
   }
 
   accountFor(location: Location): LocationAccount | null {
-    return this.locationAccounts.find((la) => la.id === location.id) || null
+    return this.locationAccounts.find((la) => (la.locationId || '').toString() === location.id.toString()) || null
   }
 
   /** Has the user completed the welcome sequence? */

@@ -115,6 +115,15 @@ export async function joinLocation(location: Location): Promise<LocationAccount>
   return entity
 }
 
+export async function updateLocationAccount(locationAccount: LocationAccount, updates: Partial<LocationAccount>): Promise<LocationAccount> {
+  const response = await v1.patch<RecordResponse<LocationAccount>>(`/location-accounts/${locationAccount.id}`,
+    transformForAPI(updates))
+
+  const entity = transformRecordResponse<LocationAccount>(response.data)
+  assertNotArray(entity)
+  return entity
+}
+
 //
 // Users
 //

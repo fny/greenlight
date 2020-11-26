@@ -4,6 +4,7 @@ import {
 } from 'framework7-react'
 import React, { useGlobal } from 'reactn'
 import If from 'src/components/If'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { Location, User } from 'src/models'
 
 import { paths } from 'src/routes'
@@ -18,7 +19,9 @@ export default function LocationsNewPage(props: F7Props): JSX.Element {
 
   return (
     <Page>
-      <Navbar title={t({ id: 'LocationsNewPage.title', message: 'Greenlight Durham' })} backLink />
+      <Navbar title={t({ id: 'LocationsNewPage.title', message: 'Greenlight Durham' })}>
+        <NavbarHomeLink slot="left" />
+      </Navbar>
       <Block>
         {
          (currentUser === null) ? (

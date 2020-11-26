@@ -67,13 +67,13 @@ export function assertNotArray<T>(obj: T | T[]): asserts obj is T {
 
 export function assertNotUndefined<T>(obj: T | undefined): asserts obj is T {
   if (obj === undefined) {
-    throw new Error(`Expected value but got undefined ${obj}`)
+    throw new Error(`Expected value but got undefined: ${obj}`)
   }
 }
 
 export function assertNotNull<T>(obj: T | null): asserts obj is T {
   if (obj === null) {
-    throw new Error(`Expected value but got undefined ${obj}`)
+    throw new Error(`Expected value but got null: ${obj}`)
   }
 }
 
@@ -141,7 +141,7 @@ export function resolvePath(path: string, substitutions?: any[] | Dict<any> | nu
   if (Array.isArray(substitutions)) {
     if (matches.length !== substitutions.length) {
       // Not enough substitutions were provided
-      throw new Error(`Expected ${matches.length} substitutions, but only got ${substitutions.length}`)
+      throw new Error(`Dynamic path expected ${matches.length} substitutions, but only got ${substitutions.length}`)
     }
 
     for (let i = 0; i < matches.length; i += 1) {
@@ -151,7 +151,7 @@ export function resolvePath(path: string, substitutions?: any[] | Dict<any> | nu
     const substitutionsKeys = Object.keys(substitutions)
     if (matches.length !== substitutionsKeys.length) {
       // Not enough substitutions were provided
-      throw new Error(`Expected ${matches.length} substitutions, but only got ${substitutionsKeys.length}`)
+      throw new Error(`Dynamic path expected ${matches.length} substitutions, but only got ${substitutionsKeys.length}`)
     }
 
     for (const match of matches) {

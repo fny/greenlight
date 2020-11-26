@@ -39,6 +39,7 @@ import LocationsNewPage from './pages/LocationsNewPage'
 import UsersNewPage from './pages/UsersNewPage'
 import CHWRequestPage from './pages/CHWRequestPage'
 import NCTestLocationsPage from './NCTestLocationsPage'
+import AdminUserPermissionsPage from './pages/admin/AdminUserPermissionsPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -225,6 +226,11 @@ const routeMap = {
   newLocationUserPath: {
     path: '/l/:permalink/code/:registrationCode',
     component: UsersNewPage,
+  },
+  userLocationPermissionsPath: {
+    path: '/admin/locations/:locationId/users/:userId/permissions',
+    component: AdminUserPermissionsPage,
+    beforeEnter: beforeEnter.requireSignIn,
   },
   editUserPath: {
     path: '/users/:userId/edit',

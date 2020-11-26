@@ -8,13 +8,16 @@ import {
 } from 'framework7-react'
 
 import { Trans } from '@lingui/macro'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import EmailOrPhoneListInput from '../components/EmailOrPhoneListInput'
 
 export default class ForgotPasswordPage extends React.Component<any, any> {
   render() {
     return (
       <Page className="ForgotPasswordPage" noToolbar noSwipeback loginScreen>
-        <Navbar title="Forgot Password" />
+        <Navbar title="Forgot Password">
+          <NavbarHomeLink slot="left" />
+        </Navbar>
         <List form>
           <Block>
             <Trans id="ForgotPasswordPage.instructions">

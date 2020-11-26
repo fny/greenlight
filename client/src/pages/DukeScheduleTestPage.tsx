@@ -4,13 +4,16 @@ import {
 } from 'framework7-react'
 import { defineMessage, Trans } from '@lingui/macro'
 import { getGlobal } from 'reactn'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 export default function DukeScheduleTestPage() {
   return (
     <Page>
       <Navbar
         title={getGlobal().i18n._(defineMessage({ id: 'DukeScheduleTestPage.title', message: 'Schedule a Test' }))}
-      />
+      >
+        <NavbarHomeLink slot="left" />
+      </Navbar>
       <Block strong>
         <p>
           <Trans id="DukeScheduleTestPage.instructions1">

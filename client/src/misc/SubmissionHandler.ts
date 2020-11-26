@@ -32,6 +32,7 @@ export default class SubmissionHandler {
     try {
       await action()
       this.f7.dialog.close()
+      this.onSuccess()
     } catch (error) {
       this.f7.dialog.close()
       logger.error(error)

@@ -11,6 +11,7 @@ import { Case, When } from 'src/components/Case'
 
 import { defineMessage, Trans } from '@lingui/macro'
 import { DateTime } from 'luxon'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 export default class UserGreenlightPassPage extends React.Component<any, any> {
   user() {
@@ -30,7 +31,9 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
       <Page className="UserGreenlightPassPage">
         <Navbar
           title={this.global.i18n._(defineMessage({ id: 'UserGreenlightPassPage.pass_title', message: 'Greenlight Pass' }))}
-        />
+        >
+          <NavbarHomeLink slot="left" />
+        </Navbar>
 
         <Block className="text-center">
           <h1>

@@ -21,7 +21,9 @@ import logger from './logger'
 Framework7.use(Framework7React)
 
 function render() {
-  ReactDOM.render(<App />, document.getElementById('root'))
+  window.onload = () => {
+    ReactDOM.render(<App />, document.getElementById('root'))
+  }
 }
 
 function startApp() {

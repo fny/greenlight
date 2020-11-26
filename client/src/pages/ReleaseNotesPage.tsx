@@ -5,6 +5,7 @@ import { defineMessage, Trans } from '@lingui/macro'
 import { getGlobal } from 'reactn'
 import { DateTime } from 'luxon'
 import { GLLocales } from 'src/i18n'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 class Release {
   releaseData: ReleaseData
@@ -69,7 +70,9 @@ export default function ReleaseNotesPage() {
       <Navbar
         title={getGlobal().i18n._(defineMessage({ id: 'ReleaseNotesPage.title', message: 'Greenlight Release Notes' }))}
         sliding
-      />
+      >
+        <NavbarHomeLink slot="left" />
+      </Navbar>
       <Block>
         {releases
           .map((releaseData: ReleaseData) => new Release(releaseData))

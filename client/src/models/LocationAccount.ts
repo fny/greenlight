@@ -10,6 +10,10 @@ export enum PermissionLevels {
   NONE = 'none',
 }
 
+export enum Roles {
+  STUDENT = 'student',
+}
+
 export class LocationAccount extends Model {
   static modelName = 'locationAccount'
 
@@ -26,7 +30,7 @@ export class LocationAccount extends Model {
 
   @attr({ type: STRING }) title: string | null = null
 
-  @attr({ type: STRING }) permissionLevel: string | null = null
+  @attr({ type: STRING }) permissionLevel: PermissionLevels | null = null
 
   @attr({ type: STRING }) attendanceStatus: string | null = null
 
@@ -42,5 +46,9 @@ export class LocationAccount extends Model {
 
   isOwner(): boolean {
     return this.permissionLevel === PermissionLevels.OWNER
+  }
+
+  isStudent(): boolean {
+    return this.role === Roles.STUDENT
   }
 }

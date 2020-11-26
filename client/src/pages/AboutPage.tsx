@@ -6,10 +6,13 @@ import {
 import { t } from '@lingui/macro'
 import { paths } from 'src/routes'
 import releaseData from 'src/data/releases'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 const SettingsPage = () => (
   <Page>
-    <Navbar title={t({ id: 'AboutPage.title', message: 'About' })} />
+    <Navbar title={t({ id: 'AboutPage.title', message: 'About' })}>
+      <NavbarHomeLink slot="left" />
+    </Navbar>
     <List noHairlines>
       <ListItem
         title={t({ id: 'AboutPage.greenlight_version', message: 'Greenlight Version' })}

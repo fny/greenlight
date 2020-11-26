@@ -19,6 +19,7 @@ import { createSession, getCurrentUser } from 'src/api'
 import { t, Trans } from '@lingui/macro'
 import { paths, dynamicPaths } from 'src/routes'
 import { F7Props } from 'src/types'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 export default function SignInPage(props: F7Props) {
   const emailOrMobileRef = React.createRef<EmailOrPhoneListInput>()
@@ -70,6 +71,7 @@ export default function SignInPage(props: F7Props) {
         <Link href={paths.magicSignInPath} slot="right">
           <Trans id="SignInPage.with_magic">with Magic ✨</Trans>
         </Link>
+        <NavbarHomeLink slot="left" />
       </Navbar>
 
       <div style={{ marginTop: '20px' }} className="greenlight-logo">

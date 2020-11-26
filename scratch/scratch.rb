@@ -84,8 +84,6 @@ l = LocationAccount.create({
 })
 
 # Create user
-
-
 create_account!(
   first_name: 'Daniel',
   last_name: 'Song',
@@ -94,3 +92,25 @@ create_account!(
   location: 'greenlight',
   role: 'teacher'
 )
+
+#  User.joins('join user_settings on user_settings.id = users.id').where.not(user_settings: { daily_reminder_type: 'none' }).where(user_settings: { override_location_reminders: true })
+
+hour = 6
+user_ids = UserSettings.where(
+  daily_reminder_time: hour,
+  remind_wed: true,
+).where.not(
+  daily_reminder_type: 'none',
+  override_location_reminders: true
+).pluck(:user_id).to_set
+
+user_ids_from_location = Location.where(
+  daily_reminder_time: hour,
+  remind_wed: true,
+).all.flat_map { |x| x.users_to_notify.to_a }.map(&:id)
+
+user_ids = user_ids.merge(user_ids_from_location)
+
+user_ids.map { |user_id| ReminderWorker.new.perform(user_id) }
+
+Sidekiq::Cron::Job.create(name: 'Daily Reminders - every hour', cron: '0 * * * *', class: 'ScheduledReminderWorker')

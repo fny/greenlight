@@ -3,12 +3,15 @@ import {
   Navbar, Page, Toolbar, Link, Block, Tab, Tabs,
 } from 'framework7-react'
 import React from 'react'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import './NCStatewideStatsPage.css'
 
 export default function NCStatewideStatsPage() {
   return (
     <Page className="NCStatwideStatsPage">
-      <Navbar title={t({ id: 'NCStatewideStatsPage.nc_statewide_stats_title', message: 'NC COVID-19 Statistics' })} backLink />
+      <Navbar title={t({ id: 'NCStatewideStatsPage.nc_statewide_stats_title', message: 'NC COVID-19 Statistics' })}>
+        <NavbarHomeLink slot="left" />
+      </Navbar>
       <Toolbar tabbar bottom>
         <Link tabLink="#tab-1" tabLinkActive>Cases Map</Link>
         <Link tabLink="#tab-2">By Day</Link>

@@ -14,6 +14,7 @@ import { User, Location } from 'src/models'
 import { F7Props } from 'src/types'
 import { getLocation, joinLocation } from 'src/api'
 import { paths } from 'src/routes'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import UserForm from './UsersForm'
 import LoadingPage from './LoadingPage'
 
@@ -46,7 +47,9 @@ export default function UsersNewPage(props: F7Props) {
   if (!permalink || !registrationCode || error) {
     return (
       <Page>
-        <Navbar title={t({ id: 'BusinessRegistration.lookup_business_title', message: 'Look Up Business' })} backLink />
+        <Navbar title={t({ id: 'BusinessRegistration.lookup_business_title', message: 'Look Up Business' })}>
+          <NavbarHomeLink slot="left" />
+        </Navbar>
         <Block>
           <p>
             <Trans id="BusinessRegistration.lookup_business_instructions">
@@ -97,8 +100,9 @@ export default function UsersNewPage(props: F7Props) {
           title={
           t({ id: 'BusinessRegistered.success_title', message: 'Account Linked' })
           }
-          backLink
-        />
+        >
+          <NavbarHomeLink slot="left" />
+        </Navbar>
         <Block>
           <h1>
             <Trans id="BusinessRegistered.success_header">
@@ -136,7 +140,9 @@ export default function UsersNewPage(props: F7Props) {
   if (currentUser && location) {
     return (
       <Page>
-        <Navbar title={t({ id: 'BusinessRegistered.connect_title', message: 'Connect with a Business' })} backLink />
+        <Navbar title={t({ id: 'BusinessRegistered.connect_title', message: 'Connect with a Business' })}>
+          <NavbarHomeLink slot="left" />
+        </Navbar>
         <Block>
           <h1>
             <Trans id="BusinessRegistered.connect_heading">
@@ -188,7 +194,9 @@ export default function UsersNewPage(props: F7Props) {
     assertNotUndefined(location)
     return (
       <Page>
-        <Navbar title={t({ id: 'BusinessRegistered.new_account', message: 'Create a New Account' })} backLink />
+        <Navbar title={t({ id: 'BusinessRegistered.new_account', message: 'Create a New Account' })}>
+          <NavbarHomeLink slot="left" />
+        </Navbar>
         <Block>
           <h1>Create Your Account</h1>
           <p>

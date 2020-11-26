@@ -159,9 +159,8 @@ export default class DashboardPage extends ReactNComponent<any, any> {
         <If test={user.hasChildren()}>
           <BlockTitle>
             {/* User is a worker and has children */}
-            {user.hasLocationThatRequiresSurvey() && user.isParent() &&
-              <Trans id="DashboardPage.your_family">Your Family</Trans>
-            }
+            {user.hasLocationThatRequiresSurvey() && user.isParent()
+              && <Trans id="DashboardPage.your_family">Your Family</Trans>}
             {/* User is only a parent */}
             {user.isParent() && <Trans id="DashboardPage.your_children">Your Children</Trans>}
             {/* User is not a parent */}
@@ -190,6 +189,13 @@ export default class DashboardPage extends ReactNComponent<any, any> {
             })}
           >
             <Icon slot="media" f7="heart" />
+          </ListItem>
+          <ListItem
+            link={paths.ncTestingLocationsPath}
+            title={t({ id: 'DashboardPage.testing_title', message: 'Find Other Testing' })}
+            footer={t({ id: 'DashboardPage.testing_footer', message: 'Testing Sites Near You' })}
+          >
+            <Icon slot="media" f7="search" />
           </ListItem>
           {/* https://www.communitycarenc.org/what-we-do/supporting-primary-care */}
           <ListItem
@@ -227,13 +233,6 @@ export default class DashboardPage extends ReactNComponent<any, any> {
             })}
           >
             <Icon slot="media" f7="phone" />
-          </ListItem>
-          <ListItem
-            link={paths.ncTestingLocationsPath}
-            title={t({ id: 'DashboardPage.testing_title', message: 'Find other Testing' })}
-            footer={t({ id: 'DashboardPage.testing_footer', message: 'Testing Sites Near You' })}
-          >
-            <Icon slot="media" f7="search" />
           </ListItem>
         </List>
       </Page>
