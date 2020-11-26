@@ -1,7 +1,7 @@
 require 'faker'
 SeedFu.quiet = true
 
-Faker::Config.random = Random.new(42)
+Faker::Config.random = Random.new(75)
 Faker::Config.locale = 'en-US'
 
 N_STUDENTS = 100
@@ -15,8 +15,6 @@ N_WIVES = N_HUSBANDS
 N_TEACHERS = (N_STUDENTS / 20).round
 N_STAFF = (N_TEACHERS / 4).round
 
-
-@location_id_seq = Location.id_seq
 @user_id_seq = User.id_seq
 @location_account_id_seq = LocationAccount.id_seq
 @parent_child_id_seq = ParentChild.id_seq
@@ -25,6 +23,7 @@ N_STAFF = (N_TEACHERS / 4).round
 @greenlight_status_id_seq = GreenlightStatus.id_seq
 @medical_event_id_seq = MedicalEvent.id_seq
 
+@user_ids = []
 
 ExternalId = Faker::UniqueGenerator.new(
   ->{ Faker::DrivingLicence.uk_driving_licence[0..8] },
@@ -50,15 +49,21 @@ def set_name_and_email(user, last_name = nil, gender = nil)
 
   user[:first_name] = first_name
   user[:last_name] = last_name
-  user[:email] = Faker::Internet.safe_email(name: "#{first_name} #{last_name} #{Faker::Number.unique.hexadecimal(digits: 4)}")
+  user[:email] = Faker::Internet.email(
+    name: "#{first_name} #{last_name} #{Faker::Number.unique.hexadecimal(digits: 4)}",
+    domain: Faker::Internet.domain_name(domain: 'greenlight.example')
+  )
   user
 end
 
 def build_user
+  user_id = @user_id_seq.next()
   user = {
-    id: @user_id_seq.next(),
+    id: user_id,
     mobile_number: Faker::PhoneNumber.unique.cell_phone_in_e164
   }
+
+  @user_ids << user_id
   set_name_and_email(user)
 end
 
@@ -207,7 +212,7 @@ end
 # Seeding
 #
 
-location = Location.find_by!(permalink: 'greenwood-lakes')
+location = Location.find_by!(permalink: SmokeTestService::TEST_LOCATION_PERMALINK)
 
 puts "Building users"
 
@@ -303,12 +308,14 @@ greenlight_statuses, medical_events = assign_gl_statuses([staff, teachers, stude
 
 puts "Seeding data"
 
-User.seed(:id, :email, :mobile_number, users)
-Cohort.seed(:id, cohorts)
-ParentChild.seed(:id, parents_children)
-LocationAccount.seed(:id, location_accounts)
-CohortUser.seed(:id, cohorts_users)
-GreenlightStatus.seed(:id, greenlight_statuses)
-MedicalEvent.seed(:id, medical_events) unless medical_events.empty?
+User.seed_once(:id, :email, :mobile_number, users)
+Cohort.seed_once(:id, cohorts)
+ParentChild.seed_once(:id, parents_children)
+LocationAccount.seed_once(:id, location_accounts)
+CohortUser.seed_once(:id, cohorts_users)
+GreenlightStatus.seed_once(:id, greenlight_statuses)
+MedicalEvent.seed_once(:id, medical_events) unless medical_events.empty?
+
+SmokeTestService.log_user_ids(@user_ids)
 
 SeedFu.quiet = false
