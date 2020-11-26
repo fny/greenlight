@@ -1,4 +1,4 @@
-import React from 'reactn'
+import React, { useGlobal } from 'reactn'
 import {
   AccordionContent,
   Page,

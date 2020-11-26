@@ -6,11 +6,13 @@ import {
 import React from 'react'
 import { useGlobal } from 'reactn'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import { cookieLocale } from 'src/initializers/providers'
 
 export default function CHWRequestPage() {
-  const [locale] = useGlobal('locale')
-  const url = locale === 'en' ? 'https://airtable.com/embed/shrIt4hurTNBrZD0g?backgroundColor=purple'
-    : 'https://airtable.com/embed/shrn4S5XoOVO8S4dC?backgroundColor=purple'
+  const spanishURL = 'https://airtable.com/embed/shrn4S5XoOVO8S4dC?backgroundColor=purple'
+  const englishURL = 'https://airtable.com/embed/shrIt4hurTNBrZD0g?backgroundColor=purple'
+
+  const url = cookieLocale() === 'en' ? englishURL : spanishURL
 
   return (
     <Page>

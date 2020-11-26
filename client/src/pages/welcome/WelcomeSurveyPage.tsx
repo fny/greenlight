@@ -59,7 +59,7 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
                   Thanks for providing that information!
                 </Trans>
               ) : (
-                <Trans id="WelcomeSurveyPage.thank_you_ower">
+                <Trans id="WelcomeSurveyPage.thank_you_owner">
                   Congratulations on registering your business!
                 </Trans>
               )
