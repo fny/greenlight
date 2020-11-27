@@ -29,10 +29,10 @@ class SmokeTestService
     exposure
   end
 
-  def populate
+  def populate(fixtures_path = FIXTURES_PATH)
     ensure_no_context_conflict!
 
-    SeedFu.seed(FIXTURES_PATH)
+    SeedFu.seed(fixtures_path)
   end
 
   def purge
