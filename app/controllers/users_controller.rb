@@ -79,10 +79,20 @@ module UsersController
       )
 
       return error_response(survey) unless survey.valid?
-
+      
       if survey.save
         set_status_created
-        render json: GreenlightStatusSerializer.new(survey.greenlight_status)
+
+        greenlight_status = survey.greenlight_status
+        if greenlight_status.status.pending? || greenlight_status.status.recovery?
+          StatusNotifyWorker.perform_async(
+            user.id,
+            greenlight_status.status,
+            current_user.id,
+          )
+        end
+
+        render json: GreenlightStatusSerializer.new(greenlight_status)
       else
         error_response(survey.greenlight_status)
       end

@@ -22,6 +22,7 @@ RSpec.describe "/v1/users/:user_id/symptom-surveys", type: :request do
       expect(response_json).to have_key(:data)
       expect(response_json[:data][:attributes]).to include(status: 'cleared')
       expect(user.last_greenlight_status.status).to eq(GreenlightStatus::CLEARED)
+      expect(StatusNotifyWorker.jobs.size).to eq(0)
     end
 
     MedicalEvent::SYMPTOMS.each do |symptom|
@@ -37,6 +38,7 @@ RSpec.describe "/v1/users/:user_id/symptom-surveys", type: :request do
         expect(response_json).to have_key(:data)
         expect(response_json[:data][:attributes]).to include(status: 'pending')
         expect(user.last_greenlight_status.status).to eq(GreenlightStatus::PENDING)
+        expect_work(StatusNotifyWorker)
       end
     end
 
@@ -53,6 +55,7 @@ RSpec.describe "/v1/users/:user_id/symptom-surveys", type: :request do
         expect(response_json).to have_key(:data)
         expect(response_json[:data][:attributes]).to include(status: 'recovery')
         expect(user.last_greenlight_status.status).to eq(GreenlightStatus::RECOVERY)
+        expect_work(StatusNotifyWorker)
       end
     end
   end
