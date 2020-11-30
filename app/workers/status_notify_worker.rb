@@ -7,7 +7,9 @@ class StatusNotifyWorker < ApplicationWorker
     users_to_notify = Set.new
 
     locations.map(&:location_accounts).flatten.each do |la|
-      if la.role.admin? && la.user.id != notify_except
+      if la.permission_level.admin? &&
+        la.user.id != notify_except &&
+        la.user.id != user_id
         users_to_notify.add(la.user)
       end
     end

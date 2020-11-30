@@ -33,7 +33,7 @@ class NotifyWorker < ApplicationWorker
         subject: I18n.t('emails.notify.subject'),
         html: eval(html_template),
         text: eval(text_template),
-      )
+      ).run
     end
   end
 end

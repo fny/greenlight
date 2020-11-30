@@ -25,7 +25,8 @@ en:
         Note that this link expires in 1 hour and can only be used once.
       action: Click Here to Reset Password
     notify:
-      subject: Greenlight Status 
+      subject: Greenlight Status
+      salutation: "Hi, %{name}"
       title: "A %{color} Status Submitted"
       body: "%{user} submitted a %{status} status."
   texts:

@@ -79,7 +79,7 @@ module UsersController
       )
 
       return error_response(survey) unless survey.valid?
-      
+
       if survey.save
         set_status_created
 
