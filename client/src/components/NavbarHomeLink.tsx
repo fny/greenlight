@@ -1,6 +1,6 @@
 import { Icon, Link } from 'framework7-react'
 import React from 'react'
-import { dynamicPaths } from 'src/routes'
+import { dynamicPaths } from 'src/config/routes'
 
 export default function NavbarHomeLink({ slot }: { slot: 'left' }): JSX.Element {
   return (

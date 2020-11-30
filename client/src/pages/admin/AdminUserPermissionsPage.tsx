@@ -1,22 +1,22 @@
 import React, {
-  useState, useEffect, useGlobal, Children,
+  useState, useEffect,
 } from 'reactn'
 import {
-  Page, BlockTitle, Badge, Block, Button, Link, Navbar, f7, ListInput, List,
+  Page, Block, Button, Navbar, f7, ListInput, List,
 } from 'framework7-react'
 import { Trans, t } from '@lingui/macro'
 
-import { FunctionComponent, F7Props } from 'src/types'
-import { assertNotNull, assertNotUndefined, formatPhone } from 'src/util'
+import { F7Props } from 'src/types'
+import { assertNotNull, assertNotUndefined, formatPhone } from 'src/helpers/util'
 
 import { Location, User } from 'src/models'
 import {
   getLocation, getUser, store, updateLocationAccount,
 } from 'src/api'
-import SubmissionHandler from 'src/misc/SubmissionHandler'
+import SubmissionHandler from 'src/helpers/SubmissionHandler'
 import { LocationAccount, PermissionLevels } from 'src/models/LocationAccount'
-import { dynamicPaths } from 'src/routes'
-import LoadingPage from '../LoadingPage'
+import { dynamicPaths } from 'src/config/routes'
+import LoadingPage from 'src/pages/util/LoadingPage'
 
 interface State {
   user?: User | null

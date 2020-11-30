@@ -1,11 +1,11 @@
-import { dynamicPaths, paths } from 'src/routes'
+import { dynamicPaths, paths } from 'src/config/routes'
 import { DateTime } from 'luxon'
 import { currentUser } from 'src/initializers/providers'
 import * as api from 'src/api'
 import { ModelRegistry } from 'src/models'
 import { CUTOFF_TIME } from 'src/models/GreenlightStatus'
 import { Dict } from 'src/types'
-import CookieJar from 'src/misc/CookieJar'
+import CookieJar from 'src/helpers/CookieJar'
 import { f7 } from 'framework7-react'
 import Honeybadger from './honeybadger'
 /**

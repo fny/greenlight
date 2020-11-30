@@ -1,4 +1,4 @@
-import { defineMessage, t } from '@lingui/macro'
+import { t } from '@lingui/macro'
 import {
   AccordionContent, Icon, Link, List, ListGroup, ListItem, Navbar, NavLeft, NavRight, Page, Searchbar, Subnavbar,
 } from 'framework7-react'
@@ -8,9 +8,9 @@ import { getUsersForLocation, store } from 'src/api'
 import { User, Location } from 'src/models'
 import { Dict } from 'src/types'
 import UserJDenticon from 'src/components/UserJDenticon'
-import { dynamicPaths, paths } from 'src/routes'
-import { assertNotNull, assertNotUndefined, sortBy } from 'src/util'
-import { NoCurrentUserError } from 'src/errors'
+import { dynamicPaths, paths } from 'src/config/routes'
+import { assertNotNull, assertNotUndefined, sortBy } from 'src/helpers/util'
+import { NoCurrentUserError } from 'src/helpers/errors'
 import { Router } from 'framework7/modules/router/router'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 

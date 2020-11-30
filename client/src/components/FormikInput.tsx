@@ -1,7 +1,7 @@
 import { FormikErrors, useField } from 'formik'
 import { ListInput } from 'framework7-react'
 import React, { ReactNode } from 'react'
-import { assertNotUndefined, isPresent } from 'src/util'
+import { assertNotUndefined, isPresent } from 'src/helpers/util'
 
 function processError(
   error: string | FormikErrors<any> | string[] | FormikErrors<any>[] | undefined,

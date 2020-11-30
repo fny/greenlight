@@ -3,13 +3,12 @@ import axios, { AxiosResponse } from 'axios'
 import { getGlobal, setGlobal } from 'reactn'
 import {
   assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
-} from 'src/util'
+} from 'src/helpers/util'
 import Honeybadger from 'honeybadger-js'
 
-import logger from 'src/logger'
-import { transform } from 'lodash'
+import logger from 'src/helpers/logger'
 import { LocationAccount } from 'src/models/LocationAccount'
-import env from '../env'
+import env from '../config/env'
 import { transformRecordResponse, recordStore } from './stores'
 import { RecordResponse } from '../types'
 import {

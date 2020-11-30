@@ -11,10 +11,10 @@ import {
   NavRight,
   Icon,
 } from 'framework7-react'
-import { esExclaim, greeting } from 'src/util'
+import { esExclaim, greeting } from 'src/helpers/util'
 import If from 'src/components/If'
-import { dynamicPaths, paths } from 'src/routes'
-import colors from 'src/misc/colors'
+import { dynamicPaths, paths } from 'src/config/routes'
+import colors from 'src/config/colors'
 
 import { t, Trans } from '@lingui/macro'
 import { User } from 'src/models'

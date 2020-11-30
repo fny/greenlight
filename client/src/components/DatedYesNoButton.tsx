@@ -8,7 +8,7 @@ import {
 } from 'framework7-react'
 
 import { DateTime } from 'luxon'
-import { defineMessage, Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 
 interface Props {
   showErrors?: boolean
@@ -87,7 +87,7 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
                   this.props.setDate(d[0])
                 }}
                 type="datepicker"
-                placeholder={this.global.i18n._(defineMessage({ id: 'DatedYesNoButton.select_date', message: 'Select date' }))}
+                placeholder={t({ id: 'DatedYesNoButton.select_date', message: 'Select date' })}
                 readonly
               />
             </List>

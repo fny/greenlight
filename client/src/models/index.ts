@@ -1,4 +1,4 @@
-import { Model, ModelRegistry } from './Model'
+import { Model, ModelRegistry } from 'src/lib/Model'
 import { User } from './User'
 import { GreenlightStatus } from './GreenlightStatus'
 import { Location } from './Location'

@@ -1,28 +1,42 @@
 import { DateTime } from 'luxon'
 import {
   Model, attribute as attr, initialize, STRING, BOOLEAN, NUMBER, DATETIME,
-} from './Model'
+} from 'src/lib/Model'
 
 export enum LocationCategories {
-  SCHOOL = 'school',
-  RESTAUARNT = 'restaurant',
-  ENTERTAINMENT = 'enterainment',
-  NONPROFIT = 'nonprofit',
-  RETAIL = 'retail',
-  SERVICES = 'services',
   BUSINESS = 'business',
-  OTHER = 'other',
+  SCHOOL = 'school',
+  CLINIC = 'clinic',
+  COMMUNITY = 'community',
+  CONSTRUCTION_SITE = 'construction_site',
+  HOSPITAL = 'hospital',
+  HOTEL = 'hotel',
+  NONPROFIT = 'nonprofit',
+  PLACE_OF_WORSHIP = 'place_of_worship',
+  RESTAUARNT = 'restaurant',
+  SHELTER = 'shelter',
+  STORE = 'store',
+  THEATER = 'theater',
+  UNIVERSITY = 'university',
+  LOCATION = 'location',
 }
 
 export const LOCATION_CATEGORIES: LocationCategories[] = [
-  LocationCategories.SCHOOL,
-  LocationCategories.RESTAUARNT,
-  LocationCategories.ENTERTAINMENT,
-  LocationCategories.NONPROFIT,
-  LocationCategories.RETAIL,
-  LocationCategories.SERVICES,
   LocationCategories.BUSINESS,
-  LocationCategories.OTHER,
+  LocationCategories.SCHOOL,
+  LocationCategories.CLINIC,
+  LocationCategories.COMMUNITY,
+  LocationCategories.CONSTRUCTION_SITE,
+  LocationCategories.HOSPITAL,
+  LocationCategories.HOTEL,
+  LocationCategories.NONPROFIT,
+  LocationCategories.PLACE_OF_WORSHIP,
+  LocationCategories.RESTAUARNT,
+  LocationCategories.SHELTER,
+  LocationCategories.STORE,
+  LocationCategories.THEATER,
+  LocationCategories.UNIVERSITY,
+  LocationCategories.LOCATION,
 ]
 
 export class Location extends Model {
@@ -90,7 +104,14 @@ export class Location extends Model {
   @attr({ type: STRING })
   registrationCode: string | null = ''
 
-  registrationWithCodeURL() {
+  @attr({ type: STRING })
+  parentRegistrationCode: string | null = ''
+
+  registrationWithCodeURL(): string {
     return `glit.me/l/${this.permalink}/code/${this.registrationCode}`
+  }
+
+  parentRegistrationWithCodeURL(): string {
+    return `glit.me/l/${this.permalink}/code/${this.parentRegistrationCode}`
   }
 }

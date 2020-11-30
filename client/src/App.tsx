@@ -7,13 +7,12 @@ import { App, View } from 'framework7-react'
 import { Framework7Params } from 'framework7/components/app/app-class'
 
 import { I18nProvider, useLingui } from '@lingui/react'
-import routes from './routes'
-import { i18n as globalI18n } from './i18n'
-import { ErrorBoundary } from './ErrorBoundary'
+import routes from 'src/config/routes'
+import { i18n as globalI18n } from 'src/i18n'
+import { ErrorBoundary } from 'src/ErrorBoundary'
 import OnlineStatus from './components/OnlineStatus'
-import SupportedBrowserBar from './components/SupportedBrowserBar'
-import { isCordova } from './util'
-import SidePanel from './components/SidePanel'
+import SupportedBrowserBar from 'src/components/SupportedBrowserBar'
+import { isCordova } from 'src/helpers/util'
 
 function I18nWatchLocale({ children }: { children: React.ReactNode }) {
   const { i18n } = useLingui()

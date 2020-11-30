@@ -1,7 +1,7 @@
 import React from 'reactn'
 import { Page, Block, Button } from 'framework7-react'
 import { Trans } from '@lingui/macro'
-import logger from './logger'
+import logger from './helpers/logger'
 import EmailLink, { SUPPORT_EMAIL } from './components/EmailLink'
 
 export class ErrorBoundary extends React.Component<any, any> {

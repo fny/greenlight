@@ -2,7 +2,7 @@ import { User } from './User'
 import { Location } from './Location'
 import {
   Model, attribute as attr, initialize, STRING, hasOne,
-} from './Model'
+} from 'src/lib/Model'
 
 export enum PermissionLevels {
   OWNER = 'owner',

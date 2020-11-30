@@ -1,5 +1,5 @@
 import { t, Trans } from '@lingui/macro'
-import licenses from 'src/data/licenses.json'
+import licenses from 'src/assets/data/licenses.json'
 import { Block, Navbar, Page } from 'framework7-react'
 import React from 'reactn'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'

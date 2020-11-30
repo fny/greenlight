@@ -9,17 +9,17 @@ import {
   Navbar, BlockTitle, f7,
 } from 'framework7-react'
 
-import { joinWords } from 'src/util'
+import { joinWords } from 'src/helpers/util'
 import { User } from 'src/models/User'
-import { paths } from 'src/routes'
+import { paths } from 'src/config/routes'
 import { ReactNComponent } from 'reactn/build/components'
-import { NoCurrentUserError } from 'src/errors'
+import { NoCurrentUserError } from 'src/helpers/errors'
 
-import { defineMessage, Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import { completeWelcomeUser } from 'src/api'
 
-import onlineCheckupImage from 'src/images/online-checkup.svg'
-import SubmissionHandler from 'src/misc/SubmissionHandler'
+import onlineCheckupImage from 'src/assets/images/online-checkup.svg'
+import SubmissionHandler from 'src/helpers/SubmissionHandler'
 import { reloadCurrentUser } from 'src/initializers/providers'
 
 interface State {
@@ -43,7 +43,7 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
     return (
       <Page>
         <Navbar
-          title={this.global.i18n._(defineMessage({ id: 'WelcomeSurveyPage.title', message: 'Daily Checkins' }))}
+          title={t({ id: 'WelcomeSurveyPage.title', message: 'Daily Checkins' })}
         />
 
         <BlockTitle>

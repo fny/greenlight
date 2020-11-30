@@ -16,7 +16,7 @@
   "BusinessLocationForm.business_name": "Business Name",
   "BusinessLocationForm.create_location": "Create Your Location",
   "BusinessLocationForm.number_of_employees": "Number of Employees",
-  "BusinessLocationForm.registrastion_link_url": "Users will be able to register for your location by visiting:<0/>glit.me/l/{0}",
+  "BusinessLocationForm.registrastion_link_url": "Users will be able to register for your location by visiting: <0/>glit.me/l/{0}",
   "BusinessLocationForm.zip_code": "Zip Code",
   "BusinessNotificationsForm.daily_reminders_title": "Daily Reminders",
   "BusinessNotificationsForm.days_to_remind": "What days would you like send survey reminders?",

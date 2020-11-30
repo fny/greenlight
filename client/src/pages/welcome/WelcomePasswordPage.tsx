@@ -4,14 +4,14 @@ import {
 } from 'framework7-react'
 import { SyntheticEvent } from 'react'
 import { updateUser } from 'src/api'
-import { dynamicPaths } from 'src/routes'
+import { dynamicPaths } from 'src/config/routes'
 import { User } from 'src/models'
 import { ReactNComponent } from 'reactn/build/components'
-import { NoCurrentUserError } from 'src/errors'
+import { NoCurrentUserError } from 'src/helpers/errors'
 
-import { defineMessage, Trans } from '@lingui/macro'
-import logger from 'src/logger'
-import passwordImage from 'src/images/welcome-secure.svg'
+import { t, Trans } from '@lingui/macro'
+import logger from 'src/helpers/logger'
+import passwordImage from 'src/assets/images/welcome-secure.svg'
 import { When, Case } from 'src/components/Case'
 
 interface State {
@@ -47,7 +47,7 @@ export default class extends ReactNComponent<any, State> {
   async submit() {
     if (this.state.password.length < 8) {
       this.setState({
-        errorMessage: this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.short_password', message: 'Password is too short.' })),
+        errorMessage: t({ id: 'WelcomePasswordPage.short_password', message: 'Password is too short.' }),
         showErrorMessage: true,
       })
       return
@@ -55,7 +55,7 @@ export default class extends ReactNComponent<any, State> {
     this.setState({ errorMessage: '', showErrorMessage: false })
     this.$f7.input.validateInputs('#WelcomePasswordPage-form')
 
-    this.$f7.dialog.preloader(this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.submitting_changes', message: 'Submitting changes...' })))
+    this.$f7.dialog.preloader(t({ id: 'WelcomePasswordPage.submitting_changes', message: 'Submitting changes...' }))
     try {
       const user = await updateUser(this.state.currentUser, { password: this.state.password } as Partial<User>)
       this.setGlobal({ currentUser: user })
@@ -65,8 +65,8 @@ export default class extends ReactNComponent<any, State> {
       this.$f7.dialog.close()
       logger.error(error)
       this.$f7.dialog.alert(
-        this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.somethings_wrong', message: 'Something went wrong' })),
-        this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.update_failed', message: 'Update Failed' })),
+        t({ id: 'WelcomePasswordPage.somethings_wrong', message: 'Something went wrong' }),
+        t({ id: 'WelcomePasswordPage.update_failed', message: 'Update Failed' }),
       )
     }
   }
@@ -74,7 +74,7 @@ export default class extends ReactNComponent<any, State> {
   render() {
     return (
       <Page>
-        <Navbar title={this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.set_password', message: 'Set Your Password' }))} />
+        <Navbar title={t({ id: 'WelcomePasswordPage.set_password', message: 'Set Your Password' })} />
         <Block>
           <p>
             <Trans id="WelcomePasswordPage.set_password_instructions">
@@ -86,9 +86,9 @@ export default class extends ReactNComponent<any, State> {
         <Block>
           <List noHairlines form id="WelcomePasswordPage-form">
             <ListInput
-              label={this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.password_label', message: 'Password' }))}
+              label={t({ id: 'WelcomePasswordPage.password_label', message: 'Password' })}
               type={this.state.isPasswordHidden ? 'password' : 'text'}
-              placeholder={this.global.i18n._(defineMessage({ id: 'WelcomePasswordPage.password_placeholder', message: 'Password' }))}
+              placeholder={t({ id: 'WelcomePasswordPage.password_placeholder', message: 'Password' })}
               value={this.state.password}
               errorMessage={this.state.errorMessage || ''}
               errorMessageForce={this.state.showErrorMessage}
@@ -106,9 +106,9 @@ export default class extends ReactNComponent<any, State> {
             </ListItem>
           </List>
           <img
-            alt={this.global.i18n._(
-              defineMessage({ id: 'WelcomePasswordPage.security_alt_text', message: 'Greenlight gives security the highest importance.' }),
-            )}
+            alt={
+              t({ id: 'WelcomePasswordPage.security_alt_text', message: 'Greenlight gives security the highest importance.' })
+            }
             src={passwordImage}
           />
 

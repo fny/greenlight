@@ -1,6 +1,6 @@
 import React from 'react'
 import { DateTime } from 'luxon'
-import giphySchedule from 'src/data/giphySchedule'
+import giphySchedule from 'src/assets/data/giphySchedule'
 
 export function giphyEmbedURL(id: string) {
   return `https://giphy.com/embed/${id}`

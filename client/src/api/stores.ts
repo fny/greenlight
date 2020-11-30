@@ -2,8 +2,8 @@ import {
   Dict, Record, RecordResponse, RecordRelationship, RecordPointer, EntityId,
 } from 'src/types'
 import { Model } from 'src/models'
-import { deserializeJSONAPI } from 'src/models/Model'
-import { zipTwo } from 'src/util'
+import { deserializeJSONAPI } from 'src/lib/Model'
+import { zipTwo } from 'src/helpers/util'
 
 interface RecordStoreEntry {
   record: Record<any>

@@ -1,6 +1,7 @@
 import './honeybadger'
 import './reactn-devtools'
 import 'src/models'
-
+import 'src/i18n'
 import './providers'
 import './GL'
+import './yup'

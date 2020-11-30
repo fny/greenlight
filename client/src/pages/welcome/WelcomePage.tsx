@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import React from 'reactn'
 
-import welcomeDoctorImage from 'src/images/welcome-doctor.svg'
+import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
 
 import {
   Page,
@@ -17,11 +17,11 @@ import {
 
 import { Case, When } from 'src/components/Case'
 
-import { esExclaim, greeting } from 'src/util'
+import { esExclaim, greeting } from 'src/helpers/util'
 import { User } from 'src/models/User'
-import { paths } from 'src/routes'
+import { paths } from 'src/config/routes'
 import { ReactNComponent } from 'reactn/build/components'
-import { NoCurrentUserError } from 'src/errors'
+import { NoCurrentUserError } from 'src/helpers/errors'
 
 import { toggleLocale, signOut } from 'src/initializers/providers'
 import {

@@ -1,4 +1,4 @@
-import React, { getGlobal, useGlobal } from 'reactn'
+import React, { useGlobal } from 'reactn'
 import {
   Page,
   Block,
@@ -8,8 +8,8 @@ import {
 import './SplashPage.css'
 import { signOut, toggleLocale } from 'src/initializers/providers'
 import { Trans } from '@lingui/macro'
-import releaseData from 'src/data/releases'
-import { paths } from 'src/routes'
+import releaseData from 'src/assets/data/releases'
+import { paths } from 'src/config/routes'
 
 export default function SplashPage() {
   const [currentUser] = useGlobal('currentUser')
@@ -46,8 +46,8 @@ export default function SplashPage() {
           </Trans>
         </Button>
         <Button outline href={paths.durhamRegistationPath}>
-          <Trans id="SplashPage.register_business">
-            Register Business
+          <Trans id="SplashPage.register_business_or_school">
+            Register Business or School
           </Trans>
         </Button>
 

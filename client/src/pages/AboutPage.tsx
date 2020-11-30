@@ -4,8 +4,8 @@ import {
 } from 'framework7-react'
 
 import { t } from '@lingui/macro'
-import { paths } from 'src/routes'
-import releaseData from 'src/data/releases'
+import { paths } from 'src/config/routes'
+import releaseData from 'src/assets/data/releases'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 const SettingsPage = () => (

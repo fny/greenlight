@@ -1,13 +1,17 @@
 import { DateTime } from 'luxon'
-import { isPresent, joinWords } from 'src/util'
+import { isPresent, joinWords } from 'src/helpers/util'
 import { Location, MedicalEvent } from 'src/models'
 import {
   Model, attribute as attr, initialize, STRING, DATETIME, DATE, BOOLEAN, hasMany, hasOne,
-} from './Model'
-import { CUTOFF_TIME, GreenlightStatus, GreenlightStatusTypes } from './GreenlightStatus'
-import { LocationAccount, PermissionLevels } from './LocationAccount'
+} from 'src/lib/Model'
+import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
+import { LocationAccount } from './LocationAccount'
 import { UserSettings } from './UserSettings'
 
+/**
+ * Represent a user in the application, be it an employee, owner, parent,
+ * teacher, student or administrator.
+ */
 export class User extends Model {
   static modelName = 'user'
 
