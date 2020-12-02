@@ -174,18 +174,21 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           <ListItem
             title={t({ id: 'DashboardPage.duke_testing_title', message: 'Testing at Duke' })}
             footer={t({ id: 'DashboardPage.duke_testing_footer', message: 'Connect to streamlined testing 8am to 5pm any day' })}
-            link={paths.dukeScheduleTestPage}
+            link={paths.dukeScheduleTestPath}
           >
             <Icon slot="media" f7="thermometer" />
           </ListItem>
+
           <ListItem
             external
-            link="https://www.dcopublichealth.org/services/communicable-diseases/coronavirus-disease-2019/covid-19-testing"
-            target="_blank"
-            title={t({ id: 'DashboardPage.testing_title', message: 'Find other Testing' })}
-            footer={t({ id: 'DashboardPage.testing_footer', message: 'Testing Sites Near You' })}
+            link={paths.chwRequestPath}
+            title={t({ id: 'DashboardPage.asfff', message: 'Connect to Care' })}
+            footer={t({
+              id: 'asdf',
+              message: 'Send a care request to a community health worker.',
+            })}
           >
-            <Icon slot="media" f7="search" />
+            <Icon slot="media" f7="heart" />
           </ListItem>
           {/* https://www.communitycarenc.org/what-we-do/supporting-primary-care */}
           <ListItem
@@ -195,6 +198,22 @@ export default class DashboardPage extends ReactNComponent<any, any> {
             footer={t({ id: 'DashboardPage.triage_footer', message: 'Call 7am-11pm any day' })}
           >
             <Icon slot="media" f7="phone" />
+          </ListItem>
+          <ListItem
+            link={paths.ncStatewideStatsPath}
+            // link="tel:1-877-490-6642"
+            title={t({ id: 'DashboardPage.ffasfa', message: 'NC COVID-19 Data' })}
+            footer={t({ id: 'DashboardPage.affafa', message: 'COVID-19 maps and statistics from across the state' })}
+          >
+            <Icon slot="media" f7="graph_square" />
+          </ListItem>
+          <ListItem
+            title={t({ id: 'DashboardPage.support_titless', message: 'Contact Support' })}
+            footer={t({ id: 'DashboardPage.support_footerss', message: 'Have any questions? Message our support team.' })}
+            external
+            link="mailto:help@greenlightready.com"
+          >
+            <Icon slot="media" f7="envelope" />
           </ListItem>
           {/* https://ncchildcare.ncdhhs.gov/Portals/0/documents/pdf/P/Parent_and_Families_School_Age_Child_Care.pdf?ver=2020-08-26-122445-963 */}
           <ListItem
@@ -209,12 +228,13 @@ export default class DashboardPage extends ReactNComponent<any, any> {
             <Icon slot="media" f7="phone" />
           </ListItem>
           <ListItem
-            title={t({ id: 'DashboardPage.support_title', message: 'Email Support' })}
-            footer={t({ id: 'DashboardPage.support_footer', message: 'Need help? Email our support team.' })}
             external
-            link="mailto:help@greenlightready.com"
+            link="https://www.dcopublichealth.org/services/communicable-diseases/coronavirus-disease-2019/covid-19-testing"
+            target="_blank"
+            title={t({ id: 'DashboardPage.testing_title', message: 'Find other Testing' })}
+            footer={t({ id: 'DashboardPage.testing_footer', message: 'Testing Sites Near You' })}
           >
-            <Icon slot="media" f7="envelope" />
+            <Icon slot="media" f7="search" />
           </ListItem>
         </List>
       </Page>

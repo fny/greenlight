@@ -3,6 +3,7 @@ module UsersController
   extend ActiveSupport::Concern
 
   included do
+    # Show a user
     get '/v1/users/:user_id' do
       user_id = params[:user_id]
       user = User.includes(:location_accounts).find(user_id)
@@ -11,6 +12,7 @@ module UsersController
       render json: UserSerializer.new(user)
     end
 
+    # Update a user
     patch '/v1/users/:user_id' do
       user_id = params[:user_id]
       user = User.includes(:location_accounts).find(user_id)
@@ -25,6 +27,19 @@ module UsersController
       end
     end
 
+    # Create a user
+    post '/v1/users/create-and-sign-in', auth: false do
+      user = User.new(User.restrict_params(request_json))
+      if user.save
+        set_status_created
+        sign_in(user, request.ip)
+        render json: UserSerializer.new(user)
+      else
+        error_response(user)
+      end
+    end
+
+    # Mark a user as having completed the welcome sequence
     put '/v1/users/:user_id/complete-welcome' do
       user_id = params[:user_id]
       user = User.find(user_id)
@@ -36,6 +51,7 @@ module UsersController
       render json: UserSerializer.new(user)
     end
 
+    # Update the users settings
     patch '/v1/users/:user_id/settings' do
       user_id = params[:user_id]
       ensure_or_forbidden! { current_user.id.to_s == user_id }
@@ -50,7 +66,7 @@ module UsersController
       end
     end
 
-    # On success responds with a greenlight status
+    # Create a survey for a user
     post '/v1/users/:user_id/symptom-surveys' do
       user_id = params[:user_id]
       user = User.includes(:location_accounts).find(user_id)

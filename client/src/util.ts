@@ -6,6 +6,7 @@ import { getGlobal } from 'reactn'
 import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import { ChangeEvent, SetStateAction } from 'react'
+import logger from './logger'
 
 //
 // Date and Time Related
@@ -95,8 +96,8 @@ export function isPrimitiveType(data: any) {
     || typeof data === 'boolean'
     || typeof data === 'bigint'
     || typeof data === 'symbol'
-    || typeof data === null
-    || typeof data === undefined
+    || data === null
+    || data === undefined
   )
 }
 
@@ -382,4 +383,11 @@ export function transformForAPI(data: any): any {
     transformed[k] = transformForAPI(data[k])
   })
   return transformed
+}
+
+export function debugHandler(callable: CallableFunction, message?: string): (...x: any) => void {
+  return (...x) => {
+    logger.dev('[Called]', callable, message)
+    callable(...x)
+  }
 }

@@ -4,6 +4,7 @@
 }
 
 .title-badge {
+  text-transform: capitalize;
   margin-left: 10px;
   padding: 0 10px;
 }

@@ -100,7 +100,9 @@ export function transformRelationship<T extends Model>(entity: T, relationshipNa
     if (foundEntity && foundRecord) {
       entity._included.push(relationshipName)
     } else {
-      throw `Expected to find ${relationship.data.type} with id ${relationship.data.id} in store but didn't.`
+      // HACK
+      console.error(`Expected to find ${relationship.data.type} with id ${relationship.data.id} in store but didn't.`)
+      return
     }
 
     // Set relationship for records on the relationship

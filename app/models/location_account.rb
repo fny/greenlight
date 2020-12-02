@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 class LocationAccount < ApplicationRecord
   PERMISSION_LEVELS = [
+    OWNER = 'owner',
     ADMIN = 'admin',
     NONE = 'none'
   ].freeze
@@ -8,12 +9,14 @@ class LocationAccount < ApplicationRecord
   ROLES = [
     STUDENT = 'student',
     TEACHER = 'teacher',
-    STAFF = 'staff'
+    STAFF = 'staff',
+    UNKNOWN = 'unknown'
   ].freeze
 
   extend Enumerize
   belongs_to :user
   belongs_to :location
+  belongs_to :created_by, class_name: 'User', optional: true
 
   enumerize :role, in: ROLES
   enumerize :permission_level, in: PERMISSION_LEVELS, default: NONE

@@ -30,7 +30,6 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
       <Page className="UserGreenlightPassPage">
         <Navbar
           title={this.global.i18n._(defineMessage({ id: 'UserGreenlightPassPage.pass_title', message: 'Greenlight Pass' }))}
-          backLink={this.global.i18n._(defineMessage({ id: 'Common.back', message: 'Back' }))}
         />
 
         <Block className="text-center">
@@ -46,10 +45,7 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
             <Case test={status.createdAt.isValid}>
               <When value>
                 <Trans id="UserGreenlightPassPage.submitted">
-                  Submitted at
-                  {' '}
-                  {status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}
-                  .
+                  Submitted at {status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}
                 </Trans>
               </When>
               <When value={false}>

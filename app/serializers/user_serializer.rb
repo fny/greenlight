@@ -33,8 +33,9 @@ class UserSerializer < ApplicationSerializer
     # For the Children
     :'children.location_accounts',
     :'children.location_accounts.location',
-    :'children.last_greenlight_status'
-  ] + [:settings]
+    :'children.last_greenlight_status',
+    :settings
+  ].freeze
 
   set_type :user
 

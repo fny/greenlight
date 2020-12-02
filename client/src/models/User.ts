@@ -4,11 +4,13 @@ import { Location, MedicalEvent } from 'src/models'
 import {
   Model, attribute as attr, initialize, STRING, DATETIME, DATE, BOOLEAN, hasMany, hasOne,
 } from './Model'
-import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
+import { CUTOFF_TIME, GreenlightStatus, GreenlightStatusTypes } from './GreenlightStatus'
 import { LocationAccount, PermissionLevels } from './LocationAccount'
 import { UserSettings } from './UserSettings'
 
 export class User extends Model {
+  static modelName = 'user'
+
   static reversedNameSort(u1: User, u2: User): number {
     if (u1.reversedName() > u2.reversedName()) return 1
     if (u1.reversedName() < u2.reversedName()) return -1
@@ -118,11 +120,6 @@ export class User extends Model {
     return this.locationAccounts[0]?.permissionLevel === PermissionLevels.ADMIN
   }
 
-  // HACK
-  adminLocation__HACK() {
-    return this.locationAccounts[0]?.locationId
-  }
-
   /** Has the user completed the welcome sequence? */
   hasCompletedWelcome() {
     return this.completedWelcomeAt !== null && this.completedWelcomeAt.isValid
@@ -132,7 +129,16 @@ export class User extends Model {
   greenlightStatus(): GreenlightStatus {
     if (!this.lastGreenlightStatus || !this.lastGreenlightStatus.isValidForToday()) {
       const status = GreenlightStatus.newUnknown()
-      status.user = this
+      // 'cleared',
+      // 'cleared_alternative_diagnosis',
+      // 'cleared_with_symptom_improvement',
+      // 'pending_needs_diagnosis',
+      // 'recovery_covid_exposure',
+      // 'recovery_asymptomatic_covid_exposure',
+      // 'recovery_from_diagnosis',
+      // 'recovery_not_covid_has_fever',
+      // 'recovery_diagnosed_asymptomatic',
+      // 'recovery_return_tomorrow'
       return status
     }
     return this.lastGreenlightStatus
@@ -251,7 +257,7 @@ export class User extends Model {
 
   usersExpectedToSubmit() {
     const users: User[] = []
-
+    return [this]
     if (this.hasLocationThatRequiresSurvey()) {
       users.push(this)
     }
@@ -262,5 +268,15 @@ export class User extends Model {
       }
     }
     return users
+  }
+
+  isAdminSomewhere(): boolean {
+    return this.adminLocations().length > 0
+  }
+
+  adminLocations(): Location[] {
+    return this.locationAccounts
+      .filter((la) => la.isAdmin() && la.location !== null)
+      .map((la) => la.location) as Location[]
   }
 }

@@ -7,6 +7,7 @@ import { toggleLocale, signOut } from 'src/initializers/providers'
 import { t } from '@lingui/macro'
 import { assertNotNull } from 'src/util'
 import { dynamicPaths, paths } from 'src/routes'
+import { User } from 'src/models'
 
 export default function SettingsPage() {
   const [currentUser] = useGlobal('currentUser')
@@ -16,7 +17,6 @@ export default function SettingsPage() {
     <Page>
       <Navbar
         title={t({ id: 'SettingsPage.title', message: 'Settings' })}
-        backLink
         sliding
       />
       <List accordionList noHairlines>
@@ -56,30 +56,30 @@ export default function SettingsPage() {
             </AccordionContent>
           </ListItem>
         )}
+        {
+          currentUser.isAdminSomewhere()
 
-        {/* <ListItem
+        && (
+        <ListItem
           accordionItem
-          title={t({ id: 'SettingsPage.my_locations', message: 'My Locations' })}
+          title="Admin"
         >
           <AccordionContent>
             <List>
-              <ListItem
-                link="#"
-                title={t({ id: 'SettingsPage.ACMEPlumbing', message: 'ACME Plumbing' })}
-              />
-              <ListItem
-                link="#"
-                title={
-                  t({ id: 'SettingsPage.Lambda_high_school', message: 'Lambda High School(Bob)' })
-                }
-              />
-              <ListItem
-                link="#"
-                title={t({ id: 'SettingsPage.divinity_middle', message: 'Divinity Middle(Mary)' })}
-              />
+              {
+                currentUser.adminLocations().map((location) => (
+                  <ListItem
+                    key={location.id}
+                    link={dynamicPaths.adminUsersPath({ locationId: location.id })}
+                    title={location.name || ''}
+                  />
+                ))
+              }
             </List>
           </AccordionContent>
-        </ListItem> */}
+        </ListItem>
+        )
+      }
 
         <ListItem
           link={paths.notificationsPath}

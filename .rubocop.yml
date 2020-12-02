@@ -25,6 +25,9 @@ Cop/AvoidKeywordArgumentsInSidekiqWorkers:
   Include:
     - 'app/workers/**/*'
 
+Metrics/AbcSize:
+  Enabled: false
+
 Metrics/BlockLength:
   Enabled: false
 
@@ -40,10 +43,6 @@ Metrics/ParameterLists:
 Rails/DynamicFindBy:
   Enabled: false
 
-# We use database ON DELETEs instead
-Rails/HasManyOrHasOneDependent:
-  Enabled: false
-
 RSpec/DescribedClass:
   Enabled: false
 
@@ -53,12 +52,15 @@ RSpec/EmptyExampleGroup:
 RSpec/ExampleLength:
   Enabled: false
 
+# We use database ON DELETEs instead
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
 RSpec/MultipleExpectations:
   Enabled: false
 
 RSpec/ImplicitExpect:
   Enabled: false
-
 
 Style/Documentation:
   Enabled: false

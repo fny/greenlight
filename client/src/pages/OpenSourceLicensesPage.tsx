@@ -6,7 +6,7 @@ import React from 'reactn'
 export default function OpenSourceLicensesPage() {
   return (
     <Page>
-      <Navbar title={t({ id: 'OpenSourceLicensesPage.title', message: 'Open Source Licenses' })} backLink />
+      <Navbar title={t({ id: 'OpenSourceLicensesPage.title', message: 'Open Source Licenses' })} />
       <Block strong noHairlines>
         <p>
           <Trans id="OpenSourceLicensesPage.message">
