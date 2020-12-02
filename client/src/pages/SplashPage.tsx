@@ -45,9 +45,16 @@ export default function SplashPage() {
             Create Account
           </Trans>
         </Button>
-        <Button outline href={paths.durhamRegistationPath}>
+
+        {/* <Button outline href={paths.registerLocationWelcomePath}>
           <Trans id="SplashPage.register_business_or_school">
-            Register Business or School
+            Register Organization
+          </Trans>
+        </Button> */}
+
+        <Button outline href={paths.durhamRegistationPath}>
+          <Trans id="SplashPage.register_business">
+            Register Business
           </Trans>
         </Button>
 

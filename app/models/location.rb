@@ -3,7 +3,8 @@
 class Location < ApplicationRecord
   self.permitted_params = %i[
     name category permalink phone_number email website zip_code hidden
-    daily_reminder_time employee_count
+    employee_count
+    daily_reminder_time
     remind_mon remind_tue remind_wed remind_thu remind_fri remind_sat remind_sun
   ]
 
@@ -16,8 +17,16 @@ class Location < ApplicationRecord
   # has_many :teachers
   # has_many :staff
 
+
+  validate :registration_codes_are_different
+
   validates :phone_number, phone: { countries: :us }, allow_nil: true
-  before_create :set_registration_code
+  validates :registration_code, presence: true
+  validates :registration_code_downcase, presence: true
+  validates :student_registration_code, presence: true
+  validates :student_registration_code_downcase, presence: true
+  validates :permalink, uniqueness: true
+  before_validation :set_registration_codes
 
   def self.find_by_id_or_permalink(id)
     find_by(id: id) || find_by(permalink: id)
@@ -26,6 +35,14 @@ class Location < ApplicationRecord
   def self.find_by_id_or_permalink!(id)
     find_by_id_or_permalink(id) ||
       raise(ActiveRecord::RecordNotFound, "Location could not be found by #{id}")
+  end
+
+  def self.load_locations_from_data!
+    Greenlight::Data.load_json('locations.json').each do |l|
+      next if Location.exists?(permalink: l['permalink'])
+
+      Location.create!(l)
+    end
   end
 
   def phone_number=(value)
@@ -70,6 +87,11 @@ class Location < ApplicationRecord
     self.registration_code_downcase = code.downcase
   end
 
+  def student_registration_code=(code)
+    self[:student_registration_code] = code
+    self.student_registration_code_downcase = code.downcase
+  end
+
   # Any users that should recieve a notification
   def users_to_notify
     location = Location.includes(
@@ -99,18 +121,59 @@ class Location < ApplicationRecord
     "#{color}#{thing}#{number}"
   end
 
-  def refresh_registration_code!
-    code = generate_registration_code
+  #
+  # FIXME: We need a database constraint here. There's a change two codes
+  # will clash.
+  #
+
+  def refresh_registration_codes!
+    code1, code2 = generate_two_unique_codes
     update_columns({ # rubocop:disable Rails/SkipsModelValidations
-      registration_code: code,
-      registration_code_downcase: code.downcase
+      registration_code: code1,
+      registration_code_downcase: code1.downcase,
+      student_registration_code: code2,
+      student_registration_code_downcase: code2.downcase
     })
+  end
+
+  def refresh_student_registration_codes!
+    code = generate_registration_code
+    code = generate_registration_code while code == self.registration_code
+
+    update_columns({ # rubocop:disable Rails/SkipsModelValidations
+      student_registration_code: code,
+      student_registration_code_downcase: code.downcase
+    })
+  end
+
+  def import_staff_from_gdrive!(gdrive_id)
+    file_path = Greenlight::Data.fetch_gdrive(gdrive_id, 'xlsx')
+    @rimport = StaffImport.new(self, file_path)
+    @rimport.process_rows!
   end
 
   private
 
-  def set_registration_code
-    self.registration_code = generate_registration_code
+  def registration_codes_are_different
+    if self.registration_code == self.student_registration_code
+      errors.add(:registration_code, 'matches student registration code')
+    end
+  end
+
+  def set_registration_codes
+    code1, code2 = generate_two_unique_codes
+    self.registration_code = code1 unless self.registration_code
+    self.student_registration_code = code2 unless self.student_registration_code
+  end
+
+  def generate_two_unique_codes
+    loop do
+      code1 = generate_registration_code
+      code2 = generate_registration_code
+      next if code1 == code2
+
+      return [code1, code2]
+    end
   end
 end
 
@@ -118,30 +181,32 @@ end
 #
 # Table name: locations
 #
-#  id                         :bigint           not null, primary key
-#  name                       :text             not null
-#  category                   :text             not null
-#  permalink                  :text             not null
-#  phone_number               :text
-#  email                      :text
-#  website                    :text
-#  zip_code                   :text
-#  hidden                     :boolean          default(TRUE), not null
-#  created_at                 :datetime         not null
-#  updated_at                 :datetime         not null
-#  daily_reminder_time        :integer          default(7), not null
-#  remind_mon                 :boolean          default(TRUE), not null
-#  remind_tue                 :boolean          default(TRUE), not null
-#  remind_wed                 :boolean          default(TRUE), not null
-#  remind_thu                 :boolean          default(TRUE), not null
-#  remind_fri                 :boolean          default(TRUE), not null
-#  remind_sat                 :boolean          default(TRUE), not null
-#  remind_sun                 :boolean          default(TRUE), not null
-#  employee_count             :integer
-#  approved_at                :datetime
-#  created_by_id              :bigint
-#  registration_code          :string
-#  registration_code_downcase :string
+#  id                                 :bigint           not null, primary key
+#  name                               :text             not null
+#  category                           :text             not null
+#  permalink                          :text             not null
+#  phone_number                       :text
+#  email                              :text
+#  website                            :text
+#  zip_code                           :text
+#  hidden                             :boolean          default(TRUE), not null
+#  created_at                         :datetime         not null
+#  updated_at                         :datetime         not null
+#  daily_reminder_time                :integer          default(7), not null
+#  remind_mon                         :boolean          default(TRUE), not null
+#  remind_tue                         :boolean          default(TRUE), not null
+#  remind_wed                         :boolean          default(TRUE), not null
+#  remind_thu                         :boolean          default(TRUE), not null
+#  remind_fri                         :boolean          default(TRUE), not null
+#  remind_sat                         :boolean          default(TRUE), not null
+#  remind_sun                         :boolean          default(TRUE), not null
+#  employee_count                     :integer
+#  approved_at                        :datetime
+#  created_by_id                      :bigint
+#  registration_code                  :string
+#  registration_code_downcase         :string
+#  student_registration_code          :string
+#  student_registration_code_downcase :string
 #
 # Indexes
 #

@@ -53,19 +53,22 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
         </BlockTitle>
         <Block>
           <p>
-            {
+
+            {/* { FIXME: isOwnerSomewhere doesn't work
               this.user.isOwnerSomewhere() ? (
+                <Trans id="WelcomeSurveyPage.thank_you_owner">
+                  Congratulations on registering!
+                </Trans>
+
+              ) : (
                 <Trans id="WelcomeSurveyPage.thank_you">
                   Thanks for providing that information!
                 </Trans>
-              ) : (
-                <Trans id="WelcomeSurveyPage.thank_you_owner">
-                  Congratulations on registering your business!
-                </Trans>
               )
-
-            }
-
+            } */}
+            <Trans id="WelcomeSurveyPage.thank_you">
+              Thanks for providing that information!
+            </Trans>
           </p>
           <p>
             {

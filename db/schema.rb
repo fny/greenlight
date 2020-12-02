@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_25_104022) do
+ActiveRecord::Schema.define(version: 2020_12_02_034306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,7 +78,7 @@ ActiveRecord::Schema.define(version: 2020_11_25_104022) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["created_by_id"], name: "index_location_accounts_on_created_by_id"
     t.index ["deleted_by_id"], name: "index_location_accounts_on_deleted_by_id"
-    t.index ["external_id"], name: "index_location_accounts_on_external_id", unique: true
+    t.index ["location_id", "external_id"], name: "index_location_accounts_on_location_id_and_external_id", unique: true
     t.index ["location_id"], name: "index_location_accounts_on_location_id"
     t.index ["role"], name: "index_location_accounts_on_role"
     t.index ["updated_by_id"], name: "index_location_accounts_on_updated_by_id"
@@ -109,6 +109,8 @@ ActiveRecord::Schema.define(version: 2020_11_25_104022) do
     t.bigint "created_by_id"
     t.string "registration_code"
     t.string "registration_code_downcase"
+    t.string "student_registration_code"
+    t.string "student_registration_code_downcase"
     t.index ["created_by_id"], name: "index_locations_on_created_by_id"
     t.index ["permalink"], name: "index_locations_on_permalink", unique: true
   end

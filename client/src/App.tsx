@@ -1,4 +1,4 @@
-import React, { Fragment, useGlobal } from 'reactn'
+import React, { Fragment } from 'reactn'
 
 import './App.css'
 
@@ -10,9 +10,9 @@ import { I18nProvider, useLingui } from '@lingui/react'
 import routes from 'src/config/routes'
 import { i18n as globalI18n } from 'src/i18n'
 import { ErrorBoundary } from 'src/ErrorBoundary'
-import OnlineStatus from './components/OnlineStatus'
 import SupportedBrowserBar from 'src/components/SupportedBrowserBar'
 import { isCordova } from 'src/helpers/util'
+import OnlineStatus from './components/OnlineStatus'
 
 function I18nWatchLocale({ children }: { children: React.ReactNode }) {
   const { i18n } = useLingui()
@@ -38,13 +38,11 @@ if (!isCordova()) {
   }
 }
 
-export default function Main() {
-  const [locale] = useGlobal('locale')
-
+export default function Main(): JSX.Element {
   return (
     <I18nProvider i18n={globalI18n}>
       <I18nWatchLocale>
-        <App key={locale} params={f7params} className="App">
+        <App params={f7params} className="App">
           <SupportedBrowserBar />
           <OnlineStatus />
           <ErrorBoundary>

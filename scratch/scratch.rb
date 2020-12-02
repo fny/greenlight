@@ -114,3 +114,24 @@ user_ids = user_ids.merge(user_ids_from_location)
 user_ids.map { |user_id| ReminderWorker.new.perform(user_id) }
 
 Sidekiq::Cron::Job.create(name: 'Daily Reminders - every hour', cron: '0 * * * *', class: 'ScheduledReminderWorker')
+
+
+# Loading useres via spreadsheeet
+
+Location.all.map(&:refresh_student_registration_codes!)
+Location.load_locations_from_data!
+
+def load_it_all!
+  schools = {
+    'voyager-admin' => 'A',
+    'voyager-elementary' => 'B',
+    'voyager-middle' => 'C',
+    'voyager-high' => 'D',
+  }
+
+  ActiveRecord::Base.transaction do
+    schools.each do |permalink, drive_id|
+      Location.find_by(permalink: permalink).import_staff_from_gdrive!(drive_id)
+    end
+  end
+end

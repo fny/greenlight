@@ -79,6 +79,37 @@ If you're coming from Sublime, [this extension](https://marketplace.visualstudio
 If you're using VSCode, you should use the workspace specific configurations
 provided in this repo.
 
+## Comment Annotations
+
+Prefix your comments with the following when an action item needs to be taken.
+
+ - TODO: There's something that needs to get done
+ - FIXME: There's something broken here.
+ - HACK: This is a temporary hack to get something working that needs improvement.
+ - PERF: There's something here that needs to be sped up.
+ - I18N: There's something that needs to be translated
+ - REFACTOR: The code is ugly.
+ - UGLY: The presentation to the user is ugly.
+
+## Commit Messages
+
+Prefix your commits with the following so we know what's happening. We aim to follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+
+ - feat: new feature, corresponds to a MINOR version update
+ - fix: a bug fix corresponds to a PATCH version update
+ - docs: changes to the documentation
+ - style: formatting, missing semi colons, etc
+ - refactor: refactoring production code
+ - test: adding missing tests, refactoring tests;
+ - chore: updating tasks
+ - BREAKING CHANGE: when you shake things up
+
+For commits associated with releases (e.g. the CHANGELOG update) use the following format:
+
+ - release: vMAJOR.MINOR.PATCH 🎊
+
+Feel free to change the emoji.
+
 ---
 
 This is Faraz's brain dump. Please ignore for now.
@@ -332,3 +363,8 @@ It should be well known if an endpoint retuns a single value or not
  - Add TOS for business customers
  - Simplify TOS
  - Add privacy policy page
+
+
+### Heroku
+
+runtime-dyno-metadata -a glit-api-prod

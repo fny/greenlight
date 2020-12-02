@@ -89,138 +89,6 @@ export default function LocationForm({ location, f7router, category }: Props) {
     },
   })
 
-  //
-  // BEGIN SCHOOLS
-  //
-
-  if (category === 'school') {
-    if (!locationCreated) {
-      const ownerCount = currentUser.locationAccounts.filter((x) => x.permissionLevel === 'owner').length
-      return (
-        <FormikProvider value={formik}>
-          <List
-            form
-            onSubmit={(e) => {
-              e.preventDefault()
-              formik.handleSubmit(e)
-            }}
-          >
-            <Block>
-              <BlockTitle>
-                <Trans id="LocationsNewPage.school_info_title">
-                  Your school's Information
-                </Trans>
-              </BlockTitle>
-
-              <Trans id="LocationsNewPage.school_info_instructions">
-                Please fill out the form below with information about your school.
-              </Trans>
-
-              {ownerCount > 0 && (
-              <span>{' '}
-                <Trans id="LocationsNewPage.school_info_school_count">
-                  Note you already have registered {ownerCount} school. If you're having trouble with access send us an email help@greenlightready.com
-                </Trans>
-              </span>
-              )}
-              <BusinessLocationFields formik={formik} category="school" />
-              <BusinessNotificationFields formik={formik} category="school" />
-            </Block>
-            <Button fill type="submit">
-              {
-                category === 'school'
-                  ? <Trans id="SchoolLocationForm.create_location">Create Your School</Trans>
-                  : <Trans id="BusinessLocationForm.create_location">Create Your Business</Trans>
-              }
-
-            </Button>
-          </List>
-        </FormikProvider>
-      )
-    }
-    location = currentUser?.locations__HACK()[currentUser?.locations__HACK().length - 1]
-
-    assertNotNull(location)
-    assertNotUndefined(location)
-
-    return (
-      <Block>
-        <h1>
-          <Trans id="LocationsNewPage.school_created">
-            Your School Has Been Registered
-          </Trans>
-        </h1>
-        <p>
-          <Trans id="LocationsNewPage.school_created_instructions1">
-            Your staff can now create their accounts by visiting the following
-            link:
-          </Trans>
-        </p>
-        <p style={{ fontWeight: 'bold' }}>{location.registrationWithCodeURL()}</p>
-        <p>
-          <Trans id="LocationsNewPage.school_created_instructions1">
-            Your parents can now create accounts for their chlidren by visiting the following
-            link:
-          </Trans>
-        </p>
-        <p style={{ fontWeight: 'bold' }}>{location.parentRegistrationWithCodeURL()}</p>
-        <p>
-          <Trans id="LocationsNewPage.school_created_instructions2">
-            Parents and students can also sign up by visiting the app,
-            clicking create account, and signing in with the following location id
-            and registration code:
-          </Trans>
-        </p>
-        <ul>
-          <li>
-            <Trans id="LocationsNewPage.school_created_school_id">
-              School ID: {location.permalink}
-            </Trans>
-          </li>
-          <li>
-            <Trans id="LocationsNewPage.school_created_registration_code">
-              Registration Code for Staff: {location.registrationCode} (case insensitive)
-            </Trans>
-          </li>
-          <li>
-            <Trans id="LocationsNewPage.school_created_parent_registration_code">
-              Registration Code for Parents: {location.parentRegistrationCode} (case insensitive)
-            </Trans>
-          </li>
-        </ul>
-        <p>
-          <Trans id="LocationsNewPage.school_created_instructions3">
-            You will also receive an email with these instructions.
-            If you have any questions, feel free to email us at
-            <Link href="mailto:help@greenlightready.com" external>help@greenlightready.com</Link>
-          </Trans>
-        </p>
-
-        <p>
-          <Trans id="LocationsNewPage.parent_is_staff">
-            If you have staff members who also have children at your school, have
-            them register with the staff sign up link and registration code.
-          </Trans>
-        </p>
-
-        <Button fill href={paths.welcomeSurveyPath}>
-          <Trans id="LocationsNewPage.surveys_button">
-            Learn About Surveys
-          </Trans>
-        </Button>
-      </Block>
-    )
-  }
-
-  //
-  // END SCHOOLS
-  //
-
-  location = currentUser?.locations__HACK()[currentUser?.locations__HACK().length - 1]
-
-  assertNotNull(location)
-  assertNotUndefined(location)
-
   if (!locationCreated) {
     const ownerCount = currentUser.locationAccounts.filter((x) => x.permissionLevel === 'owner').length
     return (
@@ -261,6 +129,11 @@ export default function LocationForm({ location, f7router, category }: Props) {
     )
   }
 
+  location = currentUser?.locations__HACK()[currentUser?.locations__HACK().length - 1]
+
+  assertNotNull(location)
+  assertNotUndefined(location)
+
   return (
     <Block>
       <h1>
@@ -290,7 +163,7 @@ export default function LocationForm({ location, f7router, category }: Props) {
         </li>
         <li>
           <Trans id="LocationsNewPage.business_created_registration_code">
-            Registration Code: {location.registrationCode}(case insensitive)
+            Registration Code: {location.registrationCode} (case insensitive)
           </Trans>
         </li>
       </ul>
@@ -341,7 +214,7 @@ function BusinessLocationFields({ formik, category }: { formik: FormikInstance<a
         <ListItem>
           <Trans id="BusinessLocationForm.registration">
             Users will be able to register for your location by visiting:{' '}
-            glit.me/l/{formik.values.permalink}
+            glit.me/go/{formik.values.permalink}
           </Trans>
         </ListItem>
         )}
@@ -472,11 +345,6 @@ function BusinessNotificationFields({ formik, category }: { formik: FormikInstan
 
 const schema = Yup.object<LocationInput>().shape({
   name: Yup.string().required(cantBeBlankMessage),
-  // website: Yup.string(),
-  // email: Yup.string()
-  //   .email(invalidMessage).nullable(),
-  // phoneNumber: Yup.string()
-  //   .phone('US', undefined, t({ id: 'Form.error_invalid', message: 'Is invalid' })).nullable(),
   permalink: Yup.string()
     .matches(/^[a-z0-9-]+$/, { message: t({ id: 'LocationForm.permalink_error', message: 'only lowercase letters, dashes for spaces, and numbers' }) })
     .min(3)

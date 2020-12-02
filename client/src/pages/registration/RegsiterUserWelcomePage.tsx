@@ -1,8 +1,8 @@
 import { t, Trans } from '@lingui/macro'
 import {
-  Block, Button, Col, F7Accordion, Link, List, ListItem, Page, PageContent, Row, Sheet, Toolbar,
+  Block, Button, Col, Link, List, ListItem, Page, PageContent, Row, Sheet, Toolbar,
 } from 'framework7-react'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { isBlank, isPresent, upperCaseFirst } from 'src/helpers/util'
 import { GRegisteringLocation, GRegisteringUser, toggleLocale } from 'src/initializers/providers'
 import {
@@ -12,18 +12,16 @@ import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
 import { paths } from 'src/config/routes'
 import { useGlobal } from 'reactn'
 import { F7Props } from 'src/types'
-import SessionStorage from 'src/helpers/SessionStorage'
-import Redirect from 'src/components/Redirect'
-import { User } from 'src/models'
-
-import './RegisterLocationWelcomePage.css'
 
 function ResizingInput(props: React.HTMLProps<HTMLInputElement>): JSX.Element {
   const [value, setValue] = useState('')
   return (
     <input
       {...props}
-
+      onChange={(e) => {
+        setValue(e.target.value || '')
+        props.onChange && props.onChange(e)
+      }}
       size={(value ? value.length : props.placeholder?.length || 0) + 4}
     />
   )
@@ -45,31 +43,51 @@ class State {
 
 function validateUser(user: GRegisteringUser) {
   const errors = []
-  if (isBlank(user.firstName)) errors.push('firstName')
-  if (isBlank(user.lastName)) errors.push('lastName')
+  isBlank(user.firstName) && errors.push('firstName')
+  isBlank(user.lastName) && errors.push('lastName')
   return errors
 }
 
 function validateLocation(location: GRegisteringLocation) {
   const errors = []
-  if (isBlank(location.zipCode)) errors.push('zipCode')
-  if (!/^\d{5}$/.test(location.zipCode)) errors.push('zipCode')
-  if (isBlank(location.category)) errors.push('category')
+  isBlank(location.zipCode) && errors.push('zipCode')
+  !/^\d{5}$/.test(location.zipCode) && errors.push('zipCode')
+  isBlank(location.category) && errors.push('category')
   return errors
 }
 
 export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element {
-  const [currentUser] = useGlobal('currentUser') as [User, any]
   const [registeringUser, setRegisteringUser] = useGlobal('registeringUser')
   const [registeringLocation, setRegisteringLocation] = useGlobal('registeringLocation')
   const [state, setState] = useState(new State())
 
-  if (currentUser) {
-    return <Redirect to={paths.registerLocationDetailsPath} router={props.f7router} />
-  }
-
   return (
     <Page className="RegisterLocationWelcomePage">
+      <style>
+        {
+          `
+          .RegisterLocationWelcomePage .fill-in-the-blank {
+            display: inline-block;
+            border-bottom: 1px dashed black;
+            text-align: center;
+            color: var(--gl-green);
+          }
+          .RegisterLocationWelcomePage .category-select {
+            cursor: pointer;
+          }
+          .RegisterLocationWelcomePage .introduction {
+            font-size: 1.5rem;
+          }
+          .RegisterLocationWelcomePage .has-error {
+            color: red;
+            border-bottom: 1px dashed red;
+          }
+          .RegisterLocationWelcomePage .has-error::placeholder {
+            color: red;
+          }
+          `
+        }
+      </style>
       <Block>
         <h1>
           Introduce yourself.
@@ -80,9 +98,12 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
           </Link> */}
         </h1>
         <p className="introduction">
-          Hello, Greenlight! My name is
-          <br />
-          <input
+          Hello, Greenlight!
+        </p>
+        <p className="introduction">
+          My name is
+          {' '}
+          <ResizingInput
             name="firstName"
             className={`fill-in-the-blank ${state.showErrors && validateUser(registeringUser).includes('firstName') && 'has-error'}`}
             type="text"
@@ -92,42 +113,38 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
             }}
           />
           {' '}
-          <input
+          <ResizingInput
             name="lastName"
             className={`fill-in-the-blank ${state.showErrors && validateUser(registeringUser).includes('lastName') && 'has-error'}`}
             type="text"
             placeholder="Last"
             onChange={(e) => setRegisteringUser({ ...registeringUser, lastName: (e.target as HTMLInputElement).value })}
           />
-          <br />
+          {' '}
           and I want to register my
-          <input
+          <ResizingInput
             name="locationCategory"
             className={`fill-in-the-blank ${state.showErrors && validateLocation(registeringLocation).includes('category') && 'has-error'}`}
             type="text"
             placeholder="Community"
             onFocus={() => setState({ ...state, locationCategoriesOpened: true })}
-            readOnly
             value={
               registeringLocation.category
                 ? lcTrans(registeringLocation.category)
                 : ''
               }
           />
-          <br />
           located in
-          {' '}
-          <input
-            name="zipCode"
+          <ResizingInput
             className={`fill-in-the-blank ${state.showErrors && validateLocation(registeringLocation).includes('zipCode') && 'has-error'}`}
             type="text"
             placeholder="Zip Code"
             onChange={(e) => setRegisteringLocation({ ...registeringLocation, zipCode: (e.target as HTMLInputElement).value })}
-          />.
+          />
+          for Greenlight.
         </p>
-        <p style={{ textAlign: 'center' }}>
-          <img alt="Welcome to Greenlight!" src={welcomeDoctorImage} height="150px" />
-        </p>
+
+        <img alt="Welcome to Greenlight!" src={welcomeDoctorImage} />
         <p>
           <Trans id="WelcomePage.terms_and_conditions">
             By continuing, you accept Greenlight's{' '}
@@ -158,9 +175,6 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
                   return
                 }
                 setState({ ...state, showErrors: false })
-                SessionStorage.setRegisteringUser(registeringUser)
-                SessionStorage.setRegisteringLocation(registeringLocation)
-
                 props.f7router.navigate(paths.registerLocationOwnerPath)
               }}
             >
@@ -193,13 +207,8 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
         onSheetClosed={() => {
           setState({ ...state, locationCategoriesOpened: false })
         }}
+        swipeToClose
       >
-        <Toolbar>
-          <div className="left" />
-          <div className="right">
-            <Link sheetClose><Trans id="Common.close">Close</Trans></Link>
-          </div>
-        </Toolbar>
 
         <PageContent> {/*  Use this to make sheet scrollable */}
           <List noHairlines noChevron>
@@ -213,7 +222,6 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
                 title={upperCaseFirst(lcTrans(c))}
                 onChange={(e) => {
                   setRegisteringLocation({ ...registeringLocation, category: e.target.value })
-                  setState({ ...state, locationCategoriesOpened: false })
                 }}
               />
             ))

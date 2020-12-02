@@ -120,6 +120,12 @@ class User < ApplicationRecord
     end
   end
 
+  # I18N: We should also check other errors across the app
+  def self.find_by_email_or_mobile!(value)
+    find_by_email_or_mobile(value) ||
+      raise(ActiveRecord::RecordNotFound, "User could not be found with email or phone #{value}")
+  end
+
   # @param [String] external_id
   # @returns [User]
   def self.find_by_external_id(external_id)
@@ -233,6 +239,12 @@ class User < ApplicationRecord
   # Authentication Related
   #
 
+  def valid_password?(password)
+    return false if password.blank?
+
+    user.authenticate(password.strip)
+  end
+
   def magic_sign_in_url(remember_me: false)
     if remember_me
       "#{Greenlight::SHORT_URL}/mgk/#{magic_sign_in_token}/y"
@@ -334,6 +346,10 @@ class User < ApplicationRecord
 
   def submitted_for_today?
     !GreenlightStatus.submittable_for?(id)
+  end
+
+  def reset_welcome!
+    update_columns({completed_welcome_at: nil })
   end
 
   private

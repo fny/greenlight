@@ -12,7 +12,8 @@ import { GLLocales } from 'src/i18n'
 import SubmissionHandler from 'src/helpers/SubmissionHandler'
 import { User } from 'src/models'
 import * as Yup from 'yup'
-// import 'src/initializers/y'
+import 'src/lib/yup-phone'
+import { reloadCurrentUser } from 'src/initializers/providers'
 
 class UserInput {
   firstName: string = ''
@@ -42,6 +43,7 @@ export default function UserForm({ user, f7router }: { user?: User, f7router: Ro
         if (formik.dirty) {
           await createUserAndSignIn(values)
           await getCurrentUser()
+          await reloadCurrentUser()
           f7router.refreshPage()
           // FIXME: We shouldn't have to do a hard refresh
           window.location.reload()
@@ -123,9 +125,8 @@ const schema = Yup.object<UserInput>().shape({
   email: Yup.string()
     .email(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
     .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
-  // TODO: mobile number validation is broken!
-  // mobileNumber: Yup.string()
-  //   .phone('US', undefined, t({ id: 'Form.error_invalid', message: 'Is invalid' }))
-  //   .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
+  mobileNumber: Yup.string()
+    .phone('US', t({ id: 'Form.error_invalid', message: 'Is invalid' }))
+    .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
   password: Yup.string().min(8, t({ id: 'Form.password_invalid', message: 'must be at least 8 characters' })),
 })

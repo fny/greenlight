@@ -8,6 +8,7 @@ import Honeybadger from 'honeybadger-js'
 
 import logger from 'src/helpers/logger'
 import { LocationAccount } from 'src/models/LocationAccount'
+import { assignIn } from 'lodash'
 import env from '../config/env'
 import { transformRecordResponse, recordStore } from './stores'
 import { RecordResponse } from '../types'
@@ -192,6 +193,16 @@ export async function createSymptomSurvey(user: User, medicalEvents: Partial<Med
   assertNotUndefined(record.attributes)
 
   return record.attributes.status || null
+}
+
+//
+// Misc
+//
+
+export function sendInvite(emailOrMobile: string): Promise<AxiosResponse<any>> {
+  return v1.post('/send-invite', {
+    emailOrMobile,
+  })
 }
 
 //

@@ -1,24 +1,46 @@
+// TODO: I18N
+// TODO: UGLY
+// TODO: Add link to create account
 import React, { useState, useEffect } from 'reactn'
 import {
-  Page, Navbar, BlockTitle, Badge, Block, Button, Preloader, Link,
+  Page, BlockTitle, Badge, Block, Button, Link, List, ListItem, ListInput, f7,
 } from 'framework7-react'
 import { Trans, t } from '@lingui/macro'
 
-import { FunctionComponent, F7Props } from 'src/types'
+import { F7Props } from 'src/types'
 import { assertNotNull, assertNotUndefined, formatPhone } from 'src/helpers/util'
 import { paths } from 'src/config/routes'
 
 import './LocationPage.css'
 import { Location } from 'src/models'
-import { getLocation } from 'src/api'
+import { getLocation, sendInvite } from 'src/api'
 import LoadingPage from 'src/pages/util/LoadingPage'
+import SubmissionHandler from 'src/helpers/SubmissionHandler'
 
-const LocationPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
+class State {
+  emailOrMobile: string = ''
+}
+
+export default function LocationPage({ f7route, f7router }: F7Props) {
+  const [location, setLocation] = useState<Location | null>()
+  const [error, setError] = useState<any>(null)
+  const [state, setState] = useState<State>(new State())
+
   const { locationId } = f7route.params
   assertNotUndefined(locationId)
 
-  const [location, setLocation] = useState<Location | null>()
-  const [error, setError] = useState<any>(null)
+  // TODO: Tell them if their account is already active
+  // TODO: Show an error specific to email or mobile number
+  const submitHandler = new SubmissionHandler(f7, {
+    onSuccess: () => {
+      f7.dialog.alert('You should receive a text or email with instructions from Greenlight soon. Please check spam too! ', 'Success')
+    },
+    onErrorTitle: 'Not Found',
+    onErrorMessage: 'No matching email or phone number was found. Maybe you already signed up?',
+    onSubmit: async () => {
+      await sendInvite(state.emailOrMobile)
+    },
+  })
 
   useEffect(() => {
     getLocation(locationId).then(setLocation).catch(setError)
@@ -34,8 +56,10 @@ const LocationPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
     return (
       <Page>
         <Block>
-          Something went wrong.
-          <Link href={paths.rootPath}>Return to Home Screen</Link>
+          We couldn't find a location for the ID "{locationId}".
+          <br />
+          <br />
+          <Button href={paths.rootPath} fill>Return to Home Screen</Button>
         </Block>
       </Page>
     )
@@ -59,18 +83,41 @@ const LocationPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
           {location.email && <li>Email: <Link href={`mailto:${location.email}`}>{location.email}</Link></li>}
         </ul>
         <p>
-          This location will only have access to your status (cleared, pending, recovery) and your COVID test results.
+          By registering, this location will have access to your status (cleared, pending, recovery) and COVID test results you submit.
           You can revoke access at any time.
         </p>
-        <Button fill>
-          <Trans id="Location.register">
-            Register
+        <List
+          form
+          noHairlines
+          onSubmit={(e) => {
+            e.preventDefault()
+
+            submitHandler.submit()
+          }}
+        >
+          {/* TODO: Switch to email or mobile input type */}
+          <ListInput
+            label="Email or Mobile Number"
+            placeholder="Your Email or Mobile Number"
+            type="text"
+            required
+            onChange={(e) => { setState({ ...state, emailOrMobile: e.target.value }) }}
+          />
+          <br />
+          <Button fill type="submit">
+            <Trans id="LocationPage.claim_account">
+              Lookup Account
+            </Trans>
+          </Button>
+        </List>
+
+        {/* <Button outline>
+          <Trans id="LocationPage.claim_account">
+            Create Account
           </Trans>
-        </Button>
+        </Button> */}
         <Link href={paths.rootPath}>Return to Home Screen</Link>
       </Block>
     </Page>
   )
 }
-
-export default LocationPage

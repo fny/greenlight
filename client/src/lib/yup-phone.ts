@@ -1,7 +1,5 @@
 import * as Yup from 'yup'
-import gPhoneNumber from 'google-libphonenumber'
-
-const phoneUtil = gPhoneNumber.PhoneNumberUtil.getInstance()
+import { CountryCode, parsePhoneNumberFromString } from 'libphonenumber-js'
 
 declare module 'yup' {
   export interface StringSchema {
@@ -9,12 +7,10 @@ declare module 'yup' {
      * Check for phone number validity.
      *
      * @param {String} [countryCode=IN] The country code to check against.
-     * @param {Boolean} [strict=false] How strictly should it check.
      * @param {String} [errorMessage=DEFAULT_MESSAGE] The error message to return if the validation fails.
      */
     phone(
       countryCode?: string,
-      strict?: boolean,
       errorMessage?: string
     ): StringSchema;
   }
@@ -27,43 +23,33 @@ const isValidCountryCode = (countryCode: any): boolean => typeof countryCode ===
   && countryCode.length === CLDR_REGION_CODE_SIZE
 
 Yup.addMethod(Yup.string, YUP_PHONE_METHOD, function yupPhone(
-  countryCode?: string,
-  strict: boolean = false,
+  countryCode?: CountryCode,
   errorMessage: string = '',
 ) {
+  // eslint-disable-next-line no-nested-ternary
   const errMsg = typeof errorMessage === 'string' && errorMessage
     ? errorMessage
     : isValidCountryCode(countryCode)
       ? `\${path} must be a valid phone number for region ${countryCode}`
+      // eslint-disable-next-line no-template-curly-in-string
       : '${path} must be a valid phone number.'
   // @ts-ignore
   return this.test(YUP_PHONE_METHOD, errMsg, (value: string) => {
-    if (!isValidCountryCode(countryCode)) {
-      // if not valid countryCode, then set default country to India (IN)
-      countryCode = 'IN'
-      strict = false
-    }
-
     try {
-      const phoneNumber = phoneUtil.parseAndKeepRawInput(value, countryCode)
-
-      if (!phoneUtil.isPossibleNumber(phoneNumber)) {
+      const phoneNumber = parsePhoneNumberFromString(value, countryCode)
+      if (!phoneNumber) {
         return false
       }
 
-      const regionCodeFromPhoneNumber = phoneUtil.getRegionCodeForNumber(
-        phoneNumber,
-      )
+      if (!phoneNumber.isPossible()) {
+        return false
+      }
 
-      /* check if the countryCode provided should be used as
-       default country code or strictly followed
-     */
-      return strict
-        ? phoneUtil.isValidNumberForRegion(phoneNumber, countryCode)
-        : phoneUtil.isValidNumberForRegion(
-          phoneNumber,
-          regionCodeFromPhoneNumber,
-        )
+      if (!phoneNumber.isValid()) {
+        return false
+      }
+
+      return true
     } catch {
       return false
     }

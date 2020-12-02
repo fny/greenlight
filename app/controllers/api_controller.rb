@@ -3,6 +3,7 @@ class APIController < ActionController::API
   include ActionController::Cookies
   include Sinatrify
   include APIHelpers
+
   include RootController
   include DebugController
   include LocationsController
@@ -24,8 +25,12 @@ class APIController < ActionController::API
 
   before_action do
     split_path = request.path.split('/')
+    next if split_path == []
+
     # Remember! split_path[0] == "" since paths start with a /
-    next if %w[ping sessions magic-sign-in password-resets].include?(split_path[2])
+    # /v1 namespace
+    next if %w[ping sessions magic-sign-in password-resets send-invite].include?(split_path[2])
+    # root namespace
     next if %w[ping version xnp9q8g7nvx9wmq197b0 dev].include?(split_path[1])
     next if request.path == '/v1/users/create-and-sign-in'
     next if request.path.starts_with?('/v1/locations') && split_path.length == 4

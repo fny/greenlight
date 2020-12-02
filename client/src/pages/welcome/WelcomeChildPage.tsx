@@ -152,9 +152,9 @@ export default class extends ReactNComponent<any, State> {
         <List noHairlines>
           <ListItem
             footer={t({
-                id: 'WelcomeChildPage.review_schools',
-                message: t`Review the schools ${child.firstName} will be attending.`
-              })}
+              id: 'WelcomeChildPage.review_schools',
+              message: t`Review the schools ${child.firstName} will be attending.`,
+            })}
           >
             <div slot="title">
               <b>
@@ -166,25 +166,15 @@ export default class extends ReactNComponent<any, State> {
             </div>
           </ListItem>
           {child.locations__HACK().map((location) => (
-            <ListItem key={location.id} title={location.name || ''} smartSelect smartSelectParams={{ openIn: 'sheet' }}>
-              <select name="mac-windows" defaultValue="attending">
-                <option value="in-person">
-                  {t({ id: 'WelcomeChildPage.in_person', message: 'In Person' })}
-                </option>
-                {/* TODO */}
-                {/* <option value="virtual">Virtual</option>
-                <option value="mixed">Mixed</option>
-                <option value="not-attending">Not Attending</option> */}
-              </select>
-            </ListItem>
+            <ListItem key={location.id} title={location.name || ''} />
           ))}
         </List>
         <List noHairlines>
           <ListItem
             footer={t({
-                id: 'WelcomeChildPage.doctor_footer',
-                message: t`Who is ${child.firstName}'s primary care doctor?`,
-              })}
+              id: 'WelcomeChildPage.doctor_footer',
+              message: t`Who is ${child.firstName}'s primary care doctor?`,
+            })}
           >
             <div slot="title">
               <b>
@@ -197,10 +187,8 @@ export default class extends ReactNComponent<any, State> {
           </ListItem>
           <ListItem
             checkbox
-            header={t({ id: 'WelcomeChildPage.no_doctor', message: "Don't have a primary care doctor?" }
-            )}
-            title={t({ id: 'WelcomeChildPage.find_doctor', message: 'Get help finding one' }
-            )}
+            header={t({ id: 'WelcomeChildPage.no_doctor', message: "Don't have a primary care doctor?" })}
+            title={t({ id: 'WelcomeChildPage.find_doctor', message: 'Get help finding one' })}
             onChange={(e) => {
               this.setState({ needsPhysician: e.target.checked })
             }}
@@ -208,8 +196,8 @@ export default class extends ReactNComponent<any, State> {
           <ListInput
             label={t({ id: 'WelcomeChildPage.doctor_name_label', message: 'Primary Care Doctor' })}
             placeholder={t({
-                id: 'WelcomeChildPage.doctor_name_placeholder',
-                message: t`${child.firstName}'s doctor's name`,
+              id: 'WelcomeChildPage.doctor_name_placeholder',
+              message: t`${child.firstName}'s doctor's name`,
             })}
             type="text"
             onInput={(e) => {
@@ -219,9 +207,9 @@ export default class extends ReactNComponent<any, State> {
           <ListInput
             label={t({ id: 'WelcomeChildPage.doctor_phone_label', message: 'Primary Care Doctor Phone' })}
             placeholder={t({
-                id: 'WelcomeChildPage.doctor_phone_placeholder',
-                message: t`${child.firstName}'s doctor's phone`,
-              })}
+              id: 'WelcomeChildPage.doctor_phone_placeholder',
+              message: t`${child.firstName}'s doctor's phone`,
+            })}
             type="tel"
             onInput={(e) => {
               this.setState({ physicianPhoneNumber: e.target.value })

@@ -14,23 +14,26 @@ export default class SubmissionHandler {
 
   onSuccess: () => void
 
+  onSubmit:() => Promise<any>
+
   onError: (error: any) => void
 
   constructor(f7: Framework7, options: Partial<SubmissionHandler> = {}) {
     this.f7 = f7
 
     this.onSubmitMessage = options.onSubmitMessage || t({ id: 'Common.submitting', message: 'Submitting...' })
-    this.onErrorTitle = options.onErrorTitle || t({ id: 'Common.submission_failed', message: 'Submission Failed' })
-    this.onErrorMessage = options.onErrorMessage || t({ id: 'Common.somethings_wrong', message: 'Something went wrong' })
+    this.onSubmit = options.onSubmit || (() => Promise.resolve())
     this.onSuccess = options.onSuccess || (() => {})
     this.onError = options.onError || (() => {})
+    this.onErrorTitle = options.onErrorTitle || t({ id: 'Common.submission_failed', message: 'Submission Failed' })
+    this.onErrorMessage = options.onErrorMessage || t({ id: 'Common.somethings_wrong', message: 'Something went wrong' })
   }
 
-  async submit(action: () => Promise<any>) {
+  async submit(action?: () => Promise<any>) {
     this.f7.dialog.preloader(this.onSubmitMessage)
-
+    const fn = action || this.onSubmit
     try {
-      await action()
+      await fn()
       this.f7.dialog.close()
       this.onSuccess()
     } catch (error) {

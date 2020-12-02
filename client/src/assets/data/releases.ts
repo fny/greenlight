@@ -17,6 +17,22 @@ function date(value: string) {
 
 const releaseData: ReleaseData[] = [
   {
+    version: '1.4.0',
+    date: date('12/1/2020'),
+    notesEn: 'Minor fixes and administrative updates.',
+    notesEs: 'Pequeñas correcciones y actualizaciones administrativas.',
+    whatsNewEn: [
+      'We can now register staff and students through a roster upload',
+      "Users can now request an invite from a location's page",
+    ],
+    whatsNewEs: [
+      'Ahora podemos registrar al personal y a los estudiantes a través de una carga de lista',
+      'Los usuarios ahora pueden solicitar una invitación desde la página de una ubicación',
+    ],
+    bugFixesEn: [],
+    bugFixesEs: [],
+  },
+  {
     version: '1.3.1',
     date: date('11/25/2020'),
     notesEn: "🦃 Happy Thanksgiving! We've fixed a lot of things that were broken. Thank you for bearing with us!",

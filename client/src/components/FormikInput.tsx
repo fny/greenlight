@@ -24,7 +24,7 @@ export default function FormikInput(props: ListInput.Props & { children?: ReactN
     onBlur: field.onBlur,
     onChange: field.onChange,
     name: props.name,
-    value: field.value,
+    value: field.value || '',
     errorMessage,
     autocomplete: 'off',
     autocorrect: 'off',

@@ -35,7 +35,7 @@ export function timeOfDay(): 'morning' | 'afternoon' | 'evening' {
   return 'evening'
 }
 
-export function equalDates(date1: Date | DateTime | null, date2: Date | DateTime | null) {
+export function equalDates(date1: Date | DateTime | null, date2: Date | DateTime | null): boolean {
   if (date1 === null && date2 === null) return true
   if (date1 === null || date2 === null) return false
   const year1 = date1 instanceof Date ? date1.getFullYear() : date1.year
@@ -85,11 +85,11 @@ export function isPresent(value: any): boolean {
   return !isBlank(value)
 }
 
-export function isEmptyType(data: any) {
+export function isEmptyType(data: any): boolean {
   return typeof data === null || typeof data === undefined
 }
 
-export function isPrimitiveType(data: any) {
+export function isPrimitiveType(data: any): boolean {
   return (
     typeof data === 'string'
     || typeof data === 'number'
@@ -121,7 +121,7 @@ export function isCordova(): boolean {
  * @param substitutions The array or object from which to fill :placeholders.
  * @param query An optional object to transform into a query string.
  */
-export function resolvePath(path: string, substitutions?: any[] | Dict<any> | null, query?: any) {
+export function resolvePath(path: string, substitutions?: any[] | Dict<any> | null, query?: any): string {
   const re = /:[A-z0-9\-_]+/g
   const matches = path.match(re)
   const queryString = query ? `?${qs.stringify(query)}` : ''
@@ -238,6 +238,24 @@ export function setIntervalSafely(func: Function, ms: number, immediate: boolean
     return window.setTimeout(wrapped, ms)
   }
   return wrapped()
+}
+/**
+ * Timeout based loop that checks for a condition and then executes the provided
+ * callback once its true.
+ *
+ * @param conditionFn once this returns true the callback executes
+ * @param callback what to do once the condition is met
+ * @param freqMs how often to check the condition in milliseconds
+ */
+export function once(conditionFn: () => boolean, callback: () => void, freqMs: number): void {
+  const loop = () => {
+    if (conditionFn()) {
+      callback()
+    } else {
+      setTimeout(loop, freqMs)
+    }
+  }
+  loop()
 }
 
 export function changeHandler(valueSetter: (value: SetStateAction<any>) => void, target?: string) {
@@ -390,4 +408,12 @@ export function debugHandler(callable: CallableFunction, message?: string): (...
     logger.dev('[Called]', callable, message)
     callable(...x)
   }
+}
+
+export function upperCaseFirst(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+export function lowerCaseFirst(str: string) {
+  return str.charAt(0).toLowerCase() + str.slice(1)
 }

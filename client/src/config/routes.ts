@@ -43,6 +43,9 @@ import AdminUserPermissionsPage from 'src/pages/admin/AdminUserPermissionsPage'
 import RegisterSchoolPage from 'src/pages/registration/RegisterSchoolPage'
 import RegisterParentPage from 'src/pages/registration/RegisterUserPage'
 import RegisterLocationWelcomePage from 'src/pages/registration/RegisterLocationWelcomePage'
+import RegisterLocationOwnerPage from 'src/pages/registration/RegisterLocationOwnerPage'
+import RegisterLocationDetailsPage from 'src/pages/registration/RegisterLocationDetailsPage'
+import RegisterLocationConfirmationPage from 'src/pages/registration/RegisterLocationConfirmationPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -77,12 +80,48 @@ const beforeEnter = {
       resolve()
     }
   },
+
+  /**
+   * Makes a beforeEnter function that redirects to a provided path if the user
+   * @param path the path to redirect to
+   */
+  ifSignedInRedirectTo(path: string) {
+    // eslint-disable-next-line func-names
+    return function (this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+      if (isSignedIn()) {
+        reject()
+        this.navigate(path)
+      } else {
+        resolve()
+      }
+    }
+  },
+}
+
+// TODO: These are paths that are used in a self referential fashion. For example,
+// they might show up in the routeMap but then they're also used in a beforeEnter
+// callback. We use keep this here to maintain some type safety. However,
+// we need to figure out how to eliminate these.
+const circularPaths = {
+  registerLocationDetailsPath: '/register/location/details',
 }
 
 const registrationRoutes = {
   registerLocationWelcomePath: {
-    path: '/register/location-welcome',
+    path: '/register/location/welcome',
     component: RegisterLocationWelcomePage,
+  },
+  registerLocationOwnerPath: {
+    path: '/register/location/owner',
+    component: RegisterLocationOwnerPage,
+  },
+  registerLocationDetailsPath: {
+    path: circularPaths.registerLocationDetailsPath,
+    component: RegisterLocationDetailsPage,
+  },
+  registerLocationConfirmationPath: {
+    path: '/register/location/confirmation',
+    component: RegisterLocationConfirmationPage,
   },
   durhamRegistationPath: {
     path: '/durham',
@@ -219,6 +258,10 @@ const routeMap = {
     beforeEnter: beforeEnter.requireSignIn,
   },
   locationPath: {
+    path: '/go/:locationId',
+    component: LocationPage,
+  },
+  oldLocationPath: {
     path: '/l/:locationId',
     component: LocationPage,
   },

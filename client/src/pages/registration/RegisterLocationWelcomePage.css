@@ -1,0 +1,31 @@
+.RegisterLocationWelcomePage .fill-in-the-blank {
+  display: inline-block;
+  border-bottom: 1px dashed black;
+  color: var(--gl-green);
+}
+.RegisterLocationWelcomePage .category-select {
+  cursor: pointer;
+}
+.RegisterLocationWelcomePage .introduction {
+  font-size: 1.5rem;
+  line-height: 2.5rem;
+}
+.RegisterLocationWelcomePage .has-error {
+  color: red;
+  border-bottom: 1px dashed red;
+}
+.RegisterLocationWelcomePage .has-error::placeholder {
+  color: red;
+}
+input[name="firstName"] {
+  width: 40%;
+}
+input[name="lastName"] {
+  width: 40%;
+}
+input[name="locationCategory"] {
+  width: 70%;
+}
+input[name="zipCode"] {
+  width: 30%;
+}
