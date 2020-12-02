@@ -1,0 +1,42 @@
+{
+  "files": {
+    "main.css": "https://app.greenlightready.com/static/css/main.ecd7eb91.chunk.css",
+    "main.js": "https://app.greenlightready.com/static/js/main.58ac767f.chunk.js",
+    "main.js.map": "https://app.greenlightready.com/static/js/main.58ac767f.chunk.js.map",
+    "runtime-main.js": "https://app.greenlightready.com/static/js/runtime-main.64285064.js",
+    "runtime-main.js.map": "https://app.greenlightready.com/static/js/runtime-main.64285064.js.map",
+    "static/css/2.ef565b46.chunk.css": "https://app.greenlightready.com/static/css/2.ef565b46.chunk.css",
+    "static/js/2.d1624d34.chunk.js": "https://app.greenlightready.com/static/js/2.d1624d34.chunk.js",
+    "static/js/2.d1624d34.chunk.js.map": "https://app.greenlightready.com/static/js/2.d1624d34.chunk.js.map",
+    "static/js/3.fa50b36f.chunk.js": "https://app.greenlightready.com/static/js/3.fa50b36f.chunk.js",
+    "static/js/3.fa50b36f.chunk.js.map": "https://app.greenlightready.com/static/js/3.fa50b36f.chunk.js.map",
+    "index.html": "https://app.greenlightready.com/index.html",
+    "static/css/2.ef565b46.chunk.css.map": "https://app.greenlightready.com/static/css/2.ef565b46.chunk.css.map",
+    "static/css/main.ecd7eb91.chunk.css.map": "https://app.greenlightready.com/static/css/main.ecd7eb91.chunk.css.map",
+    "static/js/2.d1624d34.chunk.js.LICENSE.txt": "https://app.greenlightready.com/static/js/2.d1624d34.chunk.js.LICENSE.txt",
+    "static/media/framework7-icons.css": "https://app.greenlightready.com/static/media/Framework7Icons-Regular.d5ef5cb8.woff",
+    "static/media/index.css": "https://app.greenlightready.com/static/media/Poppins-SemiBold.71da8e4f.woff",
+    "static/media/chills-bright.998ca768.svg": "https://app.greenlightready.com/static/media/chills-bright.998ca768.svg",
+    "static/media/chills.dc9f2225.svg": "https://app.greenlightready.com/static/media/chills.dc9f2225.svg",
+    "static/media/cough-bright.2b63ca30.svg": "https://app.greenlightready.com/static/media/cough-bright.2b63ca30.svg",
+    "static/media/cough.6a768fcd.svg": "https://app.greenlightready.com/static/media/cough.6a768fcd.svg",
+    "static/media/difficulty-breathing-bright.180005a1.svg": "https://app.greenlightready.com/static/media/difficulty-breathing-bright.180005a1.svg",
+    "static/media/difficulty-breathing.1cc0388b.svg": "https://app.greenlightready.com/static/media/difficulty-breathing.1cc0388b.svg",
+    "static/media/doctors.165b782e.svg": "https://app.greenlightready.com/static/media/doctors.165b782e.svg",
+    "static/media/fever-bright.bd783c0a.svg": "https://app.greenlightready.com/static/media/fever-bright.bd783c0a.svg",
+    "static/media/fever.bb2004b9.svg": "https://app.greenlightready.com/static/media/fever.bb2004b9.svg",
+    "static/media/App.css": "https://app.greenlightready.com/static/media/gl-desktop-bg.a2598463.png",
+    "static/media/online-checkup.5bc07d01.svg": "https://app.greenlightready.com/static/media/online-checkup.5bc07d01.svg",
+    "static/media/taste-smell-bright.3e774d01.svg": "https://app.greenlightready.com/static/media/taste-smell-bright.3e774d01.svg",
+    "static/media/taste-smell.7d3e313f.svg": "https://app.greenlightready.com/static/media/taste-smell.7d3e313f.svg",
+    "static/media/welcome-doctor.63bc47b7.svg": "https://app.greenlightready.com/static/media/welcome-doctor.63bc47b7.svg",
+    "static/media/welcome-secure.c23167a1.svg": "https://app.greenlightready.com/static/media/welcome-secure.c23167a1.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.64285064.js",
+    "static/css/2.ef565b46.chunk.css",
+    "static/js/2.d1624d34.chunk.js",
+    "static/css/main.ecd7eb91.chunk.css",
+    "static/js/main.58ac767f.chunk.js"
+  ]
+}

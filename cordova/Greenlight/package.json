@@ -1,0 +1,89 @@
+{
+    "name": "greenlight",
+    "displayName": "Greenlight Mobile",
+    "version": "1.0.0",
+    "description": "Sample description - TODO REPLACE",
+    "main": "index.js",
+    "homepage": "./",
+    "scripts": {
+        "start": "PORT=9991 react-scripts start",
+        "build": "react-scripts build && node scripts/postbuild.js",
+        "test": "react-scripts test",
+        "lint": "eslint 'src/**/*.{js,ts,tsx}'",
+        "lint-fix": "eslint 'src/**/*.{js,ts,tsx}' --fix"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "ie >= 11",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "author": "Greenlight",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "@lingui/core": "^3.2.1",
+        "@lingui/macro": "^3.2.1",
+        "@lingui/react": "^3.2.1",
+        "@types/echarts": "^4.9.0",
+        "@types/yup": "^0.29.9",
+        "axios": "^0.20.0",
+        "cordova": "^10.0.0",
+        "cordova-android": "^8.0.0",
+        "cordova-plugin-badge": "0.8.8",
+        "cordova-plugin-device": "2.0.3",
+        "cordova-plugin-local-notification": "0.9.0-beta.2",
+        "react-scripts": "^3.0.1",
+        "rimraf": "^2.6.3",
+        "cordova-ios": "^6.1.1",
+        "cordova-plugin-whitelist": "^1.3.4",
+        "echarts": "^4.9.0",
+        "echarts-for-react": "^2.0.16",
+        "formik": "^2.2.5",
+        "framework7": "^5.7.13",
+        "framework7-icons": "^3.0.1",
+        "framework7-react": "^5.7.13",
+        "honeybadger-js": "^2.2.2",
+        "jdenticon": "^3.0.1",
+        "js-cookie": "^2.2.1",
+        "libphonenumber-js": "^1.7.57",
+        "license-report": "^4.3.0",
+        "line-awesome": "^1.3.0",
+        "lodash": "^4.17.20",
+        "luxon": "^1.25.0",
+        "prop-types": "^15.7.2",
+        "qs": "^6.9.4",
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1",
+        "react-verification-code-input": "^1.2.8",
+        "reactn": "^2.2.7",
+        "reflect-metadata": "^0.1.13",
+        "shelljs": "0.8.4",
+        "yup": "^0.29.3",
+        "yup-phone": "^1.2.14"
+    },
+    "cordova": {
+        "plugins": {
+            "cordova-plugin-whitelist": {}
+        },
+        "platforms": [
+            "ios",
+            "browser"
+        ]
+    },
+    "devDependencies": {
+        "cordova-browser": "^6.0.0",
+        "cordova-plugin-whitelist": "^1.3.4",
+        "eslint": "^5.3.0",
+        "eslint-config-airbnb": "^17.1.1",
+        "eslint-plugin-import": "^2.18.0",
+        "eslint-plugin-jsx-a11y": "^6.2.3",
+        "eslint-plugin-react": "^7.14.2"
+    }
+}

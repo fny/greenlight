@@ -2,7 +2,7 @@
   "name": "@greenlight/mobile",
   "version": "0.1.0",
   "private": true,
-  "homepage": "./",
+  "homepage": ".",
   "dependencies": {
     "@lingui/core": "^3.2.1",
     "@lingui/macro": "^3.2.1",
