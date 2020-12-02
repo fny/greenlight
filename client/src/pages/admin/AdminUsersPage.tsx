@@ -39,6 +39,7 @@ class UsersList extends React.Component<Props, any> {
       <ListItem
         key={user.id}
         accordionItem
+        className="user-item"
         link="#"
         title={`${user.reversedName()}${locationAccount.isAdmin() ? ' (Admin)' : ''}`}
         after={user.greenlightStatus().title()}
@@ -84,7 +85,8 @@ class UsersList extends React.Component<Props, any> {
           <Subnavbar inner={false}>
             <Searchbar
               searchContainer=".search-list"
-              searchIn=".item-title"
+              searchIn=".user-item > .item-link > .item-content > .item-inner > .item-title"
+              searchItem="li.user-item"
             />
           </Subnavbar>
           <NavRight>
