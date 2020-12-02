@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_20_085426) do
+ActiveRecord::Schema.define(version: 2020_12_02_084439) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,21 @@ ActiveRecord::Schema.define(version: 2020_11_20_085426) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["cohort_id"], name: "index_cohorts_users_on_cohort_id"
     t.index ["user_id"], name: "index_cohorts_users_on_user_id"
+  end
+
+  create_table "covid_data", force: :cascade do |t|
+    t.text "fips", default: "Unknown", null: false
+    t.date "date", null: false
+    t.text "county", default: "Unknown", null: false
+    t.text "state", default: "Unknown", null: false
+    t.integer "cases", default: 0
+    t.integer "deaths", default: 0
+    t.integer "confirmed_cases", default: 0
+    t.integer "confirmed_deaths", default: 0
+    t.integer "probable_cases", default: 0
+    t.integer "probable_deaths", default: 0
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "greenlight_statuses", force: :cascade do |t|
