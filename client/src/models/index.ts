@@ -5,9 +5,8 @@ import { Location } from './Location'
 import { LocationAccount } from './LocationAccount'
 import { MedicalEvent } from './MedicalEvent'
 import { UserSettings } from './UserSettings'
+import { CovidData } from './CovidData'
 
-ModelRegistry.register(User, UserSettings, GreenlightStatus, Location, LocationAccount, MedicalEvent)
+ModelRegistry.register(User, UserSettings, GreenlightStatus, Location, LocationAccount, MedicalEvent, CovidData)
 
-export {
-  Model, ModelRegistry, User, UserSettings, GreenlightStatus, Location, MedicalEvent,
-}
+export { Model, ModelRegistry, User, UserSettings, GreenlightStatus, Location, MedicalEvent, CovidData }

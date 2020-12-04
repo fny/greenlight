@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 
 import { setGlobal } from 'reactn'
-import {
-  assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
-} from 'src/util'
+import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from 'src/util'
 import Honeybadger from 'honeybadger-js'
 
 import logger from 'src/logger'
@@ -12,9 +10,8 @@ import { LocationAccount } from 'src/models/LocationAccount'
 import env from '../env'
 import { transformRecordResponse, recordStore } from './stores'
 import { RecordResponse } from '../types'
-import {
-  User, Location, Model, MedicalEvent, GreenlightStatus, UserSettings,
-} from '../models'
+import { User, Location, Model, MedicalEvent, GreenlightStatus, UserSettings } from '../models'
+import { CovidData } from 'src/models/CovidData'
 
 const BASE_URL = `${env.API_URL}/v1`
 
@@ -98,8 +95,7 @@ export async function getLocation(id: string): Promise<Location> {
 }
 
 export async function createLocation(attrs: Partial<Location>): Promise<Location> {
-  const response = await v1.post<RecordResponse<Location>>('/locations',
-    transformForAPI(attrs))
+  const response = await v1.post<RecordResponse<Location>>('/locations', transformForAPI(attrs))
 
   const entity = transformRecordResponse<Location>(response.data)
   assertNotArray(entity)
@@ -111,6 +107,14 @@ export async function joinLocation(location: Location): Promise<LocationAccount>
 
   const entity = transformRecordResponse<LocationAccount>(response.data)
   assertNotArray(entity)
+  return entity
+}
+
+export async function getCovidData(): Promise<CovidData[]> {
+  const response = await v1.get<RecordResponse<CovidData>>(`/covid-data`)
+
+  const entity = transformRecordResponse<CovidData>(response.data)
+  assertArray(entity)
   return entity
 }
 
@@ -129,8 +133,7 @@ export async function getUser(id: string): Promise<User> {
 }
 
 export async function updateUser(user: User, updates: Partial<User>): Promise<User> {
-  const response = await v1.patch<RecordResponse<User>>(`/users/${user.id}`,
-    transformForAPI(updates))
+  const response = await v1.patch<RecordResponse<User>>(`/users/${user.id}`, transformForAPI(updates))
 
   const entity = transformRecordResponse<User>(response.data)
   assertNotArray(entity)
@@ -152,8 +155,7 @@ export async function createUserAndSignIn(user: Partial<User>) {
 }
 
 export async function updateUserSettings(user: User, updates: Partial<UserSettings>) {
-  const response = await v1.patch<RecordResponse<UserSettings>>(`/users/${user.id}/settings`,
-    transformForAPI(updates))
+  const response = await v1.patch<RecordResponse<UserSettings>>(`/users/${user.id}/settings`, transformForAPI(updates))
   const entity = transformRecordResponse<UserSettings>(response.data)
   assertNotArray(entity)
   return entity
