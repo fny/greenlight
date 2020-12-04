@@ -119,7 +119,6 @@ group :development, :test do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
-
   # Test one-liners for common Rails functionality
   gem 'shoulda-matchers'
 end

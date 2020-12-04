@@ -12,7 +12,7 @@ module.exports = () => {
           reject(error);
           return;
         }
-        ex.exec(path.resolve(__dirname, '../build/'), path.join(__dirname, '../www/'))
+        ex.exec(path.resolve(__dirname, '../build'), path.join(__dirname, '../www/'))
           .then((s) => {
             console.log(s);
             resolve(s);
