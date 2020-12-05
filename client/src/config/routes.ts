@@ -46,6 +46,7 @@ import RegisterLocationWelcomePage from 'src/pages/registration/RegisterLocation
 import RegisterLocationOwnerPage from 'src/pages/registration/RegisterLocationOwnerPage'
 import RegisterLocationDetailsPage from 'src/pages/registration/RegisterLocationDetailsPage'
 import RegisterLocationConfirmationPage from 'src/pages/registration/RegisterLocationConfirmationPage'
+import RegisterLocationMessagePage from 'src/pages/registration/RegisterLocationMessagePage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -110,6 +111,10 @@ const registrationRoutes = {
   registerLocationWelcomePath: {
     path: '/register/location/welcome',
     component: RegisterLocationWelcomePage,
+  },
+  registerLocationMessagePath: {
+    path: '/register/location/message/:messageId',
+    component: RegisterLocationMessagePage,
   },
   registerLocationOwnerPath: {
     path: '/register/location/owner',
@@ -257,14 +262,6 @@ const routeMap = {
     component: UserGreenlightPassPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
-  locationPath: {
-    path: '/go/:locationId',
-    component: LocationPage,
-  },
-  oldLocationPath: {
-    path: '/l/:locationId',
-    component: LocationPage,
-  },
   mobileVerificationPath: {
     path: '/mobile-verifications',
     component: MobileVerificationPage,
@@ -294,7 +291,19 @@ const routeMap = {
     path: '/users/new',
     component: UsersNewPage,
   },
+  locationPath: {
+    path: '/go/:locationId',
+    component: LocationPage,
+  },
+  oldLocationPath: {
+    path: '/l/:locationId',
+    component: LocationPage,
+  },
   newLocationUserPath: {
+    path: '/go/:permalink/code/:registrationCode',
+    component: UsersNewPage,
+  },
+  oldNewLocationUserPath: {
     path: '/l/:permalink/code/:registrationCode',
     component: UsersNewPage,
   },

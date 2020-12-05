@@ -3,13 +3,15 @@ import {
   Block, Button, Col, F7Accordion, Link, List, ListItem, Page, PageContent, Row, Sheet, Toolbar,
 } from 'framework7-react'
 import React, { useEffect, useState } from 'react'
-import { isBlank, isPresent, upperCaseFirst } from 'src/helpers/util'
+import {
+  assertNotNull, isBlank, isInDurham, upperCaseFirst,
+} from 'src/helpers/util'
 import { GRegisteringLocation, GRegisteringUser, toggleLocale } from 'src/initializers/providers'
 import {
   lcTrans, LocationCategories, LOCATION_CATEGORIES,
 } from 'src/models/Location'
 import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
-import { paths } from 'src/config/routes'
+import { dynamicPaths, paths } from 'src/config/routes'
 import { useGlobal } from 'reactn'
 import { F7Props } from 'src/types'
 import SessionStorage from 'src/helpers/SessionStorage'
@@ -17,30 +19,14 @@ import Redirect from 'src/components/Redirect'
 import { User } from 'src/models'
 
 import './RegisterLocationWelcomePage.css'
-
-function ResizingInput(props: React.HTMLProps<HTMLInputElement>): JSX.Element {
-  const [value, setValue] = useState('')
-  return (
-    <input
-      {...props}
-
-      size={(value ? value.length : props.placeholder?.length || 0) + 4}
-    />
-  )
-}
+import { RegisterLocationMessageIds } from './RegisterLocationMessagePage'
 
 class State {
-  firstName?: string
-
-  lastName?: string
-
   locationCategoriesOpened = false
 
   showErrors = false
 
   termsOpened = false
-
-  locationCategory: LocationCategories | null = null
 }
 
 function validateUser(user: GRegisteringUser) {
@@ -55,7 +41,30 @@ function validateLocation(location: GRegisteringLocation) {
   if (isBlank(location.zipCode)) errors.push('zipCode')
   if (!/^\d{5}$/.test(location.zipCode)) errors.push('zipCode')
   if (isBlank(location.category)) errors.push('category')
+  if (isBlank(location.employeeCount)) errors.push('employeeCount')
   return errors
+}
+
+export function nextMessage(location: GRegisteringLocation): RegisterLocationMessageIds {
+  assertNotNull(location.zipCode)
+  assertNotNull(location.category)
+  assertNotNull(location.employeeCount)
+
+  // Schools must contact us
+  if (location.category === LocationCategories.SCHOOL) {
+    return 'school'
+  }
+
+  // Outside of durham must contact us
+  if (!isInDurham(location.zipCode)) {
+    return 'not-durham'
+  }
+
+  if (location.employeeCount > 100) {
+    return 'durham-large'
+  }
+
+  return 'durham'
 }
 
 export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element {
@@ -74,10 +83,9 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
         <h1>
           Introduce yourself.
           {' '}
-          {/* TODO: Enable Spanish */}
-          {/* <Link style={{ fontSize: '12px', paddingLeft: '1rem' }} onClick={() => toggleLocale()}>
+          <Link style={{ fontSize: '12px', paddingLeft: '1rem' }} onClick={() => toggleLocale()}>
             <Trans id="Common.toggle_locale">En Español</Trans>
-          </Link> */}
+          </Link>
         </h1>
         <p className="introduction">
           Hello, Greenlight! My name is
@@ -115,6 +123,14 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
               }
           />
           <br />
+          with about
+          <input
+            name="employeeCount"
+            className={`fill-in-the-blank ${state.showErrors && validateLocation(registeringLocation).includes('category') && 'has-error'}`}
+            type="number"
+          />
+          people
+          <br />
           located in
           {' '}
           <input
@@ -128,6 +144,7 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
         <p style={{ textAlign: 'center' }}>
           <img alt="Welcome to Greenlight!" src={welcomeDoctorImage} height="150px" />
         </p>
+
         <p>
           <Trans id="WelcomePage.terms_and_conditions">
             By continuing, you accept Greenlight's{' '}
@@ -160,8 +177,9 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
                 setState({ ...state, showErrors: false })
                 SessionStorage.setRegisteringUser(registeringUser)
                 SessionStorage.setRegisteringLocation(registeringLocation)
-
-                props.f7router.navigate(paths.registerLocationOwnerPath)
+                props.f7router.navigate(dynamicPaths.registerLocationDetailsPath({
+                  messageId: nextMessage(registeringLocation),
+                }))
               }}
             >
               <Trans id="Common.continue">Continue</Trans>
@@ -184,7 +202,7 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
         </Toolbar>
 
         <PageContent> {/*  Use this to make sheet scrollable */}
-          <iframe src="/terms.html" style={{ width: '100%', border: 0, height: '90%' }} />
+          <iframe src="https://greenlightready.com/terms.html" style={{ width: '100%', border: 0, height: '90%' }} />
         </PageContent>
       </Sheet>
 

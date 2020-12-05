@@ -20,7 +20,9 @@ module.exports = {
     "@typescript-eslint/semi": ["warn", "never"],
     "react/jsx-one-expression-per-line": "off",
     "quotes": ["error", "single", { "avoidEscape": true }],
-    "@typescript-eslint/explicit-module-boundary-types": "warn",
+    "@typescript-eslint/explicit-module-boundary-types": [
+      "warn", { "allowArgumentsExplicitlyTypedAsAny": true}
+    ],
     "@typescript-eslint/no-explicit-any": "off",
     "react/jsx-props-no-spreading": "off",
 

@@ -93,7 +93,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
     return (
       <Trans id="WelcomePage.fill_for_no_one_error">
         It looks like your account has not been set up properly.
-        Please contact greenlight at <Link href="mailto:help@greenlightready.com">help@greenlightready.com</Link>.
+        Please contact Greenlight at <Link href="mailto:help@greenlightready.com">help@greenlightready.com</Link>.
       </Trans>
     )
   }

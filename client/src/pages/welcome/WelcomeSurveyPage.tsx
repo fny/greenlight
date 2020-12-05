@@ -19,7 +19,7 @@ import { t, Trans } from '@lingui/macro'
 import { completeWelcomeUser } from 'src/api'
 
 import onlineCheckupImage from 'src/assets/images/online-checkup.svg'
-import SubmissionHandler from 'src/helpers/SubmissionHandler'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 import { reloadCurrentUser } from 'src/initializers/providers'
 
 interface State {
@@ -96,7 +96,7 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
           <br />
           <Button
             onClick={async () => {
-              new SubmissionHandler(f7).submit(async () => {
+              new SubmitHandler(f7).submit(async () => {
                 await completeWelcomeUser(this.user)
                 await reloadCurrentUser()
                 this.$f7router.navigate(paths.userSeqSurveysNewPath)

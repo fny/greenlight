@@ -13,7 +13,7 @@ import { Location, User } from 'src/models'
 import {
   getLocation, getUser, store, updateLocationAccount,
 } from 'src/api'
-import SubmissionHandler from 'src/helpers/SubmissionHandler'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 import { LocationAccount, PermissionLevels } from 'src/models/LocationAccount'
 import { dynamicPaths } from 'src/config/routes'
 import LoadingPage from 'src/pages/util/LoadingPage'
@@ -59,7 +59,7 @@ export default function AdminUserPermissionsPage(props: F7Props) {
   assertNotUndefined(state.user)
   const la = state.locationAccount
   const l = state.location
-  const handler = new SubmissionHandler(f7)
+  const handler = new SubmitHandler(f7)
 
   return (
     <Page>

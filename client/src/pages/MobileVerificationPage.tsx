@@ -8,7 +8,7 @@ import ReactCodeInput from 'react-verification-code-input'
 import * as Yup from 'yup'
 
 import { FunctionComponent, F7Props } from 'src/types'
-import SubmissionHandler from 'src/helpers/SubmissionHandler'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 
 import './MobileVerificationPage.css'
 
@@ -27,7 +27,7 @@ const schema = Yup.object<MobileInput>().shape({
   mobileCarrier: Yup.string().required(),
 })
 
-const submissionHandler = new SubmissionHandler(f7)
+const submissionHandler = new SubmitHandler(f7)
 
 const MobileVerificationPage: FunctionComponent<F7Props> = () => {
   const [isCodeSent, setCodeSent] = useState(false)

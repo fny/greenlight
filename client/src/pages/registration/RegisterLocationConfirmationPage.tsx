@@ -14,7 +14,7 @@ import { FormikProvider, useFormik } from 'formik'
 import FormikInput from 'src/components/FormikInput'
 import * as Yup from 'yup'
 import { User, Location } from 'src/models'
-import SubmissionHandler from 'src/helpers/SubmissionHandler'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 import { createUserAndSignIn, getCurrentUser } from 'src/api'
 import { GLLocales } from 'src/i18n'
 import { Router } from 'framework7/modules/router/router'
@@ -81,7 +81,7 @@ function UserForm({ user, f7router }: { user: UserInput, f7router: Router.Router
   const [locale] = useGlobal('locale')
   const [revealPassword, setRevealPassword] = useState(false)
 
-  const submissionHandler = new SubmissionHandler(f7)
+  const submissionHandler = new SubmitHandler(f7)
 
   const formik = useFormik<UserInput>({
     validationSchema: schema,

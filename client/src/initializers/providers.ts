@@ -76,8 +76,6 @@ export class GRegisteringLocation {
 
   employeeCount: number | null = null
 
-  studentCount: number | null = null
-
   dailyReminderHour = 8
 
   dailyReminderAMPM: 'am' | 'pm' = 'am'

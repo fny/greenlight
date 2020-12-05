@@ -1,0 +1,3 @@
+class EmailWorker < ApplicationWorker
+
+end

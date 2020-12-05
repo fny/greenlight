@@ -18,7 +18,7 @@ import { FormikProvider, useFormik } from 'formik'
 import FormikInput from 'src/components/FormikInput'
 import * as Yup from 'yup'
 import { User } from 'src/models'
-import SubmissionHandler from 'src/helpers/SubmissionHandler'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 import { createLocation } from 'src/api'
 
 import { Router } from 'framework7/modules/router/router'
@@ -36,7 +36,7 @@ export default function RegisterLocationDetailsPage(props: F7Props): JSX.Element
   const [currentUser] = useGlobal('currentUser') as [User, any]
   const [state, setState] = useState(new State())
 
-  const submissionHandler = new SubmissionHandler(f7)
+  const submissionHandler = new SubmitHandler(f7)
   const formik = useFormik<LocationInput>({
     validationSchema: schema,
     initialValues: new LocationInput(),
@@ -149,8 +149,6 @@ class LocationInput {
   category: LocationCategories | null = null
 
   employeeCount: number | null = null
-
-  studentCount: number | null = null
 
   dailyReminderHour = 8
 

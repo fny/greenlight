@@ -12,7 +12,7 @@ import { LocationCategories } from 'src/models/Location'
 import { FormikInstance } from 'src/types'
 import { Location, User } from 'src/models'
 import * as Yup from 'yup'
-import SubmissionHandler from 'src/helpers/SubmissionHandler'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 import { useFormik, FormikProvider } from 'formik'
 import { reloadCurrentUser } from 'src/initializers/providers'
 import { createLocation } from 'src/api'
@@ -38,8 +38,6 @@ class LocationInput {
   category: LocationCategories | null = null
 
   employeeCount: number | null = null
-
-  studentCount: number | null = null
 
   dailyReminderHour = 8
 
@@ -71,7 +69,7 @@ export default function LocationForm({ location, f7router, category }: Props) {
 
   assertNotNull(currentUser)
 
-  const submissionHandler = new SubmissionHandler(f7)
+  const submissionHandler = new SubmitHandler(f7)
   const formik = useFormik<LocationInput>({
     validationSchema: schema,
     initialValues: new LocationInput(),

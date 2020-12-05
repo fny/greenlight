@@ -30,6 +30,13 @@ bundle exec rake db:seed
 - `bundle exec sidekiq` to start the worker
 - `bundle exec rspec` to run the API test suite
 
+To access emails, install [mailcatcher](https://github.com/sj26/mailcatcher) and
+visit [http://localhost:1080](http://localhost:1080). If you're on a Mac, you
+may have installation issues. Use the following line to install it:
+
+  gem install mailcatcher -- --with-cflags="-Wno-error=implicit-function-declaration"
+
+
 ## Run Cordova
 
 - `npm run cordova-init` to install cordova platform and plugins

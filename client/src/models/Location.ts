@@ -4,27 +4,6 @@ import {
   Model, attribute as attr, initialize, STRING, BOOLEAN, NUMBER, DATETIME,
 } from 'src/lib/Model'
 
-export const DURHAM_ZIP_CODES = [
-  '27503',
-  '27572',
-  '27701',
-  '27702',
-  '27703',
-  '27704',
-  '27705',
-  '27706',
-  '27707',
-  '27708',
-  '27709',
-  '27710',
-  '27711',
-  '27712',
-  '27713',
-  '27715',
-  '27717',
-  '27722',
-]
-
 export enum LocationCategories {
   BUSINESS = 'business',
   SCHOOL = 'school',

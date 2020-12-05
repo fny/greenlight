@@ -5,7 +5,6 @@ import qs from 'qs'
 import { getGlobal } from 'reactn'
 import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
-import { ChangeEvent, SetStateAction } from 'react'
 import logger from './logger'
 
 //
@@ -109,13 +108,39 @@ export function isCordova(): boolean {
   return hasKey(window, 'cordova')
 }
 
+export function isInDurham(zipCode: string): boolean {
+  const durhamZipCodes = [
+    '27503',
+    '27572',
+    '27701',
+    '27702',
+    '27703',
+    '27704',
+    '27705',
+    '27706',
+    '27707',
+    '27708',
+    '27709',
+    '27710',
+    '27711',
+    '27712',
+    '27713',
+    '27715',
+    '27717',
+    '27722',
+  ]
+
+  return durhamZipCodes.includes(zipCode)
+}
+
 /**
  * Resolves a path template string into a full path.
  *
  * @example
  *   resolvePath('/users/:userId/surveys/:surveyId', [1, 2])
- *   // =>
+ *   // => /users/1/surveys/2
  *   resolvePath('/users/:userId/surveys/:surveyId', { userId: 1, surveyId: 2})
+ *   // => /users/1/surveys/2
  *
  * @param path The path template to fill
  * @param substitutions The array or object from which to fill :placeholders.
@@ -170,11 +195,11 @@ export function resolvePath(path: string, substitutions?: any[] | Dict<any> | nu
 // Text and I18n Helpers
 //
 
-export function esExclaim() {
+export function esExclaim(): string {
   return getGlobal().locale === 'es' ? '¡' : ''
 }
 
-export function greeting() {
+export function greeting(): string {
   const time = timeOfDay()
   switch (time) {
     case 'morning':
@@ -239,6 +264,7 @@ export function setIntervalSafely(func: Function, ms: number, immediate: boolean
   }
   return wrapped()
 }
+
 /**
  * Timeout based loop that checks for a condition and then executes the provided
  * callback once its true.
@@ -256,29 +282,6 @@ export function once(conditionFn: () => boolean, callback: () => void, freqMs: n
     }
   }
   loop()
-}
-
-export function changeHandler(valueSetter: (value: SetStateAction<any>) => void, target?: string) {
-  let targeted = target
-  const handler = (e: ChangeEvent<any>) => {
-    const { name, value } = e.target
-    targeted = name || targeted
-    valueSetter((prevState: any) => {
-      assertNotUndefined(targeted)
-      return ({
-        ...prevState,
-        [targeted]: value,
-      })
-    })
-  }
-
-  return (e: ChangeEvent<any> | string) => {
-    if (typeof e === 'string') {
-      targeted = e
-      return handler
-    }
-    return handler(e)
-  }
 }
 
 /**
@@ -360,7 +363,7 @@ export function validPhone(phoneNumber: string): boolean {
   return parsed.country === 'US' && parsed.isValid()
 }
 
-export function haveEqualAttrs(a: any, b: any) {
+export function haveEqualAttrs(a: any, b: any): boolean {
   // Create arrays of property names
   const aProps = Object.getOwnPropertyNames(a)
   const bProps = Object.getOwnPropertyNames(b)
@@ -410,10 +413,10 @@ export function debugHandler(callable: CallableFunction, message?: string): (...
   }
 }
 
-export function upperCaseFirst(str: string) {
+export function upperCaseFirst(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-export function lowerCaseFirst(str: string) {
+export function lowerCaseFirst(str: string): string {
   return str.charAt(0).toLowerCase() + str.slice(1)
 }

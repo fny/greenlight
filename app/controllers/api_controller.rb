@@ -12,6 +12,7 @@ class APIController < ActionController::API
   include PasswordResetsController
   include UsersController
   include CurrentUserController
+  include DevelopmentController unless Rails.env.production?
 
   before_action do
     @session = Session.new(cookies)

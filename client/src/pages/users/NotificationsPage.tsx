@@ -19,7 +19,7 @@ import React, { useGlobal } from 'reactn'
 import { UserSettings } from 'src/models'
 import { F7Props } from 'src/types'
 import { assertNotNull } from 'src/helpers/util'
-import SubmissionHandler from 'src/helpers/SubmissionHandler'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 import { updateUserSettings } from 'src/api'
 import { reloadCurrentUser } from 'src/initializers/providers'
 import { DailyReminderType } from 'src/models/UserSettings'
@@ -40,7 +40,7 @@ interface NotificationsForm {
 }
 
 export default function NotificationsPage(props: F7Props) {
-  const submissionHandler = new SubmissionHandler(f7)
+  const submissionHandler = new SubmitHandler(f7)
 
   const [user] = useGlobal('currentUser')
   assertNotNull(user)

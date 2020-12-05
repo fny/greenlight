@@ -9,7 +9,7 @@ import { useGlobal } from 'reactn'
 import { createUserAndSignIn, getCurrentUser } from 'src/api'
 import FormikInput from 'src/components/FormikInput'
 import { GLLocales } from 'src/i18n'
-import SubmissionHandler from 'src/helpers/SubmissionHandler'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 import { User } from 'src/models'
 import * as Yup from 'yup'
 import 'src/lib/yup-phone'
@@ -33,7 +33,7 @@ export default function UserForm({ user, f7router }: { user?: User, f7router: Ro
   const [locale] = useGlobal('locale')
   const [revealPassword, setRevealPassword] = useState(false)
 
-  const submissionHandler = new SubmissionHandler(f7)
+  const submissionHandler = new SubmitHandler(f7)
 
   const formik = useFormik<UserInput>({
     validationSchema: schema,

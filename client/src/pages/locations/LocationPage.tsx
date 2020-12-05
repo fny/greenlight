@@ -15,7 +15,7 @@ import './LocationPage.css'
 import { Location } from 'src/models'
 import { getLocation, sendInvite } from 'src/api'
 import LoadingPage from 'src/pages/util/LoadingPage'
-import SubmissionHandler from 'src/helpers/SubmissionHandler'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 
 class State {
   emailOrMobile: string = ''
@@ -31,12 +31,12 @@ export default function LocationPage({ f7route, f7router }: F7Props) {
 
   // TODO: Tell them if their account is already active
   // TODO: Show an error specific to email or mobile number
-  const submitHandler = new SubmissionHandler(f7, {
+  const submitHandler = new SubmitHandler(f7, {
     onSuccess: () => {
       f7.dialog.alert('You should receive a text or email with instructions from Greenlight soon. Please check spam too! ', 'Success')
     },
-    onErrorTitle: 'Not Found',
-    onErrorMessage: 'No matching email or phone number was found. Maybe you already signed up?',
+    errorTitle: 'Not Found',
+    errorMessage: 'No matching email or phone number was found. Maybe you already signed up?',
     onSubmit: async () => {
       await sendInvite(state.emailOrMobile)
     },
