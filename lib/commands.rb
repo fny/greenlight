@@ -86,27 +86,16 @@ module Commands
     #
     # Returns the Boolean whether the command was successful.
     def run
-      return @succeeded if @has_run
-      @has_run = true
-
-      if !valid?
+      return @succeeded if defined?(@succeeded)
+      if valid?
+        @result = work
+        @succeeded = true
+      else
         @succeeded = false
-        return false
       end
-      @succeeded = true
-      @result = work
     rescue CommandAborted
       Rails.logger.debug("Aborted command! #{self.errors.details}") if Rails.env.development?
       @succeeded = false
-      nil
-    rescue => error
-
-      err_desc = "#{error.class}: #{error.message}"
-      err_backtrace = error.backtrace.join("\n")
-      @error = err_desc + "\n\n" + err_backtrace
-
-      Rails.logger.error("Error in Command: #{@error}")
-      nil
     end
 
     # Call this to force a failure during `#work`
@@ -153,7 +142,7 @@ module Commands
 
     # Returns whether the command has run.
     def run?
-      @has_run ||= false
+      defined?(@succeeded)
     end
 
     # List of recorded result messages, add things to this with `log_result`
