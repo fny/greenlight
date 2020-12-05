@@ -239,12 +239,6 @@ class User < ApplicationRecord
   # Authentication Related
   #
 
-  def valid_password?(password)
-    return false if password.blank?
-
-    user.authenticate(password.strip)
-  end
-
   def magic_sign_in_url(remember_me: false)
     if remember_me
       "#{Greenlight::SHORT_URL}/mgk/#{magic_sign_in_token}/y"
