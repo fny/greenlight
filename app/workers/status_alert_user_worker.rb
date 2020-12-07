@@ -22,7 +22,7 @@ class StatusAlertUserWorker < ApplicationWorker
   def text_template
     Erubi::Engine.new(<<~SMS
       <%= I18n.t(
-        'texts.status_alert.text',
+        'texts.status_alert',
         user: symptom_holder.full_name,
         status_color: status_color,
       ) %>
