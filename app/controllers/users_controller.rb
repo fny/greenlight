@@ -85,7 +85,7 @@ module UsersController
 
         greenlight_status = survey.greenlight_status
         if greenlight_status.status.pending? || greenlight_status.status.recovery?
-          StatusNotifyWorker.perform_async(
+          StatusAlertAdminsWorker.perform_async(
             user.id,
             greenlight_status.status,
             current_user.id,

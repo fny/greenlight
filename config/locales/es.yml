@@ -16,6 +16,25 @@ es:
         para %{people} por Greenlight para WG Pearson.
       action: Haga Clic Aquí para Iniciar Sesión y Enviar su Encuesta
       closing: Disfruta tu día,
+    status_alert:
+      subject: Greenlight Alerta de estado
+      salutation: "Hola %{name}"
+      title: "Un estado %{status_color} enviado"
+      body: "%{user} presentó un estado %{status_color}."
   texts:
     magic_sign_in: "Greenlight Iniciar Sesión con Magia: %{link}"
     reminder: "Greenlight le recuerda que envíe sus encuestas de síntomas para WG Pearson!"
+    password_reset: "Greenlight Restablecimiento de contraseña: %{link}"
+    status_alert: "Greenlight: %{user} presentó un estado %{status_color}."
+  greenlight_status:
+    absent: Ausente
+    cleared: Aprobado
+    not_submitted: No Enviado
+    pending: Pendiente
+    recovery: Recuperación
+    colors:
+      absent: Azul
+      cleared: Verde
+      not_submitted: Gris
+      pending: Amarillo
+      recovery: Rojo
