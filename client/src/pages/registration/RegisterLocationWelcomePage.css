@@ -1,15 +1,15 @@
 .RegisterLocationWelcomePage .fill-in-the-blank {
   display: inline-block;
   padding-bottom: 2px;
-  border-bottom: 1px dashed #222;
+  border-bottom: 1px dashed #444;
   color: var(--gl-green);
 }
 .RegisterLocationWelcomePage .category-select {
   cursor: pointer;
 }
 .RegisterLocationWelcomePage .introduction {
-  font-size: 1.5rem;
-  line-height: 2.5rem;
+  font-size: 1.2rem;
+  line-height: 2.4rem;
 }
 .RegisterLocationWelcomePage .has-error {
   color: red;
@@ -34,7 +34,7 @@ input[name="zipCode"].fill-in-the-blank {
 }
 
 input[name="employeeCount"].fill-in-the-blank {
-  width: 35%;
+  width: 20%;
   margin-left: 7px;
   margin-right: 7px;
   padding-right: 5px;

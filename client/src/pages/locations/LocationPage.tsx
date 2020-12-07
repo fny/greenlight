@@ -13,7 +13,7 @@ import { paths } from 'src/config/routes'
 
 import './LocationPage.css'
 import { Location } from 'src/models'
-import { getLocation, sendInvite } from 'src/api'
+import { getLocation, mailInvite } from 'src/api'
 import LoadingPage from 'src/pages/util/LoadingPage'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 
@@ -38,7 +38,7 @@ export default function LocationPage({ f7route, f7router }: F7Props) {
     errorTitle: 'Not Found',
     errorMessage: 'No matching email or phone number was found. Maybe you already signed up?',
     onSubmit: async () => {
-      await sendInvite(state.emailOrMobile)
+      await mailInvite(state.emailOrMobile)
     },
   })
 

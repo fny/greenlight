@@ -16,5 +16,7 @@ es:
       action: Haga Clic Aquí para Iniciar Sesión y Enviar su Encuesta
       closing: Disfruta tu día,
   texts:
-    magic_sign_in: "Greenlight Iniciar Sesión con Magia: %{link}"
-    reminder: "Greenlight le recuerda que envíe sus encuestas de síntomas para WG Pearson!"
+    # !!! WARNING !!! Do not use unicode characters! Otherwise, your
+    # texts will be limited to 70 characters.
+    magic_sign_in: "Greenlight Iniciar Sesion con Magia: %{link}"
+    reminder: "Greenlight le recuerda que envie su encuesta: %{link}"

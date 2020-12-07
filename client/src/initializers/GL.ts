@@ -9,8 +9,7 @@ import CookieJar from 'src/helpers/CookieJar'
 import { f7 } from 'framework7-react'
 import Honeybadger from './honeybadger'
 /**
- * Namespace on which to hang globals
- * for debugging.
+ * Namespace on which to hang globals for debugging.
  */
 const GL: Dict<any> = {}
 

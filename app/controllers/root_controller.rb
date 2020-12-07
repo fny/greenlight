@@ -26,21 +26,5 @@ module RootController
         'slug_description': ENV['HEROKU_SLUG_DESCRIPTION']
       }
     end
-
-    # REFACTOR: This is not well named and needs a namespace
-    post '/v1/send-support-email' do
-      params[:email]
-    end
-
-    # REFACTOR: This is not well named and needs a namespace
-    post '/v1/send-invite' do
-      user = User.find_by_email_or_mobile!(params[:emailOrMobile].strip.downcase)
-      if user.completed_welcome_at
-        head :not_found
-      else
-        InviteWorker.perform_async(user.id)
-        success_response
-      end
-    end
   end
 end

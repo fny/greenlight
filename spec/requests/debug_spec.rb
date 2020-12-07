@@ -1,16 +1,30 @@
 # frozen_string_literal: true
 RSpec.describe "Debug", type: :request do
+  describe 'authentication' do
+    let (:user) { Fabricate(:user) }
 
-  pending "reads, writes, and deletes cookies" do
-    post_json '/debug/cookies'
-    expect_success_response
-    expect(response.cookies['test']).to eq('test')
+    describe '/debug/authenticated' do
+      it 'succeeds when the user is pauthenticated' do
+        sign_in(user)
+        get_json '/debug/authenticated'
+        expect_success_response
+      end
+      it 'fails when the user is unauthenticated' do
+        get_json '/debug/authenticated'
+        expect(response.status).to eq(401)
+      end
+    end
 
-    get_json '/debug/cookies'
-    expect(response_json).to eq('test' => 'test')
-
-    delete_json '/debug/cookies'
-    expect_success_response
-    expect(response.cookies['test']).to eq(nil)
+    describe '/debug/unauthenticated' do
+      it 'succeeds when the user is unauthenticated' do
+        sign_in(user)
+        get_json '/debug/unauthenticated'
+        expect_success_response
+      end
+      it 'succeeds when the user is authenticated' do
+        get_json '/debug/unauthenticated'
+        expect_success_response
+      end
+    end
   end
 end

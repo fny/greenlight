@@ -1,6 +1,6 @@
 import { t, Trans } from '@lingui/macro'
 import {
-  Block, Button, Col, F7Accordion, Link, List, ListItem, Page, PageContent, Row, Sheet, Toolbar,
+  Block, Button, Col, Link, List, ListItem, Page, PageContent, Row, Sheet, Toolbar,
 } from 'framework7-react'
 import React, { useEffect, useState } from 'react'
 import {
@@ -8,7 +8,7 @@ import {
 } from 'src/helpers/util'
 import { GRegisteringLocation, GRegisteringUser, toggleLocale } from 'src/initializers/providers'
 import {
-  lcTrans, LocationCategories, LOCATION_CATEGORIES,
+  lcPeople, lcTrans, LocationCategories, LOCATION_CATEGORIES,
 } from 'src/models/Location'
 import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
 import { dynamicPaths, paths } from 'src/config/routes'
@@ -19,6 +19,7 @@ import Redirect from 'src/components/Redirect'
 import { User } from 'src/models'
 
 import './RegisterLocationWelcomePage.css'
+import logger from 'src/helpers/logger'
 import { RegisterLocationMessageIds } from './RegisterLocationMessagePage'
 
 class State {
@@ -41,6 +42,7 @@ function validateLocation(location: GRegisteringLocation) {
   if (isBlank(location.zipCode)) errors.push('zipCode')
   if (!/^\d{5}$/.test(location.zipCode)) errors.push('zipCode')
   if (isBlank(location.category)) errors.push('category')
+  console.log(location.employeeCount)
   if (isBlank(location.employeeCount)) errors.push('employeeCount')
   return errors
 }
@@ -69,6 +71,7 @@ export function nextMessage(location: GRegisteringLocation): RegisterLocationMes
 
 export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element {
   const [currentUser] = useGlobal('currentUser') as [User, any]
+  const [locale] = useGlobal('locale')
   const [registeringUser, setRegisteringUser] = useGlobal('registeringUser')
   const [registeringLocation, setRegisteringLocation] = useGlobal('registeringLocation')
   const [state, setState] = useState(new State())
@@ -126,10 +129,11 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
           with about
           <input
             name="employeeCount"
-            className={`fill-in-the-blank ${state.showErrors && validateLocation(registeringLocation).includes('category') && 'has-error'}`}
+            className={`fill-in-the-blank ${state.showErrors && validateLocation(registeringLocation).includes('employeeCount') && 'has-error'}`}
             type="number"
+            onChange={(e) => setRegisteringLocation({ ...registeringLocation, employeeCount: parseInt((e.target as HTMLInputElement).value) })}
           />
-          people
+          {lcPeople(registeringLocation.category || LocationCategories.COMMUNITY)}
           <br />
           located in
           {' '}
@@ -172,12 +176,15 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
               onClick={() => {
                 setState({ ...state, showErrors: true })
                 if (validateLocation(registeringLocation).length !== 0 || validateUser(registeringUser).length !== 0) {
+                  logger.dev('Location not validated',
+                    validateLocation(registeringLocation),
+                    validateUser(registeringUser))
                   return
                 }
                 setState({ ...state, showErrors: false })
                 SessionStorage.setRegisteringUser(registeringUser)
                 SessionStorage.setRegisteringLocation(registeringLocation)
-                props.f7router.navigate(dynamicPaths.registerLocationDetailsPath({
+                props.f7router.navigate(dynamicPaths.registerLocationMessagePath({
                   messageId: nextMessage(registeringLocation),
                 }))
               }}

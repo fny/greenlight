@@ -25,7 +25,7 @@ bundle exec rake db:seed
 
 ## Running the project
 
-- `cd frontend && npm start` to start the frontend
+- `cd client && npm start` to start the frontend
 - `bin/rails s` to start the API server
 - `bundle exec sidekiq` to start the worker
 - `bundle exec rspec` to run the API test suite
@@ -58,7 +58,8 @@ may have installation issues. Use the following line to install it:
 ## Editor Setup
 
 We don't really care what editor you use for as long as you follow the coding
-convetions imposed by Rubocop and eslint.
+conventions imposed by Rubocop and eslint. If something really annoys you, talk
+to Faraz. He's probably fine with disabling it.
 
 You should try to have the following plugins in whatever editor you choose to use:
 

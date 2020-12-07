@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class APIController < ActionController::API
   include ActionController::Cookies
-  include Sinatrify
   include APIHelpers
+  include Sinatrify # Include after everything else but before controllers
 
   include RootController
   include DebugController
@@ -12,7 +12,7 @@ class APIController < ActionController::API
   include PasswordResetsController
   include UsersController
   include CurrentUserController
-  include DevelopmentController unless Rails.env.production?
+  include MailController
 
   before_action do
     @session = Session.new(cookies)
@@ -22,21 +22,6 @@ class APIController < ActionController::API
     request.env['exception_notifier.exception_data'] = {
       current_user: current_user
     }
-  end
-
-  before_action do
-    split_path = request.path.split('/')
-    next if split_path == []
-
-    # Remember! split_path[0] == "" since paths start with a /
-    # /v1 namespace
-    next if %w[ping sessions magic-sign-in password-resets send-invite].include?(split_path[2])
-    # root namespace
-    next if %w[ping version xnp9q8g7nvx9wmq197b0 dev].include?(split_path[1])
-    next if request.path == '/v1/users/create-and-sign-in'
-    next if request.path.starts_with?('/v1/locations') && split_path.length == 4
-
-    ensure_authenticated!
   end
 
   rescue_from NotFoundError do

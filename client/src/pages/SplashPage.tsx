@@ -46,17 +46,17 @@ export default function SplashPage() {
           </Trans>
         </Button>
 
-        <Button outline href={paths.registerLocationWelcomePath}>
+        {/* <Button outline href={paths.registerLocationWelcomePath}>
           <Trans id="SplashPage.register_business_or_school">
             Register Organization
           </Trans>
-        </Button>
+        </Button> */}
 
-        {/* <Button outline href={paths.durhamRegistationPath}>
+        <Button outline href={paths.durhamRegistationPath}>
           <Trans id="SplashPage.register_business">
             Register Business
           </Trans>
-        </Button> */}
+        </Button>
 
         <Button outline onClick={() => toggleLocale()} style={{ border: 0 }}>
           <Trans id="SplashPage.choose_language">

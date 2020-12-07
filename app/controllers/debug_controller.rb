@@ -13,18 +13,14 @@ module DebugController
       }.to_json
     end
 
-    post '/debug/cookies' do
-      cookies[:test] = 'test'
+    # Used to test authentication
+    get '/debug/authenticated' do
       success_response
     end
 
-    delete '/debug/cookies' do
-      cookies.delete(:test)
+    # Used to test authentication
+    get '/debug/unauthenticated', auth: false do
       success_response
-    end
-
-    get '/debug/cookies' do
-      { test: cookies[:test] }.to_json
     end
   end
 end

@@ -53,32 +53,15 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
         </BlockTitle>
         <Block>
           <p>
-
-            {/* { FIXME: isOwnerSomewhere doesn't work
-              this.user.isOwnerSomewhere() ? (
-                <Trans id="WelcomeSurveyPage.thank_you_owner">
-                  Congratulations on registering!
-                </Trans>
-
-              ) : (
-                <Trans id="WelcomeSurveyPage.thank_you">
-                  Thanks for providing that information!
-                </Trans>
-              )
-            } */}
-            <Trans id="WelcomeSurveyPage.thank_you">
-              Thanks for providing that information!
-            </Trans>
-          </p>
-          <p>
             {
             this.user.isOwnerSomewhere() ? (
               <Trans id="WelcomeSurveyPage.instructions_owner">
-                Greenlight helps you keep your community safe by monitoring everyone’s safety, connecting individuals to services and information, and minimizing the risk of an outbreak at your business. We need your help to make sure we can keep your community safe! To kick things off, you and your employees should check-in every day.
+                Greenlight helps you keep your community safe by monitoring everyone’s health, connecting individuals to services and information, and minimizing the risk of an outbreak at your business. We need your help to make sure we can keep your community safe! To kick things off, you and your employees should check-in every day.
               </Trans>
             ) : (
               <Trans id="WelcomeSurvyePage.instructions">
-                Greenlight helps keep your community safe by monitoring everyone's health.
+                Greenlight helps keep your community safe by monitoring everyone's
+                health and connecting everyone to services.
                 We need your help! You should fill out this survey every day.
               </Trans>
             )

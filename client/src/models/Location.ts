@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+import { getGlobal } from 'reactn'
 import { GLLocales } from 'src/i18n'
 import {
   Model, attribute as attr, initialize, STRING, BOOLEAN, NUMBER, DATETIME,
@@ -46,8 +47,22 @@ const LC = {
 }
 
 // HACK: We need a proper way to organize translations like this
-export function lcTrans(category: LocationCategories, locale: GLLocales = 'en') {
+export function lcTrans(category: LocationCategories): string {
+  const { locale } = getGlobal()
   return LC[category][locale === 'en' ? 0 : 1]
+}
+
+export function lcPeople(category: LocationCategories): string {
+  const { locale } = getGlobal()
+  if ([LocationCategories.SCHOOL, LocationCategories.UNIVERSITY].includes(category)) {
+    return locale === 'en' ? 'students and staff' : 'estudiantes y empleados'
+  }
+
+  if ([LocationCategories.COMMUNITY, LocationCategories.GROUP, LocationCategories.ORGANIZATION, LocationCategories.SHELTER, LocationCategories.PLACE_OF_WORSHIP].includes(category)) {
+    return locale === 'en' ? 'people' : 'personas'
+  }
+
+  return locale === 'en' ? 'employees' : 'empleados'
 }
 
 export const LOCATION_CATEGORIES: LocationCategories[] = [

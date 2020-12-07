@@ -54,7 +54,7 @@ export default function RegisterLocationDetailsPage(props: F7Props): JSX.Element
     },
   })
 
-  const ownerCount = currentUser.locationAccounts.filter((x) => x.permissionLevel === 'owner').length
+  const ownerCount = currentUser ? currentUser.locationAccounts.filter((x) => x.permissionLevel === 'owner').length : 0
   const category = registeringLocation.category || state.locationCategory
   return (
     <Page className="RegisterLocationWelcomePage">

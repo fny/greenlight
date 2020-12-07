@@ -73,7 +73,7 @@ module Commands
     # Raised by methods that require the command to have been run
     CommandNotRun = Class.new(StandardError)
     CommandAborted = Class.new(StandardError)
-
+    CommandFailed = Class.new(StandardError)
     # Implement me in your child classes!
     #
     # Your method should returns a Boolean: true if the work was successful and false if it wasn't
@@ -96,6 +96,11 @@ module Commands
     rescue CommandAborted
       Rails.logger.debug("Aborted command! #{self.errors.details}") if Rails.env.development?
       @succeeded = false
+    end
+
+    def run!
+      return true if run
+      raise CommandFailed
     end
 
     # Call this to force a failure during `#work`

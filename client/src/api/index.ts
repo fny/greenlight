@@ -196,11 +196,17 @@ export async function createSymptomSurvey(user: User, medicalEvents: Partial<Med
 }
 
 //
-// Misc
+// Mailman
 //
 
-export function sendInvite(emailOrMobile: string): Promise<AxiosResponse<any>> {
-  return v1.post('/send-invite', {
+export function mailHelloAtGreenlight(from: string, subject: string, body: string): Promise<AxiosResponse<any>> {
+  return v1.post('mail/hello-at-greenlight', {
+    from, subject, body,
+  })
+}
+
+export function mailInvite(emailOrMobile: string): Promise<AxiosResponse<any>> {
+  return v1.post('mail/invite', {
     emailOrMobile,
   })
 }
