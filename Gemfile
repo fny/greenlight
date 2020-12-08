@@ -63,6 +63,8 @@ gem 'faker'
 gem 'faraday'
 # A lightning fast JSON:API serializer for Ruby Objects.
 gem 'fast_jsonapi'
+# Implementation of Jaro-Winkler string similary
+gem 'jaro_winkler'
 # JSON web tokens
 gem 'jwt'
 # Tame Rails' default policy to log everything

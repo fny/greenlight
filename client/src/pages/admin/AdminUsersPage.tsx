@@ -95,10 +95,40 @@ class UsersList extends React.Component<Props, any> {
             </Link>
           </NavRight>
         </Navbar>
+
         <List className="searchbar-not-found">
           <ListItem key="blank" title="Nothing found" />
         </List>
         <List className="search-list searchbar-found" contactsList>
+          {this.props.location.permalink === 'greenlight'
+          && (
+          <ListItem
+            title="Cohorts"
+            smartSelect
+            smartSelectParams={{ searchbar: true, searchbarPlaceholder: 'Search Cohorts' }}
+          >
+            <select name="cohort" multiple defaultValue={['honda', 'audi', 'ford']}>
+              <optgroup label="Bus Route">
+                <option value="honda">A</option>
+                <option value="lexus">B</option>
+                <option value="mazda">C</option>
+                <option value="nissan">D</option>
+                <option value="toyota">E</option>
+              </optgroup>
+              <optgroup label="Building">
+                <option value="audi">Middle</option>
+                <option value="bmw">High</option>
+                <option value="mercedes">Gym</option>
+              </optgroup>
+              <optgroup label="Homeroom">
+                <option value="cadillac">Cassidy</option>
+                <option value="chrysler">Daniels</option>
+                <option value="dodge">Ford</option>
+                <option value="ford">Zimmerman</option>
+              </optgroup>
+            </select>
+          </ListItem>
+          )}
           {
           sortBy(Object.entries(grouped), (x) => x[0]).map(([letter, users]) => (
             <ListGroup key={letter}>

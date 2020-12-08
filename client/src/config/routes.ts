@@ -40,13 +40,13 @@ import LocationsNewPage from 'src/pages/registration/RegisterBusinessPage'
 import UsersNewPage from 'src/pages/registration/RegisterUserPage'
 import CHWRequestPage from 'src/pages/resources/CHWRequestPage'
 import AdminUserPermissionsPage from 'src/pages/admin/AdminUserPermissionsPage'
-import RegisterSchoolPage from 'src/pages/registration/RegisterSchoolPage'
-import RegisterParentPage from 'src/pages/registration/RegisterUserPage'
 import RegisterLocationWelcomePage from 'src/pages/registration/RegisterLocationWelcomePage'
 import RegisterLocationOwnerPage from 'src/pages/registration/RegisterLocationOwnerPage'
 import RegisterLocationDetailsPage from 'src/pages/registration/RegisterLocationDetailsPage'
 import RegisterLocationConfirmationPage from 'src/pages/registration/RegisterLocationConfirmationPage'
 import RegisterLocationMessagePage from 'src/pages/registration/RegisterLocationMessagePage'
+import UserLocationPage from 'src/pages/user-locations/UserLocationPage'
+import CohortsPage from 'src/pages/Cohorts2Page'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -262,6 +262,11 @@ const routeMap = {
     component: UserGreenlightPassPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
+  userLocationPath: {
+    path: '/users/:userId/locations/:locationId',
+    component: UserLocationPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
   mobileVerificationPath: {
     path: '/mobile-verifications',
     component: MobileVerificationPage,
@@ -323,6 +328,10 @@ const routeMap = {
   notFoundPath: {
     path: '/not-found',
     component: NotFoundPage,
+  },
+  tempCohortPath: {
+    path: '/cohorts',
+    component: CohortsPage,
   },
   catchAllPath: {
     path: '(.*)',

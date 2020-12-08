@@ -207,6 +207,8 @@ end
 #  registration_code_downcase         :string
 #  student_registration_code          :string
 #  student_registration_code_downcase :string
+#  gdrive_staff_roster_id             :string
+#  gdrive_student_roster_id           :string
 #
 # Indexes
 #
