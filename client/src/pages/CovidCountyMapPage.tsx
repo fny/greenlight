@@ -21,6 +21,10 @@ const MapPage = ({}) => {
       const covidData: { [i: string]: CovidData } = res.reduce((acc, cur) => ({ ...acc, [cur.county]: cur }), {})
       const stateInfo = states.find((stateItem) => stateItem.label === state)
       const geoData: GeoDataType = require(`src/data/geo_data/${stateInfo!.value}.json`)
+      const populationInfo: PopulationType[] = require('src/data/us-population.json')
+      const ncPopulation: { [i: string]: number } = populationInfo
+        .filter((p) => p.state === state)
+        .reduce((acc, cur) => ({ ...acc, [cur.county]: [cur.population] }), {})
       echarts.registerMap('filteredState', geoData)
 
       const countyInfo = geoData.features.find((item) => item.properties.NAME === county)
@@ -77,8 +81,10 @@ const MapPage = ({}) => {
             },
             data: geoData.features.map((item) => ({
               name: item.properties.NAME,
-              value: covidData[item.properties.NAME].cases,
+              value: ((covidData[item.properties.NAME].cases || 0) / ncPopulation[item.properties.NAME]) * 1000000,
+              cases: covidData[item.properties.NAME].cases,
               deaths: covidData[item.properties.NAME].deaths,
+              population: ncPopulation[item.properties.NAME],
             })),
           },
         ],
@@ -117,20 +123,28 @@ interface GeoDataType {
   }>
 }
 
+interface PopulationType {
+  county: string
+  state: string
+  population: number
+}
+
 const chartOption = {
   tooltip: {
     trigger: 'item',
     showDelay: 0,
     transitionDuration: 0.2,
     formatter(params: any) {
+      const cases = `${params.data.cases}`.split('.')[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,')
+      const deaths = `${params.data.deaths}`.split('.')[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,')
+      const population = `${params.data.population}`.split('.')[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,')
       const value = `${params.value}`.split('.')[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,')
-      const deaths = `${params.deaths}`.split('.')[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,')
-      return `${params.name}<br/>Cases: ${value}<br/>Deaths: ${deaths}`
+      return `${params.name}<br/>Cases: ${cases}<br/>Deaths: ${deaths}<br/>Population: ${population}<br/>Cases / 1M pop: ${value}`
     },
   },
   visualMap: {
     min: 0,
-    max: 50000,
+    max: 100000,
     orient: 'horizontal',
     left: 'center',
     bottom: 0,
