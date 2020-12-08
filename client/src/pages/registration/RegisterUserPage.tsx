@@ -47,21 +47,21 @@ export default function RegisterParentPage(props: F7Props) {
   if (!permalink || !registrationCode || error) {
     return (
       <Page>
-        <Navbar title={t({ id: 'ParentRegistration.lookup_school_title', message: 'Look Up School' })}>
+        <Navbar title={t({ id: 'UserRegistration.lookup_business_or_school', message: 'Look Up Business or School' })}>
           <NavbarHomeLink slot="left" />
         </Navbar>
         <Block>
           <p>
-            <Trans id="ParentRegistration.lookup_school_instructions">
-              You should have received a link from or code from your school.
+            <Trans id="UserRegistration.lookup_business_or_school_instructions">
+              You should have received a link from or code from your business or school.
               If you received a code, enter it below. The code is not case sensitive.
             </Trans>
           </p>
           {
             error && (
             <p style={{ color: 'red' }}>
-              <Trans id="ParentRegistration.lookup_error">
-                There was an error looking up your school. Please make sure your information is correct.
+              <Trans id="UserRegistration.lookup_error">
+                There was an error looking up your business or school. Please make sure your information is correct.
               </Trans>
             </p>
             )
@@ -69,21 +69,21 @@ export default function RegisterParentPage(props: F7Props) {
           <List noHairlines>
             <ListInput
               type="text"
-              label={t({ id: 'ParentRegistration.school_id', message: 'School ID' })}
-              placeholder={t({ id: 'ParentRegistration.school_id', message: 'School ID' })}
+              label={t({ id: 'UserRegistration.business_or_school_id', message: 'Business or School ID' })}
+              placeholder={t({ id: 'UserRegistration.business_or_school_id', message: 'Business or School ID' })}
               required
               onChange={(e) => setMyPermalink(e.target.value)}
             />
             <ListInput
               type="text"
-              label={t({ id: 'ParentRegistration.registration_code_label', message: 'Registration Code' })}
-              placeholder={t({ id: 'ParentRegistration.registration_code_placeholder', message: 'Enter your registration code' })}
+              label={t({ id: 'UserRegistration.registration_code_label', message: 'Registration Code' })}
+              placeholder={t({ id: 'UserRegistration.registration_code_placeholder', message: 'Enter your registration code' })}
               required
               onChange={(e) => setMyCode(e.target.value)}
             />
             <br />
-            <Button href={`/l/${myPermalink}/code/${myCode}`} fill>
-              <Trans id="ParentRegistration.lookup_location">
+            <Button href={`/go/${myPermalink}/code/${myCode}`} fill>
+              <Trans id="UserRegistration.lookup_location">
                 Lookup Location
               </Trans>
             </Button>
