@@ -116,7 +116,7 @@ user_ids.map { |user_id| ReminderWorker.new.perform(user_id) }
 Sidekiq::Cron::Job.create(name: 'Daily Reminders - every hour', cron: '0 * * * *', class: 'ScheduledReminderWorker')
 
 
-# Loading useres via spreadsheeet
+# Loading users via spreadsheeet
 
 Location.all.map(&:refresh_student_registration_codes!)
 Location.load_locations_from_data!
