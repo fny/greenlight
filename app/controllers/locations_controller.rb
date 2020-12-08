@@ -2,7 +2,7 @@ module LocationsController
   extend ActiveSupport::Concern
 
   included do
-    get '/v1/locations/:location_id' do
+    get '/v1/locations/:location_id', auth: false do
       location_id = params[:location_id]
       location = Location.find_by_id_or_permalink!(location_id)
 

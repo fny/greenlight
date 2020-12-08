@@ -12,6 +12,8 @@
   <thead>
     <th>ID</th>
     <td>Name</td>
+    <th>Handle</th>
+    <th>Reg Code</th>
     <th>Zip Code</th>
     <th>Employee Count</th>
     <th>Registered Count</th>
@@ -23,6 +25,8 @@
         <td>
           <%= link_to r.name, admin_report_path(r.id) %>
         </td>
+        <td><%= r.permalink %></td>
+        <td><%= r.registration_code %></td>
         <td><%= r.zip_code %></td>
         <td><%= r.employee_count %></td>
         <td><%= r.registered_count %></td>

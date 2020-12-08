@@ -150,6 +150,7 @@ module Reports
         select
           locations.id,
           locations.permalink,
+          locations.registration_code,
           locations.name,
           locations.zip_code,
           locations.employee_count,
