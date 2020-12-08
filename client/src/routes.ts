@@ -40,6 +40,8 @@ import { Dict } from './types'
 import LocationsNewPage from './pages/LocationsNewPage'
 import UsersNewPage from './pages/UsersNewPage'
 import CHWRequestPage from './pages/CHWRequestPage'
+import PasswordResetRequestPage from './pages/PasswordResetRequestPage'
+import PasswordResetPage from './pages/PasswordResetPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -87,6 +89,14 @@ const routeMap = {
     component: SignInPage,
     beforeEnter: beforeEnter.redirectHomeIfSignedIn,
   },
+  passwordResetRequestPath: {
+    path: '/forgot-password',
+    component: PasswordResetRequestPage,
+  },
+  passwordResetPath: {
+    path: '/pwdrst/:token',
+    component: PasswordResetPage,
+  },
   magicSignInPath: {
     path: '/magic-sign-in',
     component: MagicSignInPage,
@@ -97,11 +107,6 @@ const routeMap = {
     component: MagicSignInAuthPage,
     beforeEnter: beforeEnter.redirectHomeIfSignedIn,
   },
-  // passwordResetSubmitPath: {
-  //   path: '/pwdrst/:token',
-  //   component: PasswordResetSubmitPage,
-  //   beforeEnter: beforeEnter.redirectHomeIfSignedIn,
-  // },
   dashboardPath: {
     path: '/dashboard',
     component: DashboardPage,

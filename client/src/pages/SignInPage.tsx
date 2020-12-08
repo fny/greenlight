@@ -1,16 +1,6 @@
 import React from 'reactn'
 
-import {
-  Page,
-  List,
-  ListInput,
-  Navbar,
-  Link,
-  Block,
-  Button,
-  BlockFooter,
-  ListItem,
-} from 'framework7-react'
+import { Page, List, ListInput, Navbar, Link, Block, Button, BlockFooter, ListItem } from 'framework7-react'
 
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
 import './SignInPage.css'
@@ -62,7 +52,12 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
       this.$f7.dialog.close()
       logger.error(error)
       this.$f7.dialog.alert(
-        this.global.i18n._(defineMessage({ id: 'SignInPage.credentials_incorrect', message: 'The credentials your provided are incorrect.' })),
+        this.global.i18n._(
+          defineMessage({
+            id: 'SignInPage.credentials_incorrect',
+            message: 'The credentials your provided are incorrect.',
+          }),
+        ),
         this.global.i18n._(defineMessage({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' })),
       )
     }
@@ -71,14 +66,7 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
   render() {
     return (
       <Page className="SignInPage" noToolbar>
-
-        <Navbar
-          title={
-          this.global.i18n._(
-            defineMessage({ id: 'SignInPage.title', message: 'Sign In' }),
-          )
-}
-        />
+        <Navbar title={this.global.i18n._(defineMessage({ id: 'SignInPage.title', message: 'Sign In' }))} />
 
         <div style={{ marginTop: '20px' }} className="greenlight-logo">
           Greenlight
@@ -96,48 +84,36 @@ export default class SignInPage extends React.Component<Record<string, any>, Sig
           <ListInput
             type="password"
             ref={this.passwordRef}
-            placeholder={
-              this.global.i18n._(
-                defineMessage({ id: 'SignInPage.password_placeholder', message: 'Password' }),
-              )
-            }
+            placeholder={this.global.i18n._(
+              defineMessage({ id: 'SignInPage.password_placeholder', message: 'Password' }),
+            )}
             validateOnBlur
             value={this.state.password}
             required
             onInput={(e) => {
               this.setState({ password: e.target.value })
             }}
-            errorMessage={
-              this.global.i18n._(
-                defineMessage({ id: 'SignInPage.password_missing', message: 'Please enter your password.' }),
-              )
-            }
+            errorMessage={this.global.i18n._(
+              defineMessage({ id: 'SignInPage.password_missing', message: 'Please enter your password.' }),
+            )}
           />
           <ListItem
             checkbox
-            title={
-              this.global.i18n._(
-                defineMessage({ id: 'SignInPage.remember_me', message: 'Remember me' }),
-              )
-            }
+            title={this.global.i18n._(defineMessage({ id: 'SignInPage.remember_me', message: 'Remember me' }))}
             onChange={(e) => {
               this.setState({ rememberMe: e.target.checked })
             }}
           />
           <Block>
             <Button outline fill onClick={() => this.submit()}>
-              <Trans id="SignInPage.sign_in">
-                Sign In
-              </Trans>
+              <Trans id="SignInPage.sign_in">Sign In</Trans>
             </Button>
           </Block>
         </List>
         <List>
           <BlockFooter>
-            <Link href={paths.magicSignInPath}>
-              <Trans id="SignInPage.forgot_password">
-                Forgot password?
-              </Trans>
+            <Link href={paths.passwordResetRequestPath}>
+              <Trans id="SignInPage.forgot_password">Forgot password?</Trans>
             </Link>
           </BlockFooter>
         </List>

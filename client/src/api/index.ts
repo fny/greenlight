@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 
 import { setGlobal } from 'reactn'
-import {
-  assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
-} from 'src/util'
+import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from 'src/util'
 import Honeybadger from 'honeybadger-js'
 
 import logger from 'src/logger'
@@ -12,9 +10,7 @@ import { LocationAccount } from 'src/models/LocationAccount'
 import env from '../env'
 import { transformRecordResponse, recordStore } from './stores'
 import { RecordResponse } from '../types'
-import {
-  User, Location, Model, MedicalEvent, GreenlightStatus, UserSettings,
-} from '../models'
+import { User, Location, Model, MedicalEvent, GreenlightStatus, UserSettings } from '../models'
 
 const BASE_URL = `${env.API_URL}/v1`
 
@@ -89,6 +85,22 @@ export async function magicSignIn(token: string, rememberMe: boolean) {
   })
 }
 
+export async function passwordResetRequest(emailOrMobile: string) {
+  await v1.post('/password-resets', {
+    emailOrMobile,
+  })
+}
+
+export async function checkPasswordResetToken(token: string) {
+  await v1.get(`/password-resets/${token}/valid`)
+}
+
+export async function passwordReset(token: string, password: string) {
+  await v1.post(`/password-resets/${token}`, {
+    password,
+  })
+}
+
 //
 // Locations
 //
@@ -98,8 +110,7 @@ export async function getLocation(id: string): Promise<Location> {
 }
 
 export async function createLocation(attrs: Partial<Location>): Promise<Location> {
-  const response = await v1.post<RecordResponse<Location>>('/locations',
-    transformForAPI(attrs))
+  const response = await v1.post<RecordResponse<Location>>('/locations', transformForAPI(attrs))
 
   const entity = transformRecordResponse<Location>(response.data)
   assertNotArray(entity)
@@ -129,8 +140,7 @@ export async function getUser(id: string): Promise<User> {
 }
 
 export async function updateUser(user: User, updates: Partial<User>): Promise<User> {
-  const response = await v1.patch<RecordResponse<User>>(`/users/${user.id}`,
-    transformForAPI(updates))
+  const response = await v1.patch<RecordResponse<User>>(`/users/${user.id}`, transformForAPI(updates))
 
   const entity = transformRecordResponse<User>(response.data)
   assertNotArray(entity)
@@ -152,8 +162,7 @@ export async function createUserAndSignIn(user: Partial<User>) {
 }
 
 export async function updateUserSettings(user: User, updates: Partial<UserSettings>) {
-  const response = await v1.patch<RecordResponse<UserSettings>>(`/users/${user.id}/settings`,
-    transformForAPI(updates))
+  const response = await v1.patch<RecordResponse<UserSettings>>(`/users/${user.id}/settings`, transformForAPI(updates))
   const entity = transformRecordResponse<UserSettings>(response.data)
   assertNotArray(entity)
   return entity
