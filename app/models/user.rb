@@ -297,9 +297,15 @@ class User < ApplicationRecord
     parents.include?(parent_user)
   end
 
+  def greenlight_admin?
+    email&.end_with?('@greenlightready.com') || superuser?
+  end
 
   def superuser?
-    email == 'faraz.yashar@gmail.com'
+    %w[
+      faraz@greenlightready.com
+      kevin@greenlightready.com
+    ].include?(email)
   end
 
   # @param [User] user

@@ -20,4 +20,8 @@ Rails.application.routes.draw do
     end
   end
   mount Sidekiq::Web, at: '/sidekiq'
+
+  namespace :admin do
+    resources :reports
+  end
 end

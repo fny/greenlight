@@ -129,5 +129,13 @@ module LocationsController
 
       render json: UserSerializer.new(users, include: UserSerializer::ADMIN_INCLUDES.dup)
     end
+
+    get '/v1/locations/:location_id/report' do
+      location_id = params[:location_id]
+      location = Location.find_by_id_or_permalink(location_id)
+      return {} unless location || !current_user.admin_at?(location)
+
+      render json: Reports::Location.new(location).to_h
+    end
   end
 end
