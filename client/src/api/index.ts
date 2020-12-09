@@ -115,6 +115,14 @@ export async function joinLocation(location: Location): Promise<LocationAccount>
 }
 
 //
+// LocationAccounts
+//
+
+export async function deleteLocationAccount(id: string) {
+  await v1.delete(`/location-accounts/${id}`)
+}
+
+//
 // Users
 //
 

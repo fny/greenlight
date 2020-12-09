@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+import { get } from 'lodash'
 import { isPresent, joinWords } from 'src/util'
 import { Location, MedicalEvent } from 'src/models'
 import {
@@ -108,6 +109,16 @@ export class User extends Model {
   /** Does this user have any children? */
   hasChildren(): boolean {
     return this.children.length > 0
+  }
+
+  /** Does this user have any location? */
+  hasLocations(): boolean {
+    return this.locations__HACK().length > 0
+  }
+
+  /** Is this user registered to a location? */
+  laOfLocation(locationId: string): LocationAccount | undefined {
+    return this.locationAccounts.find((la) => get(la, 'location.id') === locationId)
   }
 
   /** Is this user a parent? */

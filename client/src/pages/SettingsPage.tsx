@@ -7,12 +7,12 @@ import { toggleLocale, signOut } from 'src/initializers/providers'
 import { t } from '@lingui/macro'
 import { assertNotNull } from 'src/util'
 import { dynamicPaths, paths } from 'src/routes'
-import { User } from 'src/models'
+import { User, Location } from 'src/models'
 
 export default function SettingsPage() {
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
-
+  console.log('Current User', currentUser)
   return (
     <Page>
       <Navbar
@@ -56,6 +56,26 @@ export default function SettingsPage() {
             </AccordionContent>
           </ListItem>
         )}
+
+        {currentUser.hasLocations() && (
+          <ListItem
+            accordionItem
+            title={t({ id: 'SettingsPage.locations', message: 'Locations' })}
+          >
+            <AccordionContent>
+              <List>
+                {currentUser.locations__HACK().map((location: Location) => (
+                  <ListItem
+                    key={location.id}
+                    link={`/l/${location.id}`}
+                    title={location.name || undefined}
+                  />
+                ))}
+              </List>
+            </AccordionContent>
+          </ListItem>
+        )}
+
         {
           currentUser.isAdminSomewhere()
 

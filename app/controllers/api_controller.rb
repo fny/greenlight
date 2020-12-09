@@ -6,6 +6,7 @@ class APIController < ActionController::API
   include RootController
   include DebugController
   include LocationsController
+  include LocationAccountsController
   include SessionsController
   include PasswordResetsController
   include UsersController

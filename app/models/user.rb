@@ -332,6 +332,10 @@ class User < ApplicationRecord
     user == self || admin_of?(user) || parent_of?(user) || superuser?
   end
 
+  def owner_of_la?(location_account_id)
+    location_accounts.exists?(id: location_account_id)
+  end
+
   def submitted_for_today?
     !GreenlightStatus.submittable_for?(id)
   end
