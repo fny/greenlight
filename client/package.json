@@ -36,6 +36,7 @@
   "scripts": {
     "start": "PORT=9991 react-scripts start",
     "build": "react-scripts build",
+    "build-cordova": "REACT_APP_CORDOVA=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
@@ -81,7 +82,6 @@
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "browserslist-useragent-regexp": "^2.1.1",
-    "cross-env": "^7.0.2",
     "eslint": "^7.11.0",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^6.11.0",

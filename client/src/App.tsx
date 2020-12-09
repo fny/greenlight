@@ -49,7 +49,6 @@ export default function Main() {
           <SupportedBrowserBar />
           <OnlineStatus />
           <ErrorBoundary>
-
             <View id="main-view" url="/" main className="safe-areas">
               <FlashMessage />
             </View>
@@ -57,6 +56,5 @@ export default function Main() {
         </App>
       </I18nWatchLocale>
     </I18nProvider>
-
   )
 }

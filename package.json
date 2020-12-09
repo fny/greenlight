@@ -6,7 +6,8 @@
   },
   "scripts": {
     "build-client": "cd client && npm install --production=false && npm run build",
-    "build-cordova": "npm run build-client && rsync -a --delete --remove-source-files client/build/ cordova/www",
+    "build-client-cordova": "cd client && npm install --production=false && npm run build-cordova",
+    "build-cordova": "npm run build-client-cordova && rsync -a --delete --remove-source-files client/build/ cordova/www",
     "run-cordova-ios": "npm run build-cordova && cd cordova && cordova run ios",
     "run-cordova-android": "npm run build-cordova && cd cordova && cordova run android",
     "run-cordova-browser": "npm run build-cordova && cd cordova && cordova run browser",

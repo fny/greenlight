@@ -30,20 +30,22 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
 
-    <% if (process.env.CORDOVA) { %>
-    <script type="text/javascript" src="/cordova.js"></script>
+    <% if (process.env.REACT_APP_CORDOVA) { %>
+    <script type="text/javascript" src="%PUBLIC_URL%/cordova.js"></script>
     <% } else { %>
-    <div id="ie-error" style="display: none;">
-      Internet Explorer is unsupported and will be deprecated in August. Please upgrade to a modern browser like Edge, Chrome, or Firefox.
+    <div id="ie-error" style="display: none">
+      Internet Explorer is unsupported and will be deprecated in August. Please upgrade to a modern browser like Edge,
+      Chrome, or Firefox.
       <br />
-      Internet Explorer no es compatible y quedará obsoleto en agosto. Actualice a un navegador moderno como Edge, Chrome o Firefox.
+      Internet Explorer no es compatible y quedará obsoleto en agosto. Actualice a un navegador moderno como Edge,
+      Chrome o Firefox.
     </div>
 
     <script type="text/javascript">
       // Show IE error if the user is using internet explorer
       if (window.navigator.userAgent.match(/MSIE|Trident/) !== null) {
-        document.getElementById('ie-error').style.display = 'block';
-        document.getElementById('root').style.display = 'none';
+        document.getElementById('ie-error').style.display = 'block'
+        document.getElementById('root').style.display = 'none'
       }
     </script>
     <% } %>

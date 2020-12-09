@@ -16,6 +16,7 @@ import './index.css'
 
 import { getCurrentUser } from './api'
 import logger from './logger'
+import { isCordova } from './util'
 
 // Init Framework7-React plugin
 Framework7.use(Framework7React)
@@ -41,11 +42,11 @@ function startApp() {
     })
 }
 
-if ((window as any).cordova) {
+if (isCordova()) {
   document.addEventListener('deviceready', startApp, false)
-  document.addEventListener('resume', () => {
-    (window as any).codePush.sync()
-  })
+  // document.addEventListener('resume', () => {
+  //   (window as any).codePush.sync()
+  // })
 } else {
   startApp()
 }

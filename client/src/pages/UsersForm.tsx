@@ -44,7 +44,7 @@ export default function UserForm({ user, f7router }: { user?: User; f7router: Ro
         .email(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
         .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
       mobileNumber: Yup.string()
-        .phone('US', undefined, t({ id: 'Form.error_invalid', message: 'Is invalid' }))
+        // .phone('US', undefined, t({ id: 'Form.error_invalid', message: 'Is invalid' }))
         .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
       password: Yup.string().min(8),
     }),
