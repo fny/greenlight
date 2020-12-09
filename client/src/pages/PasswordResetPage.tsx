@@ -1,5 +1,9 @@
-import React, { useEffect, useCallback, useState, useGlobal } from 'reactn'
-import { f7, Page, List, Navbar, Block, Button } from 'framework7-react'
+import React, {
+  useEffect, useCallback, useState, useGlobal,
+} from 'reactn'
+import {
+  f7, Page, List, Navbar, Block, Button,
+} from 'framework7-react'
 import { useFormik, FormikProvider } from 'formik'
 import * as Yup from 'yup'
 
@@ -7,9 +11,10 @@ import { defineMessage, t } from '@lingui/macro'
 import { F7Props, FunctionComponent } from 'src/types'
 import { checkPasswordResetToken, passwordReset } from 'src/api'
 import FormikInput from 'src/components/FormikInput'
-import SubmissionHandler from 'src/misc/SubmissionHandler'
-import logger from 'src/logger'
-import { paths } from 'src/routes'
+import SubmitHandler from 'src/helpers/SubmitHandler'
+import logger from 'src/helpers/logger'
+import { paths } from 'src/config/routes'
+import { assertNotUndefined } from 'src/helpers/util'
 
 interface PasswordInput {
   password: string
@@ -18,8 +23,9 @@ interface PasswordInput {
 
 const PasswordResetPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
   const [global] = useGlobal()
-  const submissionHandler = new SubmissionHandler(f7)
+  const submitHandler = new SubmitHandler(f7)
   const { token } = f7route.params
+  assertNotUndefined(token)
   const cantBeBlankMessage = t({ id: 'Form.error_blank', message: "Can't be blank" })
 
   const formik = useFormik<PasswordInput>({
@@ -46,7 +52,7 @@ const PasswordResetPage: FunctionComponent<F7Props> = ({ f7route, f7router }) =>
 
   const sendRequest = useCallback(
     (password) => {
-      submissionHandler.submit(async () => {
+      submitHandler.submit(async () => {
         try {
           await passwordReset(token, password)
           f7.dialog.alert(
