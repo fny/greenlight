@@ -1,12 +1,15 @@
 import { t, Trans } from '@lingui/macro'
-import licenses from 'src/data/licenses.json'
+import licenses from 'src/assets/data/licenses.json'
 import { Block, Navbar, Page } from 'framework7-react'
 import React from 'reactn'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 export default function OpenSourceLicensesPage() {
   return (
     <Page>
-      <Navbar title={t({ id: 'OpenSourceLicensesPage.title', message: 'Open Source Licenses' })} />
+      <Navbar title={t({ id: 'OpenSourceLicensesPage.title', message: 'Open Source Licenses' })}>
+        <NavbarHomeLink slot="left" />
+      </Navbar>
       <Block strong noHairlines>
         <p>
           <Trans id="OpenSourceLicensesPage.message">

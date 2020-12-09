@@ -28,5 +28,12 @@
     },
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
-  }
+  },
+  "eslint.lintTask.options": "--ext .ts --ext .tsx src",
+  "eslint.lintTask.enable": true,
+  "eslint.format.enable": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": [
+    "greenlight"
+  ],
 }

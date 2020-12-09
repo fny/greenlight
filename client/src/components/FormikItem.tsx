@@ -1,15 +1,15 @@
 import { useField } from 'formik'
 import { ListItem } from 'framework7-react'
 import React from 'react'
-import { assertNotUndefined } from 'src/util'
+import { assertNotUndefined } from 'src/helpers/util'
 
 export default function FormikItem(props: ListItem.Props) {
   assertNotUndefined(props.name)
   const [field] = useField(props.name)
   const newProps = {
-    ...props,
     onChange: field.onChange,
     name: props.name,
+    ...props,
   }
 
   if (props.checkbox) {

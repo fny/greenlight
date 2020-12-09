@@ -1,6 +1,6 @@
 import React from 'react'
 import { DateTime } from 'luxon'
-import giphySchedule from 'src/data/giphySchedule'
+import giphySchedule from 'src/assets/data/giphySchedule'
 
 export function giphyEmbedURL(id: string) {
   return `https://giphy.com/embed/${id}`
@@ -50,5 +50,9 @@ function randomGiphyId() {
 
 export function GiphyForToday({ mode }: { mode?: 'embed' | 'gif' | 'video' }) {
   const id = giphySchedule[DateTime.local().toLocaleString(DateTime.DATE_SHORT)] || randomGiphyId()
-  return <Giphy id={id} mode={mode} />
+  return (
+    <div style={{ maxHeight: '400px', overflow: 'scroll' }}>
+      <Giphy id={id} mode={mode} />
+    </div>
+  )
 }

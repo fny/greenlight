@@ -13,8 +13,7 @@ en:
       subject: ✨ Daily Greenlight Reminder
       title: Check In with Greenlight
       body: |
-        Just reminding you to send out symptom surveys
-        for %{people} through Greenlight.
+        Just reminding you to check in with Greenlight.
       action: Click Here to Sign In and Submit your Survey
       closing: Enjoy your day,
     password_reset:

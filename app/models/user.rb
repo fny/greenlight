@@ -120,6 +120,12 @@ class User < ApplicationRecord
     end
   end
 
+  # I18N: We should also check other errors across the app
+  def self.find_by_email_or_mobile!(value)
+    find_by_email_or_mobile(value) ||
+      raise(ActiveRecord::RecordNotFound, "User could not be found with email or phone #{value}")
+  end
+
   # @param [String] external_id
   # @returns [User]
   def self.find_by_external_id(external_id)
@@ -291,9 +297,15 @@ class User < ApplicationRecord
     parents.include?(parent_user)
   end
 
+  def greenlight_admin?
+    email&.end_with?('@greenlightready.com') || superuser?
+  end
 
   def superuser?
-    email == 'faraz.yashar@gmail.com'
+    %w[
+      faraz@greenlightready.com
+      kevin@greenlightready.com
+    ].include?(email)
   end
 
   # @param [User] user
@@ -334,6 +346,10 @@ class User < ApplicationRecord
 
   def submitted_for_today?
     !GreenlightStatus.submittable_for?(id)
+  end
+
+  def reset_welcome!
+    update_columns({completed_welcome_at: nil })
   end
 
   private
@@ -397,6 +413,7 @@ end
 #  deleted_at                         :datetime
 #  created_at                         :datetime         not null
 #  updated_at                         :datetime         not null
+#  daily_reminder_sent_at             :datetime
 #
 # Indexes
 #

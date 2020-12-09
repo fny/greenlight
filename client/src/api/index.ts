@@ -1,15 +1,15 @@
 import axios, { AxiosResponse } from 'axios'
 
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import {
   assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
-} from 'src/util'
+} from 'src/helpers/util'
 import Honeybadger from 'honeybadger-js'
 
-import logger from 'src/logger'
-import { transform } from 'lodash'
+import logger from 'src/helpers/logger'
 import { LocationAccount } from 'src/models/LocationAccount'
-import env from '../env'
+import { assignIn } from 'lodash'
+import env from '../config/env'
 import { transformRecordResponse, recordStore } from './stores'
 import { RecordResponse } from '../types'
 import {
@@ -28,6 +28,7 @@ export const v1 = axios.create({
 
 v1.interceptors.request.use((request) => {
   logger.dev(`[Request] ${request.method} ${request.url}`)
+  request.headers['X-GL-Locale'] = getGlobal().locale
   return request
 })
 
@@ -37,7 +38,7 @@ v1.interceptors.response.use(
     return response
   },
   (error) => {
-    logger.dev('[Response Error]', error, error.response, 'ji')
+    logger.dev('[Response Error]', error, error.response)
 
     if (error.response) {
       const response = error.response as AxiosResponse
@@ -114,6 +115,15 @@ export async function joinLocation(location: Location): Promise<LocationAccount>
   return entity
 }
 
+export async function updateLocationAccount(locationAccount: LocationAccount, updates: Partial<LocationAccount>): Promise<LocationAccount> {
+  const response = await v1.patch<RecordResponse<LocationAccount>>(`/location-accounts/${locationAccount.id}`,
+    transformForAPI(updates))
+
+  const entity = transformRecordResponse<LocationAccount>(response.data)
+  assertNotArray(entity)
+  return entity
+}
+
 //
 // Users
 //
@@ -183,6 +193,22 @@ export async function createSymptomSurvey(user: User, medicalEvents: Partial<Med
   assertNotUndefined(record.attributes)
 
   return record.attributes.status || null
+}
+
+//
+// Mailman
+//
+
+export function mailHelloAtGreenlight(from: string, subject: string, body: string): Promise<AxiosResponse<any>> {
+  return v1.post('mail/hello-at-greenlight', {
+    from, subject, body,
+  })
+}
+
+export function mailInvite(emailOrMobile: string): Promise<AxiosResponse<any>> {
+  return v1.post('mail/invite', {
+    emailOrMobile,
+  })
 }
 
 //

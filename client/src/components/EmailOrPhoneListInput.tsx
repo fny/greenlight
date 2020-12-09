@@ -1,7 +1,7 @@
 import React from 'reactn'
 import { ListInput } from 'framework7-react'
-import { validEmail, validPhone } from 'src/util'
-import { defineMessage } from '@lingui/macro'
+import { validEmail, validPhone } from 'src/helpers/util'
+import { t } from '@lingui/macro'
 
 export type EmailOrPhoneInputTypes = 'email' | 'phone' | 'blank' | 'unknown'
 
@@ -31,12 +31,10 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
     if (value === '') {
       this.setState({
         inputType: 'blank',
-        errorMessage: this.global.i18n._(
-          defineMessage({
+        errorMessage: t({
             id: 'EmailOrPhoneListInput.email_or_phone_missing',
             message: 'Please enter your email or mobile number.',
           }),
-        ),
       })
       this.setState({ errorMessageForce: true })
       return false
@@ -52,12 +50,10 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
     if (!validEmail(value) && !validPhone(value)) {
       this.setState({
         inputType: 'unknown',
-        errorMessage: this.global.i18n._(
-          defineMessage({
+        errorMessage: t({
             id: 'EmailOrPhoneListInput.email_or_phone_invalid',
             message: 'Invalid email or mobile number.',
           }),
-        ),
       })
       this.setState({ errorMessageForce: true })
       return false
@@ -90,9 +86,7 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
         errorMessage={this.state.errorMessage}
         errorMessageForce={this.state.errorMessageForce}
         placeholder={
-            this.global.i18n._(
-              defineMessage({ id: 'EmailOrPhoneListInput.email_or_phone_placeholder', message: 'Email or mobile phone number.' }),
-            )
+            t({ id: 'EmailOrPhoneListInput.email_or_phone_placeholder', message: 'Email or mobile phone number.' })
           }
         onInput={this.props.onInput}
       />

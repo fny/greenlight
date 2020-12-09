@@ -12,7 +12,6 @@ class SendGridEmail < ApplicationCommand
   validates :to, presence: true
   validates :subject, presence: true
 
-
   def pony_payload
     return @pony_payload if defined?(@pony_payload)
 

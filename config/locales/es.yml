@@ -12,8 +12,7 @@ es:
       subject: ✨ Recordatorio Diario para Greenlight
       title: Enviar Encuesta a Greenlight
       body: |
-        Recordándole que envíe encuestas de síntomas
-        para %{people} por Greenlight para WG Pearson.
+        Recordándole que envíe encuestas de síntomas por Greenlight.
       action: Haga Clic Aquí para Iniciar Sesión y Enviar su Encuesta
       closing: Disfruta tu día,
     status_alert:
@@ -22,8 +21,10 @@ es:
       title: "Un estado %{status_color} enviado"
       body: "%{user} presentó un estado %{status_color}."
   texts:
-    magic_sign_in: "Greenlight Iniciar Sesión con Magia: %{link}"
-    reminder: "Greenlight le recuerda que envíe sus encuestas de síntomas para WG Pearson!"
+    # !!! WARNING !!! Do not use unicode characters! Otherwise, your
+    # texts will be limited to 70 characters.
+    magic_sign_in: "Greenlight Iniciar Sesion con Magia: %{link}"
+    reminder: "Greenlight le recuerda que envie su encuesta: %{link}"
     password_reset: "Greenlight Restablecimiento de contraseña: %{link}"
     status_alert: "Greenlight: %{user} presentó un estado %{status_color}."
   greenlight_status:

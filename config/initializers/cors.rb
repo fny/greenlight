@@ -5,7 +5,6 @@
 
 # Read more: https://github.com/cyu/rack-cors
 
-GREENLIGHT_SUBDOMAIN_PATTERN = %r{\A[a-z-]+\.greenlightready.com\z}.freeze
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
@@ -18,7 +17,9 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
               'localhost:8000',
               'app-dev.greenlightready.com',
               'app-dev.greenlightready.com:9991',
-              GREENLIGHT_SUBDOMAIN_PATTERN
+              'app.greenlightready.net',
+              'app.greenlightready.net:9991',
+              %r{\A[a-z-]+\.greenlightready.net\z}
     end
 
     resource '*',

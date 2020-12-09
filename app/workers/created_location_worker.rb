@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+
+# rubocop:disable Lint/UselessAssignment, Security/Eval
 class CreatedLocationWorker < ApplicationWorker
   def perform(user_id, location_id)
     user = User.find(user_id)
@@ -6,7 +8,7 @@ class CreatedLocationWorker < ApplicationWorker
     url = "https://app.greenlightready.com/l/#{location.permalink}/code/#{location.registration_code}"
     SendGridEmail.new(
       to: user.name_with_email,
-      subject: "Greenlight: Your Location is created!",
+      subject: 'Greenlight: Your Location is created!',
       html: eval(html_template)
     ).run
   end
@@ -31,5 +33,5 @@ class CreatedLocationWorker < ApplicationWorker
       </p>
     HTML
   end
-
 end
+# rubocop:enable Lint/UselessAssignment, Security/Eval

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import logger from 'src/logger'
+import logger from 'src/helpers/logger'
 
 interface WhenProps {
   children: any

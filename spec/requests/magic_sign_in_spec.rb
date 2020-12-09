@@ -40,10 +40,10 @@ RSpec.describe "/v1/magic-sign-in", type: :request do
 
       last_delivery = PlivoSMS.deliveries.last
       expect(last_delivery[:message]).to include('Greenlight Magic Sign In')
-    end
+  end
 
     # the length of the usual message exceeds the SMS cut-off limit (86 > 70)
-    xit "sends a magic sign in text in the users language" do
+    it "sends a magic sign in text in the users language (es)" do
       user.update(locale: 'es')
       post_json('/v1/magic-sign-in', body: {
         emailOrMobile: user.mobile_number,
@@ -52,7 +52,7 @@ RSpec.describe "/v1/magic-sign-in", type: :request do
       expect_work(MagicSignInWorker)
       last_delivery = PlivoSMS.deliveries.last
       expect_success_response
-      expect(last_delivery[:message]).to include('Greenlight Iniciar Sesión con Magia')
+      expect(last_delivery[:message]).to include('Greenlight Iniciar Sesion con Magia')
     end
   end
 end

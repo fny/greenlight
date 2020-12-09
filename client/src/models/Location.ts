@@ -1,28 +1,88 @@
 import { DateTime } from 'luxon'
+import { getGlobal } from 'reactn'
+import { GLLocales } from 'src/i18n'
 import {
   Model, attribute as attr, initialize, STRING, BOOLEAN, NUMBER, DATETIME,
-} from './Model'
+} from 'src/lib/Model'
 
 export enum LocationCategories {
-  SCHOOOL = 'school',
-  RESTAUARNT = 'restaurant',
-  ENTERTAINMENT = 'enterainment',
-  NONPROFIT = 'nonprofit',
-  RETAIL = 'retail',
-  SERVICES = 'services',
   BUSINESS = 'business',
-  OTHER = 'other',
+  SCHOOL = 'school',
+  CLINIC = 'clinic',
+  COMMUNITY = 'community',
+  CONSTRUCTION_SITE = 'construction_site',
+  GROUP = 'group',
+  HOSPITAL = 'hospital',
+  HOTEL = 'hotel',
+  NONPROFIT = 'nonprofit',
+  ORGANIZATION = 'organization',
+  PLACE_OF_WORSHIP = 'place_of_worship',
+  RESTAUARNT = 'restaurant',
+  SHELTER = 'shelter',
+  STORE = 'store',
+  THEATER = 'theater',
+  UNIVERSITY = 'university',
+  LOCATION = 'location',
+}
+
+// HACK: We need a proper way to organize translations like this
+const LC = {
+  [LocationCategories.BUSINESS]: ['business', 'negocio'],
+  [LocationCategories.SCHOOL]: ['school', 'escuela'],
+  [LocationCategories.CLINIC]: ['clinic', 'clínica'],
+  [LocationCategories.COMMUNITY]: ['community', 'communidad'],
+  [LocationCategories.CONSTRUCTION_SITE]: ['construction site', 'sitio construcción'],
+  [LocationCategories.GROUP]: ['group', 'grupo'],
+  [LocationCategories.HOSPITAL]: ['hospital', 'hospital'],
+  [LocationCategories.HOTEL]: ['hotel', 'hotel'],
+  [LocationCategories.PLACE_OF_WORSHIP]: ['place of worship', 'casa de adoración'],
+  [LocationCategories.NONPROFIT]: ['nonprofit', 'nonprofit'],
+  [LocationCategories.ORGANIZATION]: ['organization', 'organización'],
+  [LocationCategories.RESTAUARNT]: ['restaurant', 'restaurante'],
+  [LocationCategories.SHELTER]: ['shelter', 'refugio'],
+  [LocationCategories.STORE]: ['store', 'tienda'],
+  [LocationCategories.THEATER]: ['theater', 'teatro'],
+  [LocationCategories.UNIVERSITY]: ['university', 'universidad'],
+  [LocationCategories.LOCATION]: ['location', 'ubicación'],
+}
+
+// HACK: We need a proper way to organize translations like this
+export function lcTrans(category: LocationCategories): string {
+  const { locale } = getGlobal()
+  return LC[category][locale === 'en' ? 0 : 1]
+}
+
+export function lcPeople(category: LocationCategories): string {
+  const { locale } = getGlobal()
+  if ([LocationCategories.SCHOOL, LocationCategories.UNIVERSITY].includes(category)) {
+    return locale === 'en' ? 'students and staff' : 'estudiantes y empleados'
+  }
+
+  if ([LocationCategories.COMMUNITY, LocationCategories.GROUP, LocationCategories.ORGANIZATION, LocationCategories.SHELTER, LocationCategories.PLACE_OF_WORSHIP].includes(category)) {
+    return locale === 'en' ? 'people' : 'personas'
+  }
+
+  return locale === 'en' ? 'employees' : 'empleados'
 }
 
 export const LOCATION_CATEGORIES: LocationCategories[] = [
-  LocationCategories.SCHOOOL,
-  LocationCategories.RESTAUARNT,
-  LocationCategories.ENTERTAINMENT,
-  LocationCategories.NONPROFIT,
-  LocationCategories.RETAIL,
-  LocationCategories.SERVICES,
   LocationCategories.BUSINESS,
-  LocationCategories.OTHER,
+  LocationCategories.SCHOOL,
+  LocationCategories.CLINIC,
+  LocationCategories.COMMUNITY,
+  LocationCategories.CONSTRUCTION_SITE,
+  LocationCategories.GROUP,
+  LocationCategories.HOSPITAL,
+  LocationCategories.HOTEL,
+  LocationCategories.PLACE_OF_WORSHIP,
+  LocationCategories.NONPROFIT,
+  LocationCategories.ORGANIZATION,
+  LocationCategories.RESTAUARNT,
+  LocationCategories.SHELTER,
+  LocationCategories.STORE,
+  LocationCategories.THEATER,
+  LocationCategories.UNIVERSITY,
+  LocationCategories.LOCATION,
 ]
 
 export class Location extends Model {
@@ -89,4 +149,15 @@ export class Location extends Model {
 
   @attr({ type: STRING })
   registrationCode: string | null = ''
+
+  @attr({ type: STRING })
+  parentRegistrationCode: string | null = ''
+
+  registrationWithCodeURL(): string {
+    return `glit.me/go/${this.permalink}/code/${this.registrationCode}`
+  }
+
+  parentRegistrationWithCodeURL(): string {
+    return `glit.me/go/${this.permalink}/code/${this.parentRegistrationCode}`
+  }
 }

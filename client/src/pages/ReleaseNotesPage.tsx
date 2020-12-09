@@ -1,10 +1,11 @@
 import React from 'react'
 import { Navbar, Page, Block } from 'framework7-react'
-import releases, { ReleaseData } from 'src/data/releases'
-import { defineMessage, Trans } from '@lingui/macro'
+import releases, { ReleaseData } from 'src/assets/data/releases'
+import { t, Trans } from '@lingui/macro'
 import { getGlobal } from 'reactn'
 import { DateTime } from 'luxon'
 import { GLLocales } from 'src/i18n'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 class Release {
   releaseData: ReleaseData
@@ -26,7 +27,7 @@ class Release {
   }
 
   title() {
-    const version = getGlobal().i18n._(defineMessage({ id: 'Common.version', message: 'Version' }))
+    const version = t({ id: 'Common.version', message: 'Version' })
     return `${version} ${this.releaseData.version}`
   }
 
@@ -67,9 +68,11 @@ export default function ReleaseNotesPage() {
   return (
     <Page className="ReleaseNotesPage" noToolbar>
       <Navbar
-        title={getGlobal().i18n._(defineMessage({ id: 'ReleaseNotesPage.title', message: 'Greenlight Release Notes' }))}
+        title={t({ id: 'ReleaseNotesPage.title', message: 'Greenlight Release Notes' })}
         sliding
-      />
+      >
+        <NavbarHomeLink slot="left" />
+      </Navbar>
       <Block>
         {releases
           .map((releaseData: ReleaseData) => new Release(releaseData))
