@@ -52,7 +52,7 @@ RSpec.describe "/v1/magic-sign-in", type: :request do
       expect_work(MagicSignInWorker)
       last_delivery = PlivoSMS.deliveries.last
       expect_success_response
-      expect(last_delivery[:message]).to include('Greenlight Iniciar Sesion con Magia')
+      expect(last_delivery[:message]).to include('Greenlight iniciar sesion con magia')
     end
   end
 end
