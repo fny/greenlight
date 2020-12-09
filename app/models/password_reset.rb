@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 class PasswordReset < ApplicationRecord
-  extend Memoist
   DEFAULT_VALIDITY_PERIOD = 1.hour
+
+  has_secure_token
 
   belongs_to :user
 
   def self.generate_token!(user)
     password_reset = find_or_initialize_by(user: user)
-    password_reset.token = generate_token
+    password_reset.regenerate_token
     password_reset.save!
   end
 
@@ -25,12 +26,6 @@ class PasswordReset < ApplicationRecord
     return false if token.nil?
 
     (updated_at + DEFAULT_VALIDITY_PERIOD) > Time.now.utc
-  end
-
-  private
-
-  def self.generate_token
-    SecureRandom.hex(10)
   end
 end
 

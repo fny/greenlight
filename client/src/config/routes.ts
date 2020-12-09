@@ -1,52 +1,50 @@
-import NotFoundPage from 'src/pages/util/NotFoundPage'
-import DashboardPage from 'src/pages/DashboardPage'
-
-import SplashPage from 'src/pages/SplashPage'
-import SignInPage from 'src/pages/sessions/SignInPage'
-import MagicSignInPage from 'src/pages/sessions/MagicSignInPage'
-
-import WelcomePage from 'src/pages/welcome/WelcomePage'
-import WelcomeChildPage from 'src/pages/welcome/WelcomeChildPage'
-import WelcomeReviewPage from 'src/pages/welcome/WelcomeReviewPage'
-import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage'
-
-import SurveyNewPage from 'src/pages/surveys/SurveyNewPage'
-import SurveyThankYouPage from 'src/pages/surveys/SurveyThankYouPage'
-
+import { Dict } from 'src/types'
 import { getGlobal } from 'reactn'
-import { User } from 'src/models'
-import { Router } from 'framework7/modules/router/router'
-import MagicSignInAuthPage from 'src/pages/sessions/MagicSignInAuthPage'
-import { resolvePath } from 'src/helpers/util'
-import GiphySchedulePage from 'src/pages/util/GiphySchedulePage'
-import UserGreenlightPassPage from 'src/pages/users/UserGreenlightPassPage'
-import DebugPage from 'src/pages/util/DebugPage'
-import AdminUsersPage from 'src/pages/admin/AdminUsersPage'
-import WelcomeSurveyPage from 'src/pages/welcome/WelcomeSurveyPage'
 import { isSignedIn } from 'src/initializers/providers'
-import ReleaseNotesPage from 'src/pages/ReleaseNotesPage'
-import SettingsPage from 'src/pages/users/SettingsPage'
-import CovidCountyMapPage from 'src/pages/resources/CovidCountyMapPage'
+import { resolvePath } from 'src/helpers/util'
+import { Router } from 'framework7/modules/router/router'
+import { User } from 'src/models'
 import AboutPage from 'src/pages/AboutPage'
-import UserEditPage from 'src/pages/users/UserEditPage'
+import AdminUserPermissionsPage from 'src/pages/admin/AdminUserPermissionsPage'
+import AdminUsersPage from 'src/pages/admin/AdminUsersPage'
+import CHWRequestPage from 'src/pages/resources/CHWRequestPage'
+import CovidCountyMapPage from 'src/pages/resources/CovidCountyMapPage'
+import DashboardPage from 'src/pages/DashboardPage'
+import DebugPage from 'src/pages/util/DebugPage'
 import DukeScheduleTestPage from 'src/pages/resources/DukeScheduleTestPage'
-import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
-import NotificationsPage from 'src/pages/users/NotificationsPage'
+import GiphySchedulePage from 'src/pages/util/GiphySchedulePage'
 import LocationPage from 'src/pages/locations/LocationPage'
-import NCTestLocationsPage from 'src/pages/resources/NCTestLocationsPage'
+import LocationsNewPage from 'src/pages/registration/RegisterBusinessPage'
+import MagicSignInAuthPage from 'src/pages/sessions/MagicSignInAuthPage'
+import MagicSignInPage from 'src/pages/sessions/MagicSignInPage'
 import MobileVerificationPage from 'src/pages/MobileVerificationPage'
 import NCStatewideStatsPage from 'src/pages/resources/NCStatewideStatsPage'
-import LocationsNewPage from 'src/pages/registration/RegisterBusinessPage'
-import UsersNewPage from 'src/pages/registration/RegisterUserPage'
-import CHWRequestPage from 'src/pages/resources/CHWRequestPage'
-import AdminUserPermissionsPage from 'src/pages/admin/AdminUserPermissionsPage'
-import RegisterLocationWelcomePage from 'src/pages/registration/RegisterLocationWelcomePage'
-import RegisterLocationOwnerPage from 'src/pages/registration/RegisterLocationOwnerPage'
-import RegisterLocationDetailsPage from 'src/pages/registration/RegisterLocationDetailsPage'
+import NCTestLocationsPage from 'src/pages/resources/NCTestLocationsPage'
+import NotFoundPage from 'src/pages/util/NotFoundPage'
+import NotificationsPage from 'src/pages/users/NotificationsPage'
+import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
+import PasswordResetPage from 'src/pages/PasswordResetPage'
+import PasswordResetRequestPage from 'src/pages/PasswordResetRequestPage'
 import RegisterLocationConfirmationPage from 'src/pages/registration/RegisterLocationConfirmationPage'
+import RegisterLocationDetailsPage from 'src/pages/registration/RegisterLocationDetailsPage'
 import RegisterLocationMessagePage from 'src/pages/registration/RegisterLocationMessagePage'
+import RegisterLocationOwnerPage from 'src/pages/registration/RegisterLocationOwnerPage'
+import RegisterLocationWelcomePage from 'src/pages/registration/RegisterLocationWelcomePage'
+import ReleaseNotesPage from 'src/pages/ReleaseNotesPage'
+import SettingsPage from 'src/pages/users/SettingsPage'
+import SignInPage from 'src/pages/sessions/SignInPage'
+import SplashPage from 'src/pages/SplashPage'
+import SurveyNewPage from 'src/pages/surveys/SurveyNewPage'
+import SurveyThankYouPage from 'src/pages/surveys/SurveyThankYouPage'
+import UserEditPage from 'src/pages/users/UserEditPage'
+import UserGreenlightPassPage from 'src/pages/users/UserGreenlightPassPage'
 import UserLocationPage from 'src/pages/user-locations/UserLocationPage'
-import CohortsPage from 'src/pages/CohortsPage'
+import UsersNewPage from 'src/pages/registration/RegisterUserPage'
+import WelcomeChildPage from 'src/pages/welcome/WelcomeChildPage'
+import WelcomePage from 'src/pages/welcome/WelcomePage'
+import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage'
+import WelcomeReviewPage from 'src/pages/welcome/WelcomeReviewPage'
+import WelcomeSurveyPage from 'src/pages/welcome/WelcomeSurveyPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -168,6 +166,14 @@ const sessionRoutes = {
     component: SignInPage,
     beforeEnter: beforeEnter.redirectHomeIfSignedIn,
   },
+  passwordResetRequestPath: {
+    path: '/forgot-password',
+    component: PasswordResetRequestPage,
+  },
+  passwordResetPath: {
+    path: '/pwdrst/:token',
+    component: PasswordResetPage,
+  },
   magicSignInPath: {
     path: '/magic-sign-in',
     component: MagicSignInPage,
@@ -241,7 +247,6 @@ const routeMap = {
     path: '/splash',
     component: SplashPage,
   },
-
   userSurveysNewPath: {
     path: '/users/:userId/surveys/new',
     component: SurveyNewPage,

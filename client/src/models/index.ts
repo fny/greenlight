@@ -9,5 +9,5 @@ import { UserSettings } from './UserSettings'
 ModelRegistry.register(User, UserSettings, GreenlightStatus, Location, LocationAccount, MedicalEvent)
 
 export {
-  Model, ModelRegistry, User, UserSettings, GreenlightStatus, Location, MedicalEvent,
+  Model, ModelRegistry, User, UserSettings, GreenlightStatus, Location, LocationAccount, MedicalEvent,
 }

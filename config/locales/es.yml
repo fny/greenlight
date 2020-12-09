@@ -8,6 +8,14 @@ es:
         Solicitaste un enlace mágico para iniciar sesión y aquí está.
         Este enlace caduca en 1 hora y solo se puede usar una vez.
       action: Clic Aquí para Ingresar
+    password_reset:
+      subject: ✨ Restablecimiento de contraseña de Greenlight
+      title: Utilice este enlace para restablecer la contraseña de su cuenta Greenlight
+      body: |
+        Solicitó restablecer su contraseña y aquí está el enlace!
+        Tenga en cuenta que este enlace caduca en 1 hora y solo se puede usarlo
+        una vez.
+      action: Click Here to Reset Password
     reminder:
       subject: ✨ Recordatorio Diario para Greenlight
       title: Enviar Encuesta a Greenlight
@@ -18,5 +26,6 @@ es:
   texts:
     # !!! WARNING !!! Do not use unicode characters! Otherwise, your
     # texts will be limited to 70 characters.
-    magic_sign_in: "Greenlight Iniciar Sesion con Magia: %{link}"
+    magic_sign_in: "Greenlight iniciar sesion con magia: %{link}"
+    password_reset: "Greenlight restablecimiento de contrasena: %{link}"
     reminder: "Greenlight le recuerda que envie su encuesta: %{link}"
