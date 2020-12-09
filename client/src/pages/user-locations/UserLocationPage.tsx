@@ -9,9 +9,10 @@ import { Trans, t } from '@lingui/macro'
 import { F7Props } from 'src/types'
 import { assertNotNull, assertNotUndefined, formatPhone } from 'src/helpers/util'
 
+import { reloadCurrentUser } from 'src/initializers/providers'
 import { Location, User } from 'src/models'
 import {
-  getLocation, getUser, store, updateLocationAccount,
+  getLocation, getUser, store, updateLocationAccount, deleteLocationAccount,
 } from 'src/api'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { LocationAccount, PermissionLevels } from 'src/models/LocationAccount'
@@ -59,7 +60,34 @@ export default function UserLocationPage(props: F7Props) {
   assertNotUndefined(state.user)
   const la = state.locationAccount
   const l = state.location
-  const handler = new SubmitHandler(f7)
+
+  const leaveHandler = new SubmitHandler(f7, {
+    onSuccess: () => {
+      props.f7router.navigate(paths.settingsPath)
+    },
+    onSubmit: async () => {
+      await deleteLocationAccount(la.id)
+      await reloadCurrentUser()
+    },
+    errorTitle: t({ id: 'Common.failed', message: 'Action Failed' }),
+    submittingMessage: t({ id: 'Location.leaving', message: 'Processing...' }),
+    successMessage: t({ id: 'Location.leave_success', message: 'You just left the location.' }),
+  })
+
+  const handleLeaveAttempt = () => {
+    f7.dialog.prompt(
+      t({
+        id: 'Location.leave_caution',
+        message: "This will disconnect you from this location permanently, \
+        and they will be notified you are leaving. No one there will have \
+        access to your data any longer. \
+        If you are sure you want to leave type, 'leave'.",
+      }),
+      (input: string) => {
+        if (input.toLowerCase() === 'leave') leaveHandler.submit()
+      }
+    )
+  }
 
   return (
     <Page>
@@ -110,7 +138,13 @@ export default function UserLocationPage(props: F7Props) {
             </select>
           </ListItem>
           )}
-
+          <p>
+            <Button fill onClick={handleLeaveAttempt}>
+              <Trans id="Location.leave">
+                Leave
+              </Trans>
+            </Button>
+          </p>
         </List>
       </Block>
     </Page>

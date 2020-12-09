@@ -124,6 +124,10 @@ export async function updateLocationAccount(locationAccount: LocationAccount, up
   return entity
 }
 
+export async function deleteLocationAccount(id: string) {
+  await v1.delete(`/location-accounts/${id}`)
+}
+
 //
 // Users
 //

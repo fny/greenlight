@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+import { get } from 'lodash'
 import { isPresent, joinWords } from 'src/helpers/util'
 import { Location, MedicalEvent } from 'src/models'
 import {
@@ -107,6 +108,11 @@ export class User extends Model {
   /** The users first name. */
   fullName(): string {
     return `${this.firstName} ${this.lastName}`
+  }
+
+  /** Location account for a location */
+  laOfLocation(locationId: string): LocationAccount | undefined {
+    return this.locationAccounts.find((la) => get(la, 'location.id') === locationId)
   }
 
   /** Does this user have any children? */
