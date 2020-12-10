@@ -18,13 +18,13 @@ class LocationImport
   end
 
   def import_roster!
-    @rimport = RosterImport.new(@location, @roster_path)
+    @rimport = OldRosterImport.new(@location, @roster_path)
     @rimport.process_rows!
     true
   end
 
   def import_staff!
-    @simport = StaffImport.new(@location, @staff_path)
+    @simport = OldStaffImport.new(@location, @staff_path)
     @simport.process_rows!
     true
   end

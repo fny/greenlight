@@ -49,6 +49,9 @@ Metrics/ModuleLength:
 Metrics/ParameterLists:
   Enabled: false
 
+Metrics/PerceivedComplexity:
+  Enabled: false
+
 Rails/DynamicFindBy:
   Enabled: false
 
@@ -72,6 +75,9 @@ RSpec/ImplicitExpect:
   Enabled: false
 
 Style/Documentation:
+  Enabled: false
+
+Style/IfUnlessModifier:
   Enabled: false
 
 # Frozen String Literal

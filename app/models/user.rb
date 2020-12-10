@@ -51,7 +51,8 @@ class User < ApplicationRecord
   has_many :medical_events, inverse_of: :user
   has_many :location_accounts, inverse_of: :user
   has_many :locations, through: :location_accounts
-  has_many :cohorts, through: :cohort_user
+  has_many :cohort_users
+  has_many :cohorts, through: :cohort_users
 
   has_one :password_reset, inverse_of: :user
   has_one :settings, class_name: 'UserSettings', inverse_of: :user

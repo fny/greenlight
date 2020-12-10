@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class StaffImport
+class OldStaffImport
   HEADERS = [
     UID = "Unique Id*",
     FIRST = "First Name (or Alias)*",
