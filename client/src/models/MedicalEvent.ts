@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import {
   Model, attribute as attr, initialize, DATETIME, STRING,
-} from './Model'
+} from 'src/lib/Model'
 
 export enum MedicalEventTypes {
   NONE = 'none',

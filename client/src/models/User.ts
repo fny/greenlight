@@ -1,13 +1,17 @@
 import { DateTime } from 'luxon'
-import { isPresent, joinWords } from 'src/util'
+import { isPresent, joinWords } from 'src/helpers/util'
 import { Location, MedicalEvent } from 'src/models'
 import {
   Model, attribute as attr, initialize, STRING, DATETIME, DATE, BOOLEAN, hasMany, hasOne,
-} from './Model'
-import { CUTOFF_TIME, GreenlightStatus, GreenlightStatusTypes } from './GreenlightStatus'
-import { LocationAccount, PermissionLevels } from './LocationAccount'
+} from 'src/lib/Model'
+import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
+import { LocationAccount } from './LocationAccount'
 import { UserSettings } from './UserSettings'
 
+/**
+ * Represent a user in the application, be it an employee, owner, parent,
+ * teacher, student or administrator.
+ */
 export class User extends Model {
   static modelName = 'user'
 
@@ -115,9 +119,20 @@ export class User extends Model {
     return this.hasChildren()
   }
 
-  // HACK
-  isAdmin(): boolean {
-    return this.locationAccounts[0]?.permissionLevel === PermissionLevels.ADMIN
+  isAdminAt(location: Location): boolean {
+    const la = this.accountFor(location)
+    if (!la) return false
+    return la.isAdmin()
+  }
+
+  isOwnerAt(location: Location): boolean {
+    const la = this.accountFor(location)
+    if (!la) return false
+    return la.isOwner()
+  }
+
+  accountFor(location: Location): LocationAccount | null {
+    return this.locationAccounts.find((la) => (la.locationId || '').toString() === location.id.toString()) || null
   }
 
   /** Has the user completed the welcome sequence? */
@@ -257,7 +272,7 @@ export class User extends Model {
 
   usersExpectedToSubmit() {
     const users: User[] = []
-    return [this]
+
     if (this.hasLocationThatRequiresSurvey()) {
       users.push(this)
     }
@@ -272,6 +287,16 @@ export class User extends Model {
 
   isAdminSomewhere(): boolean {
     return this.adminLocations().length > 0
+  }
+
+  isOwnerSomewhere(): boolean {
+    return this.ownerLocations().length > 0
+  }
+
+  ownerLocations(): Location[] {
+    return this.locationAccounts
+      .filter((la) => la.isOwner() && la.location !== null)
+      .map((la) => la.location) as Location[]
   }
 
   adminLocations(): Location[] {

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 require 'swagger_helper'
 
-
-
 RSpec.describe "Current User Endpoint", type: :request do
   let(:user) { Fabricate(:user) }
 

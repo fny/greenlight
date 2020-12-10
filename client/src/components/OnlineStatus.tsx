@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import React, { useEffect, useGlobal } from 'reactn'
 import { v1 } from 'src/api'
-import { ping, setIntervalSafely } from 'src/util'
+import { ping, setIntervalSafely } from 'src/helpers/util'
 import './OnlineStatus.css'
 
 const ONLINE_TEST_URL = 'http://neverssl.com/'

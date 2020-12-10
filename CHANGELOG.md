@@ -2,6 +2,20 @@
 
 This is a first attempt to [keep a changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.3.1] - 2020-11-25
+
+ - Fix Spanish
+ - Fix iframe wrapping and sizing
+ - Fix bug where user's children were fixed
+ - Allow admins to create other admins
+ - Fix typos and rendering issues
+ - Add home link to navigation
+
+## [1.2.0] - 2020-11-20
+
+ - Add buggy business registration
+ - Remove Spanish temporarily
+
 ## [1.1.0] - 2020-11-6
 
  - Fix submited_for_today? bug that was plaguing Sidekiq

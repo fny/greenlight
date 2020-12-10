@@ -1,12 +1,12 @@
 import React from 'react'
-import releaseData from 'src/data/releases'
-import Version from 'src/misc/Version'
+import releaseData from 'src/assets/data/releases'
+import Version from 'src/helpers/Version'
 import { Icon, Link } from 'framework7-react'
 import './ReleaseCard.css'
 import { useReducer } from 'reactn'
 import { Trans } from '@lingui/macro'
-import { paths } from 'src/routes'
-import CookieJar, { Cookie } from 'src/misc/CookieJar'
+import { paths } from 'src/config/routes'
+import CookieJar, { Cookie } from 'src/helpers/CookieJar'
 
 function setLastVersionCookie() {
   CookieJar.set(Cookie.LAST_VERSION, releaseData[0].version)

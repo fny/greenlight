@@ -1,0 +1,44 @@
+[
+  {
+    "name": "W.G. Pearson Center",
+    "permalink": "wg-pearson",
+    "email": "april.warren@studentudurham.org",
+    "phone_number": "(919) 808-5791",
+    "zip_code": "27701",
+    "website": "https://studentudurham.org/wgpc/",
+    "category": "school"
+  },
+  {
+    "name": "Voyager Academy High School",
+    "permalink": "voyager-high",
+    "email": "april.warren@studentudurham.org",
+    "phone_number": "919-433-3301",
+    "zip_code": "27704",
+    "website": "https://www.voyageracademy.net/",
+    "category": "school"
+  },
+  {
+    "name": "Voyager Academy Middle School",
+    "permalink": "voyager-middle",
+    "phone_number": "919-433-3301",
+    "zip_code": "27704",
+    "website": "https://www.voyageracademy.net/",
+    "category": "school"
+  },
+  {
+    "name": "Voyager Academy Elementary School",
+    "permalink": "voyager-elementary",
+    "phone_number": "919-433-3301",
+    "zip_code": "27704",
+    "website": "https://www.voyageracademy.net/",
+    "category": "school"
+  },
+  {
+    "name": "Voyager Academy Admin",
+    "permalink": "voyager-admin",
+    "phone_number": "919-433-3301",
+    "zip_code": "27704",
+    "website": "https://www.voyageracademy.net/",
+    "category": "school"
+  }
+]

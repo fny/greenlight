@@ -4,12 +4,15 @@ import {
 } from 'framework7-react'
 
 import { t } from '@lingui/macro'
-import { paths } from 'src/routes'
-import releaseData from 'src/data/releases'
+import { paths } from 'src/config/routes'
+import releaseData from 'src/assets/data/releases'
+import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
 const SettingsPage = () => (
   <Page>
-    <Navbar title={t({ id: 'AboutPage.title', message: 'About' })} />
+    <Navbar title={t({ id: 'AboutPage.title', message: 'About' })}>
+      <NavbarHomeLink slot="left" />
+    </Navbar>
     <List noHairlines>
       <ListItem
         title={t({ id: 'AboutPage.greenlight_version', message: 'Greenlight Version' })}
@@ -31,7 +34,7 @@ const SettingsPage = () => (
         title={t({ id: 'AboutPage.open_source_licenses', message: 'Open Source Licenses' })}
       />
       <ListItem
-        link="https://greenlighted.org/privacy"
+        link="https://docs.google.com/document/d/1kC7hXtFM2CftY7qegAEgStgw0auzM0t1BdKCoiS6uLM/?usp=sharing"
         title={t({ id: 'AboutPage.privacy_policy', message: 'Privacy Policy' })}
         external
       />

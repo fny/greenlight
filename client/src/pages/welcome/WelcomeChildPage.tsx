@@ -4,15 +4,15 @@ import {
 } from 'framework7-react'
 
 import { updateUser } from 'src/api'
-import { dynamicPaths, paths } from 'src/routes'
-import { deleteBlanks } from 'src/util'
+import { dynamicPaths, paths } from 'src/config/routes'
+import { deleteBlanks } from 'src/helpers/util'
 import { ReactNComponent } from 'reactn/build/components'
-import { NoCurrentUserError } from 'src/errors'
+import { NoCurrentUserError } from 'src/helpers/errors'
 
 import {
-  t, defineMessage, Trans, plural,
+  t, Trans, plural,
 } from '@lingui/macro'
-import logger from 'src/logger'
+import logger from 'src/helpers/logger'
 import { User } from '../../models/User'
 import { Case, When } from '../../components/Case'
 
@@ -87,9 +87,7 @@ export default class extends ReactNComponent<any, State> {
     })
 
     this.$f7.dialog.preloader(
-      this.global.i18n._(
-        defineMessage({ id: 'WelcomeChildPage.submitting_changes', message: 'Submitting changes...' }),
-      ),
+      t({ id: 'WelcomeChildPage.submitting_changes', message: 'Submitting changes...' }),
     )
     try {
       const user = await updateUser(this.child(), attrs as Partial<User>)
@@ -105,8 +103,8 @@ export default class extends ReactNComponent<any, State> {
       this.$f7.dialog.close()
       logger.error(error)
       this.$f7.dialog.alert(
-        this.global.i18n._(defineMessage({ id: 'WelcomeChildPage.somethings_wrong', message: 'Something went wrong' })),
-        this.global.i18n._(defineMessage({ id: 'WelcomeChildPage.update_failed', message: 'Update Failed' })),
+        t({ id: 'WelcomeChildPage.somethings_wrong', message: 'Something went wrong' }),
+        t({ id: 'WelcomeChildPage.update_failed', message: 'Update Failed' }),
       )
     }
   }
@@ -118,9 +116,7 @@ export default class extends ReactNComponent<any, State> {
     return (
       <Page>
         <Navbar
-          title={this.global.i18n._(
-            defineMessage({ id: 'WelcomeChildPage.review_child_title', message: t`Review ${child.firstName}'s Info` }),
-          )}
+          title={t({ id: 'WelcomeChildPage.review_child_title', message: t`Review ${child.firstName}'s Info` })}
         />
 
         <Case test>
@@ -128,7 +124,7 @@ export default class extends ReactNComponent<any, State> {
           <When value={user.sortedChildren()[0] === child}>
             <Block>
               <Trans id="WelcomeChildPage.review_children">
-                We've found {plural(user.children.length, { one: 'child', other: 'children' })}
+                We've found {plural(user.children.length, { one: '# child', other: '# children' })}
                 associated with you: {this.childrenNames()}. Let's take a moment to review their information.
               </Trans>
               <br />
@@ -155,12 +151,10 @@ export default class extends ReactNComponent<any, State> {
 
         <List noHairlines>
           <ListItem
-            footer={this.global.i18n._(
-              defineMessage({
-                id: 'WelcomeChildPage.review_schools',
-                message: t`Review the schools ${child.firstName} will be attending.`,
-              }),
-            )}
+            footer={t({
+              id: 'WelcomeChildPage.review_schools',
+              message: t`Review the schools ${child.firstName} will be attending.`,
+            })}
           >
             <div slot="title">
               <b>
@@ -172,27 +166,15 @@ export default class extends ReactNComponent<any, State> {
             </div>
           </ListItem>
           {child.locations__HACK().map((location) => (
-            <ListItem key={location.id} title={location.name || ''} smartSelect smartSelectParams={{ openIn: 'sheet' }}>
-              <select name="mac-windows" defaultValue="attending">
-                <option value="in-person">
-                  {this.global.i18n._(defineMessage({ id: 'WelcomeChildPage.in_person', message: 'In Person' }))}
-                </option>
-                {/* TODO */}
-                {/* <option value="virtual">Virtual</option>
-                <option value="mixed">Mixed</option>
-                <option value="not-attending">Not Attending</option> */}
-              </select>
-            </ListItem>
+            <ListItem key={location.id} title={location.name || ''} />
           ))}
         </List>
         <List noHairlines>
           <ListItem
-            footer={this.global.i18n._(
-              defineMessage({
-                id: 'WelcomeChildPage.doctor_footer',
-                message: t`Who is ${child.firstName}'s primary care doctor?`,
-              }),
-            )}
+            footer={t({
+              id: 'WelcomeChildPage.doctor_footer',
+              message: t`Who is ${child.firstName}'s primary care doctor?`,
+            })}
           >
             <div slot="title">
               <b>
@@ -205,41 +187,29 @@ export default class extends ReactNComponent<any, State> {
           </ListItem>
           <ListItem
             checkbox
-            header={this.global.i18n._(
-              defineMessage({ id: 'WelcomeChildPage.no_doctor', message: "Don't have a primary care doctor?" }),
-            )}
-            title={this.global.i18n._(
-              defineMessage({ id: 'WelcomeChildPage.find_doctor', message: 'Get help finding one' }),
-            )}
+            header={t({ id: 'WelcomeChildPage.no_doctor', message: "Don't have a primary care doctor?" })}
+            title={t({ id: 'WelcomeChildPage.find_doctor', message: 'Get help finding one' })}
             onChange={(e) => {
               this.setState({ needsPhysician: e.target.checked })
             }}
           />
           <ListInput
-            label={this.global.i18n._(
-              defineMessage({ id: 'WelcomeChildPage.doctor_name_label', message: 'Primary Care Doctor' }),
-            )}
-            placeholder={this.global.i18n._(
-              defineMessage({
-                id: 'WelcomeChildPage.doctor_name_placeholder',
-                message: t`${child.firstName}'s doctor's name`,
-              }),
-            )}
+            label={t({ id: 'WelcomeChildPage.doctor_name_label', message: 'Primary Care Doctor' })}
+            placeholder={t({
+              id: 'WelcomeChildPage.doctor_name_placeholder',
+              message: t`${child.firstName}'s doctor's name`,
+            })}
             type="text"
             onInput={(e) => {
               this.setState({ physicianName: e.target.value })
             }}
           />
           <ListInput
-            label={this.global.i18n._(
-              defineMessage({ id: 'WelcomeChildPage.doctor_phone_label', message: 'Primary Care Doctor Phone' }),
-            )}
-            placeholder={this.global.i18n._(
-              defineMessage({
-                id: 'WelcomeChildPage.doctor_phone_placeholder',
-                message: t`${child.firstName}'s doctor's phone`,
-              }),
-            )}
+            label={t({ id: 'WelcomeChildPage.doctor_phone_label', message: 'Primary Care Doctor Phone' })}
+            placeholder={t({
+              id: 'WelcomeChildPage.doctor_phone_placeholder',
+              message: t`${child.firstName}'s doctor's phone`,
+            })}
             type="tel"
             onInput={(e) => {
               this.setState({ physicianPhoneNumber: e.target.value })

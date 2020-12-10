@@ -7,7 +7,7 @@ module RootController
     end
 
     get '/xnp9q8g7nvx9wmq197b0', auth: false do
-      raise "This error should show up in notifications and the logs."
+      raise 'This error should show up in notifications and the logs.'
     end
 
     get '/ping', auth: false do

@@ -1,8 +1,7 @@
 import { FormikErrors, useField } from 'formik'
 import { ListInput } from 'framework7-react'
 import React, { ReactNode } from 'react'
-import { FormikInstance } from 'src/types'
-import { assertNotUndefined, isPresent } from 'src/util'
+import { assertNotUndefined, isPresent } from 'src/helpers/util'
 
 function processError(
   error: string | FormikErrors<any> | string[] | FormikErrors<any>[] | undefined,
@@ -11,10 +10,8 @@ function processError(
     return error
   }
   if (Array.isArray(error)) {
-    // FIXME: error could be a FormikErrors<any>[]
     return error.join('; ')
   }
-  // FIXME: error could be a FormikErrors<any>
   return error.toString()
 }
 
@@ -27,7 +24,7 @@ export default function FormikInput(props: ListInput.Props & { children?: ReactN
     onBlur: field.onBlur,
     onChange: field.onChange,
     name: props.name,
-    value: field.value,
+    value: field.value || '',
     errorMessage,
     autocomplete: 'off',
     autocorrect: 'off',
@@ -37,7 +34,6 @@ export default function FormikInput(props: ListInput.Props & { children?: ReactN
     ...props,
   }
 
-  // delete newProps.formik
   // eslint-disable-next-line react/jsx-props-no-spreading
   return <ListInput {...newProps} />
 }

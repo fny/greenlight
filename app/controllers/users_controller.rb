@@ -5,11 +5,12 @@ module UsersController
   included do
     # Show a user
     get '/v1/users/:user_id' do
-      user_id = params[:user_id]
-      user = User.includes(:location_accounts).find(user_id)
+      user = User.includes(:locations, :location_accounts).find(params[:user_id])
       ensure_or_forbidden! { current_user.authorized_to_view?(user) }
 
-      render json: UserSerializer.new(user)
+      render json: UserSerializer.new(user, include: %i[
+        location_accounts location_accounts.location
+      ])
     end
 
     # Update a user
