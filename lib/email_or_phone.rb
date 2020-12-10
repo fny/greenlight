@@ -12,6 +12,10 @@ class EmailOrPhone
     end
   end
 
+  def valid?
+    email? || phone?
+  end
+
   def invalid?
     !email? && !phone?
   end

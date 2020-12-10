@@ -1,7 +1,31 @@
 # frozen_string_literal: true
+
+# FIXME: Contrainst needed here
 class Cohort < ApplicationRecord
   belongs_to :location
-  has_many :users, through: :cohort_user
+  has_many :cohort_users
+  has_many :users, through: :cohort_users
+
+  # PERF: N+1 query like issue here. Also, all the cohorts should be checked first
+  # and normalized.
+  #
+  # @param location Location
+  # @param cohorts [Hash{String => Array<String>}]
+  # @return [Array<Cohort>]
+  def self.find_or_create_cohorts!(location, cohorts)
+    persisted = []
+    transaction do
+      cohorts.each do |category, names|
+        names.each do |name|
+          persisted << (
+            Cohort.find_by(location: location, category: category, name: name) ||
+              Cohort.create!(location: location, category: category, name: name)
+          )
+        end
+      end
+    end
+    persisted
+  end
 end
 
 # == Schema Information

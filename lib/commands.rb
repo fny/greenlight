@@ -52,7 +52,7 @@ module Commands
     #   description - the description to append to the form field
     #   type - the symbol of the field type, see ACTIVE_ATTR_TYPECASTING
     #   default - the default value of the form field
-    def self.argument(name, label: nil, description: nil, type: :string, default: nil)
+    def self.argument(name, label: nil, description: nil, type: :object, default: nil)
       argument = Argument.new(
         name: name,
         label: label || name.to_s.titleize,

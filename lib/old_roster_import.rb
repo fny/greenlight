@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class RosterImport
+class OldRosterImport
   HEADERS = [
     UID = "Unique Id*",
     SFIRST = "Student First Name*",

@@ -12,8 +12,7 @@ class StudentImport
   attribute :parent_email, type: String
   attribute :parent_mobile_number, type: String
   attribute :location # type Location
-
-  attribute :cohorts # type Hash
+  attribute :cohorts # type Hash{String => Array<String>}
 
   validates :first_name, presence: true
   validates :last_name, presence: true
@@ -24,18 +23,17 @@ class StudentImport
     return @child if defined?(@child)
 
     if child_location_account.persisted?
-      @child = child_location_account.user
-      return @child
+      @child ||= child_location_account.user
     end
 
     if parent
-      @child = parent.children.where(first_name: first_name, last_name: last_name).first
+      @child ||= parent.children.find_by(first_name: first_name, last_name: last_name)
       return @child if @child
     end
-    @child = User.new(
-      first_name: first_name,
-      last_name: last_name,
-    )
+
+    @child ||= User.new
+    @child.assign_attributes(first_name: first_name, last_name: last_name)
+    @child
   end
 
   def child_location_account
@@ -51,55 +49,76 @@ class StudentImport
   def parent
     return @parent if defined?(@parent)
 
-    @parent = User.find_by_email_or_mobile(parent_mobile_number || parent_email) || User.new(
+    @parent = User.find_by_email_or_mobile(parent_mobile_number || parent_email) || User.new
+    @parent.assign_attributes(
       first_name: parent_first_name || 'Greenlight User',
       last_name: parent_last_name || 'Unknown',
       email: parent_email,
       mobile_number: parent_mobile_number
     )
+    @parent
   end
 
   # rubocop:disable all
   def save!
     # TODO: THERE'S AN ISSUE IF THERE ARE MIXED PARENTS
-    # Say a father has registered there son somewhere in one location
+    # Say a father has registered their son somewhere in one location
     # but then in another location the mother registers the same child
     # a new child would end up being created that's not the same child.
 
     return false unless valid?
 
+    # Case 1: Everyone already exists in the DB
     if parent.persisted? && child.persisted? && child_location_account.persisted?
-      return true
+      return save_all!
     end
 
+    # Case 2: The childs location account does not exist
     if parent.persisted? && child.persisted? && !child_location_account.persisted?
       child_location_account.user = child
-      return child_location_account.save!
+      return save_all!
     end
 
+    # Case 3: The parent is persisted, but the child isn't
     if parent.persisted? && !child.persisted?
       # Location account should not exist in this case
       raise InvalidState if child_location_account.persisted?
 
       child_location_account.user = child
-      return child.save! && child_location_account.save!
+      return save_all!
     end
 
+    # Case 4: The parent isn't, but the child is
     if !parent.persisted? && child.persisted?
       # Location account should exist in this case
       raise InvalidState unless child_location_account.persisted?
-      return parent.save!
+      return save_all!
     end
 
+    # Case 5: Neither the parent nor the child are persisted
     if !parent.persisted? && !child.persisted?
       # There should be no location account in this case
       raise InvalidState if child_location_account.persisted?
 
       child_location_account.user = child
-      return parent.save! && child.save! && child_location_account.save!
+      return save_all!
     end
 
     raise UnhandledCase
   end
-  # rubocop:enabke all
+  # rubocop:enable all
+
+  private
+
+  def save_all!
+    ActiveRecord::Base.transaction do
+      parent.save! && child.save! && child_location_account.save!
+      child_cohort_ids = child.cohorts.pluck(:id)
+      new_cohorts = Cohort.find_or_create_cohorts(location, cohorts).filter { |c|
+        !child_cohort_ids.include?(c.id)
+      }
+      child.cohorts << new_cohorts
+    end
+    child
+  end
 end
