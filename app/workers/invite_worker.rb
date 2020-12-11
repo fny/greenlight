@@ -31,7 +31,7 @@ class InviteWorker < ApplicationWorker
         Hola <%= user.first_name %>,
       </p>
       <p>
-        Estamos trabajando con Healthy Start Academy para crear un espacio seguro y saludable para el aprendizaje, y también necesitamos su ayuda.
+        Estamos trabajando con <%= user.affiliated_locations.map(&:name).to_sentence %> para crear un espacio seguro y saludable para el aprendizaje, y también necesitamos su ayuda.
       </p>
       <p>
         Cada día, enviará encuestas de síntomas a través de Greenlight para sus hijos o para usted mismo si es maestro o miembro del personal.
