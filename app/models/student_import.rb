@@ -114,7 +114,7 @@ class StudentImport
     ActiveRecord::Base.transaction do
       # binding.pry if parent.email == 'shelley@alimfamily.com'
 
-      parent.save! && child.save! && child_location_account.save!
+      parent.save! && child.save! && child_location_account.save! && (parent.children << child)
       # child_cohort_ids = child.cohorts.pluck(:id)
       # new_cohorts = Cohort.find_or_create_cohorts!(location, cohorts).filter { |c|
       #   !child_cohort_ids.include?(c.id)
