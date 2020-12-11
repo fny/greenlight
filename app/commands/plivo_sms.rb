@@ -58,7 +58,7 @@ class PlivoSMS < ApplicationCommand
 
     if message.length > message_limit
       raise TextTooLongError.new(
-        "Text is #{message.length} characters maximum is #{message_limit}"
+        "Text is #{message.length} characters maximum is #{message_limit}: #{message}"
       )
     end
   end
