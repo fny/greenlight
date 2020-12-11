@@ -5,7 +5,7 @@ module Greenlight
       response = Faraday.new(url: "https://drive.google.com/uc?export=download&id=#{id}") { |f|
         f.use FaradayMiddleware::FollowRedirects
       }.get
-      file = Tempfile.new([name || id, ".#{extension}"], binmode: true)
+      file = Tempfile.new([name || id, ".#{extension}"], Rails.root.join('tmp'), binmode: true)
       file.write(response.body)
       file.close
 
