@@ -37,7 +37,7 @@ class StaffImport
   def user
     return @user if defined?(@user)
 
-    @user = location_account.user || User.new
+    @user = location_account.user || User.find_by(email: email&.downcase&.strip) || User.new
     @user.assign_attributes(
       first_name: first_name&.strip,
       last_name: last_name&.strip,
@@ -50,7 +50,7 @@ class StaffImport
   def location_account
     return @la if defined?(@la)
 
-    @la = LocationAccount.find_by(external_id: external_id) || LocationAccount.new()
+    @la = LocationAccount.find_by(location: location, external_id: external_id) || LocationAccount.new()
     @la.assign_attributes(
       external_id: external_id.strip.downcase,
       location_id: location.id,
@@ -70,6 +70,7 @@ class StaffImport
 
     # Case 2: The users location account does not exist
     if user&.persisted? && !location_account&.persisted?
+      puts user.email
       location_account.user = user
       return save_all!
     end
@@ -98,7 +99,7 @@ class StaffImport
       new_cohorts = Cohort.find_or_create_cohorts!(location, cohorts).filter { |c|
         user_cohort_ids.exclude?(c.id)
       }
-      user.cohorts << new_cohorts
+      # user.cohorts << new_cohorts
     end
     user
   end

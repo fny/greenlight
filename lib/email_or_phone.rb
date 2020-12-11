@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class EmailOrPhone
   def initialize(value)
-    @value = value.strip.downcase
+    @value = value ? value.strip.downcase : ''
   end
 
   def value

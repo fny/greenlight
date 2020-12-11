@@ -64,7 +64,7 @@ class ImportStaffRoster < ApplicationCommand
         .invert.transform_values { |v| v.gsub(/\d/, '') }
     rescue => e
       error = { message: e.message, backtrace: e.backtrace}
-      error.delete(:backtrace) if Rails.env.production?
+      error.delete(:backtrace) if Rails.env.production? || Rails.env.development?
       return error
     end
 
@@ -93,7 +93,7 @@ class ImportStaffRoster < ApplicationCommand
         end
       rescue => e
         errors[i] = { message: e.message, backtrace: e.backtrace}
-        errors[i].delete(:backtrace) if Rails.env.production?
+        errors[i].delete(:backtrace) if Rails.env.production? || Rails.env.development?
       end
     end
     errors

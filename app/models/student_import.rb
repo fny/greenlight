@@ -17,7 +17,7 @@ class StudentImport
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :external_id, presence: true
-  validates :parent_mobile_number, presence: true
+  # validates :parent_mobile_number, presence: true
 
   def child
     return @child if defined?(@child)
@@ -49,12 +49,12 @@ class StudentImport
   def parent
     return @parent if defined?(@parent)
 
-    @parent = User.find_by_email_or_mobile(parent_mobile_number || parent_email) || User.new
+    @parent = User.find_by_email_or_mobile(parent_email) || User.find_by_email_or_mobile(parent_mobile_number) || User.new
     @parent.assign_attributes(
       first_name: parent_first_name || 'Greenlight User',
       last_name: parent_last_name || 'Unknown',
       email: parent_email,
-      mobile_number: parent_mobile_number
+      # mobile_number: parent_mobile_number.blank? ? nil : parent_mobile_number
     )
     @parent
   end
@@ -112,12 +112,14 @@ class StudentImport
 
   def save_all!
     ActiveRecord::Base.transaction do
+      # binding.pry if parent.email == 'shelley@alimfamily.com'
+
       parent.save! && child.save! && child_location_account.save!
-      child_cohort_ids = child.cohorts.pluck(:id)
-      new_cohorts = Cohort.find_or_create_cohorts(location, cohorts).filter { |c|
-        !child_cohort_ids.include?(c.id)
-      }
-      child.cohorts << new_cohorts
+      # child_cohort_ids = child.cohorts.pluck(:id)
+      # new_cohorts = Cohort.find_or_create_cohorts!(location, cohorts).filter { |c|
+      #   !child_cohort_ids.include?(c.id)
+      # }
+      # child.cohorts << new_cohorts
     end
     child
   end
