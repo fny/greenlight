@@ -4,7 +4,7 @@ import {
   Page,
 } from 'framework7-react'
 import React from 'react'
-import { useGlobal } from 'reactn'
+
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { cookieLocale } from 'src/initializers/providers'
 
