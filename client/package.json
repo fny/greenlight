@@ -31,7 +31,6 @@
   "scripts": {
     "start": "PORT=9991 react-scripts start",
     "build": "react-scripts build",
-    "build-cordova": "REACT_APP_CORDOVA=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
