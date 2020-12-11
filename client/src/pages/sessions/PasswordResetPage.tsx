@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useCallback, useState, useGlobal,
+  useEffect, useCallback,
 } from 'reactn'
 import {
   f7, Page, List, Navbar, Block, Button,
@@ -7,8 +7,8 @@ import {
 import { useFormik, FormikProvider } from 'formik'
 import * as Yup from 'yup'
 
-import { defineMessage, t } from '@lingui/macro'
-import { F7Props, FunctionComponent } from 'src/types'
+import { t } from '@lingui/macro'
+import { F7Props } from 'src/types'
 import { checkPasswordResetToken, passwordReset } from 'src/api'
 import FormikInput from 'src/components/FormikInput'
 import SubmitHandler from 'src/helpers/SubmitHandler'
@@ -21,8 +21,7 @@ interface PasswordInput {
   confirmPassword: string
 }
 
-const PasswordResetPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
-  const [global] = useGlobal()
+export default function PasswordResetPage({ f7route, f7router }: F7Props): JSX.Element {
   const submitHandler = new SubmitHandler(f7)
   const { token } = f7route.params
   assertNotUndefined(token)
@@ -56,15 +55,11 @@ const PasswordResetPage: FunctionComponent<F7Props> = ({ f7route, f7router }) =>
         try {
           await passwordReset(token, password)
           f7.dialog.alert(
-            global.i18n._(
-              defineMessage({
-                id: 'PasswordResetPage.password_changed',
-                message: 'Your password has been changed.',
-              }),
-            ),
-            global.i18n._(
-              defineMessage({ id: 'PasswordResetPage.password_change_success', message: 'Password Change Success' }),
-            ),
+            t({
+              id: 'PasswordResetPage.password_changed',
+              message: 'Your password has been changed.',
+            }),
+            t({ id: 'PasswordResetPage.password_change_success', message: 'Password Change Success' }),
             () => {
               f7router.navigate(paths.signInPath)
             },
@@ -72,18 +67,14 @@ const PasswordResetPage: FunctionComponent<F7Props> = ({ f7route, f7router }) =>
         } catch (e) {
           logger.error(e.response)
           f7.dialog.alert(
-            global.i18n._(
-              defineMessage({
-                id: 'PasswordResetPage.reset_password_failed',
-                message: "We couldn't reset the password for that info.",
-              }),
-            ),
-            global.i18n._(
-              defineMessage({
-                id: 'PasswordResetPage.reset_password_failed_title',
-                message: 'Password Reset Failed',
-              }),
-            ),
+            t({
+              id: 'PasswordResetPage.reset_password_failed',
+              message: "We couldn't reset the password for that info.",
+            }),
+            t({
+              id: 'PasswordResetPage.reset_password_failed_title',
+              message: 'Password Reset Failed',
+            }),
           )
         }
       })
@@ -96,18 +87,14 @@ const PasswordResetPage: FunctionComponent<F7Props> = ({ f7route, f7router }) =>
       logger.error(e.response)
 
       f7.dialog.alert(
-        global.i18n._(
-          defineMessage({
-            id: 'PasswordResetPage.invalid_token_description',
-            message: 'Token is invalid. Please use the link we sent you.',
-          }),
-        ),
-        global.i18n._(
-          defineMessage({
-            id: 'PasswordResetPage.invalid_token',
-            message: 'Invalid Token',
-          }),
-        ),
+        t({
+          id: 'PasswordResetPage.invalid_token_description',
+          message: 'Token is invalid. Please use the link we sent you.',
+        }),
+        t({
+          id: 'PasswordResetPage.invalid_token',
+          message: 'Invalid Token',
+        }),
         () => {
           f7router.navigate(paths.rootPath)
         },
@@ -150,5 +137,3 @@ const PasswordResetPage: FunctionComponent<F7Props> = ({ f7route, f7router }) =>
     </Page>
   )
 }
-
-export default PasswordResetPage

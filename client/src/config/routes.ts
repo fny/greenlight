@@ -23,8 +23,8 @@ import NCTestLocationsPage from 'src/pages/resources/NCTestLocationsPage'
 import NotFoundPage from 'src/pages/util/NotFoundPage'
 import NotificationsPage from 'src/pages/users/NotificationsPage'
 import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
-import PasswordResetPage from 'src/pages/PasswordResetPage'
-import PasswordResetRequestPage from 'src/pages/PasswordResetRequestPage'
+import PasswordResetPage from 'src/pages/sessions/PasswordResetPage'
+import PasswordResetRequestPage from 'src/pages/sessions/PasswordResetRequestPage'
 import RegisterLocationConfirmationPage from 'src/pages/registration/RegisterLocationConfirmationPage'
 import RegisterLocationDetailsPage from 'src/pages/registration/RegisterLocationDetailsPage'
 import RegisterLocationMessagePage from 'src/pages/registration/RegisterLocationMessagePage'
@@ -45,6 +45,9 @@ import WelcomePage from 'src/pages/welcome/WelcomePage'
 import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage'
 import WelcomeReviewPage from 'src/pages/welcome/WelcomeReviewPage'
 import WelcomeSurveyPage from 'src/pages/welcome/WelcomeSurveyPage'
+import BrevardResourcesPage from 'src/pages/resources/BrevardResourcesPage'
+import AdminUserPage from 'src/pages/admin/AdminUserPage'
+import HelpScoutPage from 'src/pages/resources/HelpScoutPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -192,6 +195,11 @@ const resourcesRoutes = {
     component: DukeScheduleTestPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
+  brevardPath: {
+    path: '/brevard-resources',
+    component: BrevardResourcesPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
   ncStatewideStatsPath: {
     path: '/nc-statewide-stats',
     component: NCStatewideStatsPage,
@@ -201,6 +209,11 @@ const resourcesRoutes = {
     path: '/nc-test-locations',
     component: NCTestLocationsPage,
     // beforeEnter: beforeEnter.requireSignIn,
+  },
+  helpScoutPath: {
+    path: '/support',
+    component: HelpScoutPage,
+    beforeEnter: beforeEnter.requireSignIn,
   },
   chwRequestPath: {
     path: '/chw-request',
@@ -279,6 +292,11 @@ const routeMap = {
   adminUsersPath: {
     path: '/admin/locations/:locationId/users',
     component: AdminUsersPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  adminUserPath: {
+    path: '/admin/locations/:locationId/users/:userId',
+    component: AdminUserPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   debugPath: {
@@ -363,7 +381,7 @@ Object.keys(routeMap).forEach((key) => {
 })
 
 export const dynamicPaths = {
-  currentUserHomePath: () => {
+  currentUserHomePath: (): string => {
     const user: User | null | undefined = getGlobal().currentUser
     if (!user) return paths.rootPath
     if (user.hasCompletedWelcome()) {
@@ -371,7 +389,7 @@ export const dynamicPaths = {
     }
     return paths.welcomePath
   },
-  afterWelcomePasswordPath: () => {
+  afterWelcomePasswordPath: (): string => {
     const user: User | null | undefined = getGlobal().currentUser
     if (!user) return paths.rootPath
     if (user.hasChildren()) {
@@ -388,7 +406,7 @@ export const dynamicPaths = {
     }
     return dynamicPaths.welcomeChildIndexPath(0)
   },
-  userSurveysNewIndexPath: (index: number) => {
+  userSurveysNewIndexPath: (index: number): string => {
     const user: User | null | undefined = getGlobal().currentUser
     if (!user) return paths.rootPath
     const people = [user, ...user.sortedChildren()]

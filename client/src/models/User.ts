@@ -71,6 +71,9 @@ export class User extends Model {
   @attr({ type: DATETIME })
   completedWelcomeAt: DateTime = DateTime.fromISO('')
 
+  @hasMany('Cohort')
+  cohorts: LocationAccount[] = []
+
   @hasMany('LocationAccount')
   locationAccounts: LocationAccount[] = []
 
@@ -303,5 +306,9 @@ export class User extends Model {
     return this.locationAccounts
       .filter((la) => la.isAdmin() && la.location !== null)
       .map((la) => la.location) as Location[]
+  }
+
+  isInBrevard__HACK() {
+    return this.locations__HACK().some((l) => l.permalink === 'brevard-academy')
   }
 }

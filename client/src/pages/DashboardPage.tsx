@@ -21,6 +21,7 @@ import { User } from 'src/models'
 
 import { ReactNComponent } from 'reactn/build/components'
 import ReleaseCard from 'src/components/ReleaseCard'
+import { currentUser } from 'src/initializers/providers'
 import UserJDenticon from '../components/UserJDenticon'
 
 function UserList({ users }: { users: User[] }) {
@@ -172,6 +173,19 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           <Trans id="DashboardPage.resources_title">Resources For You</Trans>
         </BlockTitle>
         <List>
+          {
+            user.isInBrevard__HACK() && (
+              <ListItem
+                title="Brevard Resources"
+                footer="Find testing sites in Brevard and Connect to the School Nurse"
+                link={paths.brevardPath}
+              >
+                <Icon slot="media" f7="heart" />
+              </ListItem>
+            )
+          }
+          {!user.isInBrevard__HACK() && (
+
           <ListItem
             title={t({ id: 'DashboardPage.duke_testing_title', message: 'Testing at Duke' })}
             footer={t({ id: 'DashboardPage.duke_testing_footer', message: 'Connect to streamlined testing 8am to 5pm any day' })}
@@ -179,7 +193,9 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           >
             <Icon slot="media" f7="thermometer" />
           </ListItem>
+          )}
 
+          {!user.isInBrevard__HACK() && (
           <ListItem
             link={paths.chwRequestPath}
             title={t({ id: 'DashboardPage.connect_to_care_title', message: 'Connect to Care' })}
@@ -190,12 +206,20 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           >
             <Icon slot="media" f7="heart" />
           </ListItem>
+          )}
           <ListItem
             link={paths.ncTestingLocationsPath}
             title={t({ id: 'DashboardPage.testing_title', message: 'Find Other Testing' })}
             footer={t({ id: 'DashboardPage.testing_footer', message: 'Testing Sites Near You' })}
           >
             <Icon slot="media" f7="search" />
+          </ListItem>
+          <ListItem
+            link={paths.helpScoutPath}
+            title={t({ id: 'DashboardPage.support_title', message: 'FAQs and Support' })}
+            footer={t({ id: 'DashboardPage.support_footer', message: 'Read through our knowledge base or contact Greenlight support directly' })}
+          >
+            <Icon slot="media" f7="chat_bubble_2" />
           </ListItem>
           {/* https://www.communitycarenc.org/what-we-do/supporting-primary-care */}
           <ListItem
@@ -214,14 +238,6 @@ export default class DashboardPage extends ReactNComponent<any, any> {
           >
             <Icon slot="media" f7="graph_square" />
           </ListItem> */}
-          <ListItem
-            title={t({ id: 'DashboardPage.support_title', message: 'Contact Support' })}
-            footer={t({ id: 'DashboardPage.support_footer', message: 'Have any questions? Message our support team.' })}
-            external
-            link="mailto:help@greenlightready.com"
-          >
-            <Icon slot="media" f7="envelope" />
-          </ListItem>
           {/* https://ncchildcare.ncdhhs.gov/Portals/0/documents/pdf/P/Parent_and_Families_School_Age_Child_Care.pdf?ver=2020-08-26-122445-963 */}
           <ListItem
             external
