@@ -41,7 +41,7 @@ class UsersList extends React.Component<Props, any> {
         accordionItem
         className="user-item"
         link="#"
-        title={`${user.reversedName()}${locationAccount.isAdmin() ? ' (Admin)' : ''}`}
+        title={`${user.reversedName()}${user.completedWelcomeAt ? '' : '*'}${locationAccount.isAdmin() ? ' (Admin)' : ''}`}
         after={user.greenlightStatus().title()}
       >
         <div slot="media">
@@ -70,6 +70,10 @@ class UsersList extends React.Component<Props, any> {
               />
               )
             }
+            <ListItem
+              link={dynamicPaths.adminUserPath({ userId: user.id, locationId: location.id })}
+              title={t({ id: 'AdminUsersPage.user_more', message: 'More' })}
+            />
           </List>
         </AccordionContent>
       </ListItem>
