@@ -13,13 +13,17 @@ class UserSerializer < ApplicationSerializer
     # For the Children
     :'children.location_accounts',
     :'children.location_accounts.location',
-    :'children.last_greenlight_status'
+    :'children.last_greenlight_status',
+    :parents,
+    :cohorts
   ].freeze
 
   ADMIN_INCLUDES = [
     # This is all we need for admins right now
     :location_accounts,
-    :last_greenlight_status
+    :last_greenlight_status,
+    :parents,
+    :cohorts
   ].freeze
 
   # Includes required for the
@@ -67,6 +71,10 @@ class UserSerializer < ApplicationSerializer
   has_one :settings, serializer: UserSettingsSerializer, record_type: 'userSettings'
 
   has_many :children, serializer: UserSerializer, record_type: 'user'
+  has_many :parents, serializer: UserSerializer, record_type: 'user'
+
+  has_many :cohorts
+
 
   has_many :location_accounts
 

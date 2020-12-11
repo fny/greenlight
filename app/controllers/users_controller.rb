@@ -9,7 +9,7 @@ module UsersController
       ensure_or_forbidden! { current_user.authorized_to_view?(user) }
 
       render json: UserSerializer.new(user, include: %i[
-        location_accounts location_accounts.location
+        location_accounts location_accounts.location cohorts parents
       ])
     end
 
