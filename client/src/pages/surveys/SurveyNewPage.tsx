@@ -97,7 +97,7 @@ type Symptoms =
 
 export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveyState> {
   isSequence = false
-
+  isOverride = false
   currentUser: User
 
   constructor(props: SurveyProps) {
@@ -109,6 +109,8 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     this.currentUser = this.global.currentUser
 
     const { userId } = this.$f7route.params
+    const { override } = this.$f7route.query
+
     if (!userId) { throw 'userId missing in url' }
 
     if (userId === 'seq') {
@@ -118,6 +120,8 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
         this.setState({ targetUser: user, isLoaded: true })
       })
     }
+
+    this.isOverride = override === 'true'
 
     this.state = {
       isLoaded: this.isSequence,
@@ -269,7 +273,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       // TODO: This should load the data
       const target = this.submittingFor()
       assertNotNull(target)
-      const status = await createSymptomSurvey(target, medicalEvents)
+      const status = await createSymptomSurvey(target, medicalEvents, this.isOverride)
       if (!status) {
         throw 'This should never happen, but status was somehow nil.'
       }
@@ -344,11 +348,14 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       )
     }
 
+    let pageTitle = t({ id: 'SurveyNewPage.title', message: t`Daily Check-ins: ${submittingFor.fullName()}` })
+    if (this.isOverride) {
+      pageTitle = t({ id: 'SurveyNewPage.title_resubmit', message: t`Resubmit Survey: ${submittingFor.fullName()}` })
+    }
+
     return (
       <Page>
-        <Navbar
-          title={t({ id: 'SurveyNewPage.title', message: t`Daily Check-ins: ${submittingFor.fullName()}` })}
-        />
+        <Navbar title={pageTitle} />
 
         {
           this.state.isLoaded

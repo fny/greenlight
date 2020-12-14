@@ -179,9 +179,10 @@ export async function getUsersForLocation(location: number | string | Location) 
 // Surveys
 //
 
-export async function createSymptomSurvey(user: User, medicalEvents: Partial<MedicalEvent>[]): Promise<string | null> {
+export async function createSymptomSurvey(user: User, medicalEvents: Partial<MedicalEvent>[], isOverride: boolean): Promise<string | null> {
   const payload = {
     medicalEvents,
+    isOverride,
   }
   const response = await v1.post<RecordResponse<GreenlightStatus>>(
     `/users/${user.id}/symptom-surveys`,

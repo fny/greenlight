@@ -47,6 +47,12 @@ function UserList({ users }: { users: User[] }) {
                   title={t({ id: 'DashboardPage.check_in', message: 'Check In' })}
                 />
               </If>
+              <If test={user.hasSubmittedOwnSurvey()}>
+                <ListItem
+                  link={dynamicPaths.userSurveysNewPath(user.id, { single: true, override: true })}
+                  title={t({ id: 'DashboardPage.resubmit', message: 'Resubmit Survey' })}
+                />
+              </If>
               {/* <ListItem
             link={`/users/${user.id}/absence`}
             title="Schedule Absence"

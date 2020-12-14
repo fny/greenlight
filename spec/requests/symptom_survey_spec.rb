@@ -55,5 +55,46 @@ RSpec.describe "/v1/users/:user_id/symptom-surveys", type: :request do
         expect(user.last_greenlight_status.status).to eq(GreenlightStatus::RECOVERY)
       end
     end
+
+    describe "daily resubmission" do
+      let(:symptom) { MedicalEvent::SYMPTOMS.sample }
+      let(:trigger) { MedicalEvent::HAS_COVID.sample }
+
+      before do
+        post_json("/v1/users/#{user.id}/symptom-surveys", body: {
+          medicalEvents: [{
+            eventType: symptom,
+            occurredAt: Time.current.iso8601
+          }]
+        }, user: user)
+      end
+
+      it "doesn't allow resubmission" do
+        post_json("/v1/users/#{user.id}/symptom-surveys", body: {
+          medicalEvents: [{
+            eventType: trigger,
+            occurredAt: Time.current.iso8601
+          }]
+        }, user: user)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response_json).to have_key(:errors)
+      end
+
+      it "allows resubmission when override flag is set" do
+        post_json("/v1/users/#{user.id}/symptom-surveys", body: {
+          medicalEvents: [{
+            eventType: trigger,
+            occurredAt: Time.current.iso8601
+          }],
+          isOverride: true,
+        }, user: user)
+
+        expect(response_json).not_to have_key(:errors)
+        expect(response_json).to have_key(:data)
+        expect(response_json[:data][:attributes]).to include(status: 'recovery')
+        expect(user.last_greenlight_status.status).to eq(GreenlightStatus::RECOVERY)
+      end
+    end
   end
 end
