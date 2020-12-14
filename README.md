@@ -4,24 +4,40 @@ This is the README for the overall project.
 
 ## Requirements
 
-- Ruby and Node, see `.tool-versions` for the specific verions
+- A 'Nix based operating system: unforunately, Ruby still makes Windows cry
+- Ruby and Node, see `.tool-versions` for the specific versions
 - Postgres v12
 - Redis v6
-- NGINX if you want to dev while using the api-dev loopback address;
-  you'll need to use the configuration in `nginx-development.conf`.
 - See `/client` for frontend specific requirements
 - See `/cordova` for iOs and Android specific requirements
 
-## Setting up the project
+## Backend Set Up
 
-After you've installed the above and, run the following:
+### Dependencies
+
+For Ruby and Node, we recommend using a manager like `rvm`, `rbenv`, `nvm`. I prefer to
+use [asdf](https://asdf-vm.com) since it covers both and will respond to version changes
+in `.tool-versions`=. If 
+
+For Postgres and Redis, we recommend you install them using Homebrew on macOS or a Linux
+package manager of your choice.
+
+After you've installed the above and, run the following to install all the Ruby dependencies
+and load the database with seed data.
+
+### Getting Rails Up and Running
+
+Run `bundle install` to install all of the packages listed in the Gemfile.
+
+To set up the database, you should only need to run the following:
 
 ```
-bundle install
 bundle exec rake db:create
 bundle exec rake db:migrate
 bundle exec rake db:seed
 ```
+
+If you ever need to restart everything in the db from scratch, run `bundle exec rake db:nuke`.
 
 ## Running the project
 
@@ -36,16 +52,57 @@ may have installation issues. Use the following line to install it:
 
   gem install mailcatcher -- --with-cflags="-Wno-error=implicit-function-declaration"
 
+## Development URLs
 
-## Run Cordova
+TODO: We should consider migrating everything to HTTPS to keep production and development more similar.
+
+This is ***extremely important***. Due to a number of CORS issues, you'll need to access the app
+through a subdomain rather than through localhost.
+
+ - http://app.greenlightready.net is a loopback address that points to 127.0.0.1
+ - http://api.greenlightready.net is another loopback address that points to 127.0.0.1
+ - http://dev.glit.me/* redirects to http://app.greenlightready.com:9991/*
+
+The configurations are set up so that you can:
+
+  - access the frontend at http://app.greenlightready.net:9991
+  - access the backend at http://api.greenlightready.net:9990
+
+I highly recommend that you use these addresses. You can alternatively modify your `/etc/hosts` file
+to pick your own URL and set the appropriate environment variable your `.env.local` file.
+
+If you don't want to have to type in ports, you can use the NGINX configurations avaiable at
+`nginx-development.conf` to proxy requests to those addresses.
+
+Speaking of `.env` files...
+
+## Environment Variables and Configuration
+
+We use `.env` files across both the backend and frontend for configuration during development and test.
+The production environments use Heroku's built in environment configuration.
+
+ - `.env.local`: This is where you can put your own overrides, these should not be committed. This overrides everything.
+ - `.env.development`: This is where configuration for development goes.
+ - `.env.test`: This is where configuration for test goes.
+
+TODO: We should consider migrating to Rails secrets management so that we can share configurations for testing
+production-like endpoints that use all our third-party services.
+
+If you look through the `.env.development` file, you'll find comments on what these variables mean.
+These variables are validated in `config/initializers/001_environment_variables.rb`. The app should blow
+up if things aren't set up properly.
+
+## Running Cordova
 
 - `npm run cordova-init` to install cordova platform and plugins
 - `npm run run-cordova-ios` or `npm run run-cordova-android` to run the mobile app
 
+There are a few other useful commands in the root `package.json` too.
+
 ## Coding Conventions
 
 - Follow [Conventional Commits](https://conventionalcommits.org)
-- Follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0)
+- Follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0). When you do something please add it!
 - Try to stay within 80 characters per line. It's okay if you go to 100. You'll
   get yelled at if you exceed 120.
 - Follow style guides specific to the directories
@@ -54,6 +111,7 @@ may have installation issues. Use the following line to install it:
 - For Ruby, use YARD to document your types. This makes Solargraph's
   autocomplete smarter and will prepare us for the data when Ruby supports
   type checking natively.
+- If Rubocop annoys you about anything ask Faraz if you can silence it. He'll probably say yes.
 
 ## Editor Setup
 
