@@ -1,4 +1,4 @@
-import { Model, attribute as attr, initialize, STRING, NUMBER } from './Model'
+import { Model, attribute as attr, initialize, STRING, NUMBER } from '../lib/Model'
 
 export class CovidData extends Model {
   static modelName = 'covidData'

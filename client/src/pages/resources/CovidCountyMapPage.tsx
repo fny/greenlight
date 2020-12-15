@@ -20,8 +20,8 @@ const MapPage = ({}) => {
     getCovidData().then((res) => {
       const covidData: { [i: string]: CovidData } = res.reduce((acc, cur) => ({ ...acc, [cur.county]: cur }), {})
       const stateInfo = states.find((stateItem) => stateItem.label === state)
-      const geoData: GeoDataType = require(`src/data/geo_data/${stateInfo!.value}.json`)
-      const populationInfo: PopulationType[] = require('src/data/us-population.json')
+      const geoData: GeoDataType = require(`src/assets/data/geoData/${stateInfo!.value}.json`)
+      const populationInfo: PopulationType[] = require('src/assets/data/us-population.json')
       const ncPopulation: { [i: string]: number } = populationInfo
         .filter((p) => p.state === state)
         .reduce((acc, cur) => ({ ...acc, [cur.county]: [cur.population] }), {})
@@ -81,9 +81,9 @@ const MapPage = ({}) => {
             },
             data: geoData.features.map((item) => ({
               name: item.properties.NAME,
-              value: ((covidData[item.properties.NAME].cases || 0) / ncPopulation[item.properties.NAME]) * 1000000,
-              cases: covidData[item.properties.NAME].cases,
-              deaths: covidData[item.properties.NAME].deaths,
+              value: ((covidData[item.properties.NAME]?.cases || 0) / ncPopulation[item.properties.NAME]) * 1000000,
+              cases: covidData[item.properties.NAME]?.cases,
+              deaths: covidData[item.properties.NAME]?.deaths,
               population: ncPopulation[item.properties.NAME],
             })),
           },
@@ -150,17 +150,16 @@ const chartOption = {
     bottom: 0,
     inRange: {
       color: [
-        '#313695',
-        '#4575b4',
-        '#74add1',
-        '#abd9e9',
-        '#e0f3f8',
         '#ffffbf',
-        '#fee090',
-        '#fdae61',
-        '#f46d43',
-        '#d73027',
-        '#a50026',
+        '#ffff40',
+        '#ffff00',
+        '#ffdb00',
+        '#ffb600',
+        '#ff9200',
+        '#ff6D00',
+        '#ff4900',
+        '#ff2400',
+        '#ff0000',
       ],
     },
     text: ['High', 'Low'],

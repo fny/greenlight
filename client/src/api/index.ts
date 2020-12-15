@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 
 import { getGlobal, setGlobal } from 'reactn'
-import {
-  assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
-} from 'src/helpers/util'
+import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from 'src/helpers/util'
 import Honeybadger from 'honeybadger-js'
 
 import logger from 'src/helpers/logger'
@@ -113,15 +111,19 @@ export async function joinLocation(location: Location): Promise<LocationAccount>
   return entity
 }
 
-export async function updateLocationAccount(locationAccount: LocationAccount, updates: Partial<LocationAccount>): Promise<LocationAccount> {
-  const response = await v1.patch<RecordResponse<LocationAccount>>(`/location-accounts/${locationAccount.id}`,
-    transformForAPI(updates))
+export async function updateLocationAccount(
+  locationAccount: LocationAccount,
+  updates: Partial<LocationAccount>,
+): Promise<LocationAccount> {
+  const response = await v1.patch<RecordResponse<LocationAccount>>(
+    `/location-accounts/${locationAccount.id}`,
+    transformForAPI(updates),
+  )
 
   const entity = transformRecordResponse<LocationAccount>(response.data)
   assertNotArray(entity)
   return entity
 }
-
 
 export async function getCovidData(): Promise<CovidData[]> {
   const response = await v1.get<RecordResponse<CovidData>>(`/covid-data`)
@@ -206,7 +208,9 @@ export async function createSymptomSurvey(user: User, medicalEvents: Partial<Med
 
 export function mailHelloAtGreenlight(from: string, subject: string, body: string): Promise<AxiosResponse<any>> {
   return v1.post('mail/hello-at-greenlight', {
-    from, subject, body,
+    from,
+    subject,
+    body,
   })
 }
 
