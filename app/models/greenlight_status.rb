@@ -57,8 +57,6 @@ class GreenlightStatus < ApplicationRecord
   validates :follow_up_date, presence: true
   validates :expiration_date, presence: true
 
-  validate :not_already_submitted
-
   def self.new_cleared_status(time, other_attrs)
     status = new(other_attrs)
     status.submitted_at = time
@@ -92,13 +90,6 @@ class GreenlightStatus < ApplicationRecord
       e.created_by = self.created_by
       e.user = self.user
     }
-  end
-
-  def not_already_submitted
-    return if self.is_override
-    return unless GreenlightStatus.submittable_for?(user_id || user&.id)
-
-    errors.add(:base, 'status_already_submitted')
   end
 end
 

@@ -77,7 +77,6 @@ module UsersController
         medical_events: request_json[:medical_events],
         user: user,
         created_by: current_user,
-        is_override: request_json[:is_override],
       )
 
       return error_response(survey) unless survey.valid?

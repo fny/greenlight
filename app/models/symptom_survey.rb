@@ -2,7 +2,7 @@
 class SymptomSurvey
   include ActiveModel::Model
 
-  attr_accessor :user, :medical_events, :created_by, :is_override
+  attr_accessor :user, :medical_events, :created_by
   attr_reader :greenlight_status
 
   validates :user, presence: true
@@ -24,7 +24,6 @@ class SymptomSurvey
     @greenlight_status = strategy.status
     @greenlight_status.created_by = created_by
     @greenlight_status.user = user
-    @greenlight_status.is_override = true if is_override
     @greenlight_status.save
   end
 

@@ -49,7 +49,7 @@ function UserList({ users }: { users: User[] }) {
               </If>
               <If test={user.hasSubmittedOwnSurvey()}>
                 <ListItem
-                  link={dynamicPaths.userSurveysNewPath(user.id, { single: true, override: true })}
+                  link={dynamicPaths.userSurveysNewPath(user.id, { single: true, resubmit: true })}
                   title={t({ id: 'DashboardPage.resubmit', message: 'Resubmit Survey' })}
                 />
               </If>

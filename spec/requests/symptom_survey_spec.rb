@@ -69,25 +69,12 @@ RSpec.describe "/v1/users/:user_id/symptom-surveys", type: :request do
         }, user: user)
       end
 
-      it "doesn't allow resubmission" do
-        post_json("/v1/users/#{user.id}/symptom-surveys", body: {
-          medicalEvents: [{
-            eventType: trigger,
-            occurredAt: Time.current.iso8601
-          }]
-        }, user: user)
-
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response_json).to have_key(:errors)
-      end
-
-      it "allows resubmission when override flag is set" do
+      it "allows resubmission" do
         post_json("/v1/users/#{user.id}/symptom-surveys", body: {
           medicalEvents: [{
             eventType: trigger,
             occurredAt: Time.current.iso8601
           }],
-          isOverride: true,
         }, user: user)
 
         expect(response_json).not_to have_key(:errors)
