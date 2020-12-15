@@ -22,10 +22,11 @@ class Authentication < ApplicationCommand
     fail!(:email_or_mobile, :phone_not_found) if user.nil? && e_or_m.phone?
     fail!(:email_or_mobile, :email_not_found) if user.nil? && e_or_m.email?
 
-    if superuser_sign_in? || user.authenticate(password.strip)
-      return user
-    end
+    return user if superuser_sign_in?
+    fail!(:password, :never_set_password) if user.password_digest.nil?
 
+    authenicated = user.authenticate(password)
+    return authenicated if authenicated
     fail!(:password, :invalid)
   end
 end

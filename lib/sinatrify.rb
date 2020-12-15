@@ -17,15 +17,11 @@ module Sinatrify
 
     %w[get post put delete patch].each do |verb|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def #{verb}(path, options = {}, &block)
-          parent_self = self
-          define_action("#{verb}", path, options, block)
-          #   ->{
-          #   auth = options.delete(:auth)
-          #   auth = true if auth.nil?
-          #   ensure_authenticated! if auth
-          #   block.call(parent_self)
-          # })
+        def #{verb}(path, options = { auth: true }, &block)
+          define_action("#{verb}", path, options) do
+            ensure_authenticated! if options[:auth]
+            instance_eval(&block)
+          end
         end
       RUBY
     end
@@ -34,7 +30,7 @@ module Sinatrify
 
     # See https://api.rubyonrails.org/v6.0.3.3/classes/ActionDispatch/Routing/Mapper/Base.html
     # for possible options.
-    def define_action(verb, path, options, block)
+    def define_action(verb, path, options, &block)
       action_name = "#{verb}#{path.tr('/', '_')}"
       define_method(action_name, block)
       options[:via] = verb

@@ -7,13 +7,11 @@ import { App, View } from 'framework7-react'
 import { Framework7Params } from 'framework7/components/app/app-class'
 
 import { I18nProvider, useLingui } from '@lingui/react'
-import routes from './routes'
-import { i18n as globalI18n } from './i18n'
-import { ErrorBoundary } from './ErrorBoundary'
-import OnlineStatus from './components/OnlineStatus'
-import SupportedBrowserBar from './components/SupportedBrowserBar'
-import { isCordova } from './util'
-import FlashMessage from './components/FlashMessage'
+import routes from 'src/config/routes'
+import { i18n as globalI18n } from 'src/i18n'
+import { ErrorBoundary } from 'src/ErrorBoundary'
+import OnlineStatus from 'src/components/OnlineStatus'
+import { isCordova } from './helpers/util'
 
 function I18nWatchLocale({ children }: { children: React.ReactNode }) {
   const { i18n } = useLingui()
@@ -46,17 +44,12 @@ export default function Main() {
     <I18nProvider i18n={globalI18n}>
       <I18nWatchLocale>
         <App key={locale} params={f7params} className="App">
-          <SupportedBrowserBar />
           <OnlineStatus />
           <ErrorBoundary>
-
-            <View id="main-view" url="/" main className="safe-areas">
-              <FlashMessage />
-            </View>
+            <View id="main-view" url="/" main className="safe-areas" />
           </ErrorBoundary>
         </App>
       </I18nWatchLocale>
     </I18nProvider>
-
   )
 }

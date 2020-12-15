@@ -1,6 +1,6 @@
 import {
   Model, attribute as attr, initialize, STRING, BOOLEAN, NUMBER,
-} from './Model'
+} from 'src/lib/Model'
 
 export enum DailyReminderType {
   TEXT = 'text',

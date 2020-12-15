@@ -23,7 +23,7 @@ module SessionsController
     post '/v1/magic-sign-in/:token', auth: false do
       token = params[:token]
       user = User.find_by!(magic_sign_in_token: token)
-      sign_in(user, remember_me: request_json[:remember_me])
+      sign_in(user, request.ip, remember_me: request_json[:remember_me])
       success_response
     end
 

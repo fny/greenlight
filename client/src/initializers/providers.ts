@@ -1,20 +1,13 @@
 import {
-  getGlobal, setGlobal, addReducer,
+  getGlobal, setGlobal, addReducer, addCallback,
 } from 'reactn'
 import { deleteSession, getCurrentUser } from 'src/api'
 import { User } from 'src/models'
 import { i18n, GLLocales } from 'src/i18n'
-import CookieJar, { Cookie } from 'src/misc/CookieJar'
-import logger from 'src/logger'
+import CookieJar, { Cookie } from 'src/helpers/CookieJar'
+import { LocationCategories } from 'src/models/Location'
+import SessionStorage from 'src/helpers/SessionStorage'
 import Honeybadger from './honeybadger'
-
-setGlobal({
-  locale: cookieLocale(),
-  i18n,
-  flashMessage: '',
-  // This is used for testing reducers
-  x: 0,
-})
 
 export function isSignedIn() {
   const user = currentUser()
@@ -25,34 +18,25 @@ export function currentUser(): User | null {
   return getGlobal().currentUser
 }
 
-export function currentUserAsserted(router: any) { // TODO: Daniel, can you fix this type?
-  const user = getGlobal().currentUser
-  if (user) {
-    router.navigate('/')
-    setGlobal({ flashMessage: 'No current user' })
-  }
-  return user
-}
-
 export async function reloadCurrentUser(): Promise<User> {
   const user = await getCurrentUser()
   setGlobal({ currentUser: user })
   return user
 }
 
-export async function signOut() {
+export async function signOut(): Promise<void> {
   await deleteSession()
   Honeybadger.resetContext();
   // TODO: There should be a way of doing this without a hard redirect
   (window.location as any) = '/'
 }
 
-export function toggleLocale() {
-  // const newLocale = cookieLocale() === 'en' ? 'es' : 'en'
-  // CookieJar.set(Cookie.LOCALE, newLocale)
-  // setGlobal({ locale: newLocale })
-  // i18n.activate(newLocale)
-  // // TODO: How do we stop doing this?
+export function toggleLocale(): void {
+  const newLocale = cookieLocale() === 'en' ? 'es' : 'en'
+  CookieJar.set(Cookie.LOCALE, newLocale)
+  setGlobal({ locale: newLocale })
+  i18n.activate(newLocale)
+  // TODO: How do we stop doing this?
   // window.location.reload()
 }
 
@@ -61,11 +45,63 @@ export function cookieLocale(): GLLocales {
   return locale as GLLocales
 }
 
+export class GRegisteringUser {
+  firstName: string = ''
+
+  lastName: string = ''
+
+  email: string = ''
+
+  mobileNumber: string= ''
+
+  password: string= ''
+
+  locale: GLLocales= 'en'
+}
+
+export class GRegisteringLocation {
+  name: string = ''
+
+  zipCode: string = ''
+
+  email: string = ''
+
+  phoneNumber: string = ''
+
+  website: string = ''
+
+  permalink: string = ''
+
+  category: LocationCategories | null = null
+
+  employeeCount: number | null = null
+
+  dailyReminderHour = 8
+
+  dailyReminderAMPM: 'am' | 'pm' = 'am'
+
+  remindMon = true
+
+  remindTue = true
+
+  remindWed = true
+
+  remindThu = true
+
+  remindFri = true
+
+  remindSat = true
+
+  remindSun = true
+}
+
+setGlobal({
+  locale: cookieLocale(),
+  i18n,
+  currentUser: null,
+  test: null,
+  registeringUser: SessionStorage.getRegisteringUser() || new GRegisteringUser(),
+  registeringLocation: SessionStorage.getRegisteringLocation() || new GRegisteringLocation(),
+})
+
 i18n.activate(cookieLocale())
-
-addReducer('increment', (global, dispatch, i = 0) => ({
-  x: global.x + i,
-}))
-
-// TODO: This doesn't work
-// const d = useDispatch('increment')

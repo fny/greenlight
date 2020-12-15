@@ -1,13 +1,13 @@
-import colors from 'src/misc/colors'
-import { today, tomorrow } from 'src/util'
-import CutoffTime from 'src/misc/CutoffTime'
+import colors from 'src/config/colors'
+import { today, tomorrow } from 'src/helpers/util'
+import CutoffTime from 'src/helpers/CutoffTime'
 import { t } from '@lingui/macro'
 
 import { DateTime } from 'luxon'
 import { User } from './User'
 import {
   Model, attribute as attr, initialize, STRING, DATETIME, BOOLEAN, hasOne,
-} from './Model'
+} from 'src/lib/Model'
 
 export const CUTOFF_TIME = new CutoffTime('2020-10-08 18:00')
 

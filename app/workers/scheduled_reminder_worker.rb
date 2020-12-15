@@ -1,30 +1,35 @@
 # frozen_string_literal: true
-# TODO: Generalize
+
 class ScheduledReminderWorker < ApplicationWorker
-  def perform(location_permalink)
-    location = Location.includes(
-      :location_accounts,
-      location_accounts: { user: :parents }).
-      find_by!(permalink: location_permalink)
+  REMINDER_DAYS = %i[
+    remind_sun remind_mon remind_tue remind_wed remind_thu remind_fri remind_sat
+  ].freeze
 
-    users_to_notify = Set.new
+  sidekiq_options retry: 3
 
-    location.location_accounts.each do |la|
-      if la.role.student?
-        la.user.parents.each do |p|
-          users_to_notify.add(p)
-        end
-      else
-        users_to_notify.add(la.user)
-      end
-    end
+  def perform
+    current_time = Time.now.in_time_zone('America/New_York')
 
-    users_to_notify.each do |u|
-      if u.completed_welcome_at
-        ReminderWorker.perform_async(u.id)
-      else
-        InviteWorker.perform_async(u.id)
-      end
-    end
+    reminder_query = {
+      daily_reminder_time: current_time.hour,
+    }
+
+    reminder_day = REMINDER_DAYS[current_time.wday]
+    reminder_query[reminder_day] = true
+
+    user_ids = UserSettings.where(
+      reminder_query
+    ).where.not(
+      daily_reminder_type: 'none',
+      override_location_reminders: true
+    ).pluck(:user_id).to_set
+
+    user_ids_from_location = Location.where(
+      reminder_query
+    ).all.flat_map { |x| x.users_to_notify.to_a }.map(&:id)
+
+    user_ids = user_ids.merge(user_ids_from_location)
+
+    user_ids.each { |user_id| ReminderWorker.perform_async(user_id) }
   end
 end

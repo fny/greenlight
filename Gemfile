@@ -63,6 +63,8 @@ gem 'faker'
 gem 'faraday'
 # A lightning fast JSON:API serializer for Ruby Objects.
 gem 'fast_jsonapi'
+# Implementation of Jaro-Winkler string similary
+gem 'jaro_winkler'
 # JSON web tokens
 gem 'jwt'
 # Tame Rails' default policy to log everything
@@ -77,6 +79,8 @@ gem 'phonelib'
 gem 'plivo'
 # The express way to send email
 gem 'pony'
+# Rails Locale Data Repository
+gem 'rails-i18n', '~> 6.0.0'
 # Advanced seed data handling for Rails
 gem 'seed-fu', '~> 2.3'
 # Control flow tracing.

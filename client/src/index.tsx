@@ -6,22 +6,24 @@ import ReactDOM from 'react-dom'
 import Framework7 from 'framework7/framework7.esm.bundle'
 import Framework7React from 'framework7-react'
 import App from './App'
-import * as serviceWorker from './serviceWorker'
+import * as serviceWorker from './initializers/serviceWorker'
 
 import 'framework7/css/framework7.bundle.css'
 import 'framework7-icons'
 
-import './fonts/Poppins/index.css'
-import './index.css'
+import 'src/assets/fonts/Poppins/index.css'
+import 'src/assets/styles/index.css'
 
 import { getCurrentUser } from './api'
-import logger from './logger'
+import logger from './helpers/logger'
 
 // Init Framework7-React plugin
 Framework7.use(Framework7React)
 
 function render() {
+  // window.onload = () => {
   ReactDOM.render(<App />, document.getElementById('root'))
+  // }
 }
 
 function startApp() {
@@ -30,7 +32,7 @@ function startApp() {
       setGlobal({ currentUser: user, locale: user.locale })
     })
     .catch((err) => {
-      if (err.response && err.response.status !== 401) {
+      if (err.response && err.response.status === 401) {
         logger.error(err)
       } else {
         throw err

@@ -57,6 +57,9 @@ class InviteWorker < ApplicationWorker
     ).src
   end
 
+  # <Description>
+  #
+  # @param [Integer] user_id
   def perform(user_id)
     user = User.find(user_id)
     user.reset_magic_sign_in_token!

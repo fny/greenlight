@@ -8,7 +8,7 @@ import ReactCodeInput from 'react-verification-code-input'
 import * as Yup from 'yup'
 
 import { FunctionComponent, F7Props } from 'src/types'
-import SubmissionHandler from 'src/misc/SubmissionHandler'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 
 import './MobileVerificationPage.css'
 
@@ -20,14 +20,14 @@ interface MobileInput {
 const schema = Yup.object<MobileInput>().shape({
   mobileNumber: Yup.string()
     .required()
-    .matches(/^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})( x\d{4})?$/gm, {
+    .matches(/^\(?(\d{3})\)?[-. ]?(\d{3})[-. ]?(\d{4})( x\d{4})?$/gm, {
       excludeEmptyString: true,
       message: t({ id: 'MobileVerificationPage.invalid_phone_number', message: 'Invalid Phone Number' }),
     }),
   mobileCarrier: Yup.string().required(),
 })
 
-const submissionHandler = new SubmissionHandler(f7)
+const submissionHandler = new SubmitHandler(f7)
 
 const MobileVerificationPage: FunctionComponent<F7Props> = () => {
   const [isCodeSent, setCodeSent] = useState(false)
