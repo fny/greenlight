@@ -21,7 +21,7 @@ class LocationAccount < ApplicationRecord
 
   enumerize :role, in: ROLES
   enumerize :permission_level, in: PERMISSION_LEVELS, default: NONE
-  validates :external_id, uniqueness: { scope: :location }
+  # validates :external_id, uniqueness: { scope: :location }, allow_nil: true
 end
 
 # == Schema Information

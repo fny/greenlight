@@ -43,14 +43,11 @@ class ReminderWorker < ApplicationWorker
 
     user.update_columns(daily_reminder_sent_at: Time.now)
 
-    # if user.needs_to_submit_survey_for.empty?
-    #   return
-    # end
     I18n.with_locale(user.locale) do
       if user.daily_reminder_type.email?
         SendGridEmail.new(
           to: user.name_with_email,
-          subject: I18n.t('emails.reminders.subject'),
+          subject: I18n.t('emails.reminder.subject'),
           html: eval(html_template),
           text: eval(sms_template),
         ).run

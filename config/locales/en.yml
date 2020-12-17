@@ -4,7 +4,7 @@ en:
     magic_sign_in:
       subject: ✨ Greenlight Magic Sign In
       title: Use this link to access Greenlight
-      salutation:
+      salutation: Hello %{name},
       body: |
         You requested a magic link to sign in and here it is!
         Note that this link expires in 1 hour and can only be used once.
