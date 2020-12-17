@@ -1,6 +1,9 @@
 .env
 .env.local
 
+# Ignore personal scratch spaces
+/scratch/scratch_me*
+
 # Ignore bundler config.
 /.bundle
 
