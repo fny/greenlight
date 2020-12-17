@@ -112,7 +112,7 @@ export function transformRelationship<T extends Model>(entity: T, relationshipNa
 }
 
 function tranformRelationships<T extends Model>(entity: T, record: Record<any>) {
-  if (!record.relationships) return
+  if (!record || !record.relationships) return
   entity._relationships = record.relationships
   for (const [rel, value] of Object.entries(record.relationships)) {
     transformRelationship<T>(entity, rel, value)
