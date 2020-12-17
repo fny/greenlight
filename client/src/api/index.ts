@@ -22,7 +22,7 @@ logger.dev(BASE_URL)
 
 export const v1 = axios.create({
   baseURL: BASE_URL,
-  timeout: 3000,
+  timeout: 10000,
   withCredentials: true,
 })
 
