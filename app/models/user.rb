@@ -19,6 +19,7 @@ class User < ApplicationRecord
   extend Enumerize
   extend Memoist
   include PasswordResetable
+  include Collectable
 
   TIME_ZONES = ActiveSupport::TimeZone.all.map { |x| x.tzinfo.name }
   DAILY_REMINDER_TYPES = [
@@ -51,7 +52,9 @@ class User < ApplicationRecord
   has_many :medical_events, inverse_of: :user
   has_many :location_accounts, inverse_of: :user
   has_many :locations, through: :location_accounts
-  has_many :cohorts, through: :cohort_user
+
+  has_many :cohort_users, inverse_of: :user
+  has_many :cohorts, through: :cohort_users
 
   has_one :settings, class_name: 'UserSettings', inverse_of: :user
 
@@ -350,6 +353,32 @@ class User < ApplicationRecord
 
   def reset_welcome!
     update_columns({completed_welcome_at: nil })
+  end
+
+  def purge!(cascade: false)
+    assocs_to_destroy_ordered = [
+      child_relationships,
+      parent_relationships,
+      cohort_users,
+      location_accounts,
+      medical_events,
+      greenlight_statuses,
+    ].freeze
+  
+    ActiveRecord::Base.transaction do
+      archive!
+
+      if cascade
+        children.each { |child| child.purge!(cascade: true) }
+      end
+
+      assocs_to_destroy_ordered.each(&:destroy_all)
+
+      settings&.destroy
+      password_reset&.destroy
+
+      self.destroy
+    end
   end
 
   private

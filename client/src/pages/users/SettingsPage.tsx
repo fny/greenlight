@@ -1,18 +1,44 @@
 import React, { useGlobal } from 'reactn'
 import {
-  Page, Navbar, List, ListItem, AccordionContent,
+  f7, Page, Navbar, List, ListItem, AccordionContent, Button, Block,
 } from 'framework7-react'
 
+import { F7Props } from 'src/types'
 import { toggleLocale, signOut } from 'src/initializers/providers'
-import { t } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import { assertNotNull } from 'src/helpers/util'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 import { dynamicPaths, paths } from 'src/config/routes'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { User } from 'src/models'
 
-export default function SettingsPage() {
+export default function SettingsPage(props: F7Props) {
   const [currentUser] = useGlobal('currentUser') as [User, any]
   assertNotNull(currentUser)
+
+  const deleteHandler = new SubmitHandler(f7, {
+    onSuccess: () => {
+      signOut()
+    },
+    onSubmit: async () => {
+    },
+    errorTitle: t({ id: 'Common.failed', message: 'Action Failed' }),
+    submittingMessage: t({ id: 'SettingsPage.deleting_account', message: 'Deleting...' }),
+    successMessage: t({ id: 'SettingsPage.delete_success', message: 'You just deleted your account.' }),
+  })
+
+  const handleDeleteAttempt = () => {
+    f7.dialog.confirm(
+      t({
+        id: 'SettingsPage.delete_account_caution',
+        message: "Your account and the related information \
+        will be removed permanently. This action is irreversible. \
+        You will be automatically logged out."
+      }),
+      t({ id: 'SettingsPage.delete_account', message: 'Delete Account' }),
+      () => {},
+    )
+  }
 
   return (
     <Page>
@@ -127,6 +153,12 @@ export default function SettingsPage() {
           title={t({ id: 'Common.sign_out', message: 'Sign Out' })}
         />
       </List>
+
+      <Block>
+        <Button outline color="gray" onClick={handleDeleteAttempt}>
+          <Trans id="SettingsPage.delete_account">Delete Account</Trans>
+        </Button>
+      </Block>
     </Page>
   )
 }
