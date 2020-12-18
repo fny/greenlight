@@ -11,18 +11,18 @@ export interface APIProviderProps extends F7Props {
   showLoadingOnUpdate?: boolean
 }
 
-interface APIState {
-  data: any
+interface APIState<T> {
+  data: T
   isLoading: boolean
 }
 
-const initialState: APIState = {
+const initialState: APIState<any> = {
   data: undefined,
   isLoading: false,
 }
 
-interface APIContextValue extends APIState {
-  update: (...params: any[]) => Promise<any>
+interface APIContextValue<T> extends APIState<T> {
+  update: (...params: any[]) => Promise<T | void>
   setData: (data: any) => any
 }
 
@@ -30,16 +30,16 @@ type SetLoadingAction = {
   type: 'SetLoading'
 }
 
-type SetDataAction = {
+type SetDataAction<T> = {
   type: 'SetData'
   payload: {
-    data: any
+    data: Partial<T> | null
   }
 }
 
-type Action = SetLoadingAction | SetDataAction
+type Action<T> = SetLoadingAction | SetDataAction<T>
 
-const reducer = (state: APIState, action: Action) => {
+const reducer = <T extends Object>(state: APIState<T>, action: Action<T>) => {
   switch (action.type) {
     case 'SetLoading':
       return {
@@ -59,19 +59,17 @@ const reducer = (state: APIState, action: Action) => {
   }
 }
 
-const APIContext = createContext<APIContextValue>({
+const APIContext = createContext<APIContextValue<any>>({
   ...initialState,
   update: () => Promise.resolve(),
   setData: () => {},
 })
 
 export const withAPI = <P extends APIProviderProps>(Component: ComponentType<P>): ComponentType<P> => {
-  return ({ fetchData, showLoadingOnUpdate = false, initialCall = false, ...props }) => {
+  return ({ fetchData, showLoadingOnUpdate = false, ...props }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
-    console.log('rendering', state)
     const handleUpdate = useCallback(async (...params) => {
-      console.log('handle update')
       try {
         dispatch({
           type: 'SetLoading',
@@ -104,9 +102,7 @@ export const withAPI = <P extends APIProviderProps>(Component: ComponentType<P>)
     }, [])
 
     useEffect(() => {
-      if (initialCall) {
-        handleUpdate()
-      }
+      handleUpdate()
     }, [])
 
     return (
