@@ -5,7 +5,7 @@ import {
 import { t, Trans } from '@lingui/macro'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
-export default function DukeScheduleTestPage() {
+export default function DukeScheduleTestPage(): JSX.Element {
   return (
     <Page>
       <Navbar
@@ -22,15 +22,15 @@ export default function DukeScheduleTestPage() {
         </p>
 
         <p style={{ fontSize: '1.5rem', textAlign: 'center', fontWeight: 'bold' }}>
-          <Trans id="DukeScheduleTestPage.instructions2">Call <a href="tel:919-385-0429">919-385-0429</a>, then Dial 2</Trans>
+          <Trans id="DukeScheduleTestPage.instructions2">Call <a href="tel:1-919-385-0429" target="_blank">919-385-0429</a>, then Dial 2</Trans>
         </p>
 
         <p><Trans id="DukeScheduleTestPage.instructions3">Tell whomever you speak with that you need to schedule a test and you use the Greenlight app.</Trans></p>
 
         <p>
           <Trans id="DukeScheduleTestPage.instructions4">
-            You should be scheduled within 24 hours and recieve a result the following day.
-            You should not need to schedule an appointment before the test.
+            You should be scheduled within 24 hours and receive a result the following day.
+            If you have symptoms, you may need to schedule a telemedicine appointment prior to testing
           </Trans>
         </p>
 
@@ -50,7 +50,7 @@ export default function DukeScheduleTestPage() {
         <p>
 
           <Trans id="DukeScheduleTestPage.support">
-            Still need help? Contact Greenlight support <a href="mailto:help@greenlightready.com">help@greenlightready.com</a>
+            Still need help? Contact Greenlight support <a href="mailto:help@greenlightready.com" target="_blank">help@greenlightready.com</a>
           </Trans>
         </p>
       </Block>
