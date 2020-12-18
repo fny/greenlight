@@ -13,12 +13,7 @@ module MailController
 
     post '/v1/mail/invite', auth: false do
       user = User.find_by_email_or_mobile!(params[:emailOrMobile])
-      if user.completed_welcome_at
-        head :not_found
-      else
-        InviteWorker.perform_async(user.id)
-        success_response
-      end
+      InviteWorker.perform_async(user.id)
     end
   end
 end
