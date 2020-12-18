@@ -175,6 +175,10 @@ export async function getUsersForLocation(location: number | string | Location) 
   return getResources<User>(path) as Promise<User[]>
 }
 
+export async function deleteUser(id: string) {
+  await v1.delete(`/users/${id}`)
+}
+
 //
 // Surveys
 //

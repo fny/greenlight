@@ -30,7 +30,7 @@ module UsersController
 
     # Delete a user (self)
     delete '/v1/users/:user_id' do
-      ensure_or_forbidden! { current_user.id == params[:user_id] }
+      ensure_or_forbidden! { current_user.id == params[:user_id].to_i }
 
       current_user.purge!
       @session.destroy

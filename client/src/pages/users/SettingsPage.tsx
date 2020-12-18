@@ -6,6 +6,7 @@ import {
 import { F7Props } from 'src/types'
 import { toggleLocale, signOut } from 'src/initializers/providers'
 import { t, Trans } from '@lingui/macro'
+import { deleteUser } from 'src/api'
 import { assertNotNull } from 'src/helpers/util'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { dynamicPaths, paths } from 'src/config/routes'
@@ -18,9 +19,10 @@ export default function SettingsPage(props: F7Props) {
 
   const deleteHandler = new SubmitHandler(f7, {
     onSuccess: () => {
-      signOut()
+      signOut(false)
     },
     onSubmit: async () => {
+      await deleteUser(currentUser.id)
     },
     errorTitle: t({ id: 'Common.failed', message: 'Action Failed' }),
     submittingMessage: t({ id: 'SettingsPage.deleting_account', message: 'Deleting...' }),
@@ -36,7 +38,9 @@ export default function SettingsPage(props: F7Props) {
         You will be automatically logged out."
       }),
       t({ id: 'SettingsPage.delete_account', message: 'Delete Account' }),
-      () => {},
+      () => {
+        deleteHandler.submit()
+      },
     )
   }
 

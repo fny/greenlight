@@ -24,8 +24,9 @@ export async function reloadCurrentUser(): Promise<User> {
   return user
 }
 
-export async function signOut(): Promise<void> {
-  await deleteSession()
+export async function signOut(hasSession = true): Promise<void> {
+  if (hasSession) await deleteSession()
+
   Honeybadger.resetContext();
   // TODO: There should be a way of doing this without a hard redirect
   (window.location as any) = '/'
