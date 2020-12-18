@@ -258,11 +258,11 @@ export class User extends Model {
   }
 
   yourself__HACK() {
-    return this.locale === 'en' ? 'yourself' : 'ti mismo'
+    return this.locale === 'en' ? 'yourself' : 'su mismo'
   }
 
   you__HACK() {
-    return this.locale === 'en' ? 'you' : 'tu'
+    return this.locale === 'en' ? 'you' : 'su'
   }
 
   hasLocationThatRequiresSurvey() {
