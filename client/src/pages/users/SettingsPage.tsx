@@ -102,7 +102,7 @@ export default function SettingsPage() {
         />
 
         <ListItem
-          link="mailto:help@greenlightready.com"
+          link={paths.helpScoutPath}
           title={t({ id: 'SettingsPage.support', message: 'Support' })}
         />
 
