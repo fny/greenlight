@@ -34,6 +34,7 @@ en:
           attributes:
             base:
               email_or_mobile_invalid: "Invalid email or mobile number."
-              email_not_found: "No account found for that email address!"
-              phone_not_found: "No account found for that mobile number!"
+              email_not_found: "No account found for that email address."
+              phone_not_found: "No account found for that mobile number."
+              invalid_password: "Password is incorrect."
               never_set_password: "You've never set your password. Check your email for an invite to sign in."

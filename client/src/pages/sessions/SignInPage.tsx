@@ -18,8 +18,9 @@ import './SignInPage.css'
 import { createSession, getCurrentUser } from 'src/api'
 import { t, Trans } from '@lingui/macro'
 import { paths, dynamicPaths } from 'src/config/routes'
-import { F7Props } from 'src/types'
+import { F7Props, JSONAPIError } from 'src/types'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import logger from 'src/helpers/logger'
 
 export default function SignInPage(props: F7Props) {
   const emailOrMobileRef = React.createRef<EmailOrPhoneListInput>()
@@ -55,12 +56,26 @@ export default function SignInPage(props: F7Props) {
       props.f7router.navigate(dynamicPaths.currentUserHomePath())
     } catch (error) {
       f7.dialog.close()
-      debugger
-
-      f7.dialog.alert(
-        t({ id: 'SignInPage.credentials_incorrect', message: 'The credentials your provided are incorrect.' }),
-        t({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' }),
-      )
+      if (error.response && error.response.status === 422) {
+        f7.dialog.alert(
+          error.response.data.errors.map((x: JSONAPIError) => x.detail).join(' '),
+          t({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' }),
+        )
+      } else if (error.response) {
+        f7.dialog.alert(
+          `${t({ id: 'SignInPage.something_went_wrong', message: 'Something went wrong' })} (${error.response.status})`,
+          t({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' }),
+        )
+        logger.notify(error, { name: 'SignInServerError' })
+        logger.error(error)
+      } else {
+        f7.dialog.alert(
+          t({ id: 'SignInPage.something_went_wrong', message: 'Something went wrong' }),
+          t({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' }),
+        )
+        logger.notify(error, { name: 'SignInError' })
+        logger.error(error)
+      }
     }
   }
 

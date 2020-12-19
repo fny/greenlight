@@ -103,9 +103,9 @@ class UserSerializer < ApplicationSerializer
         # TODO: The spec doesn't really test these correctly... invalid open api
         # pass schemas
         # TODO: Fix swagger schema file
-        lastGreenlightStatus({ '$ref' => '/components/schemas/relationshipToOne' })
-        children({ '$ref' => '/components/schemas/relationshipToMany' })
-        locationAccounts({ '$ref' => '/components/schemas/relationshipToMany' })
+        # lastGreenlightStatus({ '$ref' => '/components/schemas/relationshipToOne' })
+        # children({ '$ref' => '/components/schemas/relationshipToMany' })
+        # locationAccounts({ '$ref' => '/components/schemas/relationshipToMany' })
       }
     }
   end

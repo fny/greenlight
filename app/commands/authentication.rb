@@ -27,6 +27,6 @@ class Authentication < ApplicationCommand
     authenicated = user.authenticate(password)
     return authenicated if authenicated
 
-    fail!(:base, :invalid_pasword)
+    fail!(:base, :invalid_password)
   end
 end

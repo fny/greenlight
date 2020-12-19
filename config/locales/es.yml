@@ -36,7 +36,8 @@ es:
         authentication:
           attributes:
             base:
-              email_or_mobile_invalid: "Correo electrónico o número de móvil no válido."
-              email_not_found: "No se encontró ninguna cuenta para ese correo electrónico."
+              email_or_mobile_invalid: "Correo electrónico o número de móvil no válido"
+              email_not_found: "No se encontró ninguna cuenta para ese correo electrónico"
               phone_not_found: "No se encontró ninguna cuenta para ese número de móvil"
+              invalid_password: "Contraseña no válido"
               never_set_password: "Nunca estableces tu contraseña. Busque una invitación en su correo electrónico."
