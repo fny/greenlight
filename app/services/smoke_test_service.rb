@@ -24,6 +24,11 @@ class SmokeTestService
     ensure_valid_token!
   end
 
+  def populate_and_return
+    populate
+    exposure
+  end
+
   def populate
     ensure_no_context_conflict!
 
@@ -82,6 +87,14 @@ class SmokeTestService
     unless @token == TMP_TOKEN
       raise UnauthorizedError
     end
+  end
+
+  def exposure
+    location = Location.find_by!(permalink: TEST_LOCATION_PERMALINK)
+
+    {
+      location: location
+    }
   end
 
   def user_ids
