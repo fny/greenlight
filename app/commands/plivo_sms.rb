@@ -36,8 +36,8 @@ class PlivoSMS < ApplicationCommand
 
     if Rails.env.production?
       PlivoSMS.client.messages.create(
-        Phonelib.parse(from, 'US').full_e164,
-        [Phonelib.parse(to, 'US').full_e164],
+        PhoneNumber.parse(from),
+        [PhoneNumber.parse(to)],
         message
       )
     else

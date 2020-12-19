@@ -9,8 +9,7 @@ Fabricator(:user) do
   mobile_number {
     number = ''
     number = Faker::PhoneNumber.cell_phone_in_e164[3, 10] until PhoneNumber.valid?(number)
-
-    Phonelib.parse(number, 'US').full_e164
+    PhoneNumber.parse(number)
   }
   password 'super_secret_password'
 end

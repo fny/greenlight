@@ -69,7 +69,7 @@ class User < ApplicationRecord
 
   validates :locale, inclusion: { in: Greenlight::SUPPORTED_LOCALES }
   validates :email, 'valid_email_2/email': true, uniqueness: true, allow_nil: true
-  validates :mobile_number, phone: { countries: :us }, allow_nil: true, uniqueness: true
+  validates :mobile_number, phone: { countries: PhoneNumber::SUPPORTED_COUNTRY_CODES }, allow_nil: true, uniqueness: true
 
   validates :password, length: { minimum: 8 }, allow_blank: true
 
@@ -212,7 +212,7 @@ class User < ApplicationRecord
   def mobile_number=(value)
     return if value.blank?
 
-    parsed = Phonelib.parse(value, 'US').full_e164
+    parsed = PhoneNumber.parse(value)
     parsed = nil if parsed.blank?
     self[:mobile_number] = parsed
   end

@@ -4,10 +4,10 @@ Fabricator(:location) do
   permalink    { Faker::Internet.unique.domain_word }
   phone_number {
     number = ''
-    while !Phonelib.parse(number, 'US').valid?
+    while PhoneNumber.valid?(number)
       number = Faker::PhoneNumber.cell_phone_in_e164[3, 10]
     end
-    Phonelib.parse(number, 'US').full_e164
+    PhoneNumber.parse(number)
   }
   email        "help@school.edu"
   category     "school"

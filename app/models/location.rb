@@ -48,7 +48,7 @@ class Location < ApplicationRecord
   def phone_number=(value)
     return if value.blank?
 
-    parsed = Phonelib.parse(value, 'US').full_e164
+    parsed = PhoneNumber.parse(value)
     parsed = nil if parsed.blank?
     self[:phone_number] = parsed
   end
