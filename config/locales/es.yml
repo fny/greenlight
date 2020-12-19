@@ -30,3 +30,13 @@ es:
     magic_sign_in: "Greenlight iniciar sesion con magia: %{link}"
     password_reset: "Greenlight restablecimiento de contrasena: %{link}"
     reminder: "Greenlight le recuerda que envie su encuesta: %{link}"
+  activemodel:
+    errors:
+      models:
+        authentication:
+          attributes:
+            base:
+              email_or_mobile_invalid: "Correo electrónico o número de móvil no válido."
+              email_not_found: "No se encontró ninguna cuenta para ese correo electrónico."
+              phone_not_found: "No se encontró ninguna cuenta para ese número de móvil"
+              never_set_password: "Nunca estableces tu contraseña. Busque una invitación en su correo electrónico."

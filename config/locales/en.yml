@@ -27,3 +27,13 @@ en:
     password_reset: "Greenlight Password Reset: %{link}"
     magic_sign_in: "Greenlight Magic Sign In: %{link}"
     reminder: "Greenlight reminding you to send out your symptom surveys!"
+  activemodel:
+    errors:
+      models:
+        authentication:
+          attributes:
+            base:
+              email_or_mobile_invalid: "Invalid email or mobile number."
+              email_not_found: "No account found for that email address!"
+              phone_not_found: "No account found for that mobile number!"
+              never_set_password: "You've never set your password. Check your email for an invite to sign in."

@@ -67,6 +67,8 @@ gem 'fast_jsonapi'
 gem 'jaro_winkler'
 # JSON web tokens
 gem 'jwt'
+# Pagination
+gem 'kaminari'
 # Tame Rails' default policy to log everything
 gem 'lograge'
 # ActiveSupport::Memoizable with a few enhancements

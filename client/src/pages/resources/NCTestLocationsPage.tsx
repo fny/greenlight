@@ -2,7 +2,7 @@ import { t } from '@lingui/macro'
 import { Navbar, Page } from 'framework7-react'
 import React from 'react'
 
-export default function NCTestLocationsPage() {
+export default function NCTestLocationsPage(): JSX.Element {
   return (
     <Page>
       <Navbar
@@ -17,6 +17,7 @@ export default function NCTestLocationsPage() {
       />
       <div className="expand">
         <iframe
+          title="Lookup Test Location"
           src="https://my.castlighthealth.com/corona-virus-testing-sites/?embed=true&amp;guidelines=northcarolina"
           frameBorder="0"
           width="100%"

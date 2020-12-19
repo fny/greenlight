@@ -1,27 +1,31 @@
 /* eslint-disable no-console */
 
-import Honeybadger from 'honeybadger-js'
+import Honeybadger, { HoneyBadgerNotifyOptions } from 'src/initializers/honeybadger'
 import env from '../config/env'
 
 const logger = {
-  notify(...args: any[]) {
-    Honeybadger.notify(...args)
+  notify(error: any | HoneyBadgerNotifyOptions, options?: HoneyBadgerNotifyOptions): void {
+    if (options) {
+      Honeybadger.notify(error, options)
+    } else {
+      Honeybadger.notify(error)
+    }
   },
-  log(...args: any[]) {
+  log(...args: any[]): void {
     console.log(...args)
   },
-  warn(...args: any[]) {
+  warn(...args: any[]): void {
     console.warn(...args)
   },
-  error(...args: any[]) {
+  error(...args: any[]): void {
     console.error(...args)
   },
-  dev(...args: any[]) {
+  dev(...args: any[]): void {
     if (env.isDevelopment()) {
       console.log(...args)
     }
   },
-  devReturn(args: any) {
+  devReturn(args: any): void {
     if (env.isDevelopment()) {
       console.log(args)
     }

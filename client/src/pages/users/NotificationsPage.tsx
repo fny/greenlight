@@ -102,9 +102,11 @@ export default function NotificationsPage(props: F7Props) {
               label={t({ id: 'NotificationsPage.how_to_remind', message: 'How should we send you reminders?' })}
               type="select"
             >
+              {user.mobileNumber && (
               <option value={DailyReminderType.TEXT}>
                 {t({ id: 'DailyReminder.send_via_text', message: 'Send Reminders via Text' })}
               </option>
+              )}
               {user.email && (
                 <option value={DailyReminderType.EMAIL}>
                   {t({ id: 'DailyReminder.send_via_email', message: 'Send Reminders via Email' })}

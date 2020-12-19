@@ -420,3 +420,11 @@ export function upperCaseFirst(str: string): string {
 export function lowerCaseFirst(str: string): string {
   return str.charAt(0).toLowerCase() + str.slice(1)
 }
+
+export function printObject(obj: any, depth = 0) {
+  return JSON.stringify(obj, (k, v) => (k && v && typeof v !== 'number'
+    ? Array.isArray(v)
+      ? '[object Array]'
+      : `${v}`
+    : v))
+}

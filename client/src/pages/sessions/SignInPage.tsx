@@ -55,6 +55,7 @@ export default function SignInPage(props: F7Props) {
       props.f7router.navigate(dynamicPaths.currentUserHomePath())
     } catch (error) {
       f7.dialog.close()
+      debugger
 
       f7.dialog.alert(
         t({ id: 'SignInPage.credentials_incorrect', message: 'The credentials your provided are incorrect.' }),
