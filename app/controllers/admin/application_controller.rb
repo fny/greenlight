@@ -8,7 +8,7 @@ module Admin
     include CurrentUser
 
     before_action do
-      # ensure_or_not_found! { current_user&.greenlight_admin? }
+      ensure_or_not_found! { current_user&.greenlight_admin? }
     end
   end
 end
