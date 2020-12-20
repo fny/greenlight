@@ -25,6 +25,9 @@ Cop/AvoidKeywordArgumentsInSidekiqWorkers:
   Include:
     - 'app/workers/**/*'
 
+Layout/FirstArrayElementIndentation:
+  Enabled: false
+
 Layout/FirstHashElementIndentation:
   Enabled: false
 

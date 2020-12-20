@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 class SwaggerSchemaBuilder
+  InvalidSwaggerTypeError = Class.new(StandardError)
+  TYPES = %i[string number integer boolean array object].freeze
+
   attr_reader :schema
 
   def self.build(&block)
@@ -22,9 +25,11 @@ class SwaggerSchemaBuilder
 
   def method_missing(method, *args, &block)
     if args.any?
+      raise(InvalidSwaggerTypeError, "Not sure how to handle type #{args[0]}") if TYPES.exclude?(args[0])
       @schema[:properties][method] = { type: args[0] }
       @schema[:properties][method].merge!(args[1..].reduce({}, :merge))
     end
+
     if block_given?
       @schema[:properties][method] = SwaggerSchemaBuilder.build(&block)
     end

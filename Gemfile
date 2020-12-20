@@ -67,14 +67,14 @@ gem 'fast_jsonapi'
 gem 'jaro_winkler'
 # JSON web tokens
 gem 'jwt'
-# Pagination
-gem 'kaminari'
 # Tame Rails' default policy to log everything
 gem 'lograge'
 # ActiveSupport::Memoizable with a few enhancements
 gem 'memoist'
 # A minimal, fast, safe sql executor
 gem 'mini_sql'
+# Pagination
+gem 'pagy'
 # Phone validations
 gem 'phonelib'
 # SMS API and Voice API platform
@@ -89,10 +89,12 @@ gem 'seed-fu', '~> 2.3'
 gem 'self_control', path: 'vendor/gems/self_control'
 # Twilio Sendgrid Email API
 gem 'sendgrid-ruby'
-# Automatically strips all attributes of leading and trailing
-gem 'strip_attributes'
+# Rails forms made easy.
+gem 'simple_form'
 # Performance monitoring
 gem 'skylight'
+# Automatically strips all attributes of leading and trailing
+gem 'strip_attributes'
 # TablePrint shows objects in nicely formatted columns
 gem 'table_print', require: false
 # Email validations

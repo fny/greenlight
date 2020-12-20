@@ -108,11 +108,11 @@ end
 #
 #  id              :bigint           not null, primary key
 #  user_id         :bigint           not null
-#  status          :text             not null
+#  status          :string           not null
 #  submission_date :date             not null
 #  expiration_date :date             not null
 #  follow_up_date  :date             not null
-#  reason          :text
+#  reason          :string
 #  logical_trace   :text
 #  is_override     :boolean          default(FALSE), not null
 #  created_by_id   :bigint

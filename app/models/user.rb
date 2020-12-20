@@ -16,6 +16,10 @@ class User < ApplicationRecord
     daily_reminder_type needs_physician
   ]
 
+  self.queryable_columns = %i[
+    first_name last_name email mobile_number zip_code
+  ]
+
   extend Enumerize
   extend Memoist
   include PasswordResetable
@@ -74,7 +78,7 @@ class User < ApplicationRecord
   validates :password, length: { minimum: 8 }, allow_blank: true
 
   validates :first_name, presence: true
-  validates :first_name, presence: true
+  validates :last_name, presence: true
 
   before_save :timestamp_password
 
@@ -136,10 +140,12 @@ class User < ApplicationRecord
     User.joins(:location_accounts).where('location_accounts.external_id': external_id).first
   end
 
+  # @returns [String]
   def full_name
     "#{self.first_name} #{self.last_name}"
   end
 
+  # @returns [String]
   def name_with_email
     "\"#{full_name}\" <#{email}>"
   end
@@ -159,7 +165,7 @@ class User < ApplicationRecord
 
   # @returns [ActiveRecord::Relation]
   def child_locations
-    Location.joins(<<~SQL)
+    Location.joins(<<~SQL.squish)
       INNER JOIN location_accounts ON location_id = locations.id
       INNER JOIN parents_children ON parents_children.child_id = location_accounts.user_id
     SQL
@@ -376,32 +382,32 @@ end
 # Table name: users
 #
 #  id                                 :bigint           not null, primary key
-#  first_name                         :text             default("Greenlight User"), not null
-#  last_name                          :text             default("Unknown"), not null
-#  password_digest                    :text
+#  first_name                         :string           default("Greenlight User"), not null
+#  last_name                          :string           default("Unknown"), not null
+#  password_digest                    :string
 #  password_set_at                    :datetime
-#  magic_sign_in_token                :text
+#  magic_sign_in_token                :string
 #  magic_sign_in_sent_at              :datetime
-#  auth_token                         :text
+#  auth_token                         :string
 #  auth_token_set_at                  :datetime
-#  email                              :text
-#  email_confirmation_token           :text
+#  email                              :string
+#  email_confirmation_token           :string
 #  email_confirmation_sent_at         :datetime
 #  email_confirmed_at                 :datetime
-#  email_unconfirmed                  :text
-#  mobile_number                      :text
-#  mobile_carrier                     :text
+#  email_unconfirmed                  :string
+#  mobile_number                      :string
+#  mobile_carrier                     :string
 #  is_sms_emailable                   :boolean
-#  mobile_number_confirmation_token   :text
+#  mobile_number_confirmation_token   :string
 #  mobile_number_confirmation_sent_at :datetime
 #  mobile_number_confirmed_at         :datetime
-#  mobile_number_unconfirmed          :text
-#  locale                             :text             default("en"), not null
-#  zip_code                           :text
-#  time_zone                          :text             default("America/New_York")
+#  mobile_number_unconfirmed          :string
+#  locale                             :string           default("en"), not null
+#  zip_code                           :string
+#  time_zone                          :string           default("America/New_York")
 #  birth_date                         :date
-#  physician_name                     :text
-#  physician_phone_number             :text
+#  physician_name                     :string
+#  physician_phone_number             :string
 #  daily_reminder_type                :text             default("text"), not null
 #  needs_physician                    :boolean          default(FALSE), not null
 #  invited_at                         :datetime

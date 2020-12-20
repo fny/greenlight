@@ -135,18 +135,6 @@ GEM
     json-schema (2.8.1)
       addressable (>= 2.4)
     jwt (2.2.2)
-    kaminari (1.2.1)
-      activesupport (>= 4.1.0)
-      kaminari-actionview (= 1.2.1)
-      kaminari-activerecord (= 1.2.1)
-      kaminari-core (= 1.2.1)
-    kaminari-actionview (1.2.1)
-      actionview
-      kaminari-core (= 1.2.1)
-    kaminari-activerecord (1.2.1)
-      activerecord
-      kaminari-core (= 1.2.1)
-    kaminari-core (1.2.1)
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -177,6 +165,7 @@ GEM
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
     oj (3.10.14)
+    pagy (3.10.0)
     parallel (1.19.2)
     parallel_tests (3.2.0)
       parallel
@@ -321,6 +310,9 @@ GEM
     sidekiq-cron (1.2.0)
       fugit (~> 1.1)
       sidekiq (>= 4.2.1)
+    simple_form (5.0.3)
+      actionpack (>= 5.0)
+      activemodel (>= 5.0)
     skylight (4.3.1)
       skylight-core (= 4.3.1)
     skylight-core (4.3.1)
@@ -395,13 +387,13 @@ DEPENDENCIES
   foreman
   jaro_winkler
   jwt
-  kaminari
   listen (~> 3.2)
   lograge
   memoist
   mini_sql
   multi_json
   oj
+  pagy
   parallel_tests
   pg (>= 0.18, < 2.0)
   phonelib
@@ -430,6 +422,7 @@ DEPENDENCIES
   shoulda-matchers
   sidekiq (< 7)
   sidekiq-cron (= 1.2)
+  simple_form
   skylight
   solargraph
   spring
@@ -440,7 +433,7 @@ DEPENDENCIES
   xorcist
 
 RUBY VERSION
-   ruby 2.7.2p137
+   ruby 2.7.1p83
 
 BUNDLED WITH
    2.1.4

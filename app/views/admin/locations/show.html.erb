@@ -1,0 +1,104 @@
+<nav>
+  <%= link_to "← Back", admin_locations_path %>&nbsp;|&nbsp;
+  <%= link_to "New", new_admin_location_path %>&nbsp;|&nbsp;
+  <%= link_to "Edit", edit_admin_location_path(@location) %>&nbsp;|&nbsp;
+  <a href="#import-staff">
+    Import Staff
+  </a>&nbsp;|&nbsp;
+  <a href="#import-students">
+    Import Students
+  </a>&nbsp;|&nbsp;
+  <a href="#delete">
+    Delete
+  </a>&nbsp;|&nbsp;
+  <a href="#nuke">
+    Nuke
+  </a>
+</nav>
+
+<h1>
+  Location: <%= @location.name %>
+</h1>
+
+<ul>
+  <li>
+    Name: <%= @location.name %>
+  </li>
+  <li>
+    Handle: <%= @location.permalink %>
+  </li>
+  <li>
+    Cohorts: <%= @location.cohort_schema %>
+  </li>
+  <li>
+  Greenlight Welcome Link:
+  <a href="<%= @location.greenlight_welcome_url %>">
+    <%= @location.greenlight_welcome_url %>
+  </a>
+  </li>
+  <li>
+    Google Drive Staff:
+    <a href="<%= @location.gdrive_staff_roster_url %>">
+      <%= @location.gdrive_staff_roster_id || 'None' %>
+    </a>
+  </li>
+  <li>
+    Google Drive Students:
+    <a href="<%= @location.gdrive_student_roster_url %>">
+      <%= @location.gdrive_student_roster_id || 'None' %>
+    </a>
+  </li>
+</ul>
+
+<h2 id="import-students">Import Students</h2>
+<p>
+  Enter "IMPORT STUDENTS" to import the
+  <a target="_blank" href="<%= @location.gdrive_student_roster_url %>">
+    student roster.
+  </a>
+  You'll receive an email with the results once the import finishes.
+</p>
+
+<%= form_with url: admin_location_import_students_path(@location), method: :post do |form| %>
+  <%= form.text_field :confirmation, autocomplete: 'off' %>
+  <%= form.submit "Import Students" %>
+<% end %>
+
+<h2 id="import-staff">Import Staff</h2>
+
+<p>
+  Enter "IMPORT STAFF" to import the
+  <a target="_blank" href="<%= @location.gdrive_staff_roster_url %>">
+    staff roster.
+  </a>
+  You'll receive an email with the results once the import finishes.
+</p>
+<%= form_with url: admin_location_import_staff_path(@location), method: :post do |form| %>
+  <%= form.text_field :confirmation, autocomplete: 'off' %>
+  <%= form.label :dry_run %>
+  <%= form.check_box :dry_run %>
+  <%= form.submit "Import Staff" %>
+<% end %>
+
+<h2 id="delete">
+  Delete <%= @location.name %>
+</h2>
+<p>Enter "YES I KNOW WHAT I AM DOING" to delete <%= @location.name %>. All users will remain in tact.</p>
+
+<%= form_with url: admin_location_path(@location), method: :delete do |form| %>
+  <%= form.text_field :confirmation, autocomplete: 'off' %>
+  <%= form.label :dry_run %>
+  <%= form.check_box :dry_run %>
+  <%= form.submit "Destroy" %>
+<% end %>
+
+<h2 id="nuke">
+  Nuke <%= @location.name %>
+</h2>
+
+<p>Enter "YES I REALLY KNOW WHAT I AM DOING" to delete <%= @location.name %> and all assocated users.</p>
+
+<%= form_with url: admin_location_path(@location, nuke: true), method: :delete do |form| %>
+  <%= form.text_field :confirmation, autocomplete: 'off' %>
+  <%= form.submit "Nuke" %>
+<% end %>

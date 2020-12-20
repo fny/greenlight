@@ -16,7 +16,7 @@ class PhoneNumber
     value.count('0-9') >= 8
   end
 
-  # @return [String]
+  # @return [String, nil]
   def self.parse(value)
     Phonelib.parse(value, 'US').full_e164
   end

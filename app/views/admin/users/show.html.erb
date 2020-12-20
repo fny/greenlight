@@ -1,0 +1,33 @@
+<nav>
+  <%= link_to "← Back", admin_users_path %>&nbsp;|&nbsp;
+  <%= link_to "New", new_admin_location_path %>&nbsp;|&nbsp;
+  <%= link_to "Edit", edit_admin_user_path(@user) %>&nbsp;|&nbsp;
+  <a href="#delete">
+    Delete
+  </a>&nbsp;|&nbsp;
+  <a href="#nuke">
+    Nuke
+  </a>
+</nav>
+
+<h1>
+  User: <%= @user.full_name %>
+</h1>
+
+<ul>
+  <li>
+    First name: <%= @user.first_name %>
+  </li>
+  <li>
+    Last Name: <%= @user.last_name %>
+  </li>
+  <li>
+    Email: <%= @user.email %>
+  </li>
+  <li>
+    Mobile Number: <%= @user.mobile_number %>
+  </li>
+  <li>
+    Magic Sign In: <%= @user.magic_sign_in_url %>
+  </li>
+</ul>

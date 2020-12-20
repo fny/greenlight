@@ -24,6 +24,7 @@ module SessionsController
       token = params[:token]
       user = User.find_by!(magic_sign_in_token: token)
       sign_in(user, request.ip, remember_me: request_json[:remember_me])
+      user.reset_magic_sign_in_token!
       success_response
     end
 

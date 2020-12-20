@@ -87,7 +87,7 @@ end
 #  id                   :bigint           not null, primary key
 #  user_id              :bigint           not null
 #  greenlight_status_id :bigint           not null
-#  event_type           :text             not null
+#  event_type           :string           not null
 #  occurred_at          :datetime         not null
 #  created_by_id        :bigint
 #  updated_by_id        :bigint

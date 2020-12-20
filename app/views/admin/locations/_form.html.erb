@@ -1,0 +1,15 @@
+
+<%= simple_form_for [:admin, @location] do |f| %>
+  <%= f.input :name %>
+  <%= f.input :category %>
+  <%= f.input :permalink, label: "Handle" %>
+  <%= f.input :email %>
+  <%= f.input :phone_number %>
+  <%= f.input :website %>
+  <%= f.input :employee_count %>
+  <%= f.input :daily_reminder_time %>
+  <%= f.input :cohort_schema, as: :text %>
+  <%= f.input :gdrive_staff_roster_id %>
+  <%= f.input :gdrive_student_roster_id %>
+  <%= f.button :submit %>
+<% end %>

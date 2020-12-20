@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_08_135505) do
+ActiveRecord::Schema.define(version: 2020_12_20_014741) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "cohorts", force: :cascade do |t|
-    t.text "name", null: false
-    t.text "category", null: false
+    t.string "name", null: false
+    t.string "category", null: false
     t.bigint "location_id", null: false
     t.bigint "created_by_id"
     t.bigint "updated_by_id"
@@ -42,11 +42,11 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
 
   create_table "greenlight_statuses", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.text "status", null: false
+    t.string "status", null: false
     t.date "submission_date", null: false
     t.date "expiration_date", null: false
     t.date "follow_up_date", null: false
-    t.text "reason"
+    t.string "reason"
     t.text "logical_trace"
     t.boolean "is_override", default: false, null: false
     t.bigint "created_by_id"
@@ -86,13 +86,13 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
   end
 
   create_table "locations", force: :cascade do |t|
-    t.text "name", null: false
-    t.text "category", null: false
-    t.text "permalink", null: false
-    t.text "phone_number"
-    t.text "email"
-    t.text "website"
-    t.text "zip_code"
+    t.string "name", null: false
+    t.string "category", null: false
+    t.string "permalink", null: false
+    t.string "phone_number"
+    t.string "email"
+    t.string "website"
+    t.string "zip_code"
     t.boolean "hidden", default: true, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -113,6 +113,7 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
     t.string "student_registration_code_downcase"
     t.string "gdrive_staff_roster_id"
     t.string "gdrive_student_roster_id"
+    t.jsonb "cohort_schema", default: {}, null: false
     t.index ["created_by_id"], name: "index_locations_on_created_by_id"
     t.index ["permalink"], name: "index_locations_on_permalink", unique: true
   end
@@ -120,7 +121,7 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
   create_table "medical_events", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "greenlight_status_id", null: false
-    t.text "event_type", null: false
+    t.string "event_type", null: false
     t.datetime "occurred_at", null: false
     t.bigint "created_by_id"
     t.bigint "updated_by_id"
@@ -147,7 +148,7 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
 
   create_table "password_resets", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.text "token"
+    t.string "token"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_password_resets_on_user_id"
@@ -156,7 +157,7 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
   create_table "user_settings", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.boolean "override_location_reminders", default: false, null: false
-    t.text "daily_reminder_type", default: "text", null: false
+    t.string "daily_reminder_type", default: "text", null: false
     t.integer "daily_reminder_time", default: 7, null: false
     t.boolean "remind_mon", default: true, null: false
     t.boolean "remind_tue", default: true, null: false
@@ -171,32 +172,32 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.text "first_name", default: "Greenlight User", null: false
-    t.text "last_name", default: "Unknown", null: false
-    t.text "password_digest"
+    t.string "first_name", default: "Greenlight User", null: false
+    t.string "last_name", default: "Unknown", null: false
+    t.string "password_digest"
     t.datetime "password_set_at"
-    t.text "magic_sign_in_token"
+    t.string "magic_sign_in_token"
     t.datetime "magic_sign_in_sent_at"
-    t.text "auth_token"
+    t.string "auth_token"
     t.datetime "auth_token_set_at"
-    t.text "email"
-    t.text "email_confirmation_token"
+    t.string "email"
+    t.string "email_confirmation_token"
     t.datetime "email_confirmation_sent_at"
     t.datetime "email_confirmed_at"
-    t.text "email_unconfirmed"
-    t.text "mobile_number"
-    t.text "mobile_carrier"
+    t.string "email_unconfirmed"
+    t.string "mobile_number"
+    t.string "mobile_carrier"
     t.boolean "is_sms_emailable"
-    t.text "mobile_number_confirmation_token"
+    t.string "mobile_number_confirmation_token"
     t.datetime "mobile_number_confirmation_sent_at"
     t.datetime "mobile_number_confirmed_at"
-    t.text "mobile_number_unconfirmed"
-    t.text "locale", default: "en", null: false
-    t.text "zip_code"
-    t.text "time_zone", default: "America/New_York"
+    t.string "mobile_number_unconfirmed"
+    t.string "locale", default: "en", null: false
+    t.string "zip_code"
+    t.string "time_zone", default: "America/New_York"
     t.date "birth_date"
-    t.text "physician_name"
-    t.text "physician_phone_number"
+    t.string "physician_name"
+    t.string "physician_phone_number"
     t.text "daily_reminder_type", default: "text", null: false
     t.boolean "needs_physician", default: false, null: false
     t.datetime "invited_at"

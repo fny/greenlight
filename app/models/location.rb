@@ -1,11 +1,40 @@
 # frozen_string_literal: true
 
 class Location < ApplicationRecord
+  extend Enumerize
+
+  CATEGORIES =  [
+    BUSINESS = 'business',
+    SCHOOL = 'school',
+    CLINIC = 'clinic',
+    COMMUNITY = 'community',
+    CONSTRUCTION_SITE = 'construction_site',
+    GROUP = 'group',
+    HOSPITAL = 'hospital',
+    HOTEL = 'hotel',
+    NONPROFIT = 'nonprofit',
+    ORGANIZATION = 'organization',
+    PLACE_OF_WORSHIP = 'place_of_worship',
+    RESTAUARNT = 'restaurant',
+    SHELTER = 'shelter',
+    STORE = 'store',
+    THEATER = 'theater',
+    UNIVERSITY = 'university',
+    LOCATION = 'location',
+    UNKNONW = 'unknown'
+  ].freeze
+
   self.permitted_params = %i[
     name category permalink phone_number email website zip_code hidden
     employee_count
     daily_reminder_time
     remind_mon remind_tue remind_wed remind_thu remind_fri remind_sat remind_sun
+  ]
+
+  self.queryable_columns = %i[
+    name
+    permalink
+    category
   ]
 
   belongs_to :created_by, class_name: 'User', optional: true
@@ -17,16 +46,24 @@ class Location < ApplicationRecord
   # has_many :teachers
   # has_many :staff
 
+  enumerize :category, in: CATEGORIES
 
   validate :registration_codes_are_different
+
+  validates :name, presence: true
+  validates :category, presence: true
+  validates :permalink, presence: true, uniqueness: true, format: {
+    with: /\A[a-z0-9-]+\z/
+  },
+  length: { minimum: 3 }
 
   validates :phone_number, phone: { countries: :us }, allow_nil: true
   validates :registration_code, presence: true
   validates :registration_code_downcase, presence: true
   validates :student_registration_code, presence: true
   validates :student_registration_code_downcase, presence: true
-  validates :permalink, uniqueness: true
   before_validation :set_registration_codes
+
 
   def self.find_by_id_or_permalink(id)
     find_by(id: id) || find_by(permalink: id)
@@ -152,6 +189,22 @@ class Location < ApplicationRecord
     @rimport.process_rows!
   end
 
+  def greenlight_welcome_url
+    "#{Greenlight::SHORT_URL}/go/#{permalink}"
+  end
+
+  def gdrive_staff_roster_url
+    return nil unless gdrive_staff_roster_id
+
+    "https://docs.google.com/spreadsheets/d/#{gdrive_staff_roster_id}"
+  end
+
+  def gdrive_student_roster_url
+    return nil unless gdrive_student_roster_id
+
+    "https://docs.google.com/spreadsheets/d/#{gdrive_student_roster_id}"
+  end
+
   private
 
   def registration_codes_are_different
@@ -182,13 +235,13 @@ end
 # Table name: locations
 #
 #  id                                 :bigint           not null, primary key
-#  name                               :text             not null
-#  category                           :text             not null
-#  permalink                          :text             not null
-#  phone_number                       :text
-#  email                              :text
-#  website                            :text
-#  zip_code                           :text
+#  name                               :string           not null
+#  category                           :string           not null
+#  permalink                          :string           not null
+#  phone_number                       :string
+#  email                              :string
+#  website                            :string
+#  zip_code                           :string
 #  hidden                             :boolean          default(TRUE), not null
 #  created_at                         :datetime         not null
 #  updated_at                         :datetime         not null
@@ -209,6 +262,7 @@ end
 #  student_registration_code_downcase :string
 #  gdrive_staff_roster_id             :string
 #  gdrive_student_roster_id           :string
+#  cohort_schema                      :jsonb            not null
 #
 # Indexes
 #

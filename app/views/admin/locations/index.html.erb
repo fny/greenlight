@@ -1,0 +1,40 @@
+<h1>Locations</h1>
+
+<nav>
+  <%= link_to "New location", new_admin_location_path %>
+</nav>
+
+<br />
+
+<%= form_with url: admin_locations_path, method: :get, class: 'inline' do |form| %>
+  <%= form.text_field :query, value: params[:query] %>
+  <%= form.submit "Search" %>
+<% end %>
+
+<br />
+<table>
+  <thead>
+    <th>ID</th>
+    <td>Name</td>
+    <th>Handle</th>
+    <th>Category</th>
+    <th>Email</th>
+    <th>Phone Number</th>
+    <th>Zip Code</th>
+    <th>Employee Count</th>
+  </thead>
+  <% @locations.each do |l|%>
+    <tr>
+      <td><%= l.id %></td>
+      <td><%= link_to l.name, admin_location_path(l.id) %></td>
+      <td><%= l.permalink %></td>
+      <td><%= l.category %></td>
+      <td><%= l.email %></td>
+      <td><%= l.phone_number %></td>
+      <td><%= l.zip_code %></td>
+      <td><%= l.employee_count %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%== pagy_nav(@pagy) %>

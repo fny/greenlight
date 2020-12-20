@@ -1,0 +1,39 @@
+<h1>Users</h1>
+
+<nav>
+  <%= link_to "New User", new_admin_user_path %>
+</nav>
+
+<br />
+
+<%= form_with url: admin_users_path, method: :get, class: 'inline' do |form| %>
+  <%= form.text_field :query, value: params[:query], placeholder: 'Search' %>
+  <%= form.select :child, ['Child?', 'Y', 'N'], value: params[:child] %>
+  <%= form.select :parent, ['Parent?', 'Y', 'N'], value: params[:parent] %>
+  <%= form.select :staff, ['Staff?', 'Y', 'N'], value: params[:staff] %>
+  <%= form.submit "Search" %>
+<% end %>
+
+<br />
+<table>
+  <thead>
+    <th>ID</th>
+    <td>Name</td>
+    <th>Email</th>
+    <th>Mobile Number</th>
+    <th>Locale</th>
+    <th>Zip Code</th>
+  </thead>
+  <% @users.each do |u|%>
+    <tr>
+      <td><%= u.id %></td>
+      <td><%= link_to u.full_name, admin_user_path(u.id) %></td>
+      <td><%= u.email %></td>
+      <td><%= u.mobile_number %></td>
+      <td><%= u.locale %></td>
+      <td><%= u.zip_code %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%== pagy_nav(@pagy) %>

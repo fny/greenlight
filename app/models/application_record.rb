@@ -3,6 +3,8 @@ class ApplicationRecord < ActiveRecord::Base
   class << self
     # @return [Array<Symbol>]
     attr_accessor :permitted_params
+    # @return [Array<Symbol>]
+    attr_accessor :queryable_columns
   end
 
   # From strip_attributes gem. Automatically strips all attributes of leading
@@ -31,5 +33,20 @@ class ApplicationRecord < ActiveRecord::Base
   # @return [HashWithIndifferentAccess]
   def self.restrict_params(attrs)
     HashWithIndifferentAccess.new(attrs).slice(*self.permitted_params)
+  end
+
+  def self.search(columns, query)
+    return all if query.nil?
+
+    where(
+      columns.map { |col| "#{col} LIKE :query"}.join(' OR '),
+      query: "%#{query}%"
+    )
+  end
+
+  def self.q(query)
+    return all if query.nil?
+
+    self.search(queryable_columns || [], query)
   end
 end

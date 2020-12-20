@@ -21,7 +21,7 @@ end
 #  id                          :bigint           not null, primary key
 #  user_id                     :bigint           not null
 #  override_location_reminders :boolean          default(FALSE), not null
-#  daily_reminder_type         :text             default("text"), not null
+#  daily_reminder_type         :string           default("text"), not null
 #  daily_reminder_time         :integer          default(7), not null
 #  remind_mon                  :boolean          default(TRUE), not null
 #  remind_tue                  :boolean          default(TRUE), not null

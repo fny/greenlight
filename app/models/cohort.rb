@@ -33,8 +33,8 @@ end
 # Table name: cohorts
 #
 #  id            :bigint           not null, primary key
-#  name          :text             not null
-#  category      :text             not null
+#  name          :string           not null
+#  category      :string           not null
 #  location_id   :bigint           not null
 #  created_by_id :bigint
 #  updated_by_id :bigint
