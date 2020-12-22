@@ -1,24 +1,25 @@
-<nav>
-  <%= link_to "← Back", admin_locations_path %>&nbsp;|&nbsp;
-  <%= link_to "New", new_admin_location_path %>&nbsp;|&nbsp;
-  <%= link_to "Edit", edit_admin_location_path(@location) %>&nbsp;|&nbsp;
-  <a href="#import-staff">
-    Import Staff
-  </a>&nbsp;|&nbsp;
-  <a href="#import-students">
-    Import Students
-  </a>&nbsp;|&nbsp;
-  <a href="#delete">
-    Delete
-  </a>&nbsp;|&nbsp;
-  <a href="#nuke">
-    Nuke
-  </a>
-</nav>
+<br />Locations:
+<%= link_to "All", admin_locations_path %> |
+<%= link_to "New", new_admin_location_path %>
 
 <h1>
   Location: <%= @location.name %>
 </h1>
+<nav>
+<%= link_to "Edit", edit_admin_location_path(@location) %> |
+<a href="#import-staff">
+  Import Staff
+</a> |
+<a href="#import-students">
+  Import Students
+</a> |
+<a href="#delete">
+  Delete
+</a> |
+<a href="#nuke">
+  Nuke
+</a>
+</nav>
 
 <ul>
   <li>
@@ -61,6 +62,10 @@
 
 <%= form_with url: admin_location_import_students_path(@location), method: :post do |form| %>
   <%= form.text_field :confirmation, autocomplete: 'off' %>
+  <%= form.label :dry_run %>
+  <%= form.check_box :dry_run %>
+  <%= form.label :overwrite %>
+  <%= form.check_box :overwrite %>
   <%= form.submit "Import Students" %>
 <% end %>
 
@@ -77,26 +82,26 @@
   <%= form.text_field :confirmation, autocomplete: 'off' %>
   <%= form.label :dry_run %>
   <%= form.check_box :dry_run %>
+  <%= form.label :overwrite %>
+  <%= form.check_box :overwrite %>
   <%= form.submit "Import Staff" %>
 <% end %>
 
 <h2 id="delete">
   Delete <%= @location.name %>
 </h2>
-<p>Enter "YES I KNOW WHAT I AM DOING" to delete <%= @location.name %>. All users will remain in tact.</p>
+<p>Enter "DELETE <%= @location.permalink %>" to delete <%= @location.name %>. All users will remain in tact.</p>
 
 <%= form_with url: admin_location_path(@location), method: :delete do |form| %>
   <%= form.text_field :confirmation, autocomplete: 'off' %>
-  <%= form.label :dry_run %>
-  <%= form.check_box :dry_run %>
-  <%= form.submit "Destroy" %>
+  <%= form.submit "Delete" %>
 <% end %>
 
 <h2 id="nuke">
   Nuke <%= @location.name %>
 </h2>
 
-<p>Enter "YES I REALLY KNOW WHAT I AM DOING" to delete <%= @location.name %> and all assocated users.</p>
+<p>Enter "NUKE <%= @location.permalink %>" to delete <%= @location.name %> and all assocated users.</p>
 
 <%= form_with url: admin_location_path(@location, nuke: true), method: :delete do |form| %>
   <%= form.text_field :confirmation, autocomplete: 'off' %>

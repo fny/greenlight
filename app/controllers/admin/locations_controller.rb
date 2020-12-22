@@ -58,12 +58,15 @@ module Admin
     def destroy
       @location = Location.find(params[:id])
       case params[:confirmation]
-      when 'YES I KNOW WHAT I AM DOING'
+      when "DELETE #{@location.permalink}"
         @location.destroy
         redirect_to admin_locations_path, alert: "Congrats! You deleted #{@location.name}"
-      when 'YES I REALLY KNOW WHAT I AM DOING'
-        @location.users.destroy_all
-        @location.destroy_all
+      when "NUKE #{@location.permalink}"
+        ActiveRecord::Base.transaction do
+          # HACK: Why doesn't destroy_all work?
+          @location.users.each(&:destroy)
+          @location.destroy
+        end
         redirect_to admin_locations_path, alert: "Congrats! You deleted #{@location.name} and all its users"
       else
         flash[:alert] = 'Incorrect confirmation code.'

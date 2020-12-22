@@ -32,7 +32,10 @@
         <b><%= msg %></b>
       </div>
     <% end %>
-
+    Main:
+    <%= link_to 'Locations', admin_locations_path %> |
+    <%= link_to 'Reports', admin_reports_path %> |
+    <%= link_to 'Users', admin_users_path %>
    <%= yield %>
   </body>
 </html>

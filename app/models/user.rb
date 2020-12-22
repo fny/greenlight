@@ -33,7 +33,7 @@ class User < ApplicationRecord
 
   enumerize :daily_reminder_type, in: DAILY_REMINDER_TYPES
   enumerize :time_zone, in: TIME_ZONES, default: 'America/New_York'
-
+  enumerize :locale, in: %w[en es], default: 'en'
   scope :affiliated_with, ->(location) {
     permalink = location.is_a?(Location) ? location.permalink : location
     joins(:locations).where(locations: { permalink: permalink })
@@ -44,9 +44,10 @@ class User < ApplicationRecord
     joins('INNER JOIN location_accounts ON location_accounts.user_id = users.id')
       .where.not(location_accounts: { role: LocationAccount::STUDENT })
   }
-  # Users relationships as a child to other users
+  # User's relationships as a child to other users
   has_many :child_relationships, foreign_key: :child_id, class_name: 'ParentChild', inverse_of: :child
-  # Users relationships as a parent to other users
+
+  # User's relationships as a parent to other users
   has_many :parent_relationships, foreign_key: :parent_id, class_name: 'ParentChild', inverse_of: :parent
   has_many :parents, through: :child_relationships, source: :parent
   has_many :children, through: :parent_relationships, source: :child
@@ -63,9 +64,15 @@ class User < ApplicationRecord
 
   # Last Greenlight statuse submitted by the user
   has_one :last_greenlight_status,
-          -> { order('created_at DESC') },
-          class_name: 'GreenlightStatus',
-          inverse_of: :user
+    -> { order('created_at DESC') },
+    class_name: 'GreenlightStatus',
+    inverse_of: :user
+
+  has_many :greenlight_statuses_last_week,
+    -> { order('created_at DESC').where('submission_date >= ?', 7.days.ago) },
+    class_name: 'GreenlightStatus',
+    inverse_of: :user
+
 
   has_secure_password validations: false
   has_secure_token :auth_token

@@ -1,4 +1,3 @@
-
 <%= simple_form_for [:admin, @location] do |f| %>
   <%= f.input :name %>
   <%= f.input :category %>
@@ -7,9 +6,26 @@
   <%= f.input :phone_number %>
   <%= f.input :website %>
   <%= f.input :employee_count %>
-  <%= f.input :daily_reminder_time %>
   <%= f.input :cohort_schema, as: :text %>
+  <small>Example Cohort Schema
+  <pre>
+   {
+     "Team": ["Business", "Ed"],
+     "Timezone": ["EST", "CST", "PST"]
+   }
+  </pre>
+  </small>
   <%= f.input :gdrive_staff_roster_id %>
   <%= f.input :gdrive_student_roster_id %>
+  <h3>Reminders</h3>
+  <%= f.input :reminders_enabled %>
+  <%= f.input :daily_reminder_time %>
+  <%= f.input :remind_mon %>
+  <%= f.input :remind_tue %>
+  <%= f.input :remind_wed %>
+  <%= f.input :remind_thu %>
+  <%= f.input :remind_fri %>
+  <%= f.input :remind_sat %>
+  <%= f.input :remind_sun %>
   <%= f.button :submit %>
 <% end %>

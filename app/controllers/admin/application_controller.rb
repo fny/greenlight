@@ -7,8 +7,10 @@ module Admin
     include Assertions
     include CurrentUser
 
-    before_action do
-      ensure_or_not_found! { current_user&.greenlight_admin? }
+    def ensure_admin!
+      ensure_or_not_found! { current_user&.greenlight_admin? || Rails.env.development? }
     end
+
+    before_action :ensure_admin!
   end
 end

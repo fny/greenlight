@@ -8,9 +8,15 @@
 
 <%= form_with url: admin_users_path, method: :get, class: 'inline' do |form| %>
   <%= form.text_field :query, value: params[:query], placeholder: 'Search' %>
-  <%= form.select :child, ['Child?', 'Y', 'N'], value: params[:child] %>
-  <%= form.select :parent, ['Parent?', 'Y', 'N'], value: params[:parent] %>
-  <%= form.select :staff, ['Staff?', 'Y', 'N'], value: params[:staff] %>
+
+
+  <%= form.label :child %>
+  <%= form.check_box :child, checked: params[:child] == '1' %>
+  <%= form.label :parent %>
+  <%= form.check_box :parent, checked: params[:parent] == '1' %>
+  <%= form.label :staff %>
+  <%= form.check_box :staff, checked: params[:staff] == '1' %>
+
   <%= form.submit "Search" %>
 <% end %>
 

@@ -39,8 +39,8 @@ class ApplicationRecord < ActiveRecord::Base
     return all if query.nil?
 
     where(
-      columns.map { |col| "#{col} LIKE :query"}.join(' OR '),
-      query: "%#{query}%"
+      columns.map { |col| "lower(#{col}) LIKE :query"}.join(' OR '),
+      query: "%#{query.downcase}%"
     )
   end
 

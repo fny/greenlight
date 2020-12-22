@@ -1,20 +1,25 @@
-<nav>
-  <%= link_to "← Back", admin_users_path %>&nbsp;|&nbsp;
-  <%= link_to "New", new_admin_location_path %>&nbsp;|&nbsp;
-  <%= link_to "Edit", edit_admin_user_path(@user) %>&nbsp;|&nbsp;
-  <a href="#delete">
-    Delete
-  </a>&nbsp;|&nbsp;
-  <a href="#nuke">
-    Nuke
-  </a>
-</nav>
+<br />
+Users:
+<%= link_to "All", admin_users_path %> |
+<%= link_to "New", new_admin_location_path %>
 
 <h1>
   User: <%= @user.full_name %>
 </h1>
+<nav>
+<%= link_to "Edit", edit_admin_user_path(@user) %> |
+<a href="#delete">
+  Delete
+</a> |
+<a href="#nuke">
+  Nuke
+</a>
+</nav>
 
 <ul>
+  <li>
+    Greenlight ID: <%= @user.id %>
+  </li>
   <li>
     First name: <%= @user.first_name %>
   </li>
@@ -30,4 +35,105 @@
   <li>
     Magic Sign In: <%= @user.magic_sign_in_url %>
   </li>
+  <li>
+    Completed Welcome At: <%= @user.completed_welcome_at %>
+  </li>
 </ul>
+
+<h2>Location Accounts</h2>
+<% if @user.location_accounts.any? %>
+<ul>
+  <% @user.location_accounts.each do |la| %>
+    <li>
+      <%= la.external_id || 'Blank ID' %>:
+        <%= link_to la.location.name, admin_location_path(la.location) %>
+
+        <%= la.role %>, <%= la.permission_level %>,
+        <%= link_to 'Edit', edit_admin_location_account_path(la) %>
+    </li>
+  <% end %>
+</ul>
+<% else %>
+  <p>None</p>
+<% end %>
+
+<h2>Children</h2>
+<% if @user.children.any? %>
+  <ul>
+    <% @user.children.each do |c| %>
+      <li>
+        <%= link_to c.full_name, admin_user_path(c) %>: <%= c.locations.map { |l| l.name }.join(', ') %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>None</p>
+<% end %>
+<h2>Parents</h2>
+<% if @user.parents.any? %>
+  <ul>
+    <% @user.parents.each do |c| %>
+      <li>
+        <%= link_to c.full_name, admin_user_path(c) %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>None</p>
+<% end %>
+
+<h2 id="actions">Actions</h2>
+<h3>
+  Copy Children
+</h3>
+<p>
+Copy children over from another user that you specify by their numeric Greenlight ID.
+Provide the first name to confirm.
+
+<%= form_with url: admin_user_copy_children_path(@user), method: :post do |form| %>
+  <%= form.label :other_user_id_id %>
+  <%= form.text_field :other_user_id %>
+  <%= form.label :first_name %>
+  <%= form.text_field :first_name %>
+  <%= form.submit "Copy" %>
+<% end %>
+
+<h3>Remove a Child</h3>
+<%= form_with url: admin_user_remove_child_path(@user), method: :post do |form| %>
+  <%= form.label :child_id_id %>
+  <%= form.text_field :child_id %>
+  <%= form.label :first_name %>
+  <%= form.text_field :first_name %>
+  <%= form.submit "Copy" %>
+<% end %>
+
+<h3>Add a Child</h3>
+<%= form_with url: admin_user_add_child_path(@user), method: :post do |form| %>
+  <%= form.label :child_id_id %>
+  <%= form.text_field :child_id %>
+  <%= form.label :first_name %>
+  <%= form.text_field :first_name %>
+  <%= form.submit "Copy" %>
+<% end %>
+
+<h3>
+  Delete <%= @user.full_name %>
+</h3>
+<p>Enter "DELETE <%= @user.first_name %>" to delete <%= @user.first_name %>. All parents and children
+will remain in tact.</p>
+
+<%= form_with url: admin_user_path(@user), method: :delete do |form| %>
+  <%= form.text_field :confirmation, autocomplete: 'off' %>
+  <%= form.submit "Destroy" %>
+<% end %>
+
+<h3>
+  Nuke <%= @user.full_name %>
+</h3>
+
+<p>Enter "NUKE <%= @user.first_name %>" to delete <%= @user.first_name %> and all assocated parents and children.</p>
+
+<%= form_with url: admin_user_path(@user, nuke: true), method: :delete do |form| %>
+  <%= form.text_field :confirmation, autocomplete: 'off' %>
+  <%= form.submit "Nuke" %>
+<% end %>

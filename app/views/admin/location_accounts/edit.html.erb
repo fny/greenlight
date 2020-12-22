@@ -1,0 +1,10 @@
+<h3>
+<%= @location_account.user.full_name %>'s Account at <%= @location_account.location.name %>
+</h3>
+
+<%= simple_form_for [:admin, @location_account] do |f| %>
+  <%= f.input :external_id %>
+  <%= f.input :role %>
+  <%= f.input :permission_level %>
+  <%= f.button :submit %>
+<% end %>
