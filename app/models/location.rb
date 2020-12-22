@@ -263,6 +263,7 @@ end
 #  gdrive_staff_roster_id             :string
 #  gdrive_student_roster_id           :string
 #  cohort_schema                      :jsonb            not null
+#  reminders_enabled                  :boolean          default(TRUE), not null
 #
 # Indexes
 #
