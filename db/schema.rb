@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_20_014741) do
+ActiveRecord::Schema.define(version: 2020_12_22_134004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,11 +63,9 @@ ActiveRecord::Schema.define(version: 2020_12_20_014741) do
   create_table "location_accounts", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "location_id", null: false
-    t.text "external_id"
-    t.text "role", null: false
-    t.text "permission_level"
-    t.text "title"
-    t.text "attendance_status"
+    t.string "external_id"
+    t.string "role", null: false
+    t.string "permission_level"
     t.datetime "approved_by_user_at"
     t.datetime "approved_by_location_at"
     t.bigint "created_by_id"
@@ -114,6 +112,7 @@ ActiveRecord::Schema.define(version: 2020_12_20_014741) do
     t.string "gdrive_staff_roster_id"
     t.string "gdrive_student_roster_id"
     t.jsonb "cohort_schema", default: {}, null: false
+    t.boolean "reminders_enabled", default: true, null: false
     t.index ["created_by_id"], name: "index_locations_on_created_by_id"
     t.index ["permalink"], name: "index_locations_on_permalink", unique: true
   end
