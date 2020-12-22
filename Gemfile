@@ -150,3 +150,8 @@ group :test do
   # Simple testing of Sidekiq jobs
   gem 'rspec-sidekiq'
 end
+
+gem 'fastlane'
+
+plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')
+eval_gemfile(plugins_path) if File.exist?(plugins_path)
