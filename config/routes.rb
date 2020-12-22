@@ -22,7 +22,12 @@ Rails.application.routes.draw do
   mount Sidekiq::Web, at: '/sidekiq'
 
   namespace :admin do
-    resources :users
+    resources :location_accounts
+    resources :users do
+      post :add_child
+      post :remove_child
+      post :copy_children
+    end
     resources :locations do
       resources :users
       post :import_staff
