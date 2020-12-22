@@ -46,7 +46,7 @@ import RegisterLocationDetailsPage from 'src/pages/registration/RegisterLocation
 import RegisterLocationConfirmationPage from 'src/pages/registration/RegisterLocationConfirmationPage'
 import RegisterLocationMessagePage from 'src/pages/registration/RegisterLocationMessagePage'
 import UserLocationPage from 'src/pages/user-locations/UserLocationPage'
-import CohortsPage from 'src/pages/CohortsPage'
+// import CohortsPage from 'src/pages/CohortsPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -88,7 +88,13 @@ const beforeEnter = {
    */
   ifSignedInRedirectTo(path: string) {
     // eslint-disable-next-line func-names
-    return function (this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+    return function (
+      this: Router.Router,
+      routeTo: Router.Route,
+      routeFrom: Router.Route,
+      resolve: Function,
+      reject: Function,
+    ) {
       if (isSignedIn()) {
         reject()
         this.navigate(path)
