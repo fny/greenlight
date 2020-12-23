@@ -193,6 +193,8 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
+    fastlane-plugin-codepush (0.2.1)
+    fastlane-plugin-cordova (3.1.1)
     ffi (1.14.1)
     foreman (0.87.2)
     fugit (1.4.1)
@@ -543,6 +545,8 @@ DEPENDENCIES
   fast_jsonapi
   fast_xs
   fastlane
+  fastlane-plugin-codepush
+  fastlane-plugin-cordova
   foreman
   jaro_winkler
   jwt
