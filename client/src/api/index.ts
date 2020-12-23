@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 
 import { getGlobal, setGlobal } from 'reactn'
-import {
-  assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
-} from 'src/helpers/util'
+import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from 'src/helpers/util'
 import Honeybadger from 'honeybadger-js'
 
 import logger from 'src/helpers/logger'
@@ -12,9 +10,7 @@ import { assignIn } from 'lodash'
 import env from '../config/env'
 import { transformRecordResponse, recordStore } from './stores'
 import { RecordResponse } from '../types'
-import {
-  User, Location, Model, MedicalEvent, GreenlightStatus, UserSettings,
-} from '../models'
+import { User, Location, Model, MedicalEvent, GreenlightStatus, UserSettings } from '../models'
 
 const BASE_URL = `${env.API_URL}/v1`
 
@@ -29,6 +25,14 @@ export const v1 = axios.create({
 v1.interceptors.request.use((request) => {
   logger.dev(`[Request] ${request.method} ${request.url}`)
   request.headers['X-GL-Locale'] = getGlobal().locale
+
+  if (env.isCordova()) {
+    const token = localStorage.getItem('token')
+    if (token) {
+      request.headers['Authentication'] = `Bearer ${token}`
+    }
+  }
+
   return request
 })
 
@@ -66,11 +70,12 @@ export const store = recordStore
 //
 
 export async function createSession(emailOrMobile: string, password: string, rememberMe: boolean) {
-  await v1.post('sessions', {
+  const response = await v1.post('sessions', {
     emailOrMobile,
     password,
     rememberMe,
   })
+  localStorage.setItem('token', response.data.token)
 }
 
 export async function deleteSession() {
@@ -85,9 +90,10 @@ export async function createMagicSignIn(emailOrMobile: string, rememberMe: boole
 }
 
 export async function magicSignIn(token: string, rememberMe: boolean) {
-  await v1.post(`/magic-sign-in/${token}`, {
+  const response = await v1.post(`/magic-sign-in/${token}`, {
     rememberMe,
   })
+  localStorage.setItem('token', response.data.token)
 }
 
 //
@@ -99,8 +105,7 @@ export async function getLocation(id: string): Promise<Location> {
 }
 
 export async function createLocation(attrs: Partial<Location>): Promise<Location> {
-  const response = await v1.post<RecordResponse<Location>>('/locations',
-    transformForAPI(attrs))
+  const response = await v1.post<RecordResponse<Location>>('/locations', transformForAPI(attrs))
 
   const entity = transformRecordResponse<Location>(response.data)
   assertNotArray(entity)
@@ -115,9 +120,14 @@ export async function joinLocation(location: Location): Promise<LocationAccount>
   return entity
 }
 
-export async function updateLocationAccount(locationAccount: LocationAccount, updates: Partial<LocationAccount>): Promise<LocationAccount> {
-  const response = await v1.patch<RecordResponse<LocationAccount>>(`/location-accounts/${locationAccount.id}`,
-    transformForAPI(updates))
+export async function updateLocationAccount(
+  locationAccount: LocationAccount,
+  updates: Partial<LocationAccount>,
+): Promise<LocationAccount> {
+  const response = await v1.patch<RecordResponse<LocationAccount>>(
+    `/location-accounts/${locationAccount.id}`,
+    transformForAPI(updates),
+  )
 
   const entity = transformRecordResponse<LocationAccount>(response.data)
   assertNotArray(entity)
@@ -139,8 +149,7 @@ export async function getUser(id: string): Promise<User> {
 }
 
 export async function updateUser(user: User, updates: Partial<User>): Promise<User> {
-  const response = await v1.patch<RecordResponse<User>>(`/users/${user.id}`,
-    transformForAPI(updates))
+  const response = await v1.patch<RecordResponse<User>>(`/users/${user.id}`, transformForAPI(updates))
 
   const entity = transformRecordResponse<User>(response.data)
   assertNotArray(entity)
@@ -162,8 +171,7 @@ export async function createUserAndSignIn(user: Partial<User>) {
 }
 
 export async function updateUserSettings(user: User, updates: Partial<UserSettings>) {
-  const response = await v1.patch<RecordResponse<UserSettings>>(`/users/${user.id}/settings`,
-    transformForAPI(updates))
+  const response = await v1.patch<RecordResponse<UserSettings>>(`/users/${user.id}/settings`, transformForAPI(updates))
   const entity = transformRecordResponse<UserSettings>(response.data)
   assertNotArray(entity)
   return entity
@@ -201,7 +209,9 @@ export async function createSymptomSurvey(user: User, medicalEvents: Partial<Med
 
 export function mailHelloAtGreenlight(from: string, subject: string, body: string): Promise<AxiosResponse<any>> {
   return v1.post('mail/hello-at-greenlight', {
-    from, subject, body,
+    from,
+    subject,
+    body,
   })
 }
 
