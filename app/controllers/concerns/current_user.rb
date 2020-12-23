@@ -12,6 +12,18 @@ module CurrentUser
     request.headers['HTTP_X_GL_LOCALE'] || current_user.locale
   end
 
+  def is_cordova?
+    request.headers['Client-Env'] == 'Cordova'
+  end
+
+  def bearer_token
+    return nil unless is_cordova?
+
+    pattern = /^Bearer /
+    header = request.headers['Authorization']
+    header.gsub(pattern, '') if header && header.match(pattern)
+  end
+
   # @param [User] user>
   # @param [Boolean] remember_me>
   def sign_in(user, ip, remember_me: false)
@@ -21,7 +33,7 @@ module CurrentUser
 
   included do
     before_action do
-      @session = Session.new(cookies)
+      @session = Session.new(cookies, bearer_token: bearer_token)
       Time.zone = current_user.time_zone
       I18n.locale = current_locale
 

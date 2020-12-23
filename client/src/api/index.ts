@@ -20,6 +20,9 @@ export const v1 = axios.create({
   baseURL: BASE_URL,
   timeout: 3000,
   withCredentials: true,
+  headers: {
+    'Client-Env': env.isCordova() ? 'Cordova' : 'Standard',
+  },
 })
 
 v1.interceptors.request.use((request) => {
@@ -29,7 +32,7 @@ v1.interceptors.request.use((request) => {
   if (env.isCordova()) {
     const token = localStorage.getItem('token')
     if (token) {
-      request.headers['Authentication'] = `Bearer ${token}`
+      request.headers['Authorization'] = `Bearer ${token}`
     }
   }
 
