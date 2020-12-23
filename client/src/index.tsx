@@ -16,6 +16,7 @@ import 'src/assets/styles/index.css'
 
 import { getCurrentUser } from './api'
 import logger from './helpers/logger'
+import { isCordova } from './helpers/util'
 
 // Init Framework7-React plugin
 Framework7.use(Framework7React)
@@ -43,10 +44,18 @@ function startApp() {
     })
 }
 
-if ((window as any).cordova) {
+if (isCordova()) {
   document.addEventListener('deviceready', startApp, false)
   document.addEventListener('resume', () => {
-    (window as any).codePush.sync()
+    logger.log('resume')
+    ;(window as any).codePush.checkForUpdate(function (update: boolean) {
+      if (!update) {
+        logger.log('The app is up to date.')
+      } else {
+        logger.log('An update is available! Should we download it?')
+        ;(window as any).codePush.sync(null, { updateDialog: true, installMode: (window as any).InstallMode.IMMEDIATE })
+      }
+    })
   })
 } else {
   startApp()

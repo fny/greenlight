@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#00A183" />
 
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src  'self' 'unsafe-inline' *; img-src * 'self' data: blob: https:; font-src * 'self' data:"
-    />
+    <!-- <% if (process.env.REACT_APP_CORDOVA) { %>
+      <meta
+        http-equiv="Content-Security-Policy"
+        content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+      />
+    <% } %> -->
+
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -30,20 +33,22 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
 
-    <% if (process.env.CORDOVA) { %>
-    <script type="text/javascript" src="/cordova.js"></script>
+    <% if (process.env.REACT_APP_CORDOVA) { %>
+    <script type="text/javascript" src="%PUBLIC_URL%/cordova.js"></script>
     <% } else { %>
-    <div id="ie-error" style="display: none;">
-      Internet Explorer is unsupported and will be deprecated in August. Please upgrade to a modern browser like Edge, Chrome, or Firefox.
+    <div id="ie-error" style="display: none">
+      Internet Explorer is unsupported and will be deprecated in August. Please upgrade to a modern browser like Edge,
+      Chrome, or Firefox.
       <br />
-      Internet Explorer no es compatible y quedará obsoleto en agosto. Actualice a un navegador moderno como Edge, Chrome o Firefox.
+      Internet Explorer no es compatible y quedará obsoleto en agosto. Actualice a un navegador moderno como Edge,
+      Chrome o Firefox.
     </div>
 
     <script type="text/javascript">
       // Show IE error if the user is using internet explorer
       if (window.navigator.userAgent.match(/MSIE|Trident/) !== null) {
-        document.getElementById('ie-error').style.display = 'block';
-        document.getElementById('root').style.display = 'none';
+        document.getElementById('ie-error').style.display = 'block'
+        document.getElementById('root').style.display = 'none'
       }
     </script>
     <% } %>

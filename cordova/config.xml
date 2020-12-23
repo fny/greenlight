@@ -1,24 +1,35 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.greenlightready.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>GreenLightReady</name>
+    <name>Greenlight</name>
     <description>
-        GreenLightReady.
+        Greenlight
     </description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+    <author email="hello@greenlightready.com" href="https://greenlightready.com">
+        Greenlight Team
     </author>
+
     <content src="index.html" />
-    <access origin="*" />
+    <access origin="*" allows-arbitrary-loads-for-media="true" allows-arbitrary-loads-in-web-content="true" allows-local-networking="true" />
+    <plugin name="cordova-plugin-whitelist" spec="1" />
+    <plugin name="cordova-plugin-cors" spec="1" />
+
+
+
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+
     <platform name="android">
         <allow-intent href="market:*" />
 
+        <!-- Staging -->
         <preference name="CodePushDeploymentKey" value="96q-1na96bCWTbl8tTzLTukmelM9JHZJjfttN" />
+        <!-- Production -->
+        <!-- <preference name="CodePushDeploymentKey" value="HIVBTCnL3SOftwZS_IRifwRfwu3N4NN5UbQEb" /> -->
+
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
 
         <icon src="res/android/mipmap-hdpi/ic_launcher.png" density="hdpi" />
@@ -32,8 +43,11 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
 
-        <!--  -->
+        <!-- Staging -->
         <preference name="CodePushDeploymentKey" value="9tJypW_IQTNQi9xRaVPkZ1wLwyFodeEs0xnmx" />
+        <!-- Production -->
+        <!-- <preference name="CodePushDeploymentKey" value="JuQchGK6vPnDBH208x3_9TvCS7FWKPHWj7Ca0" />  -->
+        
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
 
         <icon src="res/ios/16.png" width="16" height="16" />
