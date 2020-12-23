@@ -6,8 +6,9 @@ import { signOut, toggleLocale } from 'src/initializers/providers'
 import { Trans } from '@lingui/macro'
 import releaseData from 'src/assets/data/releases'
 import { paths } from 'src/config/routes'
+import { F7Props } from 'src/types'
 
-export default function SplashPage() {
+export default function SplashPage(props: F7Props) {
   const [currentUser] = useGlobal('currentUser')
   return (
     <Page className="SplashPage" noToolbar noNavbar noSwipeback loginScreen>
@@ -21,7 +22,7 @@ export default function SplashPage() {
         </div>
 
         {currentUser ? (
-          <Button outline onClick={() => signOut()}>
+          <Button outline onClick={() => signOut(props.f7router)}>
             <Trans id="Common.sign_out">Sign In</Trans>
           </Button>
         ) : (

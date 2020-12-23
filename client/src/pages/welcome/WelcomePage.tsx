@@ -3,17 +3,7 @@ import React from 'reactn'
 
 import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
 
-import {
-  Page,
-  Block,
-  Button,
-  Toolbar,
-  Link,
-  Row,
-  Col,
-  Sheet,
-  PageContent,
-} from 'framework7-react'
+import { Page, Block, Button, Toolbar, Link, Row, Col, Sheet, PageContent } from 'framework7-react'
 
 import { Case, When } from 'src/components/Case'
 
@@ -24,9 +14,7 @@ import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/helpers/errors'
 
 import { toggleLocale, signOut } from 'src/initializers/providers'
-import {
-  plural, Trans,
-} from '@lingui/macro'
+import { plural, Trans } from '@lingui/macro'
 
 interface State {
   termsOpened: boolean
@@ -66,11 +54,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
       )
     }
     if (fillForSelf) {
-      return (
-        <Trans id="WelcomePage.fill_for_self">
-          Every day you'll need to check in and fill out a survey.
-        </Trans>
-      )
+      return <Trans id="WelcomePage.fill_for_self">Every day you'll need to check in and fill out a survey.</Trans>
     }
 
     if (fillForChildren && !fillForSelf) {
@@ -84,16 +68,14 @@ export default class WelcomePage extends ReactNComponent<any, State> {
 
     if (!fillForSelf) {
       return (
-        <Trans id="WelcomePage.fill_for_self_optional">
-          Every day you can choose to fill out symptom surveys.
-        </Trans>
+        <Trans id="WelcomePage.fill_for_self_optional">Every day you can choose to fill out symptom surveys.</Trans>
       )
     }
 
     return (
       <Trans id="WelcomePage.fill_for_no_one_error">
-        It looks like your account has not been set up properly.
-        Please contact Greenlight at <Link href="mailto:help@greenlightready.com">help@greenlightready.com</Link>.
+        It looks like your account has not been set up properly. Please contact Greenlight at{' '}
+        <Link href="mailto:help@greenlightready.com">help@greenlightready.com</Link>.
       </Trans>
     )
   }
@@ -105,7 +87,8 @@ export default class WelcomePage extends ReactNComponent<any, State> {
       <Page>
         <Block>
           <h1>
-            {esExclaim()}{greeting()}! &nbsp;&nbsp;&nbsp;&nbsp;
+            {esExclaim()}
+            {greeting()}! &nbsp;&nbsp;&nbsp;&nbsp;
             <Link style={{ fontSize: '12px' }} onClick={() => toggleLocale()}>
               <Trans id="WelcomePage.toggle_locale">En Español</Trans>
             </Link>
@@ -121,7 +104,9 @@ export default class WelcomePage extends ReactNComponent<any, State> {
             <When>
               <p>
                 <Trans id="WelcomePage.welcome">
-                  Hi {user.firstName}! You're connected to {plural(this.totalLocations(), { one: '# location', other: '# locations' })} to Greenlight's secure COVID-19 monitoring platform.
+                  Hi {user.firstName}! You're connected to{' '}
+                  {plural(this.totalLocations(), { one: '# location', other: '# locations' })} to Greenlight's secure
+                  COVID-19 monitoring platform.
                 </Trans>
               </p>
               <p>
@@ -140,22 +125,23 @@ export default class WelcomePage extends ReactNComponent<any, State> {
                 onClick={() => {
                   this.setState({ termsOpened: true })
                 }}
-              > Terms and Conditions
-              </Link>.
+              >
+                {' '}
+                Terms and Conditions
+              </Link>
+              .
             </Trans>
           </p>
         </Block>
         <Block>
           <Row tag="p">
             <Col tag="span">
-              <Button large onClick={() => signOut()}><Trans id="Common.sign_out">Sign Out</Trans></Button>
+              <Button large onClick={() => signOut(this.$f7router)}>
+                <Trans id="Common.sign_out">Sign Out</Trans>
+              </Button>
             </Col>
             <Col tag="span">
-              <Button
-                large
-                fill
-                href={paths.welcomeReviewPath}
-              >
+              <Button large fill href={paths.welcomeReviewPath}>
                 <Trans id="Common.continue">Continue</Trans>
               </Button>
             </Col>
@@ -170,7 +156,9 @@ export default class WelcomePage extends ReactNComponent<any, State> {
           <Toolbar>
             <div className="left" />
             <div className="right">
-              <Link sheetClose><Trans id="Common.close">Close</Trans></Link>
+              <Link sheetClose>
+                <Trans id="Common.close">Close</Trans>
+              </Link>
             </div>
           </Toolbar>
           {/*  Scrollable sheet content */}

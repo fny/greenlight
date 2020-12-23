@@ -1,6 +1,5 @@
-import {
-  getGlobal, setGlobal, addReducer, addCallback,
-} from 'reactn'
+import { Router } from 'framework7/modules/router/router'
+import { getGlobal, setGlobal, addReducer, addCallback } from 'reactn'
 import { deleteSession, getCurrentUser } from 'src/api'
 import { User } from 'src/models'
 import { i18n, GLLocales } from 'src/i18n'
@@ -8,6 +7,7 @@ import CookieJar, { Cookie } from 'src/helpers/CookieJar'
 import { LocationCategories } from 'src/models/Location'
 import SessionStorage from 'src/helpers/SessionStorage'
 import Honeybadger from './honeybadger'
+import { paths } from 'src/config/routes'
 
 export function isSignedIn() {
   const user = currentUser()
@@ -24,11 +24,17 @@ export async function reloadCurrentUser(): Promise<User> {
   return user
 }
 
-export async function signOut(): Promise<void> {
+export async function signOut(router?: Router.Router): Promise<void> {
   await deleteSession()
-  Honeybadger.resetContext();
+  Honeybadger.resetContext()
   // TODO: There should be a way of doing this without a hard redirect
-  (window.location as any) = '/'
+  setGlobal({ currentUser: null })
+  localStorage.clear()
+  if (router) {
+    router.navigate(paths.splashPath)
+  } else {
+    ;(window.location as any) = '/'
+  }
 }
 
 export function toggleLocale(): void {
@@ -52,11 +58,11 @@ export class GRegisteringUser {
 
   email: string = ''
 
-  mobileNumber: string= ''
+  mobileNumber: string = ''
 
-  password: string= ''
+  password: string = ''
 
-  locale: GLLocales= 'en'
+  locale: GLLocales = 'en'
 }
 
 export class GRegisteringLocation {

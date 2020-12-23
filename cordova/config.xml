@@ -9,7 +9,7 @@
     </author>
 
     <content src="index.html" />
-    <access origin="*" allows-arbitrary-loads-for-media="true" allows-arbitrary-loads-in-web-content="true" allows-local-networking="true" />
+    <access origin="*"/>
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="cordova-plugin-cors" spec="1" />
 
@@ -31,6 +31,7 @@
         <!-- <preference name="CodePushDeploymentKey" value="HIVBTCnL3SOftwZS_IRifwRfwu3N4NN5UbQEb" /> -->
 
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
+        <!-- <preference name="OverrideUserAgent" value="Cordova" /> -->
 
         <icon src="res/android/mipmap-hdpi/ic_launcher.png" density="hdpi" />
         <icon src="res/android/mipmap-mdpi/ic_launcher.png" density="mdpi" />
@@ -49,6 +50,8 @@
         <!-- <preference name="CodePushDeploymentKey" value="JuQchGK6vPnDBH208x3_9TvCS7FWKPHWj7Ca0" />  -->
         
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
+
+        <!-- <preference name="OverrideUserAgent" value="Cordova" /> -->
 
         <icon src="res/ios/16.png" width="16" height="16" />
         <icon src="res/ios/20.png" width="20" height="20" />
