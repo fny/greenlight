@@ -19,11 +19,10 @@ module CurrentUser
   def bearer_token
     return nil unless cordova?
 
-    pattern = /^Bearer /
     header = request.headers['Authorization']
     matches = header.match(%r{\ABearer\s+([^\s]+)\z})
 
-    raise UnauthorizedError if matches.nil
+    raise UnauthorizedError if matches.nil?
     matches[1]
   end
 
