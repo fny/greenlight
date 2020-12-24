@@ -95,6 +95,8 @@ gem 'skylight'
 gem 'table_print', require: false
 # Email validations
 gem 'valid_email2'
+# AWS S3
+gem 'aws-sdk-s3'
 
 group :development, :test do
   # Annotate Rails classes with schema and routes info

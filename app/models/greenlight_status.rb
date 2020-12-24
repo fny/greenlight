@@ -48,6 +48,7 @@ class GreenlightStatus < ApplicationRecord
 
   scope :recently_created, -> { where(created_at: 20.days.ago.beginning_of_day..Time.zone.now.end_of_day) }
   scope :not_expired, -> { where('expiration_date <= ?', Time.current.to_date) }
+  scope :chronical, -> { order(submission_date: :asc) }
   has_many :medical_events
 
   before_validation :assign_associated_users_to_medical_events
