@@ -9,6 +9,20 @@ RSpec.describe "Current User Endpoint", type: :request do
       get '/v1/current-user'
       expect(response.status).to eq(401)
     end
+
+    context 'Cordova' do
+      let(:headers) { { 'X-Client-Env' => 'cordova' } }
+
+      it 'returns with a 401 if no Authorization header set' do
+        get_json('/v1/current-user', headers: headers)
+        expect(response.status).to eq(401)
+      end
+
+      it 'returns with a 401 if invalid Authorization header set' do
+        get_json('/v1/current-user', headers: headers.merge({ 'Authorization' => 'K Bearer '}))
+        expect(response.status).to eq(401)
+      end
+    end
   end
 
   pending '/v1/current-user' do

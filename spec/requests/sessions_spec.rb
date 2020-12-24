@@ -66,6 +66,36 @@ RSpec.describe '/v1/sessions', type: :request do
       expect(response.status).to eq(401)
       travel_back
     end
+
+    context 'Cordova' do
+      let(:headers) { { 'X-Client-Env' => 'cordova' } }
+
+      it 'signs in with email' do
+        post_json(
+          '/v1/sessions',
+          headers: headers,
+          body: {
+            emailOrMobile: user.email,
+            password: user.password,
+            rememberMe: false,
+          }
+        )
+
+        generated_token = response_json['token']
+        expect(response.status).to be(200)
+        expect(generated_token).to be_present
+        expect(response.cookies[Session::COOKIE_NAME]).to be_nil
+
+        get_json('/v1/current-user')
+        expect(response.status).to be(401)
+
+        get_json(
+          '/v1/current-user',
+          headers: headers.merge({ 'Authorization' => "Bearer #{generated_token}" })
+        )
+        expect(response_json.fetch(:data).fetch(:id)).to eq(user.id.to_s)
+      end
+    end
   end
 
   describe 'DELETE' do
