@@ -1,0 +1,17 @@
+springfield_elementary:
+  name: Springfield Elementary
+  category: school
+  permalink: springfield-elementary
+  phone_number: 541-277-8890
+  email: admin@springfieldelementary.org
+  website: springfieldelementary.org
+  zip_code: 97477
+
+springfield_nuclear:
+  name: Springfield Nuclear Plant
+  category: other
+  permalink: springfield-nuclear
+  phone_number: 541-333-2148
+  email: admin@springfieldnuclear.com
+  website: springfieldnuclear.com
+  zip_code: 97477

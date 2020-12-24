@@ -1,0 +1,24 @@
+<% %w[bart lisa todd rodd].each do |student| %>
+<%= "#{student}_at_springfield_elem" %>:
+  location: springfield_elementary
+  user: <%= student %>
+  external_id: <%= student %>
+  role: student
+  permission_level: none
+<% end %>
+
+<% %w[krabappel flanders].each do |teacher| %>
+<%= "#{teacher}_at_springfield_elem" %>:
+  location: springfield_elementary
+  user: <%= teacher %>
+  external_id: <%= teacher %>
+  role: teacher
+  permission_level: admin
+<% end %>
+
+skinner_at_springfield_elem:
+  location: springfield_elementary
+  user: skinner
+  external_id: skinner
+  role: staff
+  permission_level: owner
