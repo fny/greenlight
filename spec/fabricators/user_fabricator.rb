@@ -8,7 +8,7 @@ Fabricator(:user) do
   email { Faker::Internet.unique.email }
   mobile_number {
     number = ''
-    number = Faker::PhoneNumber.cell_phone_in_e164[3, 10] until Phonelib.parse(number, 'US').valid?
+    number = Faker::PhoneNumber.cell_phone_in_e164[2, 10] until Phonelib.parse(number, 'US').valid?
 
     Phonelib.parse(number, 'US').full_e164
   }

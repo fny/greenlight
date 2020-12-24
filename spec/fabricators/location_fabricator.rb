@@ -5,7 +5,7 @@ Fabricator(:location) do
   phone_number {
     number = ''
     while !Phonelib.parse(number, 'US').valid?
-      number = Faker::PhoneNumber.cell_phone_in_e164[3, 10]
+      number = Faker::PhoneNumber.cell_phone_in_e164[2, 10]
     end
     Phonelib.parse(number, 'US').full_e164
   }

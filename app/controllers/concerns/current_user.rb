@@ -19,11 +19,10 @@ module CurrentUser
   def bearer_token
     return nil unless cordova?
 
-    pattern = /^Bearer /
-    header = request.headers['Authorization']
-    matches = header.match(%r{\ABearer\s+([^\s]+)\z})
+    header = request.headers['Authorization']   
+    matches = header&.match(%r{\ABearer\s+([^\s]+)\z})
 
-    raise UnauthorizedError if matches.nil
+    return nil if matches.nil?
     matches[1]
   end
 
@@ -31,12 +30,12 @@ module CurrentUser
   # @param [Boolean] remember_me>
   def sign_in(user, ip, remember_me: false)
     user.save_sign_in!(ip)
-    @session = Session.new(cookies, user: user, remember_me: remember_me)
+    @session = Session.new(cookies, user: user, remember_me: remember_me, save_no_cookie: cordova?)
   end
 
   included do
     before_action do
-      @session = Session.new(cookies, bearer_token: bearer_token)
+      @session = Session.new(cookies, bearer_token: bearer_token, save_no_cookie: cordova?)
       Time.zone = current_user.time_zone
       I18n.locale = current_locale
 
