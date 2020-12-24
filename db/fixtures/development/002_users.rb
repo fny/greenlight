@@ -35,18 +35,17 @@ ExternalId = Faker::UniqueGenerator.new(
 # Helpers
 #
 
-def set_name_and_email(user, last_name = nil, gender = nil)
+def set_name_and_email(user, gender = nil, last_name = nil)
   case gender
   when :m
     first_name = Faker::Name.male_first_name
-    last_name = last_name || Faker::Name.male_last_name
   when :f
     first_name = Faker::Name.female_first_name
-    last_name = last_name || Faker::Name.female_last_name
   else
     first_name = Faker::Name.first_name
-    last_name = last_name || Faker::Name.last_name
   end
+
+  last_name = last_name || Faker::Name.last_name
 
   user[:first_name] = first_name
   user[:last_name] = last_name
@@ -70,14 +69,13 @@ def build_parent_child(parent, child)
   }
 end
 
-def build_location_account(location, user, role, title = nil)
+def build_location_account(location, user, role)
   {
     id: @location_account_id_seq.next(),
     external_id: ExternalId.call,
     location_id: location.id,
     user_id: user[:id],
     role: role,
-    title: title
   }
 end
 
@@ -263,27 +261,28 @@ cohorts = [soccer_team, football_team, freshman, sophomore, junior, senior].flat
 puts "Building location accounts"
 
 location_accounts = []
-
+# [
+#   'History Teacher',
+#   'Spanish Teacher',
+#   'English Teacher',
+#   'ESL Teacher',
+#   'Math Teacher',
+#   'Science Teacher'
+# ].sample
 teachers.each { |t|
-  location_accounts << build_location_account(location, t, 'teacher', [
-    'History Teacher',
-    'Spanish Teacher',
-    'English Teacher',
-    'ESL Teacher',
-    'Math Teacher',
-    'Science Teacher'
-  ].sample)
+  location_accounts << build_location_account(location, t, 'teacher')
 }
+# [
+#   'Administrator',
+#   'Secretary',
+#   'Secretary',
+#   'Custodian',
+#   'Custodian',
+#   'Secretary'
+# ].sample
 
 staff.each { |s|
-  location_accounts << build_location_account(location, s, 'staff', [
-    'Administrator',
-    'Secretary',
-    'Secretary',
-    'Custodian',
-    'Custodian',
-    'Secretary'
-  ].sample)
+  location_accounts << build_location_account(location, s, 'staff')
 }
 
 {
