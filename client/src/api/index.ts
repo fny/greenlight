@@ -21,7 +21,7 @@ export const v1 = axios.create({
   timeout: 3000,
   withCredentials: true,
   headers: {
-    'Client-Env': env.isCordova() ? 'Cordova' : 'Standard',
+    'X-Client-Env': env.isCordova() ? 'cordova' : 'standard',
   },
 })
 
