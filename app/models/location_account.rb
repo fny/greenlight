@@ -15,6 +15,7 @@ class LocationAccount < ApplicationRecord
 
   extend Enumerize
   belongs_to :user
+  has_many :parents, through: :users
   belongs_to :location
 
   belongs_to :created_by, class_name: 'User', optional: true
