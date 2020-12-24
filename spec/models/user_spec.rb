@@ -127,4 +127,14 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#destroy' do
+    it 'works when the user created a location' do
+      user = Fabricate(:user)
+      location = Fabricate(:location, created_by: user)
+      user.destroy
+      expect(User.find_by(id: user.id)).to eq(nil)
+      expect(location.reload.created_by).to eq(nil)
+    end
+  end
 end

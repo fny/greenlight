@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_22_134004) do
+ActiveRecord::Schema.define(version: 2020_12_23_161435) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -238,7 +238,7 @@ ActiveRecord::Schema.define(version: 2020_12_22_134004) do
   add_foreign_key "location_accounts", "users", column: "deleted_by_id", on_delete: :nullify
   add_foreign_key "location_accounts", "users", column: "updated_by_id", on_delete: :nullify
   add_foreign_key "location_accounts", "users", on_delete: :cascade
-  add_foreign_key "locations", "users", column: "created_by_id"
+  add_foreign_key "locations", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "medical_events", "greenlight_statuses", on_delete: :cascade
   add_foreign_key "medical_events", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "medical_events", "users", column: "deleted_by_id", on_delete: :nullify
