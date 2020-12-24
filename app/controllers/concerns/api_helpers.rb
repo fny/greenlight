@@ -56,7 +56,7 @@ module APIHelpers
   end
 
   def success_response_with_token
-    return success_response unless is_cordova?
+    return success_response unless cordova?
 
     response.status = 200
     render json: {
