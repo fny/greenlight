@@ -28,6 +28,14 @@ function render() {
 }
 
 function startApp() {
+  if (env.isCordova()) {
+    // Check token if it is cordova
+    const rememberMe = localStorage.getItem('rememberMe')
+    if (rememberMe !== 'true') {
+      localStorage.clear()
+    }
+  }
+
   getCurrentUser()
     .then((user) => {
       setGlobal({ currentUser: user, locale: user.locale })

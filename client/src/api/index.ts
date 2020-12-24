@@ -79,6 +79,7 @@ export async function createSession(emailOrMobile: string, password: string, rem
     rememberMe,
   })
   localStorage.setItem('token', response.data.token)
+  localStorage.setItem('rememberMe', rememberMe.toString())
 }
 
 export async function deleteSession() {
