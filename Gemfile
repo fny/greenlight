@@ -49,6 +49,8 @@ gem 'xorcist'
 
 # What ActiveModel left out
 gem 'active_attr'
+# Adds additional postgres functionality to an ActiveRecord / Rails application
+gem 'active_record_extended'
 # Password encryption
 gem 'bcrypt', '~> 3.1.7'
 # Streaming Spreadsheets

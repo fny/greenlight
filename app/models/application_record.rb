@@ -35,8 +35,11 @@ class ApplicationRecord < ActiveRecord::Base
     HashWithIndifferentAccess.new(attrs).slice(*self.permitted_params)
   end
 
+  # @param [Array<String>] columns
+  # @param [String] query
+  # @return [ActiveRecord::Relation]
   def self.search(columns, query)
-    return all if query.nil?
+    return all if query.blank?
 
     where(
       columns.map { |col| "lower(#{col}) LIKE :query"}.join(' OR '),
@@ -44,8 +47,10 @@ class ApplicationRecord < ActiveRecord::Base
     )
   end
 
+  # @param [String] query
+  # @return [ActiveRecord::Relation]
   def self.q(query)
-    return all if query.nil?
+    return all if query.blank?
 
     self.search(queryable_columns || [], query)
   end

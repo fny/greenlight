@@ -91,28 +91,43 @@ Copy children over from another user that you specify by their numeric Greenligh
 Provide the first name to confirm.
 
 <%= form_with url: admin_user_copy_children_path(@user), method: :post do |form| %>
-  <%= form.label :other_user_id_id %>
-  <%= form.text_field :other_user_id %>
-  <%= form.label :first_name %>
-  <%= form.text_field :first_name %>
+  <%= form.label :other_user_id, 'Other User ID' %>
+  <%= form.text_field :other_user_id, autocomplete: 'off' %>
+  <%= form.label :first_name, 'Other Users First Name (Confirmation)' %>
+  <%= form.text_field :first_name, autocomplete: 'off' %>
   <%= form.submit "Copy" %>
 <% end %>
 
 <h3>Remove a Child</h3>
 <%= form_with url: admin_user_remove_child_path(@user), method: :post do |form| %>
-  <%= form.label :child_id_id %>
-  <%= form.text_field :child_id %>
-  <%= form.label :first_name %>
-  <%= form.text_field :first_name %>
+  <%= form.label :child_id, 'Child ID' %>
+  <%= form.text_field :child_id, autocomplete: 'off' %>
+  <%= form.label :first_name, 'Child First Name (Confirmation)' %>
+  <%= form.text_field :first_name, autocomplete: 'off' %>
   <%= form.submit "Copy" %>
 <% end %>
 
 <h3>Add a Child</h3>
 <%= form_with url: admin_user_add_child_path(@user), method: :post do |form| %>
-  <%= form.label :child_id_id %>
-  <%= form.text_field :child_id %>
-  <%= form.label :first_name %>
-  <%= form.text_field :first_name %>
+  <%= form.label :child_id, 'Child ID' %>
+  <%= form.text_field :child_id, autocomplete: 'off' %>
+  <%= form.label :first_name, 'Child First Name (Confirmation)' %>
+  <%= form.text_field :first_name, autocomplete: 'off' %>
+  <%= form.submit "Copy" %>
+<% end %>
+
+<h3>Join Location</h3>
+<%= form_with url: admin_user_add_child_path(@user), method: :post do |form| %>
+  <%= form.label :location_handle %>
+  <%= form.text_field :location_handle %>
+
+  <%= fields_for :location_accounts, LocationAccount.new do |f| %>
+    <%= f.label :permission_level %>
+    <%= f.select :permission_level, LocationAccount::PERMISSION_LEVELS %>
+    <%= f.label :role %>
+    <%= f.select :role, LocationAccount::ROLES %>
+  <% end %>
+
   <%= form.submit "Copy" %>
 <% end %>
 

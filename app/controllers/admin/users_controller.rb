@@ -1,23 +1,37 @@
 module Admin
   class UsersController < ApplicationController
     def index
-      users = User.q(params[:query])
-      if params[:child] == '1' && params[:parent] == '1'
-        flash.now[:alert] = "Can't pick both child and parent for now."
-        params[:child] = '0'
-        params[:parent] = '0'
-      end
-      if params[:child] == '1'
-        users = users.children
-      end
-      if params[:parent] == '1'
-        users = users.parents
-      end
-      if params[:staff] == '1'
-      users = users.staff
+      location = Location.find_by(permalink: params[:location])
+
+      relationships = []
+      if location
+        if params[:child] == '1'
+          (relationships << location.students)
+        elsif params[:parent] == '1'
+          (relationships << location.parents)
+        elsif params[:staff] == '1'
+          (relationships << location.staff)
+          (relationships << location.teachers)
+        else
+          relationships << location.users
+          relationships << location.parents
+        end
+      else
+        (relationships << User.q(params[:query]).children) if params[:child] == '1'
+        (relationships << User.q(params[:query]).parents) if params[:parent] == '1'
+        (relationships << User.q(params[:query]).not_students) if params[:staff] == '1'
       end
 
-      @pagy, @users = pagy(users)
+      users = case relationships.length
+        when 0
+          User.q(params[:query])
+        when 1
+          relationships[0]
+        else
+          User.union(*relationships)
+        end
+
+      @pagy, @users = pagy(users.order(:id))
     end
 
     def new
@@ -73,10 +87,6 @@ module Admin
         flash[:alert] = 'Incorrect confirmation code.'
         redirect_to [:admin, @user]
       end
-    end
-
-    def assign_location
-
     end
 
     def add_child

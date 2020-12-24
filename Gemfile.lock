@@ -46,6 +46,10 @@ GEM
       actionpack (>= 3.0.2, < 6.1)
       activemodel (>= 3.0.2, < 6.1)
       activesupport (>= 3.0.2, < 6.1)
+    active_record_extended (2.0.0)
+      activerecord (>= 5.1, < 6.2)
+      ar_outer_joins (~> 0.2)
+      pg (< 3.0)
     activejob (6.0.3.3)
       activesupport (= 6.0.3.3)
       globalid (>= 0.3.6)
@@ -70,6 +74,8 @@ GEM
     annotate (3.1.1)
       activerecord (>= 3.2, < 7.0)
       rake (>= 10.4, < 14.0)
+    ar_outer_joins (0.2.0)
+      activerecord (>= 3.2)
     ast (2.4.1)
     backport (1.1.2)
     bcrypt (3.1.16)
@@ -367,6 +373,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_attr
+  active_record_extended
   annotate
   bcrypt (~> 3.1.7)
   better_errors

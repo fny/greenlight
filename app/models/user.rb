@@ -40,7 +40,7 @@ class User < ApplicationRecord
   }
   scope :children, -> { joins('INNER JOIN parents_children ON parents_children.child_id = users.id') }
   scope :parents, -> { joins('INNER JOIN parents_children ON parents_children.parent_id = users.id') }
-  scope :staff, -> {
+  scope :not_students, -> {
     joins('INNER JOIN location_accounts ON location_accounts.user_id = users.id')
       .where.not(location_accounts: { role: LocationAccount::STUDENT })
   }

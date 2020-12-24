@@ -18,7 +18,8 @@
 </a> |
 <a href="#nuke">
   Nuke
-</a>
+</a> |
+<%= link_to "Users (#{@location.users.count})", admin_location_users_path(@location) %>
 </nav>
 
 <ul>

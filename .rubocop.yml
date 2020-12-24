@@ -67,6 +67,10 @@ RSpec/EmptyExampleGroup:
 RSpec/ExampleLength:
   Enabled: false
 
+# You should really be using anywhere near 10
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
+
 # We use database ON DELETEs instead
 Rails/HasManyOrHasOneDependent:
   Enabled: false
