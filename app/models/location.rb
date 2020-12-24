@@ -3,7 +3,7 @@
 class Location < ApplicationRecord
   extend Enumerize
 
-  CATEGORIES =  [
+  CATEGORIES = [
     BUSINESS = 'business',
     SCHOOL = 'school',
     CLINIC = 'clinic',
@@ -20,8 +20,9 @@ class Location < ApplicationRecord
     STORE = 'store',
     THEATER = 'theater',
     UNIVERSITY = 'university',
+    UTILITY = 'utility',
     LOCATION = 'location',
-    UNKNONW = 'unknown'
+    UNKNOWN = 'unknown'
   ].freeze
 
   self.permitted_params = %i[
@@ -42,9 +43,14 @@ class Location < ApplicationRecord
   has_many :cohorts
   has_many :users, through: :location_accounts
 
-  # has_many :students,
-  # has_many :teachers
-  # has_many :staff
+  LocationAccount::ROLES.each do |role|
+    has_many "#{role}_accounts".to_sym, -> { where(role: role) }, class_name: 'LocationAccount'
+    has_many role.pluralize.to_sym, through: "#{role}_accounts".to_sym, source: :user
+  end
+
+  def parents
+    User.distinct.parents.joins(:children).where('parents_children.child_id': students)
+  end
 
   enumerize :category, in: CATEGORIES
 
@@ -272,5 +278,5 @@ end
 #
 # Foreign Keys
 #
-#  fk_rails_...  (created_by_id => users.id)
+#  fk_rails_...  (created_by_id => users.id) ON DELETE => nullify
 #
