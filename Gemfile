@@ -11,7 +11,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
 gem 'puma', '~> 4.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.3', '>= 6.0.3.2'
+gem 'rails', '~> 6.1.0'
 # Simple, efficient background processing for Ruby
 gem 'sidekiq', '< 7'
 # Enables to set jobs to be run in specified time
@@ -80,7 +80,7 @@ gem 'pagy'
 # Phone validations
 gem 'phonelib'
 # SMS API and Voice API platform
-gem 'plivo'
+gem 'plivo', '>= 4.15.0'
 # The express way to send email
 gem 'pony'
 # Rails Locale Data Repository
@@ -101,6 +101,8 @@ gem 'strip_attributes'
 gem 'table_print', require: false
 # Email validations
 gem 'valid_email2'
+
+gem 'json', '~> 2.0'
 
 group :development, :test do
   # Annotate Rails classes with schema and routes info
@@ -156,8 +158,3 @@ group :test do
   # Simple testing of Sidekiq jobs
   gem 'rspec-sidekiq'
 end
-
-gem 'fastlane'
-
-plugins_path = File.join(File.dirname(__FILE__), 'cordova', 'fastlane', 'Pluginfile')
-eval_gemfile(plugins_path) if File.exist?(plugins_path)
