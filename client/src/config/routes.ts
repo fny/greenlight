@@ -1,4 +1,3 @@
-import { Dict } from 'src/types'
 import { getGlobal } from 'reactn'
 import { isSignedIn } from 'src/initializers/providers'
 import { resolvePath } from 'src/helpers/util'
@@ -89,7 +88,13 @@ const beforeEnter = {
    */
   ifSignedInRedirectTo(path: string) {
     // eslint-disable-next-line func-names
-    return function (this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+    return function (
+      this: Router.Router,
+      routeTo: Router.Route,
+      routeFrom: Router.Route,
+      resolve: Function,
+      reject: Function,
+    ) {
       if (isSignedIn()) {
         reject()
         this.navigate(path)

@@ -11,6 +11,9 @@ function required(key: string, backup?: string): string {
 }
 
 const env = {
+  isCordova(): boolean {
+    return !!process.env.REACT_APP_CORDOVA
+  },
   isDevelopment(): boolean {
     return process.env.NODE_ENV !== 'production'
   },
@@ -25,5 +28,7 @@ const env = {
     return required('REACT_APP_API_URL')
   })(),
 }
+
+;(window as any).env = env
 
 export default env

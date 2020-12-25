@@ -9,7 +9,7 @@ module SessionsController
       authentication.run
       if authentication.succeeded?
         sign_in(authentication.result, request.ip, remember_me: request_json[:remember_me])
-        success_response
+        success_response_with_token
       else
         error_response(authentication)
       end
@@ -25,7 +25,7 @@ module SessionsController
       user = User.find_by!(magic_sign_in_token: token)
       sign_in(user, request.ip, remember_me: request_json[:remember_me])
       user.reset_magic_sign_in_token!
-      success_response
+      success_response_with_token
     end
 
     post '/v1/magic-sign-in', auth: false do

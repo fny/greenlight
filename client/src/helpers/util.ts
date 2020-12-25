@@ -5,7 +5,7 @@ import qs from 'qs'
 import { getGlobal } from 'reactn'
 import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
-import logger from './logger'
+import logger from 'src/helpers/logger'
 
 //
 // Date and Time Related
@@ -90,22 +90,18 @@ export function isEmptyType(data: any): boolean {
 
 export function isPrimitiveType(data: any): boolean {
   return (
-    typeof data === 'string'
-    || typeof data === 'number'
-    || typeof data === 'boolean'
-    || typeof data === 'bigint'
-    || typeof data === 'symbol'
-    || data === null
-    || data === undefined
+    typeof data === 'string' ||
+    typeof data === 'number' ||
+    typeof data === 'boolean' ||
+    typeof data === 'bigint' ||
+    typeof data === 'symbol' ||
+    data === null ||
+    data === undefined
   )
 }
 
 export function hasKey(obj: any, key: string): boolean {
   return obj[key] !== undefined
-}
-
-export function isCordova(): boolean {
-  return hasKey(window, 'cordova')
 }
 
 export function isInDurham(zipCode: string): boolean {

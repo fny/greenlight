@@ -54,4 +54,13 @@ module APIHelpers
     response.status = 204 # No content
     render plain: nil
   end
+
+  def success_response_with_token
+    return success_response unless cordova?
+
+    response.status = 200
+    render json: {
+      token: @session.bearer_token,
+    }
+  end
 end

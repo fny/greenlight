@@ -9,9 +9,7 @@ module MiscHelpers
   end
 
   def valid_mobile_number
-    number = ''
-    number = Faker::PhoneNumber.cell_phone_in_e164[3, 10] until PhoneNumber.valid?(number)
-
+    number = Faker::PhoneNumber.cell_phone_in_e164[2, 10] until Phonelib.parse(number, 'US').valid?
     PhoneNumber.parse(number)
   end
 end

@@ -26,8 +26,11 @@ export default function OnlineStatus(): JSX.Element {
   function checkConnection(checkApi: boolean = false) {
     testInternet().then((internetStatus) => {
       setIsInternetOnline(internetStatus)
+
       if (internetStatus && checkApi) {
-        v1.get('ping').then(() => setIsAPIOnline(true)).catch(() => setIsAPIOnline(false))
+        v1.get('ping')
+          .then(() => setIsAPIOnline(true))
+          .catch(() => setIsAPIOnline(false))
       }
     })
   }
@@ -37,21 +40,18 @@ export default function OnlineStatus(): JSX.Element {
       checkConnection()
     }, CHECK_AFTER_SECS * 1000)
 
-    return () => { window.clearTimeout(timerId) }
+    return () => {
+      window.clearTimeout(timerId)
+    }
   }, [])
 
   // We need explicit false checks because it is undefined by default
   if (isInternetOnline === false) {
     return (
       <div className="OnlineStatus">
-        <Trans id="OnlineStatus.internet_offline">
-          You're internet is disconnected.
-        </Trans>
-        <button
-          type="button"
-          className="retry"
-          onClick={() => checkConnection(true)}
-        >Retry
+        <Trans id="OnlineStatus.internet_offline">You're internet is disconnected.</Trans>
+        <button type="button" className="retry" onClick={() => checkConnection(true)}>
+          Retry
         </button>
       </div>
     )
@@ -63,11 +63,8 @@ export default function OnlineStatus(): JSX.Element {
       <div className="OnlineStatus">
         <Trans id="OnlineStatus.api_offline">
           Can't connect to Greenlight.
-          <button
-            type="button"
-            className="retry"
-            onClick={() => checkConnection(true)}
-          >Retry
+          <button type="button" className="retry" onClick={() => checkConnection(true)}>
+            Retry
           </button>
         </Trans>
       </div>

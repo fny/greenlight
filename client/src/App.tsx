@@ -11,7 +11,7 @@ import routes from 'src/config/routes'
 import { i18n as globalI18n } from 'src/i18n'
 import { ErrorBoundary } from 'src/ErrorBoundary'
 import OnlineStatus from 'src/components/OnlineStatus'
-import { isCordova } from './helpers/util'
+import env from './config/env'
 
 function I18nWatchLocale({ children }: { children: React.ReactNode }) {
   const { i18n } = useLingui()
@@ -30,7 +30,7 @@ const f7params: Framework7Params = {
   routes,
 }
 
-if (!isCordova()) {
+if (!env.isCordova()) {
   f7params.view = {
     pushState: true,
     pushStateSeparator: '',

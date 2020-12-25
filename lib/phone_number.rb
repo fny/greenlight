@@ -23,7 +23,7 @@ class PhoneNumber
 
   # @return [Boolean]
   def self.valid?(value)
-    num_count = value.count('0-9')
+    num_count = (value || '').count('0-9')
     return false unless num_count == 10 || num_count == 11
 
     SUPPORTED_COUNTRY_CODES.any? { |code|
