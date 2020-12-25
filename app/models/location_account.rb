@@ -15,7 +15,6 @@ class LocationAccount < ApplicationRecord
 
   extend Enumerize
   belongs_to :user
-  has_many :parents, through: :users
   belongs_to :location
 
   belongs_to :created_by, class_name: 'User', optional: true
@@ -25,6 +24,10 @@ class LocationAccount < ApplicationRecord
   validates :permission_level, presence: true
   validates :role, presence: true
   validates :external_id, uniqueness: { scope: :location_id }, allow_nil: true
+
+  def parents
+    user.parents
+  end
 end
 
 # == Schema Information

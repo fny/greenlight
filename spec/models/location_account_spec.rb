@@ -6,7 +6,7 @@ RSpec.describe LocationAccount, type: :model do
   describe '#parents' do
     it "returns the child's parents" do
       bart = users(:bart)
-      parents = bart.location_accounts.where(location: locations(:springfield_elementary)).parents
+      parents = bart.location_accounts.where(location: locations(:springfield_elementary)).first.parents
       expect(parents).to eq(parents)
     end
   end
