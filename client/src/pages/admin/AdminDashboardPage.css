@@ -1,0 +1,46 @@
+.stats-squares {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.stats-square-title {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.stats-square-title {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.stats-square {
+  display: inline-block;
+  border-radius: 10px;
+  /* width: 20%;
+  padding: 2%;
+  margin: 2%;
+  height: 60px; */
+  padding: 5px 10px;
+  margin: 5px;
+}
+
+.stats-square-number {
+  margin-top: 10px;
+  font-size: 2em;
+}
+
+.stats-square.cleared {
+  background-color: rgb(160, 254, 198);
+}
+
+.stats-square.pending {
+  background-color: rgb(255, 240, 128);
+}
+
+.stats-square.recovery {
+  background-color: pink;
+}
+
+.stats-square.compliance {
+  background-color: #eee;
+}

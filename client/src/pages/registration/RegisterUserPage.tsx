@@ -31,7 +31,7 @@ export default function RegisterParentPage(props: F7Props) {
   // setMyPermalink(permalink)
   const [myCode, setMyCode] = useState('')
   // setMyCode(registrationCode)
-  const [currentUser] = useGlobal('currentUser') as [User, any] // FIXME
+  const [currentUser] = useGlobal('currentUser')
   useEffect(() => {
     // HACK: This actually reveals the registration code since its in the response payload
     if (!permalink) return
@@ -272,7 +272,7 @@ export default function RegisterParentPage(props: F7Props) {
           {/*  Scrollable sheet content */}
           <PageContent>
             {/* TODO: Host this elsewhere. */}
-            <iframe src="/terms.html" style={{ width: '100%', border: 0, height: '90%' }} />
+            <iframe src="https://docs.greenlightready.com/terms" style={{ width: '100%', border: 0, height: '90%' }} />
           </PageContent>
         </Sheet>
       </Page>

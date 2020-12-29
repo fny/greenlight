@@ -2,7 +2,7 @@ import React, { useGlobal } from 'reactn'
 import { Page, Block, Button } from 'framework7-react'
 
 import './SplashPage.css'
-import { signOut, toggleLocale } from 'src/initializers/providers'
+import { signOut, toggleLocale } from 'src/helpers/global'
 import { Trans } from '@lingui/macro'
 import releaseData from 'src/assets/data/releases'
 import { paths } from 'src/config/routes'
@@ -35,11 +35,11 @@ export default function SplashPage(props: F7Props) {
           <Trans id="SplashPage.create_account">Create Account</Trans>
         </Button>
 
-        {/* <Button outline href={paths.registerLocationWelcomePath}>
+        <Button outline href={paths.registerLocationWelcomePath}>
           <Trans id="SplashPage.register_business_or_school">
             Register Organization
           </Trans>
-        </Button> */}
+        </Button>
 
         <Button outline href={paths.durhamRegistationPath}>
           <Trans id="SplashPage.register_business">Register Business</Trans>

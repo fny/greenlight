@@ -6,6 +6,7 @@ import { getGlobal } from 'reactn'
 import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import logger from 'src/helpers/logger'
+import GLPhoneNumber from 'src/helpers/GLPhoneNumber'
 
 //
 // Date and Time Related
@@ -90,13 +91,13 @@ export function isEmptyType(data: any): boolean {
 
 export function isPrimitiveType(data: any): boolean {
   return (
-    typeof data === 'string' ||
-    typeof data === 'number' ||
-    typeof data === 'boolean' ||
-    typeof data === 'bigint' ||
-    typeof data === 'symbol' ||
-    data === null ||
-    data === undefined
+    typeof data === 'string'
+    || typeof data === 'number'
+    || typeof data === 'boolean'
+    || typeof data === 'bigint'
+    || typeof data === 'symbol'
+    || data === null
+    || data === undefined
   )
 }
 
@@ -127,6 +128,27 @@ export function isInDurham(zipCode: string): boolean {
   ]
 
   return durhamZipCodes.includes(zipCode)
+}
+
+export function isInOnslow(zipCode: string): boolean {
+  const onslowZipCodes = [
+    '28541',
+    '28540',
+    '28543',
+    '28445',
+    '28544',
+    '28547',
+    '28546',
+    '28454',
+    '28555',
+    '28460',
+    '28574',
+    '28582',
+    '28584',
+    '28518',
+    '28539',
+  ]
+  return onslowZipCodes.includes(zipCode)
 }
 
 /**
@@ -352,11 +374,7 @@ export function formatPhone(number: string | null | undefined): string {
 }
 
 export function validPhone(phoneNumber: string): boolean {
-  const parsed = parsePhoneNumberFromString(phoneNumber, 'US')
-  if (!parsed) {
-    return false
-  }
-  return parsed.country === 'US' && parsed.isValid()
+  return new GLPhoneNumber(phoneNumber).isValid()
 }
 
 export function haveEqualAttrs(a: any, b: any): boolean {
@@ -423,4 +441,28 @@ export function printObject(obj: any, depth = 0) {
       ? '[object Array]'
       : `${v}`
     : v))
+}
+
+export function titleCase(x: string): string {
+  let i
+  let j
+  let str = x.replace(/([^\W_]+[^\s-]*) */g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+
+  // Certain minor words should be left lowercase unless
+  // they are the first or last words in the string
+  const lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
+    'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With']
+  for (i = 0, j = lowers.length; i < j; i += 1) {
+    str = str.replace(new RegExp(`\\s${lowers[i]}\\s`, 'g'),
+      (txt) => txt.toLowerCase())
+  }
+
+  // Certain words such as initialisms or acronyms should be left uppercase
+  const uppers = ['Id', 'Tv']
+  for (i = 0, j = uppers.length; i < j; i += 1) {
+    str = str.replace(new RegExp(`\\b${uppers[i]}\\b`, 'g'),
+      uppers[i].toUpperCase())
+  }
+
+  return str
 }

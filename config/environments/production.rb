@@ -85,13 +85,13 @@ Rails.application.configure do
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
   # Lograge
-  # config.lograge.enabled = true
-  # config.lograge.custom_options = lambda do |event|
-  #   {
-  #     user_id: event.payload[:user_id],
-  #     ip_addr: event.payload[:ip_addr],
-  #     params: event.payload[:params].except(:controller, :action)
-  #   }
+  config.lograge.enabled = true
+  config.lograge.custom_options = lambda do |event|
+    {
+      user_id: event.payload[:user_id],
+      ip_addr: event.payload[:ip_addr],
+      params: event.payload[:params].except(:controller, :action)
+    }
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.raise_delivery_errors = true

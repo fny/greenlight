@@ -14,7 +14,7 @@ import { Location, User } from 'src/models'
 import * as Yup from 'yup'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { useFormik, FormikProvider } from 'formik'
-import { reloadCurrentUser } from 'src/initializers/providers'
+import { reloadCurrentUser } from 'src/helpers/global'
 import { createLocation } from 'src/api'
 import {
   assertNotNull, assertNotUndefined, isBlank, isPresent,

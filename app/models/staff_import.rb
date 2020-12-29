@@ -4,6 +4,8 @@ class StaffImport
   UnhandledCase = Class.new(StandardError)
   InvalidState = Class.new(StandardError)
 
+  attribute :overwrite
+
   # LocationAccount related
   attribute :external_id, type: String
   attribute :role, type: String
@@ -20,6 +22,7 @@ class StaffImport
   # LocationAccount related
   validates :external_id, presence: true
   validates :role, presence: true
+
   # User related
   validates :first_name, presence: true
   validates :last_name, presence: true
@@ -27,6 +30,7 @@ class StaffImport
   validates :email, 'valid_email_2/email': true, allow_nil: true
 
   validate :email_or_mobile_number_present
+  validate :external_id_isnt_decimal
 
   def email_or_mobile_number_present
     if mobile_number.blank? && email.blank?
@@ -92,6 +96,13 @@ class StaffImport
 
   private
 
+  def external_id_isnt_decimal
+    return unless external_id
+    return unless external_id.include?('.')
+
+    errors.add(:external_id, "can't look like a decimal")
+  end
+
   def save_all!
     ActiveRecord::Base.transaction do
       user.save! && location_account.save!
@@ -99,7 +110,7 @@ class StaffImport
       new_cohorts = Cohort.find_or_create_cohorts!(location, cohorts).filter { |c|
         user_cohort_ids.exclude?(c.id)
       }
-      # user.cohorts << new_cohorts
+      user.cohorts << new_cohorts
     end
     user
   end

@@ -127,6 +127,8 @@ GEM
     faraday_middleware (1.0.0)
       faraday (~> 1.0)
     fast_blank (1.0.0)
+    fast_excel (0.3.0)
+      ffi (> 1.9, < 2)
     fast_jsonapi (1.5)
       activesupport (>= 4.2)
     fast_xs (0.8.0)
@@ -397,6 +399,7 @@ DEPENDENCIES
   faker
   faraday
   fast_blank
+  fast_excel
   fast_jsonapi
   fast_xs
   foreman

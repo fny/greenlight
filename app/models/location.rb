@@ -48,10 +48,6 @@ class Location < ApplicationRecord
     has_many role.pluralize.to_sym, through: "#{role}_accounts".to_sym, source: :user
   end
 
-  def parents
-    User.distinct.parents.joins(:children).where('parents_children.child_id': students)
-  end
-
   enumerize :category, in: CATEGORIES
 
   validate :registration_codes_are_different
@@ -70,7 +66,6 @@ class Location < ApplicationRecord
   validates :student_registration_code_downcase, presence: true
   before_validation :set_registration_codes
 
-
   def self.find_by_id_or_permalink(id)
     find_by(id: id) || find_by(permalink: id)
   end
@@ -80,20 +75,16 @@ class Location < ApplicationRecord
       raise(ActiveRecord::RecordNotFound, "Location could not be found by #{id}")
   end
 
-  def self.load_locations_from_data!
-    Greenlight::Data.load_json('locations.json').each do |l|
-      next if Location.exists?(permalink: l['permalink'])
-
-      Location.create!(l)
-    end
-  end
-
   def phone_number=(value)
     return if value.blank?
 
     parsed = PhoneNumber.parse(value)
     parsed = nil if parsed.blank?
     self[:phone_number] = parsed
+  end
+
+  def parents
+    User.distinct.parents.joins(:children).where('parents_children.child_id': students)
   end
 
   def users_to_invite
@@ -209,6 +200,30 @@ class Location < ApplicationRecord
     return nil unless gdrive_student_roster_id
 
     "https://docs.google.com/spreadsheets/d/#{gdrive_student_roster_id}"
+  end
+
+  def downcased_cohort_schema
+    return cohort_schema if cohort_schema.blank?
+    JSON.parse(cohort_schema).transform_keys(&:downcase).transform_values { |v| v.map(&:downcase) }
+  end
+
+  def valid_cohort_category?(category)
+    downcased_cohort_schema.key?(category.tr('#', '').downcase)
+  end
+
+  def status_breakdown
+    total_users = users.count
+    values = GreenlightStatus.where(user: self.users).where('submission_date >= ?', 7.days.ago).group(:submission_date, :status).order('submission_date DESC').count
+    result = {}
+    values.each do |k, v|
+      date, state = k
+      result[date] ||= {}
+      result[date][state] = v
+    end
+    result.each do |k, v|
+      result[k]['unknown'] = total_users - v.values.sum
+    end
+    result
   end
 
   private

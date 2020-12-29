@@ -1,0 +1,89 @@
+.RegisterLocationPages h1 {
+  font-size: 1.5em;
+}
+
+.RegisterLocationPages .fill-in-the-blank {
+  display: inline-block;
+  padding-bottom: 2px;
+  padding-left: 5px;
+  border-bottom: 1px dashed #444;
+  color: var(--gl-green);
+}
+
+.RegisterLocationPages .category-select {
+  cursor: pointer;
+}
+.RegisterLocationPages .introduction {
+  font-size: 1rem;
+  line-height: 2rem;
+}
+.RegisterLocationPages .has-error {
+  color: red;
+  border-bottom: 1px dashed red;
+}
+.RegisterLocationPages .has-error::placeholder {
+  color: red;
+}
+
+.RegisterLocationPages p.error {
+  color: red;
+}
+
+.RegisterLocationPages .error a {
+  color: red;
+  border-bottom: 1px dashed red;
+}
+
+.RegisterLocationPages .logos {
+  text-align: center;
+}
+
+.RegisterLocationPages .logo {
+  height: 70px;
+  padding: 20px 10px;
+}
+
+input[name="firstName"].fill-in-the-blank {
+  width: 44%;
+  margin-right: 1%;
+}
+input[name="lastName"].fill-in-the-blank {
+  margin-left: 1%;
+  width: 44%;
+}
+
+input[name="locationName"].fill-in-the-blank {
+  width: 70%;
+  margin-left: 2%;
+}
+
+input[name="locationCategory"].fill-in-the-blank {
+  width: 43%;
+  margin-left: 2%;
+}
+
+input[name="email"].fill-in-the-blank {
+  width: 55%;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+input[name="mobileNumber"].fill-in-the-blank {
+  width: 45%;
+  margin-left: 2%;
+}
+
+input[name="zipCode"].fill-in-the-blank {
+  width: 30%;
+  margin-left: 2%;
+}
+
+input[name="employeeCount"].fill-in-the-blank {
+  width: 20%;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.hide {
+  display: none;
+}

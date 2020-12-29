@@ -4,30 +4,42 @@ import {
   Page,
 } from 'framework7-react'
 import React from 'react'
+import { useGlobal, useState } from 'reactn'
+import LoadingPageContent from 'src/components/LoadingPageContent'
 
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import { cookieLocale } from 'src/initializers/providers'
+
+import './IframeResource.css'
 
 export default function CHWRequestPage() {
-  const spanishURL = 'https://airtable.com/embed/shrn4S5XoOVO8S4dC?backgroundColor=purple'
-  const englishURL = 'https://airtable.com/embed/shrIt4hurTNBrZD0g?backgroundColor=purple'
+  const spanishURL = 'https://airtable.com/embed/shrn4S5XoOVO8S4dC'
+  const englishURL = 'https://airtable.com/embed/shrIt4hurTNBrZD0g'
 
-  const url = cookieLocale() === 'en' ? englishURL : spanishURL
+  const [locale] = useGlobal('locale')
+  const url = locale === 'en' ? englishURL : spanishURL
+  const [state, setState] = useState({ isLoaded: false })
 
   return (
-    <Page>
-      <Navbar title={t({ id: 'CHWRequestPage.title', message: 'Care Request' })}>
-        <NavbarHomeLink slot="left" />
-      </Navbar>
-      <style dangerouslySetInnerHTML={{
-        __html: `
-        .expand {position: absolute; top: 40px; left: 0; right: 0; bottom: 0; }
-        .expand iframe {display: block; width: 100%; height: 100%; border: none;}
-    `,
-      }}
-      />
-      <div className="expand">
-        <iframe className="airtable-embed" src={url} frameBorder="0" style={{ background: 'transparent', border: '1px solid #ccc' }} />
+    <Page className="IframeResource">
+      {
+        state.isLoaded ? (
+          <Navbar title={t({ id: 'CHWRequestPage.title2', message: 'Services Request' })}>
+            <NavbarHomeLink slot="left" />
+          </Navbar>
+        )
+          : <LoadingPageContent />
+      }
+
+      <div className="iframe-wrapper">
+        <iframe
+          title="Service Request"
+          src={url}
+          id="chw-frame"
+          frameBorder="0"
+          onLoad={() => {
+            setState({ isLoaded: true })
+          }}
+        />
       </div>
     </Page>
   )

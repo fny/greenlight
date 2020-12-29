@@ -63,6 +63,8 @@ gem 'exception_notification'
 gem 'faker'
 # Simple, but flexible HTTP client library
 gem 'faraday'
+# Ultra Fast Excel Writer for Ruby
+gem 'fast_excel'
 # A lightning fast JSON:API serializer for Ruby Objects.
 gem 'fast_jsonapi'
 # Implementation of Jaro-Winkler string similary

@@ -20,7 +20,7 @@ import { completeWelcomeUser } from 'src/api'
 
 import onlineCheckupImage from 'src/assets/images/online-checkup.svg'
 import SubmitHandler from 'src/helpers/SubmitHandler'
-import { reloadCurrentUser } from 'src/initializers/providers'
+import { reloadCurrentUser } from 'src/helpers/global'
 
 interface State {
   termsOpened: boolean

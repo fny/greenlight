@@ -1,5 +1,5 @@
 import { getGlobal } from 'reactn'
-import { isSignedIn } from 'src/initializers/providers'
+import { isSignedIn } from 'src/helpers/global'
 import { resolvePath } from 'src/helpers/util'
 import { Router } from 'framework7/modules/router/router'
 import { User } from 'src/models'
@@ -18,7 +18,7 @@ import MagicSignInAuthPage from 'src/pages/sessions/MagicSignInAuthPage'
 import MagicSignInPage from 'src/pages/sessions/MagicSignInPage'
 import MobileVerificationPage from 'src/pages/MobileVerificationPage'
 import NCStatewideStatsPage from 'src/pages/resources/NCStatewideStatsPage'
-import NCTestLocationsPage from 'src/pages/resources/NCTestLocationsPage'
+import CastlightTestSearchPage from 'src/pages/resources/CastlightTestSearchPage'
 import NotFoundPage from 'src/pages/util/NotFoundPage'
 import NotificationsPage from 'src/pages/users/NotificationsPage'
 import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
@@ -47,6 +47,10 @@ import WelcomeSurveyPage from 'src/pages/welcome/WelcomeSurveyPage'
 import BrevardResourcesPage from 'src/pages/resources/BrevardResourcesPage'
 import AdminUserPage from 'src/pages/admin/AdminUserPage'
 import HelpScoutPage from 'src/pages/resources/HelpScoutPage'
+import PageWithRequest from 'src/pages/PageWithRequest'
+import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
+import PositiveResourcesPage from 'src/pages/resources/PositiveResourcesPage'
+import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -118,8 +122,12 @@ const registrationRoutes = {
     path: '/register/location/welcome',
     component: RegisterLocationWelcomePage,
   },
+  registerLocationIntroductionPath: {
+    path: '/register/location/introduction',
+    component: RegisterLocationIntroductionPage,
+  },
   registerLocationMessagePath: {
-    path: '/register/location/message/:messageId',
+    path: '/register/location/message',
     component: RegisterLocationMessagePage,
   },
   registerLocationOwnerPath: {
@@ -196,12 +204,12 @@ const sessionRoutes = {
 
 const resourcesRoutes = {
   dukeScheduleTestPath: {
-    path: '/schedule-test-at-duke',
+    path: '/resources/duke-testing',
     component: DukeScheduleTestPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   brevardPath: {
-    path: '/brevard-resources',
+    path: '/resources/brevard',
     component: BrevardResourcesPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
@@ -210,10 +218,10 @@ const resourcesRoutes = {
     component: NCStatewideStatsPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
-  ncTestingLocationsPath: {
-    path: '/nc-test-locations',
-    component: NCTestLocationsPage,
-    // beforeEnter: beforeEnter.requireSignIn,
+  testSearchPath: {
+    path: '/resources/test-search',
+    component: CastlightTestSearchPage,
+    beforeEnter: beforeEnter.requireSignIn,
   },
   helpScoutPath: {
     path: '/support',
@@ -221,13 +229,17 @@ const resourcesRoutes = {
     beforeEnter: beforeEnter.requireSignIn,
   },
   chwRequestPath: {
-    path: '/chw-request',
+    path: '/resources/chw-request',
     component: CHWRequestPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   mapPath: {
     path: '/covid-county-map',
     component: CovidCountyMapPage,
+  },
+  positiveResourcesPath: {
+    path: '/resources/positive-help',
+    component: PositiveResourcesPage,
   },
 }
 
@@ -304,6 +316,11 @@ const routeMap = {
     component: AdminUserPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
+  adminDashboardPath: {
+    path: '/admin/locations/:locationId/dashboard',
+    component: AdminDashboardPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
   debugPath: {
     path: '/debug',
     component: DebugPage,
@@ -356,6 +373,10 @@ const routeMap = {
   notFoundPath: {
     path: '/not-found',
     component: NotFoundPage,
+  },
+  testPath: {
+    path: '/test',
+    component: PageWithRequest,
   },
   catchAllPath: {
     path: '(.*)',

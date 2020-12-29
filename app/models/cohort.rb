@@ -6,6 +6,17 @@ class Cohort < ApplicationRecord
   has_many :cohort_users
   has_many :users, through: :cohort_users
 
+  validates :location, presence: true
+  validates :category, presence: true
+  validates :name, presence: true
+  validate :cohort_in_schema
+
+  before_save do
+    self.name = name.downcase if name
+    self.category = category.downcase if category
+  end
+
+
   # PERF: N+1 query like issue here. Also, all the cohorts should be checked first
   # and normalized.
   #
@@ -25,6 +36,22 @@ class Cohort < ApplicationRecord
       end
     end
     persisted
+  end
+
+  def cohort_in_schema
+    if location.blank?
+      errors.add(:cohort, "no location given, can't verify the cohorts")
+      return
+    end
+
+    unless location.downcased_cohort_schema.key?(category.downcase)
+      errors.add(:cohort, "Category #{category} not found in cohort schema")
+      return
+    end
+
+    unless location.downcased_cohort_schema[category.downcase].include?(name.downcase)
+      errors.add(:cohort, "Value #{name} not found in cohort schema for category #{category}. Available #{location.downcased_cohort_schema[category.downcase]}")
+    end
   end
 end
 

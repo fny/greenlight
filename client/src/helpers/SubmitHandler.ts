@@ -26,6 +26,7 @@ export default class SubmitHandler {
     this.submittingMessage = options.submittingMessage || t({ id: 'Common.submitting', message: 'Submitting...' })
     this.onSubmit = options.onSubmit || (() => Promise.resolve())
     this.onSuccess = options.onSuccess || (() => {})
+    this.successMessage = options.successMessage
     this.onError = options.onError || (() => {})
     this.errorTitle = options.errorTitle || t({ id: 'Common.submission_failed', message: 'Submission Failed' })
     this.errorMessage = options.errorMessage || t({ id: 'Common.somethings_wrong', message: 'Something went wrong' })

@@ -13,7 +13,7 @@ import { ReactNComponent } from 'reactn/build/components'
 import { DateTime } from 'luxon'
 import { t, Trans } from '@lingui/macro'
 import { assertNotNull } from 'src/helpers/util'
-import { reloadCurrentUser } from 'src/initializers/providers'
+import { reloadCurrentUser } from 'src/helpers/global'
 import logger from 'src/helpers/logger'
 
 import fever from 'src/assets/images/symptoms/fever.svg'

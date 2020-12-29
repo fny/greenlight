@@ -30,6 +30,8 @@ Rails.application.routes.draw do
     end
     resources :locations do
       resources :users, controller: :location_users
+      resources :accounts
+      resources :roster_imports
       post :import_staff
       post :import_students
     end

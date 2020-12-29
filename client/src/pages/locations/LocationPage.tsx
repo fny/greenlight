@@ -21,7 +21,7 @@ class State {
   emailOrMobile: string = ''
 }
 
-export default function LocationPage({ f7route, f7router }: F7Props) {
+export default function LocationPage({ f7route, f7router }: F7Props): JSX.Element {
   const [location, setLocation] = useState<Location | null>()
   const [error, setError] = useState<any>(null)
   const [state, setState] = useState<State>(new State())
@@ -85,6 +85,11 @@ export default function LocationPage({ f7route, f7router }: F7Props) {
         <p>
           By registering, this location will have access to your status (cleared, pending, recovery) and COVID test results you submit.
           You can revoke access at any time.
+        </p>
+        <p>
+          If you have a Hotmail, MSN, Live, Outlook or other Microsoft email account
+          and don't receive an invite, please contact us at{' '}
+          <a href="mailto:help@greenlightready.com">help@greenlightready.com</a>.
         </p>
         <List
           form

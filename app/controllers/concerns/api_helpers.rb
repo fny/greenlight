@@ -13,7 +13,6 @@ module APIHelpers
     'Coder, eh? Email us: hello [at] greenlightready'
   end
 
-
   def camelize_hash(data)
     case data
     when Array
@@ -48,6 +47,15 @@ module APIHelpers
       type: command.class.to_s,
     }
     render json: errors
+  end
+
+  def simple_error_response(error)
+    response.status = 422
+    render json: {
+      "errors": [
+        error
+      ]
+    }
   end
 
   def success_response

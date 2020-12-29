@@ -62,6 +62,73 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '.email_taken?' do
+    it 'returns true when the email is in use' do
+      user = Fabricate(:user)
+      expect(User.email_taken?(user.email)).to eq(true)
+    end
+
+    it 'returns false when the email is not in use' do
+      user = Fabricate(:user)
+      user.destroy
+      expect(User.email_taken?(user.email)).to eq(false)
+    end
+
+    it 'returns false when the email is invalid' do
+      expect(User.email_taken?('notinuse')).to eq(false)
+    end
+  end
+
+  describe '.mobile_taken?' do
+    it 'returns true when the mobile number is in use' do
+      user = Fabricate(:user)
+      expect(User.mobile_taken?(user.mobile_number)).to eq(true)
+    end
+
+    it 'returns false when the mobile number is not in use' do
+      user = Fabricate(:user)
+      user.destroy
+      expect(User.mobile_taken?(user.mobile_number)).to eq(false)
+    end
+
+    it 'returns false when the mobile number is invalid' do
+      expect(User.mobile_taken?('5553334444')).to eq(false)
+    end
+  end
+
+  describe '.email_or_mobile_taken?' do
+    it 'returns true when the mobile number is in use' do
+      user = Fabricate(:user)
+      expect(User.email_or_mobile_taken?(user.mobile_number)).to eq(true)
+    end
+
+    it 'returns true when the mobile number is in use' do
+      user = Fabricate(:user)
+      user.destroy
+      expect(User.email_or_mobile_taken?(user.mobile_number)).to eq(false)
+    end
+
+    it 'returns true when the email is in use' do
+      user = Fabricate(:user)
+      expect(User.email_or_mobile_taken?(user.email)).to eq(true)
+    end
+
+    it 'returns false when the email is not in use' do
+      user = Fabricate(:user)
+      user.destroy
+      expect(User.email_or_mobile_taken?(user.email)).to eq(false)
+    end
+
+    it 'returns false when the mobile number is invalid' do
+      expect(User.email_or_mobile_taken?('5553334444')).to eq(false)
+    end
+
+    it 'returns false when the email is invalid' do
+      expect(User.email_or_mobile_taken?('5553334444')).to eq(false)
+    end
+  end
+
+
   describe '#inferred_status' do
     it 'returns an unpersisted unknown status if there is no last status' do
       expect(user.inferred_status.status).to eq(GreenlightStatus::UNKNOWN)

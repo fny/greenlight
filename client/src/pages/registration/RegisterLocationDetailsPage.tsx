@@ -3,10 +3,11 @@ import {
   Block, BlockTitle, Button, f7, List, ListItem, ListItemCell, ListItemRow, Page,
 } from 'framework7-react'
 import React, { useState } from 'react'
-import { isBlank, isPresent, upperCaseFirst } from 'src/helpers/util'
 import {
-  GRegisteringLocation, reloadCurrentUser,
-} from 'src/initializers/providers'
+  isBlank, isPresent, titleCase, upperCaseFirst,
+} from 'src/helpers/util'
+import { reloadCurrentUser } from 'src/helpers/global'
+import { RegisteringLocation } from 'src/models/RegisteringLocation'
 import {
   lcTrans, LocationCategories, LOCATION_CATEGORIES,
 } from 'src/models/Location'
@@ -32,8 +33,7 @@ class State {
 
 export default function RegisterLocationDetailsPage(props: F7Props): JSX.Element {
   const [registeringLocation] = useGlobal('registeringLocation')
-  // FIXME: Why is this not picking up the type?
-  const [currentUser] = useGlobal('currentUser') as [User, any]
+  const [currentUser] = useGlobal('currentUser')
   const [state, setState] = useState(new State())
 
   const submissionHandler = new SubmitHandler(f7)
@@ -57,32 +57,7 @@ export default function RegisterLocationDetailsPage(props: F7Props): JSX.Element
   const ownerCount = currentUser ? currentUser.locationAccounts.filter((x) => x.permissionLevel === 'owner').length : 0
   const category = registeringLocation.category || state.locationCategory
   return (
-    <Page className="RegisterLocationWelcomePage">
-      <style>
-        {
-          `
-          .RegisterLocationWelcomePage .fill-in-the-blank {
-            display: inline-block;
-            border-bottom: 1px dashed black;
-            text-align: center;
-            color: var(--gl-green);
-          }
-          .RegisterLocationWelcomePage .category-select {
-            cursor: pointer;
-          }
-          .RegisterLocationWelcomePage .introduction {
-            font-size: 1.5rem;
-          }
-          .RegisterLocationWelcomePage .has-error {
-            color: red;
-            border-bottom: 1px dashed red;
-          }
-          .RegisterLocationWelcomePage .has-error::placeholder {
-            color: red;
-          }
-          `
-        }
-      </style>
+    <Page className="RegisterLocationPages">
       <Block>
         <h1>
           Tell us more about your<br />
@@ -99,21 +74,18 @@ export default function RegisterLocationDetailsPage(props: F7Props): JSX.Element
             <Block>
               <BlockTitle>
                 <Trans id="LocationsNewPage.school_info_title">
-                  Your {category}'s Information
+                  Your {upperCaseFirst(lcTrans(category))}'s Information
                 </Trans>
               </BlockTitle>
 
-              <Trans id="LocationsNewPage.school_info_instructions">
-                Please fill out the form below with information about your {category}.
-              </Trans>
-
               {ownerCount > 0 && (
               <span>{' '}
-                <Trans id="LocationsNewPage.school_info_school_count">
+                <Trans id="RegisterLocationDetailsPage.total_count">
                   Note you already have registered {ownerCount} locations. If you're having trouble with access send us an email: help@greenlightready.com
                 </Trans>
               </span>
               )}
+
               <LocationDetailFields
                 formik={formik}
                 location={registeringLocation}
@@ -174,46 +146,13 @@ type Props = { location?: Location, f7router: Router.Router, category?: string }
 
 function LocationDetailFields({
   formik, location, category, state, setState,
-}: { formik: FormikInstance<any>, location: GRegisteringLocation, category: LocationCategories, state: State, setState: React.Dispatch<React.SetStateAction<State>>}) {
+}: { formik: FormikInstance<any>, location: RegisteringLocation, category: LocationCategories, state: State, setState: React.Dispatch<React.SetStateAction<State>>}) {
   return (
     <>
       <List noHairlines>
-        { isBlank(location.category) && (
-        <ListItem
-          title="I'm using Greenlight for a..."
-          smartSelect
-          smartSelectParams={{
-            openIn: 'sheet',
-            routableModals: false,
-            on: {
-              change(ss: SmartSelect.SmartSelect) {
-                console.log(ss.getValue(), ss)
-                setState({ ...state, locationCategory: ss.getValue() as LocationCategories })
-              },
-            },
-          }}
-        >
-          <select
-            name="category"
-            defaultValue="community"
-          >
-            {
-              LOCATION_CATEGORIES.map((c) => <option key={c} value={c}>{upperCaseFirst(lcTrans(c))}</option>)
-            }
-          </select>
-        </ListItem>
-        )}
         <FormikInput
           label={
-            t({ id: 'LocationDetailsForm.business_name', message: `${upperCaseFirst(category)} Name` })
-          }
-          name="name"
-          type="text"
-          floatingLabel
-        />
-        <FormikInput
-          label={
-            t({ id: 'LocationDetailsForm.school_id', message: 'Customize Your Greenlight URL (glit.me/go/your-input)' })
+            t({ id: 'RegisterLocationDetailsPage.greenlight_url', message: 'Customize Your Greenlight URL' })
           }
           name="permalink"
           info="Lowercase letters, numbers, and dashes only."
@@ -232,22 +171,6 @@ function LocationDetailFields({
           </Trans>
         </ListItem>
         )}
-        { isBlank(location.zipCode) && (
-        <FormikInput
-          label={t({ id: 'LocationDetailsForm.zip_code', message: 'Zip Code' })}
-          name="zipCode"
-          type="text"
-          floatingLabel
-        />
-        )}
-
-        <FormikInput
-          label={t({ id: 'LocationDetailsForm.number_of_users', message: 'How many people will use Greenlight?' })}
-          name="employeeCount"
-          type="number"
-          min={1}
-          floatingLabel
-        />
       </List>
     </>
   )
@@ -257,15 +180,15 @@ function LocationNotificationFields({ formik, category }: { formik: FormikInstan
   return (
     <Block>
       <BlockTitle>
-        <Trans id="LocationNotificationsForm.daily_reminders_title">
-          Daily Reminders
+        <Trans id="RegisterLocationDetailsPage.daily_check_in_title">
+          Daily Check Ins
         </Trans>
       </BlockTitle>
       <p>
-        <Trans id="SchoolNotificationsForm.days_to_remind_footer">
-          We send daily reminders to your community to fill out their daily check-ins. Set the default time below. After everyone signs up, they can change the time and days they're notified.
+        <Trans id="RegisterLocationDetailsPage.daily_check_in_message">
+          We send daily reminders to your community to fill out their daily check-ins.
+          Set the default time below. After everyone signs up, they can change the time and days they're notified.
         </Trans>
-
       </p>
       <List accordionList noHairlines>
         <p>

@@ -36,9 +36,17 @@ module Admin
     end
 
     def import_students
-      @location = Location.find(params[:id])
+      @location = Location.find(params[:location_id])
       if params[:confirmation] == 'IMPORT STUDENTS'
         flash[:notice] = 'Student import started. Check your email for the results.'
+        location = Location.find(params[:location_id])
+        student_import = ImportStudentRoster.new(
+          location: location,
+          dry_run: params[:do_it] = '0',
+          overwrite: params[:overwrite] == '1',
+          created_by: current_user.persisted? ? current_user : nil
+        )
+        student_import.run
       else
         flash[:alert] = 'Incorrect confirmation code.'
       end
@@ -46,9 +54,17 @@ module Admin
     end
 
     def import_staff
-      @location = Location.find(params[:id])
+      @location = Location.find(params[:location_id])
       if params[:confirmation] == 'IMPORT STAFF'
         flash[:notice] = 'Staff import started. Check your email for the results.'
+        location = Location.find(params[:location_id])
+        staff_import = ImportStaffRoster.new(
+          location: location,
+          dry_run: params[:do_it] == '0',
+          overwrite: params[:overwrite] == '1',
+          created_by: current_user.persisted? ? current_user : nil
+        )
+        staff_import.run
       else
         flash[:alert] = 'Incorrect confirmation code.'
       end
@@ -60,18 +76,28 @@ module Admin
       case params[:confirmation]
       when "DELETE #{@location.permalink}"
         @location.destroy
-        redirect_to admin_locations_path, alert: "Congrats! You deleted #{@location.name}"
+        redirect_to admin_locations_path, notice: "Congrats! You deleted #{@location.name}"
       when "NUKE #{@location.permalink}"
         ActiveRecord::Base.transaction do
           # HACK: Why doesn't destroy_all work?
+          @location.parents.each(&:destroy)
           @location.users.each(&:destroy)
           @location.destroy
         end
-        redirect_to admin_locations_path, alert: "Congrats! You deleted #{@location.name} and all its users"
+        redirect_to admin_locations_path, notice: "Congrats! You deleted #{@location.name} and all its users"
       else
         flash[:alert] = 'Incorrect confirmation code.'
         redirect_to [:admin, @location]
       end
+    end
+
+    def staff_sheet
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+      download = StaffRosterDownload.new(location.permalink)
+
+      send_data File.open(download.file_path),
+        filename: File.basename(download.file_path),
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     end
   end
 end

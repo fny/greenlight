@@ -1,0 +1,14 @@
+.IframeResource .iframe-wrapper {
+  position: absolute;
+  top: calc(var(--f7-navbar-height) + var(--f7-safe-area-top));
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.IframeResource .iframe-wrapper iframe {
+  display: block;
+  width: 100%;
+  border: none;
+  height: 100vh;
+}

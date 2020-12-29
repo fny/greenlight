@@ -12,7 +12,7 @@ import { NoCurrentUserError } from 'src/helpers/errors'
 
 import { t, Trans } from '@lingui/macro'
 import logger from 'src/helpers/logger'
-import { toggleLocale } from 'src/initializers/providers'
+import { toggleLocale } from 'src/helpers/global'
 import { User } from 'src/models/User'
 
 interface State {

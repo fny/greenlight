@@ -13,8 +13,8 @@ import env from 'src/config/env'
 import {
   User, Location, LocationAccount, Model, MedicalEvent, GreenlightStatus, UserSettings,
 } from 'src/models'
-import { transformRecordResponse, recordStore } from './stores'
 import { RecordResponse } from 'src/types'
+import { transformRecordResponse, recordStore } from './stores'
 
 const BASE_URL = `${env.API_URL}/v1`
 
@@ -36,7 +36,7 @@ v1.interceptors.request.use((request) => {
   if (env.isCordova()) {
     const token = localStorage.getItem('token')
     if (token) {
-      request.headers['Authorization'] = `Bearer ${token}`
+      request.headers.Authorization = `Bearer ${token}`
     }
   }
 
@@ -187,21 +187,21 @@ export async function completeWelcomeUser(user: User): Promise<User> {
   return entity
 }
 
-export async function createUserAndSignIn(user: Partial<User>) {
+export async function createUserAndSignIn(user: Partial<User>): Promise<User> {
   const response = await v1.post<RecordResponse<User>>('/users/create-and-sign-in', user)
   const entity = transformRecordResponse<User>(response.data)
   assertNotArray(entity)
   return entity
 }
 
-export async function updateUserSettings(user: User, updates: Partial<UserSettings>) {
+export async function updateUserSettings(user: User, updates: Partial<UserSettings>): Promise<UserSettings> {
   const response = await v1.patch<RecordResponse<UserSettings>>(`/users/${user.id}/settings`, transformForAPI(updates))
   const entity = transformRecordResponse<UserSettings>(response.data)
   assertNotArray(entity)
   return entity
 }
 
-export async function getUsersForLocation(location: number | string | Location) {
+export async function getUsersForLocation(location: number | string | Location): Promise<User[]> {
   const locationId = location instanceof Location ? location.id : location
   const path = `/locations/${locationId}/users`
   return getResources<User>(path) as Promise<User[]>
@@ -243,6 +243,25 @@ export function mailInvite(emailOrMobile: string): Promise<AxiosResponse<any>> {
   return v1.post('mail/invite', {
     emailOrMobile,
   })
+}
+
+//
+// Util
+//
+
+export async function getEmailTaken(email: string): Promise<boolean> {
+  const res = await v1.get<{ taken: boolean }>('/util/email-taken', { params: { email } })
+  return res.data.taken
+}
+
+export async function getMobileTaken(mobile: string): Promise<boolean> {
+  const res = await v1.get<{ taken: boolean }>('/util/mobile-taken', { params: { mobile } })
+  return res.data.taken
+}
+
+export async function getEmailOrMobileTaken(value: string): Promise<boolean> {
+  const res = await v1.get<{ taken: boolean }>('/util/email-or-mobile-taken', { params: { value } })
+  return res.data.taken
 }
 
 //

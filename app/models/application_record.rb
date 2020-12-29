@@ -54,4 +54,8 @@ class ApplicationRecord < ActiveRecord::Base
 
     self.search(queryable_columns || [], query)
   end
+
+  def select_without(columns)
+    select(column_names - columns.map(&:to_s))
+  end
 end
