@@ -204,4 +204,63 @@ RSpec.describe User, type: :model do
       expect(location.reload.created_by).to eq(nil)
     end
   end
+
+  describe '#submits_surveys_for' do
+    it 'includes the user when they have a location account' do
+      user = Fabricate(:user)
+      location = Fabricate(:location)
+      Fabricate(:location_account, user: user, location: location)
+
+      expect(user.submits_surveys_for.map(&:id)).to contain_exactly(user.id)
+    end
+
+    it 'includes and self the children when they have location accounts' do
+      user = Fabricate(:user)
+      location = Fabricate(:location)
+      Fabricate(:location_account, user: user, location: location)
+      child1 = Fabricate(:user)
+      Fabricate(:location_account, user: child1, location: location)
+      child2 = Fabricate(:user)
+      Fabricate(:location_account, user: child2, location: location)
+      user.children << [child1, child2]
+      expect(user.submits_surveys_for.map(&:id)).to contain_exactly(user.id, child1.id, child2.id)
+    end
+
+    it "includes the children only when they only have location accounts" do
+      user = Fabricate(:user)
+      location = Fabricate(:location)
+      child1 = Fabricate(:user)
+      Fabricate(:location_account, user: child1, location: location)
+      child2 = Fabricate(:user)
+      Fabricate(:location_account, user: child2, location: location)
+      user.children << [child1, child2]
+      expect(user.submits_surveys_for.map(&:id)).to contain_exactly(child1.id, child2.id)
+    end
+  end
+
+  describe '#needs_to_submit_surveys_for'  do
+    it "includes the users who haven't submitted surveys for today" do
+      user = Fabricate(:user)
+      location = Fabricate(:location)
+      Fabricate(:location_account, user: user, location: location)
+      child1 = Fabricate(:user)
+      Fabricate(:location_account, user: child1, location: location)
+      child2 = Fabricate(:user)
+      Fabricate(:location_account, user: child2, location: location)
+      user.children << [child1, child2]
+      expect(user.needs_to_submit_surveys_for.map(&:id)).to contain_exactly(user.id, child1.id, child2.id)
+
+      status = GreenlightStrategyNorthCarolina.new([], []).status
+      status.user = user
+      status.save!
+
+      expect(user.needs_to_submit_surveys_for.map(&:id)).to contain_exactly(child1.id, child2.id)
+
+      status = GreenlightStrategyNorthCarolina.new([], []).status
+      status.user = child2
+      status.save!
+
+      expect(user.needs_to_submit_surveys_for.map(&:id)).to contain_exactly(child1.id)
+    end
+  end
 end

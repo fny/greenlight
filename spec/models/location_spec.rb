@@ -30,4 +30,12 @@ RSpec.describe Location, type: :model do
       expect(names).not_to include('Bart', 'Lisa', 'Todd', 'Rodd', 'Edna', 'Homer', 'Marge')
     end
   end
+
+  describe '#sync_cohorts!' do
+    it 'sync the cohorts with the ones in the schema' do
+      greenlight = Fabricate.build(:greenlight_academy)
+      greenlight.save
+      expect(greenlight.cohorts.map(&:code)).to contain_exactly('team:ed', 'team:business', 'timezone:est', 'timezone:cst', 'timezone:mst', 'timezone:pst', 'education:medstudent', 'education:professional', 'education:undergrad')
+    end
+  end
 end

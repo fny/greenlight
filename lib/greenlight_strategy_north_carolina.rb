@@ -15,8 +15,9 @@ class GreenlightStrategyNorthCarolina
   # @param cleared_override_date [Date, nil]
   def initialize(medical_events, previous_medical_events, cleared_override_date = nil)
     @medical_events = (medical_events + previous_medical_events).sort_by(&:occurred_at)
+
     if cleared_override_date
-      @medical_events = medical_events.filter { |e| e.occurred_at > cleared_override_date}
+      @medical_events = medical_events.filter { |e| e.occurred_at > cleared_override_date }
     end
   end
 

@@ -4,10 +4,10 @@ import CutoffTime from 'src/helpers/CutoffTime'
 import { t } from '@lingui/macro'
 
 import { DateTime } from 'luxon'
-import { User } from './User'
 import {
   Model, attribute as attr, initialize, STRING, DATETIME, BOOLEAN, hasOne,
 } from 'src/lib/Model'
+import { User } from './User'
 
 export const CUTOFF_TIME = new CutoffTime('2020-10-08 18:00')
 

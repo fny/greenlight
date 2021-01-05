@@ -30,7 +30,7 @@ export const v1 = axios.create({
 })
 
 v1.interceptors.request.use((request) => {
-  logger.dev(`[Request] ${request.method} ${request.url}`)
+  logger.dev(`[Request] ${request.method} ${request.url} ${request.params ? JSON.stringify(request.params) : ''}`)
   request.headers['X-GL-Locale'] = getGlobal().locale
 
   if (env.isCordova()) {
@@ -201,10 +201,10 @@ export async function updateUserSettings(user: User, updates: Partial<UserSettin
   return entity
 }
 
-export async function getUsersForLocation(location: number | string | Location): Promise<User[]> {
+export async function getUsersForLocation(location: number | string | Location, page = 1, query?: string): Promise<PagedResource<User>> {
   const locationId = location instanceof Location ? location.id : location
   const path = `/locations/${locationId}/users`
-  return getResources<User>(path) as Promise<User[]>
+  return getPagedResources<User>(path, page, query)
 }
 
 //
@@ -277,11 +277,55 @@ export async function getResource<T extends Model>(path: string): Promise<T> {
   return entity
 }
 
-export async function getResources<T extends Model>(path: string): Promise<T | T[]> {
+export async function getResources<T extends Model>(path: string): Promise<T[]> {
   const response = await v1.get(path)
   if (!response.data.data) return []
   recordStore.writeRecordResponse(response.data)
   const entities = transformRecordResponse<T>(response.data)
   assertArray(entities)
   return entities
+}
+
+interface PagedResource<T> {
+  data: T[]
+  pagination: Pagination
+}
+
+export interface Pagination {
+  // first: number
+  // prev: number
+  current: number
+  next: number
+  last: number
+  count: number
+  // perPage: number
+}
+
+export async function getPagedResources<T extends Model>(path: string, page: number, query?: string): Promise<PagedResource<T>> {
+  const response = await v1.get(path, { params: { page, query } })
+  recordStore.writeRecordResponse(response.data)
+  const entities = transformRecordResponse<T>(response.data)
+  assertArray(entities)
+
+  if (!response.data.data) {
+    return {
+      data: [],
+      pagination: {
+        // first: 0,
+        // prev: 0,
+        current: 0,
+        next: 1,
+        last: 0,
+        count: 0,
+        // perPage: 0,
+        // total: 0,
+      },
+    }
+  }
+
+  const pagination = response.data.meta.pagination as Pagination
+  return {
+    data: entities,
+    pagination,
+  }
 }

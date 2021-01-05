@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 class ApplicationRecord < ActiveRecord::Base
+  include PluckToHash
+
   class << self
     # @return [Array<Symbol>]
     attr_accessor :permitted_params
@@ -57,5 +59,16 @@ class ApplicationRecord < ActiveRecord::Base
 
   def select_without(columns)
     select(column_names - columns.map(&:to_s))
+  end
+
+  def self.dedupe(columns)
+    duplicate_row_values = select("#{columns.join(', ')}, count(*)")
+      .group(columns.join(', '))
+      .having('count(*) > 1')
+      .pluck_to_hash(*columns)
+
+    duplicate_row_values.each do |query|
+      where(query).order(id: :desc)[1..].map(&:destroy)
+    end
   end
 end

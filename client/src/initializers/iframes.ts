@@ -1,6 +1,7 @@
 import { IframeHTMLAttributes } from 'react'
 
 function loadIframe(src: string, attributes: any = {}) {
+  return
   const el = document.createElement('iframe')
   el.src = src
   Object.keys(attributes).forEach((key) => {

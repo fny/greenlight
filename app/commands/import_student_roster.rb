@@ -1,112 +1,171 @@
 # frozen_string_literal: true
 class ImportStudentRoster < ApplicationCommand
-  argument :gdrive_id
-  argument :location
-
-  validates :gdrive_id, presence: true
-  validates :location, presence: true
-
-  CORE_COLUMNS = [
-    UID = 'Unique Id',
-    FIRST = 'Student First Name',
-    LAST = 'Student Last Name',
-    EMAIL = 'Parent Email',
-    MOBILE = 'Parent Mobile',
-  ].freeze
-
   COHORT_PREFIX = '#'
   COHORT_DELIMITER = ';'
+  SAVE_BACKTRACE = true
 
-  def row_value(row, columns, key, i)
-    row["#{columns[key]}#{i + 1}"]
-  end
+  argument :location
+  argument :spreadsheet_path
+  argument :dry_run
+  argument :overwrite
+  argument :created_by
 
-  # @param row
-  # @returns [Hash] { "Category" => ["Cohort A", "Cohort B"] }
-  def row_cohort_value(row, columns, i)
-    columns.transform_values { |v|
-      (row["#{v}#{i + 1}"] || '').split(COHORT_DELIMITER)
+  validates :location, presence: true
+
+  # Returns the index of important headers for the import
+  # @return [Hash<Symbol, Hash<Symbol, Integer>>]
+  def attr_indexes(headers)
+    hs = headers.map { |h| (h || '').downcase }
+    {
+      external_id: hs.find_index { |h| h.include?('unique') && h.include?('id')},
+      first_name: hs.find_index { |h| h.include?('student') && h.include?('first') },
+      last_name: hs.find_index { |h| h.include?('student') && h.include?('last') },
+      parent1_first_name: hs.find_index { |h|
+        (h.include?('parent') || h.include?('guardian')) && h.include?('first') && h.exclude?('2')
+      },
+      parent1_last_name: hs.find_index { |h|
+        (h.include?('parent') || h.include?('guardian')) && h.include?('last') && h.exclude?('2')
+      },
+      parent1_email: hs.find_index { |h|
+        (h.include?('parent') || h.include?('guardian')) && h.include?('email') && h.exclude?('2')
+      },
+      parent1_mobile_number: hs.find_index { |h|
+        (h.include?('parent') || h.include?('guardian')) && h.include?('mobile') && h.exclude?('2')
+      },
+      parent2_first_name: hs.find_index { |h|
+        (h.include?('parent') || h.include?('guardian')) && h.include?('first') && h.include?('2')
+      },
+      parent2_last_name: hs.find_index { |h|
+        (h.include?('parent') || h.include?('guardian')) && h.include?('last') && h.include?('2')
+      },
+      parent2_email: hs.find_index { |h|
+        (h.include?('parent') || h.include?('guardian')) && h.include?('email') && h.include?('2')
+      },
+      parent2_mobile_number: hs.find_index { |h|
+        (h.include?('parent') || h.include?('guardian')) && h.include?('mobile') && h.include?('2')
+      }
     }
   end
 
+  # Extracts the cohorts for a given row in a roster file.
+  #
+  # @param [Array<String>] headers all the headers
+  # @param [Array<String>] values the row values
+  #
+  # @return [Array<String>] [ "cat1:cohort_a", "cat1:cohort_b", "cat2:cohort_a" ]
+  def extract_cohorts(headers, row)
+    cohorts = []
+    headers.each_with_index do |h, i|
+      next unless h.present? && h.start_with?('#')
 
-  # @params [ActiveModel::Errors]
-  def process_errors(import)
-    h = import.errors.to_h
-    [h, import.attributes.slice(*h.keys().map(&:to_s))]
+      row[i].split(COHORT_DELIMITER).each do |name|
+        cohorts << Cohort.format_code(h, name)
+      end
+    end
+    cohorts
   end
 
   def work
-    begin
-      file_path = Greenlight::Data.fetch_gdrive(gdrive_id, 'xlsx')
-      sheet = Creek::Book.new(file_path).sheets[0]
-      header_row = sheet.rows.first
+    import = RosterImport.new(location: location, category: 'student', created_by: created_by)
+    import.message << "Dry run!\n" if dry_run
+    import.message << "Overwrite!\n" if overwrite
 
-      # Build core column mapping
-      # e.g. { "First Name" => "A" }
-      core_columns = {}
-      core_headers = header_row.filter { |k, v| !(v || '').starts_with?(COHORT_PREFIX) }
-      core_headers.each do |cell_id, value|
-        column_title, score = CORE_COLUMNS.zip(CORE_COLUMNS.map { |c|
-        begin
-          JaroWinkler.distance(c, value)
-        rescue
-          0
-        end
+    if spreadsheet_path
+      begin
+        raise 'File not found' unless File.exists?(spreadsheet_path)
+        sheet = Creek::Book.new(spreadsheet_path).sheets[0]
 
-        }).max_by { |c| c[1] }
-
-        if score < 0.8
-          puts "Score too low (#{score}) for #{column_title} vs seen #{value}"
-          next
-        end
-
-        # Strip number out e.g. A1 => A
-        core_columns[column_title] = cell_id.gsub(/\d/, '')
+      rescue => e
+        import.message << "Couldn't load spreadsheet from provided path, make sure its an Excel file. #{e.message}\n"
+        import.status = :failed
+        import.save
+        return import
       end
-
-      # Build cohort column mapping
-      # e.g. { "Class Room" => "B" }
-      cohort_columns = header_row.select { |_, v| (v || '').starts_with?(COHORT_PREFIX) }
-        .transform_values { |v| v.tr('#', '') }
-        .invert.transform_values { |v| v.gsub(/\d/, '') }
-    rescue => e
-      error = { message: "#{e.class}, #{e.message}", backtrace: e.backtrace}
-      error.delete(:backtrace) if Rails.env.production? # || Rails.env.development?
-      return error
+    elsif location.gdrive_staff_roster_id
+      begin
+        file_path = Greenlight::Data.fetch_gdrive(location.gdrive_student_roster_id, 'xlsx')
+        # import.roster.attach(io: File.open(file_path), filename: "#{location.gdrive_staff_roster_id}.xlsx")
+        sheet = Creek::Book.new(file_path).sheets[0]
+      rescue => e
+        import.message << "Couldn't download spreadsheet, make sure its an Excel file that is shared with a public link. #{e.message}\n"
+        import.status = :failed
+        import.save
+        return import
+      end
+    else
+      import.message << 'No Google Drive ID provided for the staff roster\n'
+      import.status = :failed
+      import.save
+      return import
     end
 
-    errors = {}
+    headers = sheet.rows.first.values
 
-    # ActiveRecord::Base.transaction do
+    header_indexes = attr_indexes(headers)
+
+    errors = []
+
+    header_indexes.each do |k, v|
+      next if v
+      next if %i[
+        parent2_first_name
+        parent2_last_name
+        parent2_email
+        parent2_mobile_number
+      ].include?(k)
+
+      errors.push("#{k} header missing")
+    end
+
+    cohort_headers = headers.select { |x| x&.start_with?(COHORT_PREFIX) }
+    cohort_headers.each do |cohort|
+      errors.push("invalid cohort category #{cohort}") unless location.valid_cohort_category?(cohort)
+    end
+
+    if errors.any?
+      import.message << errors.join("\n") << "\n"
+      import.status = :failed
+      import.save
+      return import
+    end
+
+    ActiveRecord::Base.transaction do
       sheet.rows.each_with_index do |row, i|
-        next if i == 0
+        next if i.zero?
         next if row.values.all?(&:blank?)
-        next if row_value(row, core_columns, EMAIL, i).blank?
 
-        import = StudentImport.new(
-          external_id: row_value(row, core_columns, UID, i),
-          role: 'student',
-          permission_level: 'none',
-          first_name: row_value(row, core_columns, FIRST, i),
-          last_name: row_value(row, core_columns, LAST, i),
-          parent_first_name: 'Greenlight User',
-          parent_last_name: 'Unknown',
-          parent_mobile_number: row_value(row, core_columns, MOBILE, i),
-          parent_email: row_value(row, core_columns, EMAIL, i),
-          cohorts: row_cohort_value(row, cohort_columns, i),
-          location: location
-        )
-        if import.valid?
-          import.save!
+        attrs = header_indexes.transform_values { |hi| row.values[hi] }
+
+        attrs[:cohorts] = extract_cohorts(headers, row.values)
+        attrs[:location] = location
+
+        staff_import = StudentImport.new(attrs)
+        if staff_import.valid?
+          account_exists = LocationAccount.exists?(location: location, external_id: staff_import.external_id)
+          if account_exists && !overwrite
+            import.message << "Row #{i} with ID #{staff_import.external_id} already exists, skipping.\n"
+          elsif LocationAccount.exists?(location: location, external_id: staff_import.external_id) && overwrite
+            staff_import.save!
+            import.message << "Row #{i} with ID #{staff_import.external_id} exists, overwriting.\n"
+          else
+            staff_import.save!
+            import.message << "Row #{i} with ID #{staff_import.external_id} saved.\n"
+          end
         else
-          errors[i] = process_errors(import)
+          import.message << "Row #{i} with ID #{staff_import.external_id} had errors.\n"
+          import.message << staff_import.errors.to_json << "\n"
+          import.status = :failed
         end
       rescue => e
-        errors[i] = { message: e.message, backtrace: e.backtrace}
-        errors[i].delete(:backtrace) if Rails.env.production? # || Rails.env.development?
+        import.message << "Row #{i} crashed.\n"
+        import.message << e.message << "\n"
+        import.message << e.backtrace.join("\n") if SAVE_BACKTRACE
+        import.status = :failed
       end
-    # end
-    errors
+      raise(ActiveRecord::Rollback) if import.status == :failed || dry_run
+    end
+    import.status = :succeeded unless import.status == :failed
+    import.save
+    import
   end
 end

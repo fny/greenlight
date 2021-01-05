@@ -123,7 +123,7 @@ function transformRelationship<T extends Model>(entity: T, relationshipName: str
   if (entity._included.includes(relationshipName)) return
 
   if (!entity.hasRelationship(relationshipName)) {
-    logger.error(`Relationship ${relationshipName} not found on ${entity.resourceType()} mode;`)
+    logger.error(`Relationship ${relationshipName} not found on ${entity.resourceType()} model`)
     return
   }
 

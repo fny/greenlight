@@ -19,18 +19,19 @@ class StaffRosterDownload < ApplicationCommand
   end
 
   def work
-    location = Location.find(permalink)
-    accounts = location.location_acccounts.where.not(role: 'student').includes(:users)
-    cohort_categories = location.cohort_schema.keys
+    location = Location.find_by!(permalink: permalink)
+    accounts = location.location_accounts.where.not(role: 'student').includes(:user)
+    cohort_categories = (location.cohort_schema.is_a?(String) ? JSON.parse(location.cohort_schema) : location.cohort_schema).keys
     headers = COMMON_HEADERS + cohort_categories.map { |k| "##{k.titleize}" }
-    workbook = FastExcel.open(file_path, constant_memory: true)
+    FileUtils.rm_f(file_path) if File.exist?(file_path)
+    workbook = FastExcel.open(file_path)
 
     bold = workbook.bold_format
     worksheet = workbook.add_worksheet('Staff Roster')
 
     worksheet.append_row(headers, bold)
     accounts.each do |a|
-      row = [a.external_id, a.user.first, a.user.last, a.user.email, a.user.mobile_number, a.permission_level, a.role]
+      row = [a.external_id, a.user.first_name, a.user.last_name, a.user.email, a.user.mobile_number, a.permission_level, a.role]
       cohort_categories.each do |c|
         row << a.user.cohorts.where(location: location, category: c).pluck(:name).join(';')
       end

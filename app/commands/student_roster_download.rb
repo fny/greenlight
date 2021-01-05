@@ -24,10 +24,11 @@ class StudentRosterDownload < ApplicationCommand
   end
 
   def work
-    location = Location.find(permalink)
-    accounts = location.location_acccounts.where(role: 'student').includes(:users)
-    cohort_categories = location.cohort_schema.keys
+    location = Location.find_by!(permalink: permalink)
+    accounts = location.location_accounts.where(role: 'student').includes(:user)
+    cohort_categories = (location.cohort_schema.is_a?(String) ? JSON.parse(location.cohort_schema) : location.cohort_schema).keys
     headers = COMMON_HEADERS + cohort_categories.map { |k| "##{k.titleize}" }
+    FileUtils.rm_f(file_path) if File.exist?(file_path)
     workbook = FastExcel.open(file_path, constant_memory: true)
 
     bold = workbook.bold_format
@@ -35,8 +36,9 @@ class StudentRosterDownload < ApplicationCommand
 
     worksheet.append_row(headers, bold)
     accounts.each do |a|
-      row = [a.external_id, a.user.first, a.user.last]
+      row = [a.external_id, a.user.first_name, a.user.last_name]
       parents = a.user.parents
+      parents << User.new if parents.size == 1
       parents[0, 2].each do |p|
         row += [p.first_name, p.last_name, p.email, p.mobile_number]
       end

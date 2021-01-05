@@ -186,7 +186,7 @@ export default function DashboardPage(props: F7Props): JSX.Element {
                     currentUser.adminLocations().map((location) => (
                       <ListItem
                         key={location.id}
-                        link={dynamicPaths.adminUsersPath({ locationId: location.id })}
+                        link={dynamicPaths.adminDashboardPath({ locationId: location.id })}
                         title={location.name || ''}
                       />
                     ))
@@ -198,8 +198,8 @@ export default function DashboardPage(props: F7Props): JSX.Element {
           }
 
         <ListItem
-          title="Help! I've Tested Positive"
-          footer="Resources for when someone tests positive or has COVID"
+          title="Help! I'm Symptomatic or Positive"
+          footer="Resources for when someone has symptoms or has COVID"
           link={paths.positiveResourcesPath}
         >
           <Icon slot="media" f7="exclamationmark_triangle" />
@@ -238,7 +238,17 @@ export default function DashboardPage(props: F7Props): JSX.Element {
                   <Icon slot="media" f7="thermometer" />
                 </ListItem>
               )}
-
+              {
+            currentUser.isInBrevard__HACK() && (
+              <ListItem
+                title="Brevard Resources"
+                footer="Find testing sites in Brevard and Connect to the School Nurse"
+                link={paths.brevardPath}
+              >
+                <Icon slot="media" f7="heart" />
+              </ListItem>
+            )
+          }
               {/* https://ncchildcare.ncdhhs.gov/Portals/0/documents/pdf/P/Parent_and_Families_School_Age_Child_Care.pdf?ver=2020-08-26-122445-963 */}
               <ListItem
                 external
@@ -271,24 +281,13 @@ export default function DashboardPage(props: F7Props): JSX.Element {
         >
           <Icon slot="media" f7="chat_bubble_2" />
         </ListItem>
-        {
-            currentUser.isInBrevard__HACK() && (
-              <ListItem
-                title="Brevard Resources"
-                footer="Find testing sites in Brevard and Connect to the School Nurse"
-                link={paths.brevardPath}
-              >
-                <Icon slot="media" f7="heart" />
-              </ListItem>
-            )
-          }
 
-        <ListItem
+        {/* <ListItem
           title="Special PPE Pricing"
           footer="Low prices on personal protective equipment from Supply Hawk"
         >
           <Icon slot="media" f7="shield" />
-        </ListItem>
+        </ListItem> */}
 
         {/* <ListItem
             link={paths.ncStatewideStatsPath}

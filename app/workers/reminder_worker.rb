@@ -33,8 +33,10 @@ class ReminderWorker < ApplicationWorker
 
   def perform(user_id)
     user = User.find(user_id)
-    if user.daily_reminder_sent_at&.today?
-      return
+
+    # Don't send reminders twice in the same day
+    return if user.daily_reminder_sent_at&.today?
+
     end
 
     if user.inferred_status.status != GreenlightStatus::UNKNOWN

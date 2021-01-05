@@ -14,8 +14,8 @@ import { paths } from 'src/config/routes'
 import './LocationPage.css'
 import { Location } from 'src/models'
 import { getLocation, mailInvite } from 'src/api'
-import LoadingPage from 'src/pages/util/LoadingPage'
 import SubmitHandler from 'src/helpers/SubmitHandler'
+import LoadingPageContent from 'src/components/LoadingPageContent'
 
 class State {
   emailOrMobile: string = ''
@@ -46,30 +46,23 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
     getLocation(locationId).then(setLocation).catch(setError)
   }, [locationId])
 
+  let content = <></>
+
   if (!location && !error) {
-    return (
-      <LoadingPage />
+    content = <LoadingPageContent />
+  } else if (!location && error) {
+    content = (
+      <Block>
+        We couldn't find a location for the ID "{locationId}".
+        <br />
+        <br />
+        <Button href={paths.rootPath} fill>Return to Home Screen</Button>
+      </Block>
     )
-  }
-
-  if (!location && error) {
-    return (
-      <Page>
-        <Block>
-          We couldn't find a location for the ID "{locationId}".
-          <br />
-          <br />
-          <Button href={paths.rootPath} fill>Return to Home Screen</Button>
-        </Block>
-      </Page>
-    )
-  }
-
-  assertNotNull(location)
-  assertNotUndefined(location)
-
-  return (
-    <Page>
+  } else {
+    assertNotNull(location)
+    assertNotUndefined(location)
+    content = (
       <Block>
         <BlockTitle medium className="title">
           <b>{location.name}</b>
@@ -83,7 +76,10 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
           {location.email && <li>Email: <Link href={`mailto:${location.email}`}>{location.email}</Link></li>}
         </ul>
         <p>
-          By registering, this location will have access to your status (cleared, pending, recovery) and COVID test results you submit.
+          Greenlight provides daily symptom monitoring for {location.name}.
+        </p>
+        <p>
+          By registering, this location will have access to health statuses (cleared, pending, recovery), COVID test results you submit, and vaccination status.
           You can revoke access at any time.
         </p>
         <p>
@@ -123,6 +119,12 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
         </Button> */}
         <Link href={paths.rootPath}>Return to Home Screen</Link>
       </Block>
+    )
+  }
+
+  return (
+    <Page>
+      {content}
     </Page>
   )
 }

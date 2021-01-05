@@ -17,6 +17,7 @@ import SubmitHandler from 'src/helpers/SubmitHandler'
 import { LocationAccount, PermissionLevels } from 'src/models/LocationAccount'
 import { dynamicPaths } from 'src/config/routes'
 import LoadingPage from 'src/pages/util/LoadingPage'
+import LoadingPageContent from 'src/components/LoadingPageContent'
 
 interface State {
   user?: User | null
@@ -47,53 +48,61 @@ export default function AdminUserPermissionsPage(props: F7Props) {
     })()
   }, [])
 
-  if (!state.user || !state.location) {
-    return <LoadingPage />
-  }
+  let content
 
-  assertNotNull(state.location)
-  assertNotNull(state.locationAccount)
-  assertNotNull(state.user)
-  assertNotUndefined(state.location)
-  assertNotUndefined(state.locationAccount)
-  assertNotUndefined(state.user)
-  const la = state.locationAccount
-  const l = state.location
-  const handler = new SubmitHandler(f7)
+  if (!state.user || !state.location) {
+    content = <LoadingPageContent />
+  } else {
+    assertNotNull(state.location)
+    assertNotNull(state.locationAccount)
+    assertNotNull(state.user)
+    assertNotUndefined(state.location)
+    assertNotUndefined(state.locationAccount)
+    assertNotUndefined(state.user)
+    const la = state.locationAccount
+    const l = state.location
+    const handler = new SubmitHandler(f7)
+
+    content = (
+      <>
+        <Navbar title={`${state.user.firstName}'s Permissions`} />
+        <Block>
+          <List
+            form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handler.onSuccess = () => {
+                props.f7router.navigate(dynamicPaths.adminUsersPath({ locationId: l.id }))
+              }
+              handler.submit(async () => {
+                await updateLocationAccount(la, {
+                  permissionLevel: state.permissionLevel,
+                })
+              })
+            }}
+            noHairlines
+          >
+            <ListInput
+              label={t({ id: 'AdminUserPermissionsPage.permission_level', message: 'Permission Level' })}
+              type="select"
+              value={state.permissionLevel}
+              onChange={(e) => setState({ ...state, permissionLevel: e.target.value })}
+            >
+              <option value={PermissionLevels.NONE}>None</option>
+              <option value={PermissionLevels.ADMIN}>Admin</option>
+            </ListInput>
+            <Button type="submit" fill style={{ marginTop: '1rem' }}>
+              Submit
+            </Button>
+          </List>
+        </Block>
+      </>
+    )
+  }
 
   return (
     <Page>
-      <Navbar title={`${state.user.firstName}'s Permissions`} />
-      <Block>
-        <List
-          form
-          onSubmit={(e) => {
-            e.preventDefault()
-            handler.onSuccess = () => {
-              props.f7router.navigate(dynamicPaths.adminUsersPath({ locationId: l.id }))
-            }
-            handler.submit(async () => {
-              await updateLocationAccount(la, {
-                permissionLevel: state.permissionLevel,
-              })
-            })
-          }}
-          noHairlines
-        >
-          <ListInput
-            label={t({ id: 'AdminUserPermissionsPage.permission_level', message: 'Permission Level' })}
-            type="select"
-            value={state.permissionLevel}
-            onChange={(e) => setState({ ...state, permissionLevel: e.target.value })}
-          >
-            <option value={PermissionLevels.NONE}>None</option>
-            <option value={PermissionLevels.ADMIN}>Admin</option>
-          </ListInput>
-          <Button type="submit" fill style={{ marginTop: '1rem' }}>
-            Submit
-          </Button>
-        </List>
-      </Block>
+      {content}
     </Page>
   )
 }

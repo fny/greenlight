@@ -31,7 +31,7 @@ export default function RegisterParentPage(props: F7Props) {
   // setMyPermalink(permalink)
   const [myCode, setMyCode] = useState('')
   // setMyCode(registrationCode)
-  const [currentUser] = useGlobal('currentUser')
+  const [currentUser] = useGlobal('currentUser') as [User, any] // FIXME
   useEffect(() => {
     // HACK: This actually reveals the registration code since its in the response payload
     if (!permalink) return

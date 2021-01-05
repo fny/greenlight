@@ -23,7 +23,7 @@ export default function SplashPage(props: F7Props) {
 
         {currentUser ? (
           <Button outline onClick={() => signOut(props.f7router)}>
-            <Trans id="Common.sign_out">Sign In</Trans>
+            <Trans id="Common.sign_out">Sign Out</Trans>
           </Button>
         ) : (
           <Button outline href={paths.signInPath}>

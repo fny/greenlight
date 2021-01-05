@@ -6,12 +6,14 @@
   <%= f.input :phone_number %>
   <%= f.input :website %>
   <%= f.input :employee_count %>
+  <%= f.input :zip_code %>
   <%= f.input :cohort_schema, as: :text %>
   <small>Example Cohort Schema
   <pre>
    {
      "Team": ["Business", "Ed"],
-     "Timezone": ["EST", "CST", "MST", "PST"]
+     "Timezone": ["EST", "CST", "MST", "PST"],
+     "Education": ["undergrad", "professional", "medstudent"]
    }
   </pre>
   </small>
@@ -29,3 +31,8 @@
   <%= f.input :remind_sun %>
   <%= f.button :submit %>
 <% end %>
+
+
+<% if @location.errors.any? %>
+    <%= @location.errors.to_json %>
+  <% end %>

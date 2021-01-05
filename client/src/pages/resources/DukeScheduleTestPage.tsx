@@ -4,6 +4,7 @@ import {
 } from 'framework7-react'
 import { t, Trans } from '@lingui/macro'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import EmailLink, { SUPPORT_EMAIL } from 'src/components/EmailLink'
 
 export default function DukeScheduleTestPage(): JSX.Element {
   return (
@@ -17,7 +18,7 @@ export default function DukeScheduleTestPage(): JSX.Element {
         <p>
           <Trans id="DukeScheduleTestPage.instructions1">
             From 8:00am to 5pm, please call the number below to schedule a test.
-            Dial 2 when you here the automated voice to reach the patient line.
+            Dial 2 when you hear the automated voice to reach the patient line.
           </Trans>
         </p>
 
@@ -30,7 +31,14 @@ export default function DukeScheduleTestPage(): JSX.Element {
         <p>
           <Trans id="DukeScheduleTestPage.instructions4">
             You should be scheduled within 24 hours and receive a result the following day.
-            If you have symptoms, you may need to schedule a telemedicine appointment prior to testing
+            If you <b>have symptoms</b>, you may need to schedule a <b>telemedicine appointment</b> prior to testing.
+          </Trans>
+        </p>
+
+        <p>
+          <Trans id="DukeScheduleTestPage.instructions5">
+            Before the holidays, Duke had significant delays. This has been resolved.
+            If you experience significant delays, please let us know: <EmailLink email={SUPPORT_EMAIL} />.
           </Trans>
         </p>
 

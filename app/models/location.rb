@@ -41,7 +41,7 @@ class Location < ApplicationRecord
   belongs_to :created_by, class_name: 'User', optional: true
   has_many :location_accounts
   has_many :cohorts
-  has_many :users, through: :location_accounts
+  has_many :users, -> { distinct }, through: :location_accounts
 
   LocationAccount::ROLES.each do |role|
     has_many "#{role}_accounts".to_sym, -> { where(role: role) }, class_name: 'LocationAccount'
@@ -54,17 +54,21 @@ class Location < ApplicationRecord
 
   validates :name, presence: true
   validates :category, presence: true
-  validates :permalink, presence: true, uniqueness: true, format: {
-    with: /\A[a-z0-9-]+\z/
-  },
-  length: { minimum: 3 }
+  validates :permalink, presence: true, uniqueness: true,
+    format: {
+      with: /\A[a-z0-9-]+\z/
+    },
+    length: { minimum: 3 }
 
   validates :phone_number, phone: { countries: :us }, allow_nil: true
   validates :registration_code, presence: true
   validates :registration_code_downcase, presence: true
   validates :student_registration_code, presence: true
   validates :student_registration_code_downcase, presence: true
+  validates :zip_code, format: { with: /\A\d{5}(-\d{4})?\z/ }
+
   before_validation :set_registration_codes
+  before_save :sync_cohorts!
 
   def self.find_by_id_or_permalink(id)
     find_by(id: id) || find_by(permalink: id)
@@ -75,6 +79,10 @@ class Location < ApplicationRecord
       raise(ActiveRecord::RecordNotFound, "Location could not be found by #{id}")
   end
 
+  # Assigns the phone number and formats it in e164 format.
+  # If the value isn't a phone number, nil is assigned.
+  #
+  # @param [String] value - the string to attempt to assign
   def phone_number=(value)
     return if value.blank?
 
@@ -204,16 +212,26 @@ class Location < ApplicationRecord
 
   def downcased_cohort_schema
     return cohort_schema if cohort_schema.blank?
-    JSON.parse(cohort_schema).transform_keys(&:downcase).transform_values { |v| v.map(&:downcase) }
+    parsed = cohort_schema.is_a?(String) ? JSON.parse(cohort_schema) : cohort_schema
+    parsed.transform_keys(&:downcase).transform_values { |v| v.map(&:downcase) }
   end
 
   def valid_cohort_category?(category)
     downcased_cohort_schema.key?(category.tr('#', '').downcase)
   end
 
-  def status_breakdown
+  # Returns the number of users that have a specific status for the last 7
+  # days. Results come in a hash keyed by date (YYYY-MM-DD) and status
+  # (GreenlightStatus::STATUSES).
+  #
+  # For example `{ '2021-01-01' => { 'cleared' => 100, ... }}`
+  #
+  # @param [Date, Time, Datetime] date the date to start the lookback
+  # @return [Hash]
+  def status_breakdown(date = nil)
+    start_date = (date - 7.days).to_date
     total_users = users.count
-    values = GreenlightStatus.where(user: self.users).where('submission_date >= ?', 7.days.ago).group(:submission_date, :status).order('submission_date DESC').count
+    values = GreenlightStatus.where(user: self.users).where('submission_date >= ?', start_date).group(:submission_date, :status).order('submission_date DESC').count
     result = {}
     values.each do |k, v|
       date, state = k
@@ -226,7 +244,35 @@ class Location < ApplicationRecord
     result
   end
 
+  # Updates the cohorts to match the ones in the schema
+  def sync_cohorts!
+    coded = coded_cohort_schema
+    schema_codes = Set.new(coded.keys)
+    existing_codes = Set.new(cohorts.pluck(:code).to_a)
+    codes_to_add = schema_codes - existing_codes
+    codes_to_remove = existing_codes - schema_codes
+
+    ActiveRecord::Base.transaction do
+      Cohort.where(code: codes_to_remove).destroy_all
+      self.cohorts << codes_to_add.map { |code|
+        category, name = coded[code]
+        Cohort.new(category: category, name: name)
+      }
+    end
+  end
+
   private
+
+  def coded_cohort_schema
+    parsed = cohort_schema.is_a?(String) ? JSON.parse(cohort_schema) : cohort_schema
+    codes = {}
+    parsed.each do |category, names|
+      names.each do |name|
+        codes[Cohort.format_code(category, name)] = [category, name]
+      end
+    end
+    codes
+  end
 
   def registration_codes_are_different
     if self.registration_code == self.student_registration_code

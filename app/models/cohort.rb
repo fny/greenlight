@@ -10,32 +10,17 @@ class Cohort < ApplicationRecord
   validates :category, presence: true
   validates :name, presence: true
   validate :cohort_in_schema
+  validates :name, uniqueness: { scope: %i[location_id category] }
+  validates :code, uniqueness: { scope: :location_id }
 
-  before_save do
-    self.name = name.downcase if name
-    self.category = category.downcase if category
+  before_save :set_code
+
+  def self.format_code(category, name)
+    "#{category}:#{name}".downcase.squeeze(' ').tr(' ', '_').tr('#', '')
   end
 
-
-  # PERF: N+1 query like issue here. Also, all the cohorts should be checked first
-  # and normalized.
-  #
-  # @param location Location
-  # @param cohorts [Hash{String => Array<String>}]
-  # @return [Array<Cohort>]
-  def self.find_or_create_cohorts!(location, cohorts)
-    persisted = []
-    transaction do
-      cohorts.each do |category, names|
-        names.each do |name|
-          persisted << (
-            Cohort.find_by(location: location, category: category, name: name) ||
-              Cohort.create!(location: location, category: category, name: name)
-          )
-        end
-      end
-    end
-    persisted
+  def set_code
+    self.code = Cohort.format_code(category, name)
   end
 
   def cohort_in_schema
@@ -45,12 +30,12 @@ class Cohort < ApplicationRecord
     end
 
     unless location.downcased_cohort_schema.key?(category.downcase)
-      errors.add(:cohort, "Category #{category} not found in cohort schema")
+      errors.add(:cohort, "Category #{category.downcase} not found in cohort schema: #{location.downcased_cohort_schema}")
       return
     end
 
     unless location.downcased_cohort_schema[category.downcase].include?(name.downcase)
-      errors.add(:cohort, "Value #{name} not found in cohort schema for category #{category}. Available #{location.downcased_cohort_schema[category.downcase]}")
+      errors.add(:cohort, "Value #{name.downcase} not found in cohort schema for category #{category}. Available #{location.downcased_cohort_schema[category.downcase]}")
     end
   end
 end
@@ -69,13 +54,16 @@ end
 #  deleted_at    :datetime
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  code          :string           not null
 #
 # Indexes
 #
-#  index_cohorts_on_created_by_id  (created_by_id)
-#  index_cohorts_on_deleted_by_id  (deleted_by_id)
-#  index_cohorts_on_location_id    (location_id)
-#  index_cohorts_on_updated_by_id  (updated_by_id)
+#  index_cohorts_on_created_by_id                      (created_by_id)
+#  index_cohorts_on_deleted_by_id                      (deleted_by_id)
+#  index_cohorts_on_location_id                        (location_id)
+#  index_cohorts_on_location_id_and_category_and_name  (location_id,category,name) UNIQUE
+#  index_cohorts_on_location_id_and_code               (location_id,code) UNIQUE
+#  index_cohorts_on_updated_by_id                      (updated_by_id)
 #
 # Foreign Keys
 #

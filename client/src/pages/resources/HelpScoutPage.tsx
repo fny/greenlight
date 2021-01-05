@@ -21,7 +21,7 @@ export default function HelpScoutPage(): JSX.Element {
         )
           : <LoadingPageContent />
       }
-      <div className="iframe-wrapper">
+      <div className="iframe-wrapper" style={{ top: 0 }}>
         <iframe
           title="Greenlight Support"
           src="https://greenlighted.org/app-support/"

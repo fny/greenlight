@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_28_132832) do
+ActiveRecord::Schema.define(version: 2021_01_03_194101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,8 +53,11 @@ ActiveRecord::Schema.define(version: 2020_12_28_132832) do
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "code", null: false
     t.index ["created_by_id"], name: "index_cohorts_on_created_by_id"
     t.index ["deleted_by_id"], name: "index_cohorts_on_deleted_by_id"
+    t.index ["location_id", "category", "name"], name: "index_cohorts_on_location_id_and_category_and_name", unique: true
+    t.index ["location_id", "code"], name: "index_cohorts_on_location_id_and_code", unique: true
     t.index ["location_id"], name: "index_cohorts_on_location_id"
     t.index ["updated_by_id"], name: "index_cohorts_on_updated_by_id"
   end
@@ -64,6 +67,7 @@ ActiveRecord::Schema.define(version: 2020_12_28_132832) do
     t.bigint "cohort_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["cohort_id", "user_id"], name: "index_cohorts_users_on_cohort_id_and_user_id", unique: true
     t.index ["cohort_id"], name: "index_cohorts_users_on_cohort_id"
     t.index ["user_id"], name: "index_cohorts_users_on_user_id"
   end
@@ -170,6 +174,7 @@ ActiveRecord::Schema.define(version: 2020_12_28_132832) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["child_id"], name: "index_parents_children_on_child_id"
+    t.index ["parent_id", "child_id"], name: "index_parents_children_on_parent_id_and_child_id", unique: true
     t.index ["parent_id"], name: "index_parents_children_on_parent_id"
   end
 

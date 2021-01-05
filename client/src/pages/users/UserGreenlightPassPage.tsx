@@ -19,7 +19,7 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
 
     if (!userId) throw new Error('Missing user id')
     const user = store.findEntity<User>(`user-${userId}`)
-    if (!user) throw new Error(`Could not finder user for id ${userId}`)
+    if (!user) throw new Error(`Could not find user for id ${userId}`)
     return user
   }
 
@@ -49,6 +49,9 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
               <When value>
                 <Trans id="UserGreenlightPassPage.submitted">
                   Submitted at {status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}
+                </Trans>
+                <Trans id="UserGreenlightPassPage.expires">
+                  Expires on<br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
                 </Trans>
               </When>
               <When value={false}>
