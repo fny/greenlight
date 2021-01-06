@@ -5,6 +5,7 @@ import {
 import React, { useState } from 'react'
 import { isBlank, isPresent, upperCaseFirst } from 'src/helpers/util'
 import { GRegisteringLocation, GRegisteringUser, toggleLocale } from 'src/initializers/providers'
+import { toggleLocale } from 'src/helpers/global'
 import {
   lcTrans, LocationCategories, LOCATION_CATEGORIES,
 } from 'src/models/Location'

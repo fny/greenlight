@@ -1,5 +1,5 @@
 import { getGlobal } from 'reactn'
-import { isSignedIn } from 'src/initializers/providers'
+import { isSignedIn } from 'src/helpers/global'
 import { resolvePath } from 'src/helpers/util'
 import { Router } from 'framework7/modules/router/router'
 import { User } from 'src/models'

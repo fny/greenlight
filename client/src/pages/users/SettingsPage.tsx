@@ -3,7 +3,7 @@ import {
   Page, Navbar, List, ListItem, AccordionContent,
 } from 'framework7-react'
 
-import { toggleLocale, signOut } from 'src/initializers/providers'
+import { toggleLocale, signOut } from 'src/helpers/global'
 import { t } from '@lingui/macro'
 import { assertNotNull } from 'src/helpers/util'
 import { dynamicPaths, paths } from 'src/config/routes'

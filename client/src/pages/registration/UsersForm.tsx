@@ -13,7 +13,7 @@ import SubmitHandler from 'src/helpers/SubmitHandler'
 import { User } from 'src/models'
 import * as Yup from 'yup'
 import 'src/lib/yup-phone'
-import { reloadCurrentUser } from 'src/initializers/providers'
+import { reloadCurrentUser } from 'src/helpers/global'
 
 class UserInput {
   firstName: string = ''
