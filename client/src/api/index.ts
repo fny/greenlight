@@ -124,6 +124,10 @@ export async function updateLocationAccount(locationAccount: LocationAccount, up
   return entity
 }
 
+export async function requestPeopleReport(location: Location) {
+  await v1.post(`/locations/${location.id}/people-report`)
+}
+
 //
 // Users
 //

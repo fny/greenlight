@@ -137,5 +137,14 @@ module LocationsController
 
       render json: Reports::Location.new(location).to_h
     end
+
+    post '/v1/locations/:location_id/people-report' do
+      location_id = params[:location_id]
+      location = Location.find_by_id_or_permalink(location_id)
+      ensure_or_forbidden! { location && current_user.admin_at?(location) }
+
+      PeopleReportWorker.perform_async(location.id, current_user.id)
+      success_response
+    end
   end
 end

@@ -11,7 +11,7 @@ import { assertNotNull, assertNotUndefined, formatPhone } from 'src/helpers/util
 
 import { Location, User } from 'src/models'
 import {
-  getLocation, getUser, store, updateLocationAccount,
+  getLocation, getUser, store, updateLocationAccount, requestPeopleReport,
 } from 'src/api'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { LocationAccount, PermissionLevels } from 'src/models/LocationAccount'
@@ -60,6 +60,15 @@ export default function UserLocationPage(props: F7Props) {
   const la = state.locationAccount
   const l = state.location
   const handler = new SubmitHandler(f7)
+
+  const reportHandler = new SubmitHandler(f7, {
+    onSubmit: async () => {
+      await requestPeopleReport(l)
+    },
+    errorTitle: t({ id: 'Common.failed', message: 'Action Failed' }),
+    submittingMessage: t({ id: 'Location.requesting_report', message: 'Requesting Report...' }),
+    successMessage: t({ id: 'Location.request_report_success', message: 'The generated report will be sent to your email.' }),
+  })
 
   return (
     <Page>
@@ -111,6 +120,16 @@ export default function UserLocationPage(props: F7Props) {
           </ListItem>
           )}
 
+          {la.isAdmin()
+          && (
+            <p>
+              <Button fill onClick={() => reportHandler.submit()}>
+                <Trans id="Location.request_report">
+                  Request Report
+                </Trans>
+              </Button>
+            </p>
+          )}
         </List>
       </Block>
     </Page>

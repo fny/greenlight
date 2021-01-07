@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PeopleReportWorker < ApplicationWorker
-  def perform(admin_id, location_id)
+  def perform(location_id, admin_id)
     admin = User.find(admin_id)
     location = Location.find(location_id)
 
