@@ -3,7 +3,9 @@ import React from 'reactn'
 
 import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
 
-import { Page, Block, Button, Toolbar, Link, Row, Col, Sheet, PageContent } from 'framework7-react'
+import {
+  Page, Block, Button, Toolbar, Link, Row, Col, Sheet, PageContent,
+} from 'framework7-react'
 
 import { Case, When } from 'src/components/Case'
 
@@ -164,7 +166,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
           {/*  Scrollable sheet content */}
           <PageContent>
             {/* TODO: Host this elsewhere. */}
-            <iframe src="/terms.html" style={{ width: '100%', border: 0, height: '90%' }} />
+            <iframe src="https://docs.greenlightready.com/terms" style={{ width: '100%', border: 0, height: '90%' }} />
           </PageContent>
         </Sheet>
       </Page>

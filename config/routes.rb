@@ -24,14 +24,19 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users do
       resources :location_accounts
+      post :join_location
       post :add_child
       post :remove_child
       post :copy_children
     end
     resources :locations do
       resources :users, controller: :location_users
+      resources :accounts
+      resources :roster_imports
       post :import_staff
       post :import_students
+      get :staff_sheet
+      get :students_sheet
     end
     resources :reports
   end

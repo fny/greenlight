@@ -20,6 +20,11 @@
   Nuke
 </a> |
 <%= link_to "Users (#{@location.users.count})", admin_location_users_path(@location) %>
+</a> |
+<%= link_to "Accounts", admin_location_accounts_path(@location) %> |
+<%= link_to "Roster Imports", admin_location_roster_imports_path(@location) %> |
+<%= link_to "staff.xlsx", admin_location_staff_sheet_path(@location) %> |
+<%= link_to "students.xlsx", admin_location_students_sheet_path(@location) %>
 </nav>
 
 <ul>
@@ -63,8 +68,8 @@
 
 <%= form_with url: admin_location_import_students_path(@location), method: :post do |form| %>
   <%= form.text_field :confirmation, autocomplete: 'off' %>
-  <%= form.label :dry_run %>
-  <%= form.check_box :dry_run %>
+  <%= form.label :do_it %>
+  <%= form.check_box :do_it %>
   <%= form.label :overwrite %>
   <%= form.check_box :overwrite %>
   <%= form.submit "Import Students" %>
@@ -81,8 +86,8 @@
 </p>
 <%= form_with url: admin_location_import_staff_path(@location), method: :post do |form| %>
   <%= form.text_field :confirmation, autocomplete: 'off' %>
-  <%= form.label :dry_run %>
-  <%= form.check_box :dry_run %>
+  <%= form.label :do_it %>
+  <%= form.check_box :do_it %>
   <%= form.label :overwrite %>
   <%= form.check_box :overwrite %>
   <%= form.submit "Import Staff" %>
@@ -106,5 +111,7 @@
 
 <%= form_with url: admin_location_path(@location, nuke: true), method: :delete do |form| %>
   <%= form.text_field :confirmation, autocomplete: 'off' %>
+    <%= form.label :only_users %>
+  <%= form.check_box :only_users %>
   <%= form.submit "Nuke" %>
 <% end %>

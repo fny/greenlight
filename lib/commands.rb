@@ -87,6 +87,7 @@ module Commands
     # Returns the Boolean whether the command was successful.
     def run
       return @succeeded if defined?(@succeeded)
+
       if valid?
         @result = work
         @succeeded = true
@@ -100,7 +101,8 @@ module Commands
 
     def run!
       return true if run
-      raise CommandFailed
+
+      raise CommandFailed, errors.to_json
     end
 
     # Call this to force a failure during `#work`

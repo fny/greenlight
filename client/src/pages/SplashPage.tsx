@@ -23,7 +23,7 @@ export default function SplashPage(props: F7Props) {
 
         {currentUser ? (
           <Button outline onClick={() => signOut(props.f7router)}>
-            <Trans id="Common.sign_out">Sign In</Trans>
+            <Trans id="Common.sign_out">Sign Out</Trans>
           </Button>
         ) : (
           <Button outline href={paths.signInPath}>
@@ -35,11 +35,11 @@ export default function SplashPage(props: F7Props) {
           <Trans id="SplashPage.create_account">Create Account</Trans>
         </Button>
 
-        {/* <Button outline href={paths.registerLocationWelcomePath}>
+        <Button outline href={paths.registerLocationWelcomePath}>
           <Trans id="SplashPage.register_business_or_school">
             Register Organization
           </Trans>
-        </Button> */}
+        </Button>
 
         <Button outline href={paths.durhamRegistationPath}>
           <Trans id="SplashPage.register_business">Register Business</Trans>

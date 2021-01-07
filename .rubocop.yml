@@ -25,10 +25,16 @@ Cop/AvoidKeywordArgumentsInSidekiqWorkers:
   Include:
     - 'app/workers/**/*'
 
+Layout/ArgumentAlignment:
+  Enabled: false
+
 Layout/FirstArrayElementIndentation:
   Enabled: false
 
 Layout/FirstHashElementIndentation:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
   Enabled: false
 
 Metrics/AbcSize:

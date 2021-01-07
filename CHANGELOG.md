@@ -2,6 +2,28 @@
 
 This is a first attempt to [keep a changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+ - Fixed ability to delete users who had made locations
+ - Added LocationAccount#parents
+ - TODO: password resets
+ - TODO: Smoke tests
+ - TODO: roster imports
+ - Upgrade to Rails 6
+ - Token based authentication for Cordova
+ - Add simply query methods across all models (`Model#q`)
+ - Added methods to easily users with a certain role by location (Backend)
+ - Added backend administrative pages
+ - Added support for phone numbers from other North American countries (+1 prefix) (Backend)
+ - Improve sign in error messages
+ - Add invitation lookup mechansim
+ - Add notice to jdenticon to show that somone has registered
+
+## [1.4.0] - 2020-12-1
+
+ - We can now register staff and students through a roster upload
+ - Users can now request an invite from a location's page
+
 ## [1.3.1] - 2020-11-25
 
  - Fix Spanish

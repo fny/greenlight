@@ -242,13 +242,13 @@ end
 users = [teachers, staff, single_parents, husbands, wives, students].flatten
 
 puts "Building cohorts"
-soccer_team = build_cohort(location, 'Soccer Team', 'activities')
-football_team = build_cohort(location, 'Football Team', 'activities')
+soccer_team = build_cohort(location, 'Soccer Team', 'Activities')
+football_team = build_cohort(location, 'Football Team', 'Activities')
 
-freshman = build_cohort(location, 'Freshman', 'grade')
-sophomore = build_cohort(location, 'Sophomore', 'grade')
-junior = build_cohort(location, 'Junior', 'grade')
-senior = build_cohort(location, 'Senior', 'grade')
+freshman = build_cohort(location, 'Freshman', 'Grade')
+sophomore = build_cohort(location, 'Sophomore', 'Grade')
+junior = build_cohort(location, 'Junior', 'Grade')
+senior = build_cohort(location, 'Senior', 'Grade')
 
 cohorts_users = []
 freshmen, sophomores, juniors, seniors = build_cohorts_users(students.shuffle, [30, 25, 24, 21], [freshman, sophomore, junior, senior])
@@ -293,7 +293,7 @@ staff.each { |s|
 }.each do |title, group|
   group.each do |s|
     # s is actual a cohorts_users record
-    location_accounts << build_location_account(location, { id: s[:user_id] } , 'student', title)
+    location_accounts << build_location_account(location, { id: s[:user_id] }, 'student')
   end
 end
 

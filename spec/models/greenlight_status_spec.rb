@@ -73,6 +73,19 @@ RSpec.describe GreenlightStatus, type: :model do
     end
   end
 
+  describe '.submittable_for?' do
+    it 'is true when the user has not submitted a status' do
+      expect(GreenlightStatus.submittable_for?(user)).to eq(true)
+    end
+
+    it 'is false when the user has submitted a status' do
+      status = GreenlightStrategyNorthCarolina.new([], []).status
+      status.user = user
+      status.save!
+      expect(GreenlightStatus.submittable_for?(user)).to eq(false)
+    end
+  end
+
   describe '#submitted_at=' do
     it 'assigns the same subission date and follow up date when before the cutoff' do
       status = GreenlightStatus.new

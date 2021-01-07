@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { isPresent, joinWords } from 'src/helpers/util'
-import { Location, MedicalEvent } from 'src/models'
+import { Cohort, Location, MedicalEvent } from 'src/models'
 import {
   Model, attribute as attr, initialize, STRING, DATETIME, DATE, BOOLEAN, hasMany, hasOne,
 } from 'src/lib/Model'
@@ -72,7 +72,7 @@ export class User extends Model {
   completedWelcomeAt: DateTime = DateTime.fromISO('')
 
   @hasMany('Cohort')
-  cohorts: LocationAccount[] = []
+  cohorts: Cohort[] = []
 
   @hasMany('LocationAccount')
   locationAccounts: LocationAccount[] = []

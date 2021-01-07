@@ -124,5 +124,24 @@ module Admin
       end
       redirect_to [:admin, @user]
     end
+
+    def join_location
+      @user = User.find_by(id: params[:user_id])
+      @location = Location.find_by_id_or_permalink(params[:location])
+      @la = LocationAccount.new(
+        user: @user,
+        location: @location,
+        role: params[:role],
+        permission_level: params[:permission_level],
+        external_id: params[:external_id],
+      )
+
+      if @la.save
+        flash[:notice] = "#{@user.first_name} (ID: #{@user.id}) added to #{@location.permalink}"
+      else
+        flash[:alert] = @la.errors.to_json
+      end
+      redirect_to [:admin, @user]
+    end
   end
 end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 class APIController < ActionController::API
   include ActionController::Cookies
+  include Pagy::Backend
+
   include APIHelpers
   include Assertions
   include CurrentUser
@@ -16,4 +18,5 @@ class APIController < ActionController::API
   include CurrentUserController
   include MailController
   include SmokeTestsController
+  include UtilController
 end

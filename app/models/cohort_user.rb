@@ -17,8 +17,9 @@ end
 #
 # Indexes
 #
-#  index_cohorts_users_on_cohort_id  (cohort_id)
-#  index_cohorts_users_on_user_id    (user_id)
+#  index_cohorts_users_on_cohort_id              (cohort_id)
+#  index_cohorts_users_on_cohort_id_and_user_id  (cohort_id,user_id) UNIQUE
+#  index_cohorts_users_on_user_id                (user_id)
 #
 # Foreign Keys
 #

@@ -64,8 +64,7 @@ type Props = { location?: Location, f7router: Router.Router, category?: string }
 
 export default function LocationForm({ location, f7router, category }: Props) {
   const [locationCreated, setLocationCreated] = useState(false)
-  // FIXME: This type should be inferred from useGlobal
-  const [currentUser] = useGlobal('currentUser') as [User, any]
+  const [currentUser] = useGlobal('currentUser')
 
   assertNotNull(currentUser)
 

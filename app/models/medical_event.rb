@@ -13,36 +13,36 @@ class MedicalEvent < ApplicationRecord
     COVID_DIAGNOSIS = 'covid_diagnosis',
     COVID_RULED_OUT = 'covid_ruled_out',
     SYMPTOM_IMPROVEMENT = 'symptom_improvement'
-  ]
+  ].freeze
 
   HAS_COVID = [
     COVID_TEST_POSITIVE,
     COVID_DIAGNOSIS
-  ]
+  ].freeze
 
   SYMPTOMS = [
-    FEVER,
+  FEVER,
     NEW_COUGH,
     DIFFICULTY_BREATING,
     LOST_TASTE_SMELL,
     CHILLS
-  ]
+  ].freeze
 
   PENDING_TRIGGERS = [
     *SYMPTOMS
-  ]
+  ].freeze
 
   RECOVERY_TRIGGERS = [
     COVID_EXPOSURE,
     COVID_TEST_POSITIVE,
     COVID_DIAGNOSIS
-  ]
+  ].freeze
 
   extend Enumerize
   enumerize :event_type, in: EVENT_TYPES
 
   belongs_to :user
-  belongs_to :created_by, class_name: 'User'
+  belongs_to :created_by, class_name: 'User', optional: true
   belongs_to :greenlight_status
 
   validates :user, presence: true

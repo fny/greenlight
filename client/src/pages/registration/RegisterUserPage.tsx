@@ -272,7 +272,7 @@ export default function RegisterParentPage(props: F7Props) {
           {/*  Scrollable sheet content */}
           <PageContent>
             {/* TODO: Host this elsewhere. */}
-            <iframe src="/terms.html" style={{ width: '100%', border: 0, height: '90%' }} />
+            <iframe src="https://docs.greenlightready.com/terms" style={{ width: '100%', border: 0, height: '90%' }} />
           </PageContent>
         </Sheet>
       </Page>

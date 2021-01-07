@@ -4,6 +4,8 @@ import {
 import { Model } from 'src/models'
 import { deserializeJSONAPI } from 'src/lib/Model'
 import { zipTwo } from 'src/helpers/util'
+import env from 'src/config/env'
+import logger from 'src/helpers/logger'
 
 interface RecordStoreEntry {
   record: Record<any>
@@ -67,12 +69,62 @@ class RecordStore {
 
 export const recordStore = new RecordStore()
 
-export function transformRelationship<T extends Model>(entity: T, relationshipName: string, relationship: RecordRelationship) {
+export function transformRecordResponse<T extends Model>(res: RecordResponse<T>): T | T[] {
+  if (Array.isArray(res.data)) {
+    return res.data.map((data) => transformRecord<T>(data))
+  }
+  return transformRecord<T>(res.data)
+}
+
+export function uuid(record: Record<any> | RecordPointer): EntityId {
+  return `${record.type}-${record.id}`
+}
+
+//
+// Helpers
+//
+
+/**
+ * Transforms a singular resource response from the API into an entity
+ *
+ * @param record the record to be transformed
+ */
+function transformRecord<T extends Model>(record: Record<any>): T {
+  const entity: T = deserializeJSONAPI<T>(record)
+  tranformRelationships(entity, record)
+  return entity
+}
+
+/**
+ * Transforms the relationships on an entity in
+ *
+ * @param entity the record to be transformed
+ */
+function tranformRelationships<T extends Model>(entity: T, record: Record<any>) {
+  if (!record || !record.relationships) return
+  // Store raw relationship data
+  entity._relationships = record.relationships
+
+  // Assign the relationships for all relationships defined
+  for (const [rel, value] of Object.entries(record.relationships)) {
+    transformRelationship<T>(entity, rel, value)
+  }
+}
+
+/**
+ * Transforms a single relationship by linking it with entities that have been included
+ *
+ * @param entity the entity on which to transform a relationship
+ * @param relationshipName the name of the relatinship to transform
+ * @param relationship the relationship data as providedby the API
+ */
+function transformRelationship<T extends Model>(entity: T, relationshipName: string, relationship: RecordRelationship): void {
   // Skip if we've already loaded the relationship
   if (entity._included.includes(relationshipName)) return
 
   if (!entity.hasRelationship(relationshipName)) {
-    throw new Error(`Relationship ${relationshipName} not found on ${entity}`)
+    logger.error(`Relationship ${relationshipName} not found on ${entity.resourceType()} model`)
+    return
   }
 
   if (relationship.data === undefined || relationship.data === null) {
@@ -109,34 +161,4 @@ export function transformRelationship<T extends Model>(entity: T, relationshipNa
     tranformRelationships<any>(foundEntity, foundRecord);
     (entity as any)[relationshipName] = foundEntity
   }
-}
-
-function tranformRelationships<T extends Model>(entity: T, record: Record<any>) {
-  if (!record || !record.relationships) return
-  entity._relationships = record.relationships
-  for (const [rel, value] of Object.entries(record.relationships)) {
-    transformRelationship<T>(entity, rel, value)
-  }
-}
-
-/**
- * Transforms records from the API into entities
- *
- * @param record the record to be transformed
- */
-function transformRecord<T extends Model>(record: Record<any>) {
-  const entity: T = deserializeJSONAPI<T>(record)
-  tranformRelationships(entity, record)
-  return entity
-}
-
-export function transformRecordResponse<T extends Model>(res: RecordResponse<T>): T | T[] {
-  if (!Array.isArray(res.data)) {
-    return transformRecord<T>(res.data)
-  }
-  return res.data.map((data) => transformRecord<T>(data))
-}
-
-export function uuid(record: Record<any> | RecordPointer): EntityId {
-  return `${record.type}-${record.id}`
 }

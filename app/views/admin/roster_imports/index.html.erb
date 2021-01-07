@@ -1,0 +1,18 @@
+<h1>Roster Imports</h1>
+<table>
+  <thead>
+    <th>Created At</th>
+    <th>Type</th>
+    <th>Status</th>
+    <th>Created By</th>
+  </thead>
+  <% @imports.each do |i|%>
+    <tr>
+      <td><%= i.created_at %></td>
+      <td><%= i.category %></td>
+      <td><%= link_to i.status, admin_location_roster_import_path(i.location, i) %></td>
+      <td><%= i.created_by&.full_name || 'Unknown' %></td>
+    </tr>
+  <% end %>
+</table>
+<%== pagy_nav(@pagy) %>
