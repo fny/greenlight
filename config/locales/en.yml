@@ -23,11 +23,11 @@ en:
         You requested to reset your password and here's the link!
         Note that this link expires in 1 hour and can only be used once.
       action: Click Here to Reset Password
-    school_report:
-      subject: ✨ Greenlight School Report
-      title: Download the School Report
+    people_report:
+      subject: ✨ Greenlight Report
+      title: Download the Report
       body: |
-        "You requested a report for %{school} and here's the download link!"
+        "You requested a report for %{location} and here's the download link!"
         Note that this link expires in 1 hour and can only be used once.
       action: Click Here to Download Report
   texts:
