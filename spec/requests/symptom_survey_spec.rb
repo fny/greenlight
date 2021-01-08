@@ -55,5 +55,119 @@ RSpec.describe "/v1/users/:user_id/symptom-surveys", type: :request do
         expect(user.last_greenlight_status.status).to eq(GreenlightStatus::RECOVERY)
       end
     end
+
+    describe 'notify email' do
+      let(:location_a) { Fabricate(:location) }
+      let(:location_b) { Fabricate(:location) }
+      let(:symptom_holder) { Fabricate(:user) }
+      let(:reporter) { Fabricate(:user) }
+      let(:location_a_admin_a) { Fabricate(:user) }
+      let(:location_a_admin_b) { Fabricate(:user) }
+      let(:location_b_admin) { Fabricate(:user) }
+      
+      before do
+        [location_a, location_b].each do |loc|
+          Fabricate(:location_account, user: symptom_holder, location: loc)
+        end
+
+        [location_a_admin_a, location_a_admin_b].each do |u|
+          Fabricate(
+            :location_account,
+            user: u, 
+            location: location_a,
+            permission_level: 'admin',
+          )
+        end
+
+        [location_b_admin, reporter].each do |u|
+          Fabricate(
+            :location_account,
+            user: u, 
+            location: location_b,
+            permission_level: 'admin',
+          )
+        end
+      end
+
+      it "does not send alert emails for cleared status" do
+        post_json("/v1/users/#{symptom_holder.id}/symptom-surveys", body: {
+          medicalEvents: []
+        }, user: reporter)
+
+        expect(StatusAlertAdminsWorker.jobs.size).to eq(0)
+      end
+
+      MedicalEvent::SYMPTOMS.each do |symptom|
+        it "sends alert emails for pending status" do
+          post_json("/v1/users/#{symptom_holder.id}/symptom-surveys", body: {
+            medicalEvents: [{
+              eventType: symptom,
+              occurredAt: Time.current.iso8601
+            }]
+          }, user: reporter)
+          
+          expect_work(StatusAlertAdminsWorker)
+          
+          expect(StatusAlertUserWorker.jobs.size).to eq(3)
+          StatusAlertUserWorker.drain
+
+          sent_mails = Mail::TestMailer.deliveries
+          expect(sent_mails.size).to eq(3)
+          
+          remaining_receivers = [
+            location_a_admin_a,
+            location_a_admin_b,
+            location_b_admin,
+          ].map(&:name_with_email).to_set
+
+          sent_mails.each do |sent_mail|
+            expect(sent_mail[:subject].to_s).to include('Greenlight Status')
+            expect(sent_mail.html_part.to_s).to include(
+              "#{symptom_holder.full_name} submitted a Pending (Yellow) status"
+            )
+
+            remaining_receivers.delete sent_mail.To&.value
+          end
+
+          expect(remaining_receivers).to be_empty
+        end
+      end
+
+      MedicalEvent::RECOVERY_TRIGGERS.each do |trigger|
+        it "sends alert emails for recovery status" do
+          post_json("/v1/users/#{symptom_holder.id}/symptom-surveys", body: {
+            medicalEvents: [{
+              eventType: trigger,
+              occurredAt: Time.current.iso8601
+            }]
+          }, user: reporter)
+          
+          expect_work(StatusAlertAdminsWorker)
+          
+          expect(StatusAlertUserWorker.jobs.size).to eq(3)
+          StatusAlertUserWorker.drain
+
+          sent_mails = Mail::TestMailer.deliveries
+          expect(sent_mails.size).to eq(3)
+          
+          remaining_receivers = [
+            location_a_admin_a,
+            location_a_admin_b,
+            location_b_admin,
+          ].map(&:name_with_email).to_set
+
+          sent_mails.each do |sent_mail|
+            expect(sent_mail[:subject].to_s).to include('Greenlight Status')
+            expect(sent_mail.html_part.to_s).to include(
+              "#{symptom_holder.full_name} submitted a Recovery (Red) status"
+            )
+
+            remaining_receivers.delete sent_mail.To&.value
+          end
+
+          expect(remaining_receivers).to be_empty
+        end
+      end
+    end
   end
 end
