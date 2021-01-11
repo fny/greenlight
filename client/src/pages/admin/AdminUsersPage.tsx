@@ -20,7 +20,6 @@ import { NoCurrentUserError } from 'src/helpers/errors'
 import { Router } from 'framework7/modules/router/router'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { useCallback, useState } from 'react'
-import { useInfiniteQuery } from 'react-query'
 import _ from 'lodash'
 
 function useDebounce(callback: any, delay: number) {
