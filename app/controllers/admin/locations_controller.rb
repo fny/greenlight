@@ -77,14 +77,17 @@ module Admin
       case params[:confirmation]
       when "DELETE #{@location.permalink}"
         @location.destroy
-        redirect_to admin_locations_path, alert: "Congrats! You deleted #{@location.name}"
+        redirect_to admin_locations_path, notice: "Congrats! You deleted #{@location.name}"
       when "NUKE #{@location.permalink}"
         ActiveRecord::Base.transaction do
           # HACK: Why doesn't destroy_all work?
-          @location.users.each(&:destroy)
-          @location.destroy
+          @location.location_accounts.each(&:destroy)
+          @location.parents.each(&:destroy)
+          unless params[:only_users] == '1'
+            @location.destroy
+          end
         end
-        redirect_to admin_locations_path, alert: "Congrats! You deleted #{@location.name} and all its users"
+        redirect_to admin_locations_path, notice: "Congrats! You deleted #{@location.name} and all its users"
       else
         flash[:alert] = 'Incorrect confirmation code.'
         redirect_to [:admin, @location]
