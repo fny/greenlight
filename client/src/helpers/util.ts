@@ -130,6 +130,27 @@ export function isInDurham(zipCode: string): boolean {
   return durhamZipCodes.includes(zipCode)
 }
 
+export function isInOnslow(zipCode: string): boolean {
+  const onslowZipCodes = [
+    '28541',
+    '28540',
+    '28543',
+    '28445',
+    '28544',
+    '28547',
+    '28546',
+    '28454',
+    '28555',
+    '28460',
+    '28574',
+    '28582',
+    '28584',
+    '28518',
+    '28539',
+  ]
+  return onslowZipCodes.includes(zipCode)
+}
+
 /**
  * Resolves a path template string into a full path.
  *
