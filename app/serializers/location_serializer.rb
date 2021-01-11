@@ -8,6 +8,7 @@ class LocationSerializer < ApplicationSerializer
   attribute :email
   attribute :website
   attribute :zip_code
+  attribute :reminders_enabled
   attribute :daily_reminder_time
   attribute :remind_mon
   attribute :remind_tue
