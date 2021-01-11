@@ -15,9 +15,9 @@ module PasswordResetsController
       user.generate_password_token!
 
       if e_or_m.email?
-        PasswordResetWorker.perform_async(user.id, :email)
+        PasswordResetWorker.perform_async(user.id, :email, current_locale)
       else
-        PasswordResetWorker.perform_async(user.id, :phone)
+        PasswordResetWorker.perform_async(user.id, :phone, current_locale)
       end
 
       success_response
