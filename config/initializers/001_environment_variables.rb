@@ -11,6 +11,10 @@ Configurator.new(Greenlight) do
   get :REDIS_PERSISTENT_URL
   get :SHORT_URL
   get :SENDGRID_API_KEY
+  get :AWS_ACCESS_KEY_ID
+  get :AWS_SECRET_ACCESS_KEY
+  get :AWS_BUCKET
+  get :AWS_REGION
 
   set :API_URL do
     if ENV.key?('API_URL')
