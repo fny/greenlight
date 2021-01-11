@@ -40,7 +40,7 @@ class GreenlightStatus < ApplicationRecord
   enumerize :status, in: STATUSES
   enumerize :reason, in: REASONS
   belongs_to :user
-  belongs_to :created_by, class_name: 'User'
+  belongs_to :created_by, class_name: 'User', optional: true
 
   scope :submitted_for_today, -> {
     where('submission_date <= ?', Time.zone.today).where('follow_up_date > ?', Time.zone.today)

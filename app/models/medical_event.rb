@@ -42,7 +42,7 @@ class MedicalEvent < ApplicationRecord
   enumerize :event_type, in: EVENT_TYPES
 
   belongs_to :user
-  belongs_to :created_by, class_name: 'User'
+  belongs_to :created_by, class_name: 'User', optional: true
   belongs_to :greenlight_status
 
   validates :user, presence: true
