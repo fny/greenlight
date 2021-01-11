@@ -41,7 +41,7 @@ class Location < ApplicationRecord
   belongs_to :created_by, class_name: 'User', optional: true
   has_many :location_accounts
   has_many :cohorts
-  has_many :users, through: :location_accounts
+  has_many :users, -> { distinct }, through: :location_accounts
 
   LocationAccount::ROLES.each do |role|
     has_many "#{role}_accounts".to_sym, -> { where(role: role) }, class_name: 'LocationAccount'
