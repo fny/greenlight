@@ -4,5 +4,9 @@ Location.seed(:permalink, {
   email: 'help@glhs.org',
   phone_number: '+14073238891',
   zip_code: '32779',
-  category: 'school'
+  category: 'school',
+  cohort_schema: {
+    'Activites' => ['Soccer Team', 'Football Team'],
+    'Grade' => %w[Freshman Sophomore Junior Senior]
+  }
 })

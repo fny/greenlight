@@ -36,9 +36,18 @@ module Admin
     end
 
     def import_students
-      @location = Location.find(params[:id])
+      @location = Location.find(params[:location_id])
       if params[:confirmation] == 'IMPORT STUDENTS'
-        flash[:notice] = 'Student import started. Check your email for the results.'
+        flash[:notice] = 'Student import started.'
+        location = Location.find(params[:location_id])
+
+        student_import = ImportStudentRoster.new(
+          location: location,
+          dry_run: params[:do_it] == '0',
+          overwrite: params[:overwrite] == '1',
+          created_by: current_user.persisted? ? current_user : nil
+        )
+        student_import.run
       else
         flash[:alert] = 'Incorrect confirmation code.'
       end
@@ -46,9 +55,17 @@ module Admin
     end
 
     def import_staff
-      @location = Location.find(params[:id])
+      @location = Location.find(params[:location_id])
       if params[:confirmation] == 'IMPORT STAFF'
-        flash[:notice] = 'Staff import started. Check your email for the results.'
+        flash[:notice] = 'Staff import started.'
+        location = Location.find(params[:location_id])
+        staff_import = ImportStaffRoster.new(
+          location: location,
+          dry_run: params[:do_it] == '0',
+          overwrite: params[:overwrite] == '1',
+          created_by: current_user.persisted? ? current_user : nil
+        )
+        staff_import.run
       else
         flash[:alert] = 'Incorrect confirmation code.'
       end

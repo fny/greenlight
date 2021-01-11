@@ -1,101 +1,145 @@
 # frozen_string_literal: true
 class ImportStaffRoster < ApplicationCommand
-  argument :gdrive_id
-  argument :location
-
-  validates :gdrive_id, presence: true
-  validates :location, presence: true
-
-  CORE_COLUMNS = [
-    UID = 'Unique Id',
-    FIRST = 'First Name',
-    LAST = 'Last Name',
-    EMAIL = 'Email',
-    MOBILE = 'Mobile Number',
-    PERM = 'Permission Level',
-    ROLE = 'Role',
-  ].freeze
-
   COHORT_PREFIX = '#'
   COHORT_DELIMITER = ';'
+  SAVE_BACKTRACE = false
 
-  def row_value(row, columns, key, i)
-    row["#{columns[key]}#{i + 1}"]
-  end
+  argument :location
+  argument :spreadsheet_path
+  argument :dry_run
+  argument :overwrite
+  argument :created_by
 
-  # @param row
-  # @returns [Hash] { "Category" => ["Cohort A", "Cohort B"] }
-  def row_cohort_value(row, columns, i)
-    columns.transform_values { |v|
-      (row["#{v}#{i + 1}"] || '').split(COHORT_DELIMITER)
+  validates :location, presence: true
+
+  # Returns the index of important headers for the import
+  # @return [Hash<Symbol, Integer>]
+  def attr_indexes(headers)
+    hs = headers.map { |h| (h || '').downcase }
+    {
+      external_id: hs.find_index { |h| h.include?('unique') && h.include?('id')},
+      role: hs.find_index { |h| h.include?('role') },
+      permission_level: hs.find_index { |h| h.include?('perm') },
+      first_name: hs.find_index { |h| h.include?('first') },
+      last_name: hs.find_index { |h| h.include?('last') },
+      mobile_number: hs.find_index { |h| h.include?('mobile') },
+      email: hs.find_index { |h| h.include?('email') }
     }
   end
 
+  # Extracts the cohorts for a given row in a roster file.
+  #
+  # @param [Array<String>] headers all the headers
+  # @param [Array<String>] values the row values
+  #
+  # @return [Array<String>] [ "cat1:cohort_a", "cat1:cohort_b", "cat2:cohort_a" ]
+  def extract_cohorts(headers, row)
+    cohorts = []
+    headers.each_with_index do |h, i|
+      next unless h.present? && h.start_with?('#')
 
-  # @params [ActiveModel::Errors]
-  def process_errors(import)
-    h = import.errors.to_h
-    [h, import.attributes.slice(*h.keys().map(&:to_s))]
+      row[i].split(COHORT_DELIMITER).each do |name|
+        cohorts << Cohort.format_code(h, name)
+      end
+    end
+    cohorts
   end
 
   def work
-    begin
-      file_path = Greenlight::Data.fetch_gdrive(gdrive_id, 'xlsx')
-      sheet = Creek::Book.new(file_path).sheets[0]
-      header_row = sheet.rows.first
+    import = RosterImport.new(location: location, category: 'staff', created_by: created_by)
+    import.message << "Dry run!\n" if dry_run
+    import.message << "Overwrite!\n" if overwrite
 
-      # Build core column mapping
-      # e.g. { "First Name" => "A" }
-      core_columns = {}
-      core_headers = header_row.filter { |k, v| !v.starts_with?('#') }; true
-      core_headers.each do |cell_id, value|
-        column_title, score = CORE_COLUMNS.zip(CORE_COLUMNS.map { |c| JaroWinkler.distance(c, value) }).max_by { |c| c[1] }
-
-        raise("Score too low (#{score}) for #{column_title} vs seen #{value}") if score < 0.8
-
-        # Strip number out e.g. A1 => A
-        core_columns[column_title] = cell_id.gsub(/\d/, '')
+    if spreadsheet_path
+      begin
+        sheet = Creek::Book.new(spreadsheet_path).sheets[0]
+      rescue => e
+        import.message << "Couldn't load spreadsheet from provided path, make sure its an Excel file. #{e.message}\n"
+        import.status = :failed
+        import.save
+        return import
       end
-
-      # Build cohort column mapping
-      # e.g. { "Class Room" => "B" }
-      cohort_columns = header_row.select { |_, v| v.starts_with?(COHORT_PREFIX) }
-        .transform_values { |v| v.tr('#', '') }
-        .invert.transform_values { |v| v.gsub(/\d/, '') }
-    rescue => e
-      error = { message: e.message, backtrace: e.backtrace}
-      error.delete(:backtrace) if Rails.env.production? || Rails.env.development?
-      return error
+    elsif location.gdrive_staff_roster_id
+      begin
+        file_path = Greenlight::Data.fetch_gdrive(location.gdrive_staff_roster_id, 'xlsx')
+        # import.roster.attach(io: File.open(file_path), filename: "#{location.gdrive_staff_roster_id}.xlsx")
+        sheet = Creek::Book.new(file_path).sheets[0]
+      rescue => e
+        import.message << "Couldn't download spreadsheet, make sure its an Excel file that is shared with a public link. #{e.message}\n"
+        import.status = :failed
+        import.save
+        return import
+      end
+    else
+      import.message << 'No Google Drive ID provided for the staff roster\n'
+      import.status = :failed
+      import.save
+      return import
     end
 
-    errors = {}
+    headers = sheet.rows.first.values
+
+    header_indexes = attr_indexes(headers)
+
+    errors = []
+
+    header_indexes.each do |k, v|
+      next if v
+
+      errors.push("#{k} header missing")
+    end
+
+    cohort_headers = headers.select { |x| x&.start_with?(COHORT_PREFIX) }
+    cohort_headers.each do |cohort|
+      errors.push("invalid cohort category #{cohort}") unless location.valid_cohort_category?(cohort)
+    end
+
+    if errors.any?
+      import.message << errors.join("\n") << "\n"
+      import.status = :failed
+      import.save
+      return import
+    end
 
     ActiveRecord::Base.transaction do
       sheet.rows.each_with_index do |row, i|
-        next if i == 0
+        next if i.zero?
         next if row.values.all?(&:blank?)
 
-        import = StaffImport.new(
-          external_id: row_value(row, core_columns, UID, i),
-          role: row_value(row, core_columns, ROLE, i),
-          permission_level: row_value(row, core_columns, PERM, i),
-          first_name: row_value(row, core_columns, FIRST, i),
-          last_name: row_value(row, core_columns, LAST, i),
-          mobile_number: row_value(row, core_columns, MOBILE, i),
-          email: row_value(row, core_columns, EMAIL, i),
-          cohorts: row_cohort_value(row, cohort_columns, i),
-          location: location
-        )
-        if import.valid?
-          import.save!
+        attrs = header_indexes.transform_values { |hi| row.values[hi] }
+        attrs[:cohorts] = extract_cohorts(headers, row.values)
+        attrs[:location] = location
+
+        staff_import = StaffImport.new(attrs)
+        if staff_import.valid?
+          account_exists = LocationAccount.exists?(location: location, external_id: staff_import.external_id)
+          if account_exists && !overwrite
+            import.message << "Row #{i} with ID #{staff_import.external_id} already exists, skipping.\n"
+          elsif LocationAccount.exists?(location: location, external_id: staff_import.external_id) && overwrite
+            staff_import.save!
+            import.message << "Row #{i} with ID #{staff_import.external_id} exists, overwriting.\n"
+          else
+            staff_import.save!
+            import.message << "Row #{i} with ID #{staff_import.external_id} saved.\n"
+          end
         else
-          errors[i] = process_errors(import)
+          import.message << "Row #{i} with ID #{staff_import.external_id} had errors.\n"
+          import.message << staff_import.errors.to_json << "\n"
+          import.status = :failed
         end
       rescue => e
-        errors[i] = { message: e.message, backtrace: e.backtrace}
-        errors[i].delete(:backtrace) if Rails.env.production? || Rails.env.development?
+        import.message << "Row #{i} crashed.\n"
+        import.message << e.message << "\n"
+        import.message << e.backtrace.join("\n") if SAVE_BACKTRACE
+        import.status = :failed
       end
+      raise(ActiveRecord::Rollback) if import.status == :failed || dry_run
     end
-    errors
+
+    unless import.status == :failed
+      import.status = :succeeded
+    end
+    import.save
+    import
   end
 end
