@@ -78,14 +78,6 @@ class Location < ApplicationRecord
       raise(ActiveRecord::RecordNotFound, "Location could not be found by #{id}")
   end
 
-  def self.load_locations_from_data!
-    Greenlight::Data.load_json('locations.json').each do |l|
-      next if Location.exists?(permalink: l['permalink'])
-
-      Location.create!(l)
-    end
-  end
-
   # Assigns the phone number and formats it in e164 format.
   # If the value isn't a phone number, nil is assigned.
   #
