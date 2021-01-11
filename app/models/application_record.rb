@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 class ApplicationRecord < ActiveRecord::Base
+  include PluckToHash
+
   class << self
     # @return [Array<Symbol>]
     attr_accessor :permitted_params
