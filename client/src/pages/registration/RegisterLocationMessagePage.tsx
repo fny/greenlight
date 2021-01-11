@@ -71,7 +71,6 @@ function ContactForm({ f7router }: { f7router: Router.Router }) {
         const serialized = serializeForm(e.target)
         submitHandler.submit(async () => {
           await mailHelloAtGreenlight(
-            global.registeringUser.email,
             `[Registration Interest] A new ${global.registeringLocation.category} is interested.`,
             `${aboutText(global.registeringLocation, global.registeringUser, global.locale)} ${serialized.moreAbout || ''}\n\n${JSON.stringify(global.registeringUser, null, 2)}\n\n${JSON.stringify(global.registeringLocation, null, 2)}`,
           )
