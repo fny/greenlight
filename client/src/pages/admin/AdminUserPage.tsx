@@ -47,10 +47,6 @@ export default function AdminUserPage(props: F7Props) {
     })()
   }, [])
 
-  if (!state.user || !state.location) {
-    return <LoadingPage />
-  }
-
   assertNotNull(state.location)
   assertNotNull(state.locationAccount)
   assertNotNull(state.user)
@@ -59,15 +55,19 @@ export default function AdminUserPage(props: F7Props) {
   assertNotUndefined(state.user)
   const { user, locationAccount, location } = state
   const handler = new SubmitHandler(f7)
-  console.log(user)
-  return (
-    <Page>
-      <Navbar title={`${state.user.firstName} ${state.user.lastName}`} />
-      <Block>
-        <p>
-          {state.user.firstName} {state.user.lastName} is a {locationAccount.role} at {location.name}
-        </p>
-        {state.user.firstName === 'Aidan'
+
+  let content
+  if (!state.user || !state.location) {
+    content = <LoadingPage />
+  } else {
+    content = (
+      <>
+        <Navbar title={`${state.user.firstName} ${state.user.lastName}`} />
+        <Block>
+          <p>
+            {state.user.firstName} {state.user.lastName} is a {locationAccount.role} at {location.name}
+          </p>
+          {state.user.firstName === 'Aidan'
           && (
           <>
             <p>{state.user.firstName} is in the following Cohorts</p>
@@ -78,15 +78,15 @@ export default function AdminUserPage(props: F7Props) {
           </>
           )}
 
-        <List>
-          {state.user.mobileNumber && (
-          <ListItem
-            external
-            link={`tel:${state.user.mobileNumber}`}
-            title={`Call ${state.user.firstName}: ${state.user.mobileNumber}`}
-          />
-          )}
-          {
+          <List>
+            {state.user.mobileNumber && (
+            <ListItem
+              external
+              link={`tel:${state.user.mobileNumber}`}
+              title={`Call ${state.user.firstName}: ${state.user.mobileNumber}`}
+            />
+            )}
+            {
           state.user.email && (
           <ListItem
             external
@@ -95,7 +95,7 @@ export default function AdminUserPage(props: F7Props) {
           />
           )
           }
-          {locationAccount.isStudent()
+            {locationAccount.isStudent()
             && user.parents.map((parent) => (
               <ListItem
                 external
@@ -113,7 +113,7 @@ export default function AdminUserPage(props: F7Props) {
               //   />
               // ) }
             )}
-          {
+            {
               user.hasNotSubmittedOwnSurvey() ? (
                 <ListItem
                   link={dynamicPaths.userSurveysNewPath(user.id, { redirect: props.f7route.path })}
@@ -126,7 +126,7 @@ export default function AdminUserPage(props: F7Props) {
                 />
               )
             }
-          {
+            {
               !locationAccount.isStudent() && (
               <ListItem
                 link={dynamicPaths.userLocationPermissionsPath({ userId: user.id, locationId: location.id })}
@@ -134,9 +134,15 @@ export default function AdminUserPage(props: F7Props) {
               />
               )
             }
-        </List>
+          </List>
+        </Block>
+      </>
+    )
+  }
 
-      </Block>
+  return (
+    <Page>
+      {content}
     </Page>
   )
 }
