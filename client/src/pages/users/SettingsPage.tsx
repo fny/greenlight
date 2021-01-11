@@ -8,10 +8,9 @@ import { t } from '@lingui/macro'
 import { assertNotNull } from 'src/helpers/util'
 import { dynamicPaths, paths } from 'src/config/routes'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import { User } from 'src/models'
 
 export default function SettingsPage() {
-  const [currentUser] = useGlobal('currentUser') as [User, any]
+  const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
 
   return (
@@ -64,30 +63,6 @@ export default function SettingsPage() {
             </AccordionContent>
           </ListItem>
         )}
-        {
-          currentUser.isAdminSomewhere()
-
-        && (
-        <ListItem
-          accordionItem
-          title="Admin"
-        >
-          <AccordionContent>
-            <List>
-              {
-                currentUser.adminLocations().map((location) => (
-                  <ListItem
-                    key={location.id}
-                    link={dynamicPaths.adminUsersPath({ locationId: location.id })}
-                    title={location.name || ''}
-                  />
-                ))
-              }
-            </List>
-          </AccordionContent>
-        </ListItem>
-        )
-      }
 
         <ListItem
           link={paths.notificationsPath}
