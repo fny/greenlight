@@ -1,0 +1,28 @@
+.author-intro {
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.author-intro-image {
+  background-size: cover;
+  height: 70px;
+  width: 70px;
+  border-radius: 100px;
+  margin: 0 auto;
+}
+
+.author-intro-image-wrap {
+  flex: 1 1 auto;
+}
+
+.author-intro-message {
+  float: left;
+  flex: 1 1 auto;
+  padding: 10px;
+}
+
+.author-intro-byline {
+  font-style: italic;
+}

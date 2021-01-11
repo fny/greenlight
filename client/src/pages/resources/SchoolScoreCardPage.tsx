@@ -7,24 +7,24 @@ import LoadingPageContent from 'src/components/LoadingPageContent'
 
 import './IframeResource.css'
 
-export default function HelpScoutPage(): JSX.Element {
+export default function SchoolScoreCardPage(): JSX.Element {
   const [state, setState] = useState({ isLoaded: false })
   return (
     <Page className="IframeResource">
       {
         state.isLoaded ? (
           <Navbar
-            title={t({ id: 'HelpScoutPage.title', message: 'Contact Support' })}
+            title={t({ id: 'SchoolScoreCardPage.title', message: 'Score Card' })}
           >
             <NavbarHomeLink slot="left" />
           </Navbar>
         )
           : <LoadingPageContent />
       }
-      <div className="iframe-wrapper" style={{ top: 0 }}>
+      <div className="iframe-wrapper">
         <iframe
-          title="Greenlight Support"
-          src="https://greenlighted.org/app-support/"
+          title="Score Card"
+          src="https://www.surveymonkey.com/r/GreenLightScoreCard"
           frameBorder="0"
           onLoad={() => {
             setState({ isLoaded: true })

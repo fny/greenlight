@@ -18,7 +18,7 @@ import MagicSignInAuthPage from 'src/pages/sessions/MagicSignInAuthPage'
 import MagicSignInPage from 'src/pages/sessions/MagicSignInPage'
 import MobileVerificationPage from 'src/pages/MobileVerificationPage'
 import NCStatewideStatsPage from 'src/pages/resources/NCStatewideStatsPage'
-import NCTestLocationsPage from 'src/pages/resources/NCTestLocationsPage'
+import CastlightTestSearchPage from 'src/pages/resources/CastlightTestSearchPage'
 import NotFoundPage from 'src/pages/util/NotFoundPage'
 import NotificationsPage from 'src/pages/users/NotificationsPage'
 import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
@@ -47,6 +47,9 @@ import WelcomeSurveyPage from 'src/pages/welcome/WelcomeSurveyPage'
 import BrevardResourcesPage from 'src/pages/resources/BrevardResourcesPage'
 import AdminUserPage from 'src/pages/admin/AdminUserPage'
 import HelpScoutPage from 'src/pages/resources/HelpScoutPage'
+import PositiveResourcesPage from 'src/pages/resources/PositiveResourcesPage'
+import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
+import SchoolScoreCardPage from 'src/pages/resources/SchoolScoreCardPage'
 
 import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
 import PositiveResourcesPage from 'src/pages/resources/PositiveResourcesPage'
@@ -205,12 +208,12 @@ const sessionRoutes = {
 
 const resourcesRoutes = {
   dukeScheduleTestPath: {
-    path: '/schedule-test-at-duke',
+    path: '/resources/duke-testing',
     component: DukeScheduleTestPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   brevardPath: {
-    path: '/brevard-resources',
+    path: '/resources/brevard',
     component: BrevardResourcesPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
@@ -219,10 +222,10 @@ const resourcesRoutes = {
     component: NCStatewideStatsPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
-  ncTestingLocationsPath: {
-    path: '/nc-test-locations',
-    component: NCTestLocationsPage,
-    // beforeEnter: beforeEnter.requireSignIn,
+  testSearchPath: {
+    path: '/resources/test-search',
+    component: CastlightTestSearchPage,
+    beforeEnter: beforeEnter.requireSignIn,
   },
   helpScoutPath: {
     path: '/support',
@@ -230,13 +233,21 @@ const resourcesRoutes = {
     beforeEnter: beforeEnter.requireSignIn,
   },
   chwRequestPath: {
-    path: '/chw-request',
+    path: '/resources/chw-request',
     component: CHWRequestPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   mapPath: {
     path: '/covid-county-map',
     component: CovidCountyMapPage,
+  },
+  positiveResourcesPath: {
+    path: '/resources/positive-help',
+    component: PositiveResourcesPage,
+  },
+  schoolScoreCardPath: {
+    path: '/resources/score-card',
+    component: SchoolScoreCardPage,
   },
 }
 
