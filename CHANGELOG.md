@@ -2,6 +2,28 @@
 
 This is a first attempt to [keep a changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.5.0] - 2020-01-11
+
+ - Password resets have been fully integrated
+ - WIP: Pagination for large schools
+ - Add new custom translation component Tr
+ - Disabled more annoying things in Rubocop
+ - Add .dedupe method to ActiveRecord models
+ - Add .pluck_to_hash to ActiveRecord models
+ - Improve roster imports to allow for backend admins to make changes
+ - Add backend pages to easily make changes to application data
+ - WIP: Attempt to add progress bar for registration
+ - WIP: Self registration and emails (still needs work)
+ - Add preloading for iframes
+ - Improve loading time on all resource pages
+ - Add positive case page
+ - Add administrative dashboard
+
+## [1.4.0] - 2020-12-01
+
+  - We can now register staff and students through a roster upload
+  - Users can now request an invite from a location's page
+
 ## [1.3.1] - 2020-11-25
 
  - Fix Spanish
