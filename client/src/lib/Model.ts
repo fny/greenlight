@@ -2,6 +2,7 @@
 
 import 'reflect-metadata'
 import { DateTime } from 'luxon'
+import logger from 'src/helpers/logger'
 import { Dict, EntityId, Record } from '../types'
 
 //
@@ -171,9 +172,6 @@ export class Model {
 
   @attribute({ type: DATETIME })
   updatedAt: DateTime = DateTime.fromISO('')
-
-  @attribute({ type: DATETIME })
-  deletedAt: DateTime = DateTime.fromISO('')
 
   uuid(): EntityId {
     return `${this.resourceType()}-${this.id}`
