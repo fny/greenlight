@@ -1,6 +1,10 @@
 import { IframeHTMLAttributes } from 'react'
+import env from 'src/config/env'
 
 function loadIframe(src: string, attributes: any = {}) {
+  if (env.isDevelopment()) {
+    return
+  }
   const el = document.createElement('iframe')
   el.src = src
   Object.keys(attributes).forEach((key) => {
