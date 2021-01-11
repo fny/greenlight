@@ -12,6 +12,7 @@ import { Case, When } from 'src/components/Case'
 import { t, Trans } from '@lingui/macro'
 import { DateTime } from 'luxon'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import Tr, { En, Es } from 'src/components/Tr'
 
 export default class UserGreenlightPassPage extends React.Component<any, any> {
   user() {
@@ -50,9 +51,15 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
                 <Trans id="UserGreenlightPassPage.submitted">
                   Submitted at {status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}
                 </Trans>
-                <Trans id="UserGreenlightPassPage.expires">
-                  Expires on<br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
-                </Trans>
+                <br />
+                <Tr>
+                  <En>
+                    Anticipated return date<br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
+                  </En>
+                  <Es>
+                    Fecha de regreso anticipada<br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
+                  </Es>
+                </Tr>
               </When>
               <When value={false}>
                 <Trans id="UserGreenlightPassPage.not_submitted">
