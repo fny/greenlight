@@ -162,6 +162,10 @@ export class Model {
   // eslint-disable-next-line
   constructor(_data?: any) {}
 
+  static uuid(id: number | string): string {
+    return `${lowerCaseFirstLetter(this.modelName)}-${id}`
+  }
+
   @attribute({ type: DATETIME })
   createdAt: DateTime = DateTime.fromISO('')
 
