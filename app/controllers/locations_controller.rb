@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module LocationsController
   extend ActiveSupport::Concern
 
@@ -71,9 +72,31 @@ module LocationsController
       # We do not include the current user because it may conflict with data
       # in the store.
       users = location.users.where.not(id: current_user.id)
-        .includes(UserSerializer::ADMIN_INCLUDES.dup)
+        .includes(UserSerializer::ADMIN_INCLUDES.dup).order(last_name: :asc, first_name: :asc, id: :asc)
+      if params[:query]
+        if params[:query].start_with?('clea')
+          users = users.where(last_greenlight_status: { status: :cleared })
+        elsif params[:query].start_with?('pend')
+          users = users.where(last_greenlight_status: { status: :pendng })
+        elsif params[:query].start_with?('rec')
+          users = users.where(last_greenlight_status: { status: :recovery })
+        elsif params[:query].start_with?('not')
+          users = users.where(last_greenlight_status: nil)
+        else
+          users = users.where(
+            %w[first_name last_name].map { |col| "lower(#{col}) LIKE :query"}.join(' OR '),
+            query: "%#{params[:query]}%"
+          )
+        end
+      end
+      @pagy, @users = pagy(users, items: 15)
 
-      render json: UserSerializer.new(users, include: UserSerializer::ADMIN_INCLUDES.dup)
+      render json: UserSerializer.new(
+        @users,
+        include: UserSerializer::ADMIN_INCLUDES.dup,
+        # links: pagy_links(@pagy),
+        meta: { pagination: pagy_numbers(@pagy) }
+      )
     end
 
     get '/v1/locations/:location_id/report' do
