@@ -5,7 +5,7 @@ class EmailWorker < ApplicationWorker
       to: to,
       subject: subject,
       html: html,
-      text: text,
+      text: text
     ).run!
   end
 end

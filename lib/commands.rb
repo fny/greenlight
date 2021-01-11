@@ -87,6 +87,7 @@ module Commands
     # Returns the Boolean whether the command was successful.
     def run
       return @succeeded if defined?(@succeeded)
+
       if valid?
         @result = work
         @succeeded = true

@@ -54,10 +54,11 @@ class Location < ApplicationRecord
 
   validates :name, presence: true
   validates :category, presence: true
-  validates :permalink, presence: true, uniqueness: true, format: {
-    with: /\A[a-z0-9-]+\z/
-  },
-  length: { minimum: 3 }
+  validates :permalink, presence: true, uniqueness: true,
+    format: {
+      with: /\A[a-z0-9-]+\z/
+    },
+    length: { minimum: 3 }
 
   validates :phone_number, phone: { countries: :us }, allow_nil: true
   validates :registration_code, presence: true

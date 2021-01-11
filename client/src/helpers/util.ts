@@ -91,13 +91,13 @@ export function isEmptyType(data: any): boolean {
 
 export function isPrimitiveType(data: any): boolean {
   return (
-    typeof data === 'string' ||
-    typeof data === 'number' ||
-    typeof data === 'boolean' ||
-    typeof data === 'bigint' ||
-    typeof data === 'symbol' ||
-    data === null ||
-    data === undefined
+    typeof data === 'string'
+    || typeof data === 'number'
+    || typeof data === 'boolean'
+    || typeof data === 'bigint'
+    || typeof data === 'symbol'
+    || data === null
+    || data === undefined
   )
 }
 
