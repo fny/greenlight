@@ -13,13 +13,13 @@ module CurrentUser
   end
 
   def cordova?
-    request.headers['X-Client-Env'] == 'cordova'
+    request.headers['HTTP_X_CLIENT_ENV'] == 'cordova'
   end
 
   def bearer_token
     return nil unless cordova?
 
-    header = request.headers['Authorization']   
+    header = request.headers['Authorization']
     matches = header&.match(%r{\ABearer\s+([^\s]+)\z})
 
     return nil if matches.nil?

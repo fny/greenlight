@@ -15,13 +15,11 @@ module UsersController
 
     # Update a user
     patch '/v1/users/:user_id' do
-      user_id = params[:user_id]
-      user = User.includes(:location_accounts).find(user_id)
+      user = User.find(params[:user_id])
       ensure_or_forbidden! { current_user.authorized_to_view?(user) }
-      user.update(User.restrict_params(request_json))
 
-      if user.save
-        set_status_created
+      if user.update(User.restrict_params(request_json))
+        set_status_updated
         render json: UserSerializer.new(user)
       else
         error_response(user)
