@@ -19,6 +19,7 @@ en:
     reminder:
       subject: ✨ Daily Greenlight Reminder
       title: Check In with Greenlight
+      salutation: Hello %{name},
       body: |
         Just reminding you to check in with Greenlight.
       action: Click Here to Sign In and Submit your Survey
