@@ -52,9 +52,6 @@ import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
 import SchoolScoreCardPage from 'src/pages/resources/SchoolScoreCardPage'
 
 import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
-import PositiveResourcesPage from 'src/pages/resources/PositiveResourcesPage'
-import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
-import SchoolScoreCardPage from 'src/pages/resources/SchoolScoreCardPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
