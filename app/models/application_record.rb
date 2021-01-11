@@ -54,4 +54,15 @@ class ApplicationRecord < ActiveRecord::Base
 
     self.search(queryable_columns || [], query)
   end
+
+  def self.dedupe(columns)
+    duplicate_row_values = select("#{columns.join(', ')}, count(*)")
+      .group(columns.join(', '))
+      .having('count(*) > 1')
+      .pluck_to_hash(*columns)
+
+    duplicate_row_values.each do |query|
+      where(query).order(id: :desc)[1..].map(&:destroy)
+    end
+  end
 end
