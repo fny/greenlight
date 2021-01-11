@@ -100,7 +100,8 @@ module Commands
 
     def run!
       return true if run
-      raise CommandFailed
+
+      raise CommandFailed, errors.to_json
     end
 
     # Call this to force a failure during `#work`
