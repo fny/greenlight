@@ -27,16 +27,17 @@ export async function reloadCurrentUser(): Promise<User> {
 }
 
 export async function signOut(router?: Router.Router): Promise<void> {
-  await deleteSession()
-  Honeybadger.resetContext()
-  // TODO: There should be a way of doing this without a hard redirect
-  setGlobal({ currentUser: null })
-  localStorage.clear()
   if (router) {
     router.navigate(paths.splashPath)
   } else {
     (window.location as any) = '/'
   }
+  await deleteSession()
+  Honeybadger.resetContext()
+  // TODO: There should be a way of doing this without a hard redirect
+  setGlobal({ currentUser: null })
+  localStorage.clear()
+
 }
 
 export function toggleLocale(): void {
