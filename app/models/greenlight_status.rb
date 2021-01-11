@@ -67,9 +67,9 @@ class GreenlightStatus < ApplicationRecord
     status
   end
 
-  def self.submittable_for?(user_id)
-    GreenlightStatus
-      .where(user_id: user_id)
+  def self.submittable_for?(user)
+    !GreenlightStatus
+      .where(user: user)
       .where('follow_up_date > ?', DAILY_CUTOFF.round(Time.current))
       .exists?
   end
@@ -96,7 +96,7 @@ class GreenlightStatus < ApplicationRecord
 
   def not_already_submitted
     return if self.is_override
-    return unless GreenlightStatus.submittable_for?(user_id || user&.id)
+    return if GreenlightStatus.submittable_for?(user_id || user&.id)
 
     errors.add(:base, 'status_already_submitted')
   end
