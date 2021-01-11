@@ -48,10 +48,6 @@ class Location < ApplicationRecord
     has_many role.pluralize.to_sym, through: "#{role}_accounts".to_sym, source: :user
   end
 
-  def parents
-    User.distinct.parents.joins(:children).where('parents_children.child_id': students)
-  end
-
   enumerize :category, in: CATEGORIES
 
   validate :registration_codes_are_different
@@ -96,6 +92,10 @@ class Location < ApplicationRecord
     parsed = PhoneNumber.parse(value)
     parsed = nil if parsed.blank?
     self[:phone_number] = parsed
+  end
+
+  def parents
+    User.distinct.parents.joins(:children).where('parents_children.child_id': students)
   end
 
   def users_to_invite
