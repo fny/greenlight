@@ -179,24 +179,26 @@ export class Model {
     return `${this.resourceType()}-${this.id}`
   }
 
-  resourceType() {
+  resourceType(): string {
     const { constructor } = Object.getPrototypeOf(this)
     return constructor.resourceType || lowerCaseFirstLetter(constructor.modelName)
   }
 
-  attributeMetadata() {
+  attributeMetadata(): Dict<AttributeDefinition> {
     return getAttributes(Object.getPrototypeOf(this).constructor)
   }
 
-  hasRelationship(name: string) {
-    return this.relationshipMetadata()[name] !== undefined
+  hasRelationship(name: string): boolean {
+    const meta = this.relationshipMetadata()
+    if (!meta) return false
+    return meta[name] !== undefined
   }
 
-  relationshipMetadata() {
+  relationshipMetadata(): Dict<AttributeDefinition> {
     return getRelationships(Object.getPrototypeOf(this).constructor)
   }
 
-  serialize() {
+  serialize<T>(): Record<T> {
     const attributes: any = {}
 
     for (const [property, value] of Object.entries(this.attributeMetadata())) {
@@ -301,7 +303,7 @@ function _deserialize(model: typeof Model, data: any, this_?: Model) {
       continue
     }
 
-    throw new Error(`No matching attribute or relationship ${property} on type ${model.modelName}`)
+    logger.error(`No matching attribute or relationship ${property} on type ${model.modelName}`)
   }
   return record
 }
