@@ -7,9 +7,15 @@
   --gl-green-fade: #00A18370;
   --gl-yellow: #FFD034;
   --gl-pink: #FF3494;
+  --gl-pink-light: #f7a6cc;
   --gl-gold-light: #FFFAA1;
   --gl-gold: #FFCD65;
+  --gl-blue: #8accff;
+  --gl-blue-light: #c5e6ff;
   --gl-gold-grad: linear-gradient(90deg, var(--gl-gold-light), var(--gl-gold));
+  --gl-green-grad: linear-gradient(90deg, var(--gl-green-light), var(--gl-green));
+  --gl-pink-grad: linear-gradient(90deg, var(--gl-pink-light), var(--gl-pink));
+  --gl-blue-grad: linear-gradient(90deg, var(--gl-blue-light), var(--gl-blue));
   --f7-theme-color: #00A183;
   --f7-page-bg-color: #fff;
   --f7-button-fill-bg-color: var(--gl-green);
