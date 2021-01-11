@@ -246,6 +246,25 @@ export function mailInvite(emailOrMobile: string): Promise<AxiosResponse<any>> {
 }
 
 //
+// Util
+//
+
+export async function getEmailTaken(email: string): Promise<boolean> {
+  const res = await v1.get<{ taken: boolean }>('/util/email-taken', { params: { email } })
+  return res.data.taken
+}
+
+export async function getMobileTaken(mobile: string): Promise<boolean> {
+  const res = await v1.get<{ taken: boolean }>('/util/mobile-taken', { params: { mobile } })
+  return res.data.taken
+}
+
+export async function getEmailOrMobileTaken(value: string): Promise<boolean> {
+  const res = await v1.get<{ taken: boolean }>('/util/email-or-mobile-taken', { params: { value } })
+  return res.data.taken
+}
+
+//
 // Helpers
 //
 

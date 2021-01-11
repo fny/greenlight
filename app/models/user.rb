@@ -91,6 +91,35 @@ class User < ApplicationRecord
 
   before_save { self.email&.downcase! }
 
+  def self.email_or_mobile_taken?(email_or_mobile)
+    e_or_m = EmailOrPhone.new(email_or_mobile)
+    unless e_or_m.valid?
+      return false
+    end
+
+    if e_or_m.email?
+      User.exists?(email: e_or_m.value)
+    else
+      User.exists?(mobile_number: e_or_m.value)
+    end
+  end
+
+  def self.email_taken?(email)
+    unless email.include?('@')
+      return false
+    end
+
+    User.exists?(email: email.downcase.strip)
+  end
+
+  def self.mobile_taken?(phone_number)
+    unless PhoneNumber.valid?(phone_number)
+      return false
+    end
+
+    User.exists?(mobile_number: PhoneNumber.parse(phone_number))
+  end
+
   def self.create_account!(
     first_name:, last_name:, location:, role:,
     password: nil, title: nil, external_id: nil,

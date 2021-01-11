@@ -49,6 +49,15 @@ module APIHelpers
     render json: errors
   end
 
+  def simple_error_response(error)
+    response.status = 422
+    render json: {
+      "errors": [
+        error
+      ]
+    }
+  end
+
   def success_response
     response.status = 204 # No content
     render plain: nil
