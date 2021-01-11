@@ -1,11 +1,11 @@
 require 'rails_helper'
 RSpec.describe SwaggerSchemaBuilder do
-  it "models a swagger schema concisely" do
+  it 'models a swagger schema concisely' do
     schema = SwaggerSchemaBuilder.build do
-      firstName :string
+      firstName :string, required: true
       lastName :string
-      car {
-        make :string
+      car(required: true) {
+        make :string, required: true
         model :string
         year :number
       }
@@ -14,17 +14,19 @@ RSpec.describe SwaggerSchemaBuilder do
     expect(schema).to eq({
       type: :object,
       properties: {
-        firstName: {type: :string },
-        lastName: {type: :string },
+        firstName: { type: :string },
+        lastName: { type: :string },
         car: {
           type: :object,
           properties: {
-            make: {type: :string },
-            model: {type: :string },
-            year: {type: :number},
-          }
+            make: { type: :string },
+            model: { type: :string },
+            year: { type: :number }
+          },
+          required: ['make']
         }
-      }
+      },
+      required: %w[firstName car]
     })
   end
 end
