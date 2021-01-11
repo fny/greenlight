@@ -4,8 +4,9 @@ import {
 } from 'framework7-react'
 import React, { useState } from 'react'
 import { isBlank, isPresent, upperCaseFirst } from 'src/helpers/util'
-import { GRegisteringLocation, GRegisteringUser, toggleLocale } from 'src/initializers/providers'
 import { toggleLocale } from 'src/helpers/global'
+import { RegisteringUser } from 'src/models/RegisteringUser'
+import { RegisteringLocation } from 'src/models/RegisteringLocation'
 import {
   lcTrans, LocationCategories, LOCATION_CATEGORIES,
 } from 'src/models/Location'
@@ -42,14 +43,14 @@ class State {
   locationCategory: LocationCategories | null = null
 }
 
-function validateUser(user: GRegisteringUser) {
+function validateUser(user: RegisteringUser) {
   const errors = []
   isBlank(user.firstName) && errors.push('firstName')
   isBlank(user.lastName) && errors.push('lastName')
   return errors
 }
 
-function validateLocation(location: GRegisteringLocation) {
+function validateLocation(location: RegisteringLocation) {
   const errors = []
   isBlank(location.zipCode) && errors.push('zipCode')
   !/^\d{5}$/.test(location.zipCode) && errors.push('zipCode')
@@ -199,7 +200,7 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
         </Toolbar>
 
         <PageContent> {/*  Use this to make sheet scrollable */}
-          <iframe src="/terms.html" style={{ width: '100%', border: 0, height: '90%' }} />
+          <iframe src="https://docs.greenlightready.com/terms" style={{ width: '100%', border: 0, height: '90%' }} />
         </PageContent>
       </Sheet>
 

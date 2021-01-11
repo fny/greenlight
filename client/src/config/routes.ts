@@ -48,6 +48,11 @@ import BrevardResourcesPage from 'src/pages/resources/BrevardResourcesPage'
 import AdminUserPage from 'src/pages/admin/AdminUserPage'
 import HelpScoutPage from 'src/pages/resources/HelpScoutPage'
 
+import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
+import PositiveResourcesPage from 'src/pages/resources/PositiveResourcesPage'
+import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
+import SchoolScoreCardPage from 'src/pages/resources/SchoolScoreCardPage'
+
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
   requireSignIn(
@@ -118,8 +123,12 @@ const registrationRoutes = {
     path: '/register/location/welcome',
     component: RegisterLocationWelcomePage,
   },
+  registerLocationIntroductionPath: {
+    path: '/register/location/introduction',
+    component: RegisterLocationIntroductionPage,
+  },
   registerLocationMessagePath: {
-    path: '/register/location/message/:messageId',
+    path: '/register/location/message',
     component: RegisterLocationMessagePage,
   },
   registerLocationOwnerPath: {
