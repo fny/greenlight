@@ -7,7 +7,6 @@ import {
 import { useFormik, FormikProvider } from 'formik'
 import * as Yup from 'yup'
 
-import { t } from '@lingui/macro'
 import { F7Props } from 'src/types'
 import { checkPasswordResetToken, passwordReset } from 'src/api'
 import FormikInput from 'src/components/FormikInput'
@@ -15,6 +14,7 @@ import SubmitHandler from 'src/helpers/SubmitHandler'
 import logger from 'src/helpers/logger'
 import { paths } from 'src/config/routes'
 import { assertNotUndefined } from 'src/helpers/util'
+import Tr, { tr } from 'src/components/Tr'
 
 interface PasswordInput {
   password: string
@@ -25,7 +25,7 @@ export default function PasswordResetPage({ f7route, f7router }: F7Props): JSX.E
   const submitHandler = new SubmitHandler(f7)
   const { token } = f7route.params
   assertNotUndefined(token)
-  const cantBeBlankMessage = t({ id: 'Form.error_blank', message: "Can't be blank" })
+  const cantBeBlankMessage = tr({ en: "Can't be blank", es: 'No puede estar en blanco' })
 
   const formik = useFormik<PasswordInput>({
     validationSchema: Yup.object<PasswordInput>().shape({
@@ -34,8 +34,13 @@ export default function PasswordResetPage({ f7route, f7router }: F7Props): JSX.E
         .required(cantBeBlankMessage)
         .test(
           'password-match',
-          t({ id: 'PasswordResetPage.password_mistmatch', message: 'Password mistmatch' }),
+          tr({
+            en: "Passwords don't match",
+            es: 'Las contraseñas no son similares',
+          }),
+          // eslint-disable-next-line func-names
           function (value) {
+            // eslint-disable-next-line react/no-this-in-sfc
             return this.parent.password === value
           },
         ),
@@ -55,11 +60,11 @@ export default function PasswordResetPage({ f7route, f7router }: F7Props): JSX.E
         try {
           await passwordReset(token, password)
           f7.dialog.alert(
-            t({
-              id: 'PasswordResetPage.password_changed',
-              message: 'Your password has been changed.',
+            tr({
+              en: 'Your password has been changed.',
+              es: 'Su contraseña ha sido cambiada.',
             }),
-            t({ id: 'PasswordResetPage.password_change_success', message: 'Password Change Success' }),
+            tr({ en: 'Password Changed', es: 'Contraseña cambiada' }),
             () => {
               f7router.navigate(paths.signInPath)
             },
@@ -67,13 +72,13 @@ export default function PasswordResetPage({ f7route, f7router }: F7Props): JSX.E
         } catch (e) {
           logger.error(e.response)
           f7.dialog.alert(
-            t({
-              id: 'PasswordResetPage.reset_password_failed',
-              message: "We couldn't reset the password for that info.",
+            tr({
+              en: "We couldn't reset the password for that info.",
+              es: 'No pudimos restablecer la contraseña para esa información.',
             }),
-            t({
-              id: 'PasswordResetPage.reset_password_failed_title',
-              message: 'Password Reset Failed',
+            tr({
+              en: 'Password Reset Failed',
+              es: 'Error al restablecer la contraseña',
             }),
           )
         }
@@ -87,13 +92,14 @@ export default function PasswordResetPage({ f7route, f7router }: F7Props): JSX.E
       logger.error(e.response)
 
       f7.dialog.alert(
-        t({
-          id: 'PasswordResetPage.invalid_token_description',
-          message: 'Token is invalid. Please use the link we sent you.',
+        tr({
+          en: 'The link you provided is invalid or has expired. Please try again.',
+          es: 'El enlace que proporcionaste no es válido o ha caducado. Inténtalo de nuevo.',
+          reviewTrans: true,
         }),
-        t({
-          id: 'PasswordResetPage.invalid_token',
-          message: 'Invalid Token',
+        tr({
+          en: 'Invalid Link',
+          es: 'Enlace Inválido',
         }),
         () => {
           f7router.navigate(paths.rootPath)
@@ -104,7 +110,13 @@ export default function PasswordResetPage({ f7route, f7router }: F7Props): JSX.E
 
   return (
     <Page className="PasswordResetPage" noToolbar noSwipeback loginScreen>
-      <Navbar title={t({ id: 'PasswordResetPage.title', message: 'Reset Password' })} />
+      <Navbar backLink title={tr({ en: 'Reset Password', es: 'Restablecer la contraseña' })} />
+      <Block>
+        <Tr
+          en="Enter the new password that you would like to use."
+          es="Ingrese la nueva contraseña que le gustaría usar."
+        />
+      </Block>
       <FormikProvider value={formik}>
         <List
           form
@@ -115,21 +127,24 @@ export default function PasswordResetPage({ f7route, f7router }: F7Props): JSX.E
         >
           <FormikInput
             name="password"
-            label={t({ id: 'PasswordResetPage.password', message: 'Password' })}
+            label={tr({ en: 'Password', es: 'Contraseña' })}
             type="password"
             required
           />
 
           <FormikInput
             name="confirmPassword"
-            label={t({ id: 'PasswordResetPage.confirm_password', message: 'Confirm Password' })}
+            label={tr({ en: 'Confirm Password', es: 'Confirmar Contraseña' })}
             type="password"
             required
           />
 
           <Block>
             <Button type="submit" outline fill>
-              Request Reset
+              <Tr
+                en="Update Password"
+                es="Cambiar la contraseña"
+              />
             </Button>
           </Block>
         </List>
