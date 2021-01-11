@@ -7,8 +7,10 @@ module MailController
         params[:from], # from
         'hello@greenlightready.com', # to
         params[:subject], # subject
-        params[:body]
+        params[:body] # body
       )
+
+      success_response
     end
 
     post '/v1/mail/invite', auth: false do
