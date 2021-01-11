@@ -5,15 +5,16 @@ module Greenlight
       response = Faraday.new(url: "https://drive.google.com/uc?export=download&id=#{id}") { |f|
         f.use FaradayMiddleware::FollowRedirects
       }.get
-      file = Tempfile.new([name || id, ".#{extension}"], Rails.root.join('tmp'), binmode: true)
-      file.write(response.body)
-      file.close
+      path = Rails.root.join("tmp/#{id}.#{extension}")
+      File.open(path, 'wb') do |f|
+        f.write(response.body)
+      end
 
       if response.body.include?('<!DOCTYPE html>')
         raise("Received HTML in the response from Google")
       end
 
-      file.path
+      path
     end
 
     def read_file(file)
