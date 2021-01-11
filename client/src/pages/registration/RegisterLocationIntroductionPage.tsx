@@ -203,6 +203,7 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
             name="employeeCount"
             className={`fill-in-the-blank ${state.showErrors && validateLocation(registeringLocation).includes('employeeCount') && 'has-error'}`}
             type="number"
+            min="2"
             placeholder="#"
             value={registeringLocation.employeeCount || ''}
             onChange={(e) => setRegisteringLocation({ ...registeringLocation, employeeCount: parseInt((e.target as HTMLInputElement).value, 10) })}
