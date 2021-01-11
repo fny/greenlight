@@ -25,11 +25,6 @@
     <platform name="android">
         <allow-intent href="market:*" />
 
-        <!-- Staging -->
-        <preference name="CodePushDeploymentKey" value="96q-1na96bCWTbl8tTzLTukmelM9JHZJjfttN" />
-        <!-- Production -->
-        <!-- <preference name="CodePushDeploymentKey" value="HIVBTCnL3SOftwZS_IRifwRfwu3N4NN5UbQEb" /> -->
-
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
         <!-- <preference name="OverrideUserAgent" value="Cordova" /> -->
 
@@ -44,11 +39,6 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
 
-        <!-- Staging -->
-        <preference name="CodePushDeploymentKey" value="9tJypW_IQTNQi9xRaVPkZ1wLwyFodeEs0xnmx" />
-        <!-- Production -->
-        <!-- <preference name="CodePushDeploymentKey" value="JuQchGK6vPnDBH208x3_9TvCS7FWKPHWj7Ca0" />  -->
-        
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
 
         <!-- <preference name="OverrideUserAgent" value="Cordova" /> -->

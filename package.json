@@ -21,7 +21,9 @@
     "test:e2e:watch": "cypress open",
     "lint": "eslint --ext .ts --ext .tsx src",
     "lint-dry": "eslint --ext .ts --ext .tsx --fix-dry-run src",
-    "lint-fix": "eslint --ext .ts --ext .tsx --fix src"
+    "lint-fix": "eslint --ext .ts --ext .tsx --fix src",
+    "build-production-cordova": "cp ./client/.env.app.production ./client/.env.production.local && npm run build-cordova",
+    "build-staging-cordova": "cp ./client/.env.app.staging ./client/.env.production.local && npm run build-cordova"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",

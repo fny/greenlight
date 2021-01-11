@@ -54,16 +54,32 @@ function startApp() {
 
 if (env.isCordova()) {
   document.addEventListener('deviceready', startApp, false)
+
   document.addEventListener('resume', () => {
     logger.log('resume')
-    ;(window as any).codePush.checkForUpdate(function (update: boolean) {
-      if (!update) {
-        logger.log('The app is up to date.')
-      } else {
-        logger.log('An update is available! Should we download it?')
-        ;(window as any).codePush.sync(null, { updateDialog: true, installMode: (window as any).InstallMode.IMMEDIATE })
-      }
-    })
+    ;(window as any).codePush.checkForUpdate(
+      function (update: boolean) {
+        if (!update) {
+          logger.log('The app is up to date.')
+        } else {
+          logger.log('An update is available! Should we download it?')
+          ;(window as any).codePush.sync(
+            null,
+            {
+              updateDialog: true,
+              installMode: (window as any).InstallMode.IMMEDIATE,
+              deploymentKey: env.codePushDeploymentKey(),
+            },
+            null,
+            function (error: any) {
+              logger.log('codepush sync error', error)
+            },
+          )
+        }
+      },
+      null,
+      env.codePushDeploymentKey(),
+    )
   })
 } else {
   startApp()
