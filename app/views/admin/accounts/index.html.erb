@@ -1,0 +1,28 @@
+<h1>Accounts</h1>
+
+<table>
+  <thead>
+    <th>External Id</th>
+    <th>First</th>
+    <th>Last</th>
+    <th>Email</th>
+    <th>Mobile Number</th>
+    <th>Role</th>
+    <th>Permission Level</th>
+    <th>Cohorts</th>
+  </thead>
+  <% @accounts.each do |a|%>
+    <tr>
+      <td><%= a.external_id %></td>
+      <td><%= a.user.first_name %></td>
+      <td><%= a.user.last_name %></td>
+      <td><%= a.user.email %></td>
+      <td><%= a.user.mobile_number %></td>
+      <td><%= a.role %></td>
+      <td><%= a.permission_level %></td>
+      <td><%= print_cohorts(a.user.cohorts.filter { |c| c.location == @location }) %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%== pagy_nav(@pagy) %>

@@ -90,5 +90,25 @@ module Admin
         redirect_to [:admin, @location]
       end
     end
+
+    def staff_sheet
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+      download = StaffRosterDownload.new(permalink: location.permalink)
+      download.run
+
+      send_data File.read(download.file_path).force_encoding('binary'),
+        filename: File.basename(download.file_path),
+        type: 'application/vnd.ms-excel'
+    end
+
+    def students_sheet
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+      download = StudentRosterDownload.new(permalink: location.permalink)
+      download.run
+
+      send_data File.read(download.file_path).force_encoding('binary'),
+        filename: File.basename(download.file_path),
+        type: 'application/vnd.ms-excel'
+    end
   end
 end
