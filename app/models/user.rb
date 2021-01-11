@@ -1,14 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: Incorporate these into this model.
-#
-# hasNotSubmittedOwnSurvey
-# hasNotSubmittedOwnSurveyForTomorrow
-# usersNotSubmitted
-# usersNotSubmittedForTomorrow
-# hasLocationThatRequiresSurvey
-# needsToSubmitSomeonesSurvey
-
 class User < ApplicationRecord
   self.permitted_params = %i[
     first_name last_name email password mobile_number mobile_carrier locale
@@ -218,7 +209,9 @@ class User < ApplicationRecord
   # Greenlight Status Related
   #
 
-  # Todays status
+  # Returns the last not expired status.
+  # For example, say you triggered a recovery status that puts you into
+  # quarantine, this is that status.
   def inferred_status
     return last_greenlight_status if last_greenlight_status && !last_greenlight_status.expired?
 
@@ -234,21 +227,16 @@ class User < ApplicationRecord
   end
 
   # @returns [Array<User>]
-  def needs_to_submit_survey_for
-    submits_surveys_for.filter { |u| !u.submitted_for_today? }
+  def needs_to_submit_surveys_for
+    submits_surveys_for.reject(&:submitted_for_today?)
   end
 
-  def needs_to_submit_survey_for_text
-    needs_to_submit_survey_for.map(&:first_name).to_sentence
+  def submits_surveys_for
+    User.where(id: children.pluck(:id) + [id]).joins(:location_accounts)
   end
 
-  # @returns [Array<Location>]
-  def needs_to_submit_survey_for_locations
-    needs_to_submit_survey_for.map(&:location)
-  end
-
-  def needs_to_submit_survey_for_location_text
-    needs_to_submit_survey_for.map(&:first_name).to_sentence
+  def submits_surveys_for_text
+    submits_surveys_for.map(&:first_name).to_sentence
   end
 
   def mobile_number=(value)
@@ -257,19 +245,6 @@ class User < ApplicationRecord
     parsed = PhoneNumber.parse(value)
     parsed = nil if parsed.blank?
     self[:mobile_number] = parsed
-  end
-
-  # PERF: N+1 query
-  def submits_surveys_for
-    people = []
-    people.push(self) if location_accounts.any?
-    children.each do |c|
-      people.push(self) if c.location_accounts.any?
-    end
-  end
-
-  def submits_surveys_for_text
-    submits_surveys_for.map(&:first_name).to_sentence
   end
 
   def destroy_all_associated_statuses
