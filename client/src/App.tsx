@@ -2,7 +2,7 @@ import React, { Fragment, useGlobal } from 'reactn'
 
 import './App.css'
 
-import { App, View } from 'framework7-react'
+import { App, Progressbar, View } from 'framework7-react'
 
 import { Framework7Params } from 'framework7/components/app/app-class'
 
@@ -37,15 +37,17 @@ if (!env.isCordova()) {
   }
 }
 
-export default function Main() {
-  const [locale] = useGlobal('locale')
+export default function Main(): JSX.Element {
+  const [global] = useGlobal()
 
   return (
     <I18nProvider i18n={globalI18n}>
       <I18nWatchLocale>
-        <App key={locale} params={f7params} className="App">
+        <App key={global.locale} params={f7params} className="App">
           <OnlineStatus />
           <ErrorBoundary>
+            { global.progress && <Progressbar color="green" progress={global.progress} /> }
+
             <View id="main-view" url="/" main className="safe-areas" />
           </ErrorBoundary>
         </App>
