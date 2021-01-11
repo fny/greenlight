@@ -96,7 +96,6 @@ class OldStaffImport
       user.save!
       location_account.save!
     rescue => e
-      binding.pry
       puts e.message
       puts location_account.attributes
       puts errors
