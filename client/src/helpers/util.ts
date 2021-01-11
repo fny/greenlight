@@ -6,6 +6,7 @@ import { getGlobal } from 'reactn'
 import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import logger from 'src/helpers/logger'
+import GLPhoneNumber from 'src/helpers/GLPhoneNumber'
 
 //
 // Date and Time Related
@@ -352,11 +353,7 @@ export function formatPhone(number: string | null | undefined): string {
 }
 
 export function validPhone(phoneNumber: string): boolean {
-  const parsed = parsePhoneNumberFromString(phoneNumber, 'US')
-  if (!parsed) {
-    return false
-  }
-  return parsed.country === 'US' && parsed.isValid()
+  return new GLPhoneNumber(phoneNumber).isValid()
 }
 
 export function haveEqualAttrs(a: any, b: any): boolean {
