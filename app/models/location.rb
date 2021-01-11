@@ -86,6 +86,10 @@ class Location < ApplicationRecord
     end
   end
 
+  # Assigns the phone number and formats it in e164 format.
+  # If the value isn't a phone number, nil is assigned.
+  #
+  # @param [String] value - the string to attempt to assign
   def phone_number=(value)
     return if value.blank?
 
