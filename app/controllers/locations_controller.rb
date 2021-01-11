@@ -83,5 +83,11 @@ module LocationsController
 
       render json: Reports::Location.new(location).to_h
     end
+
+    get '/v1/locations/:location_id/stats-overview/:date' do
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+      stats = LocationStatsOverview.new(location, params[:date])
+      render json: LocationStatsOverviewSerializer.new(stats)
+    end
   end
 end

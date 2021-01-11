@@ -313,6 +313,11 @@ const routeMap = {
     component: AdminUserPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
+  adminDashboardPath: {
+    path: '/admin/locations/:locationId/dashboard',
+    component: AdminDashboardPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
   debugPath: {
     path: '/debug',
     component: DebugPage,
