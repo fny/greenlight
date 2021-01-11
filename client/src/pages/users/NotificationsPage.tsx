@@ -21,7 +21,7 @@ import { F7Props } from 'src/types'
 import { assertNotNull } from 'src/helpers/util'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { updateUserSettings } from 'src/api'
-import { reloadCurrentUser } from 'src/initializers/providers'
+import { reloadCurrentUser } from 'src/helpers/global'
 import { DailyReminderType } from 'src/models/UserSettings'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 

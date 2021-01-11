@@ -2,7 +2,7 @@ import React, { useGlobal } from 'reactn'
 import { Page, Block, Button } from 'framework7-react'
 
 import './SplashPage.css'
-import { signOut, toggleLocale } from 'src/initializers/providers'
+import { signOut, toggleLocale } from 'src/helpers/global'
 import { Trans } from '@lingui/macro'
 import releaseData from 'src/assets/data/releases'
 import { paths } from 'src/config/routes'

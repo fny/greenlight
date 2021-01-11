@@ -10,6 +10,7 @@ import { GRegisteringLocation, GRegisteringUser, toggleLocale } from 'src/initia
 import {
   lcPeople, lcTrans, LocationCategories, LOCATION_CATEGORIES,
 } from 'src/models/Location'
+import { toggleLocale } from 'src/helpers/global'
 import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
 import { dynamicPaths, paths } from 'src/config/routes'
 import { useGlobal } from 'reactn'

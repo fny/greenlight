@@ -21,7 +21,6 @@ import { User } from 'src/models'
 
 import { ReactNComponent } from 'reactn/build/components'
 import ReleaseCard from 'src/components/ReleaseCard'
-import { currentUser } from 'src/initializers/providers'
 import UserJDenticon from '../components/UserJDenticon'
 
 function UserList({ users }: { users: User[] }) {

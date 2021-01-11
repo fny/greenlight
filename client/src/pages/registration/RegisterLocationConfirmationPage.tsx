@@ -4,7 +4,7 @@ import {
 } from 'framework7-react'
 import React, { useState } from 'react'
 import { isBlank, isPresent, upperCaseFirst } from 'src/helpers/util'
-import { GRegisteringLocation, GRegisteringUser, toggleLocale } from 'src/initializers/providers'
+import { toggleLocale } from 'src/helpers/global'
 import { LocationCategories, LOCATION_CATEGORIES } from 'src/models/Location'
 import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
 import { paths } from 'src/config/routes'

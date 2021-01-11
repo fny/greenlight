@@ -13,7 +13,6 @@ module APIHelpers
     'Coder, eh? Email us: hello [at] greenlightready'
   end
 
-
   def camelize_hash(data)
     case data
     when Array

@@ -5,8 +5,7 @@ import {
 import React, { useState } from 'react'
 import { isBlank, isPresent, upperCaseFirst } from 'src/helpers/util'
 import {
-  GRegisteringLocation, reloadCurrentUser,
-} from 'src/initializers/providers'
+import { reloadCurrentUser } from 'src/helpers/global'
 import {
   lcTrans, LocationCategories, LOCATION_CATEGORIES,
 } from 'src/models/Location'

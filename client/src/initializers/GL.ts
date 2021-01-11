@@ -1,6 +1,6 @@
 import { dynamicPaths, paths } from 'src/config/routes'
 import { DateTime } from 'luxon'
-import { currentUser } from 'src/initializers/providers'
+import { currentUser } from 'src/helpers/global'
 import * as api from 'src/api'
 import { ModelRegistry } from 'src/models'
 import { CUTOFF_TIME } from 'src/models/GreenlightStatus'

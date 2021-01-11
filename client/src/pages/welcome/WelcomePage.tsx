@@ -13,7 +13,7 @@ import { paths } from 'src/config/routes'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/helpers/errors'
 
-import { toggleLocale, signOut } from 'src/initializers/providers'
+import { toggleLocale, signOut } from 'src/helpers/global'
 import { plural, Trans } from '@lingui/macro'
 
 interface State {
