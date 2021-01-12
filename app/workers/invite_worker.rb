@@ -51,8 +51,8 @@ class InviteWorker < ApplicationWorker
   def sms_template
     # TODO: Generalize
     Erubi::Engine.new(<<~SMS
-      <% if user.invited_at %>REMINDER! <% end %><%= user.affiliated_locations.map(&:name).to_sentence %> has registered you for Greenlight daily monitoring.
-      Sign up here: <%= user.magic_sign_in_url %>
+      <%= user.affiliated_locations.map(&:name).last %> registered you for Greenlight.
+      Sign up: <%= user.magic_sign_in_url %>
     SMS
     ).src
   end
