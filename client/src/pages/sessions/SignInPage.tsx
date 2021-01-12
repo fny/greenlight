@@ -21,6 +21,7 @@ import { paths, dynamicPaths } from 'src/config/routes'
 import { F7Props, JSONAPIError } from 'src/types'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import logger from 'src/helpers/logger'
+import Tr, { En, Es } from 'src/components/Tr'
 
 export default function SignInPage(props: F7Props) {
   const emailOrMobileRef = React.createRef<EmailOrPhoneListInput>()
@@ -135,13 +136,22 @@ export default function SignInPage(props: F7Props) {
         </Block>
       </List>
       <BlockFooter>
-        <Link href={paths.magicSignInPath}>
-          <Trans id="SignInPage.forgot_password">
+        <Tr reviewTrans={true}>
+          <En>
             Forgot your password?
-          </Trans>
-        </Link>
-        {/* <Link href="#">Request a password reset</Link> or use  magic sign in.  */}
-
+            {' '}
+            <Link href={paths.passwordResetRequestPath}>Request a reset</Link> or
+            {' '}
+            <Link href={paths.magicSignInPath}>a magic sign in link</Link>.
+          </En>
+          <Es>
+            ¿Olvidó su contraseña? Solicitar
+            {' '}
+            <Link href={paths.passwordResetRequestPath}>un restablecimiento de contraseña</Link> or
+            {' '}
+            <Link href={paths.magicSignInPath}>un enlace de inicio de sesión mágico</Link>.
+          </Es>
+        </Tr>
       </BlockFooter>
     </Page>
   )

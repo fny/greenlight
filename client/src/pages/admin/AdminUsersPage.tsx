@@ -1,26 +1,31 @@
 import { t } from '@lingui/macro'
 import {
-  AccordionContent, f7, Icon, Link, List, ListGroup, ListItem, Navbar, NavLeft, NavRight, Page, Searchbar, Subnavbar,
+  AccordionContent,
+  f7,
+  Icon,
+  Link,
+  List,
+  ListGroup,
+  ListItem,
+  Navbar,
+  NavLeft,
+  NavRight,
+  Page,
+  Searchbar,
+  Subnavbar,
 } from 'framework7-react'
-import React, {
-  getGlobal, useGlobal, useLayoutEffect, useRef,
-} from 'reactn'
+import React, { getGlobal, useGlobal, useLayoutEffect, useRef } from 'reactn'
 import { ReactNComponent } from 'reactn/build/components'
-import {
-  getPagedResources, getUsersForLocation, Pagination, store,
-} from 'src/api'
+import { getPagedResources, getUsersForLocation, Pagination, store } from 'src/api'
 import { User, Location } from 'src/models'
 import { Dict, F7Props } from 'src/types'
 import UserJDenticon from 'src/components/UserJDenticon'
 import { dynamicPaths, paths } from 'src/config/routes'
-import {
-  assertNotNull, assertNotUndefined, sortBy, debounce, isBlank,
-} from 'src/helpers/util'
+import { assertNotNull, assertNotUndefined, sortBy, debounce, isBlank } from 'src/helpers/util'
 import { NoCurrentUserError } from 'src/helpers/errors'
 import { Router } from 'framework7/modules/router/router'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { useCallback, useState } from 'react'
-import { useInfiniteQuery } from 'react-query'
 import _ from 'lodash'
 
 function useDebounce(callback: any, delay: number) {
@@ -64,27 +69,20 @@ function UserItem(props: UserItemProps & F7Props): JSX.Element {
       </div>
       <AccordionContent key={user.id}>
         <List>
-          {
-              user.hasNotSubmittedOwnSurvey() ? (
-                <ListItem
-                  link={dynamicPaths.userSurveysNewPath(user.id, { redirect: f7route.path })}
-                  title="Check-In"
-                />
-              ) : (
-                <ListItem
-                  link={dynamicPaths.userGreenlightPassPath(user.id)}
-                  title={t({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' })}
-                />
-              )
-            }
-          {
-              !locationAccount.isStudent() && (
-              <ListItem
-                link={dynamicPaths.userLocationPermissionsPath({ userId: user.id, locationId: location.id })}
-                title={t({ id: 'AdminUsersPage.location_permissions', message: 'Permissions' })}
-              />
-              )
-            }
+          {user.hasNotSubmittedOwnSurvey() ? (
+            <ListItem link={dynamicPaths.userSurveysNewPath(user.id, { redirect: f7route.path })} title="Check-In" />
+          ) : (
+            <ListItem
+              link={dynamicPaths.userGreenlightPassPath(user.id)}
+              title={t({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' })}
+            />
+          )}
+          {!locationAccount.isStudent() && (
+            <ListItem
+              link={dynamicPaths.userLocationPermissionsPath({ userId: user.id, locationId: location.id })}
+              title={t({ id: 'AdminUsersPage.location_permissions', message: 'Permissions' })}
+            />
+          )}
           <ListItem
             link={dynamicPaths.adminUserPath({ userId: user.id, locationId: location.id })}
             title={t({ id: 'AdminUsersPage.user_more', message: 'More' })}
@@ -158,7 +156,11 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
     const paged = status ? await getUsersForLocation(locationId, 1, status) : await getUsersForLocation(locationId, 1)
 
     setState({
-      ...state, users: paged.data, isLoaded: true, pageState: paged.pagination, showPreloader: paged.pagination.count !== 0 && paged.pagination.count !== paged.data.length
+      ...state,
+      users: paged.data,
+      isLoaded: true,
+      pageState: paged.pagination,
+      showPreloader: paged.pagination.count !== 0 && paged.pagination.count !== paged.data.length,
     })
   }
 
@@ -179,7 +181,11 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
         allowInfinite.current = true
         const queryStore = state.queryStore.set({ nameSearch: query }, paged.pagination)
         setState({
-          ...state, users: _.uniqBy([...state.users, ...paged.data], (u) => u.id), isLoaded: true, pageState: paged.pagination, queryStore,
+          ...state,
+          users: _.uniqBy([...state.users, ...paged.data], (u) => u.id),
+          isLoaded: true,
+          pageState: paged.pagination,
+          queryStore,
         })
       })
     }, 500)
@@ -203,33 +209,31 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
         state.queryStore.set({ nameSearch: state.query }, paged.pagination)
         allowInfinite.current = true
         setState({
-          ...state, users: _.uniqBy([...state.users, ...paged.data], (u) => u.id), isLoaded: true, pageState: { ...state.pageState, next: 1 }, query: state.query,
+          ...state,
+          users: _.uniqBy([...state.users, ...paged.data], (u) => u.id),
+          isLoaded: true,
+          pageState: { ...state.pageState, next: 1 },
+          query: state.query,
         })
       })
     }
   }, 500)
 
   return (
-    <Page
-      infinite
-      infiniteDistance={50}
-      infinitePreloader={state.showPreloader}
-      onInfinite={loadMore}
-    >
+    <Page infinite infiniteDistance={50} infinitePreloader={state.showPreloader} onInfinite={loadMore}>
       <Navbar title="Users">
         <NavbarHomeLink slot="left" />
-        {!status && (<Subnavbar inner={false}>
-
-          <Searchbar
-            searchContainer=".search-list"
-            searchIn=".user-item > .item-link > .item-content > .item-inner"
-            searchItem="li.user-item"
-            onSearchbarSearch={(bar, query, prev) => {
-              debouncedSetState({ ...state, query })
-            }}
-          />
-
-        </Subnavbar>
+        {!status && (
+          <Subnavbar inner={false}>
+            <Searchbar
+              searchContainer=".search-list"
+              searchIn=".user-item > .item-link > .item-content > .item-inner"
+              searchItem="li.user-item"
+              onSearchbarSearch={(bar, query, prev) => {
+                debouncedSetState({ ...state, query })
+              }}
+            />
+          </Subnavbar>
         )}
         <NavRight>
           <Link onClick={() => window.location.reload()}>
@@ -241,16 +245,14 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
         <ListItem key="blank" title="Nothing found" />
       </List>
       <List className="search-list searchbar-found" contactsList>
-        {
-      sortBy(Object.entries(grouped), (letterUsers) => letterUsers[0]).map(([letter, users]) => (
-        <ListGroup key={letter}>
-          <ListItem key={letter} title={letter} groupTitle />
-          {
-            sortBy(users, (u) => u.reversedName().toUpperCase()).map((user) => <UserItem user={user} location={location} f7route={props.f7route} f7router={props.f7router} />)
-          }
-        </ListGroup>
-      ))
-    }
+        {sortBy(Object.entries(grouped), (letterUsers) => letterUsers[0]).map(([letter, users]) => (
+          <ListGroup key={letter}>
+            <ListItem key={letter} title={letter} groupTitle />
+            {sortBy(users, (u) => u.reversedName().toUpperCase()).map((user) => (
+              <UserItem user={user} location={location} f7route={props.f7route} f7router={props.f7router} />
+            ))}
+          </ListGroup>
+        ))}
       </List>
     </Page>
   )

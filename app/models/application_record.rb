@@ -57,10 +57,6 @@ class ApplicationRecord < ActiveRecord::Base
     self.search(queryable_columns || [], query)
   end
 
-  def select_without(columns)
-    select(column_names - columns.map(&:to_s))
-  end
-
   def self.dedupe(columns)
     duplicate_row_values = select("#{columns.join(', ')}, count(*)")
       .group(columns.join(', '))

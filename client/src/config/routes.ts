@@ -47,11 +47,11 @@ import WelcomeSurveyPage from 'src/pages/welcome/WelcomeSurveyPage'
 import BrevardResourcesPage from 'src/pages/resources/BrevardResourcesPage'
 import AdminUserPage from 'src/pages/admin/AdminUserPage'
 import HelpScoutPage from 'src/pages/resources/HelpScoutPage'
-import PageWithRequest from 'src/pages/PageWithRequest'
-import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
 import PositiveResourcesPage from 'src/pages/resources/PositiveResourcesPage'
 import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
 import SchoolScoreCardPage from 'src/pages/resources/SchoolScoreCardPage'
+
+import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -378,10 +378,6 @@ const routeMap = {
   notFoundPath: {
     path: '/not-found',
     component: NotFoundPage,
-  },
-  testPath: {
-    path: '/test',
-    component: PageWithRequest,
   },
   catchAllPath: {
     path: '(.*)',

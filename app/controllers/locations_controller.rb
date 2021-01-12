@@ -74,22 +74,12 @@ module LocationsController
       users = location.users.where.not(id: current_user.id)
         .includes(UserSerializer::ADMIN_INCLUDES.dup).order(last_name: :asc, first_name: :asc, id: :asc)
       if params[:query]
-        if params[:query].start_with?('clea')
-          users = users.where(last_greenlight_status: { status: :cleared })
-        elsif params[:query].start_with?('pend')
-          users = users.where(last_greenlight_status: { status: :pendng })
-        elsif params[:query].start_with?('rec')
-          users = users.where(last_greenlight_status: { status: :recovery })
-        elsif params[:query].start_with?('not')
-          users = users.where(last_greenlight_status: nil)
-        else
-          users = users.where(
-            %w[first_name last_name].map { |col| "lower(#{col}) LIKE :query"}.join(' OR '),
-            query: "%#{params[:query]}%"
-          )
-        end
+        users = users.where(
+          %w[first_name last_name].map { |col| "lower(#{col}) LIKE :query"}.join(' OR '),
+          query: "%#{params[:query]}%"
+        )
       end
-      @pagy, @users = pagy(users, items: 15)
+      @pagy, @users = pagy(users, items: 25)
 
       render json: UserSerializer.new(
         @users,

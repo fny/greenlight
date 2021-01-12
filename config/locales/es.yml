@@ -13,7 +13,7 @@ es:
       subject: ✨ Restablecimiento de contraseña de Greenlight
       title: Utilice este enlace para restablecer la contraseña de su cuenta Greenlight
       body: |
-        Solicitó restablecer su contraseña y aquí está el enlace!
+        Solicitó restablecer su contraseña y aquí está el enlace.
         Tenga en cuenta que este enlace caduca en 1 hora y solo se puede usarlo
         una vez.
       action: Haga Clic Aquí Para Restablecer Su Constraseña

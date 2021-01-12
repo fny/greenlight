@@ -5,13 +5,13 @@ import {
   f7, Page, List, Navbar, Block, Button,
 } from 'framework7-react'
 
-import { Trans, t } from '@lingui/macro'
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
 import { F7Props, FunctionComponent } from 'src/types'
 import { passwordResetRequest } from 'src/api'
 import { assertNotNull } from 'src/helpers/util'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import logger from 'src/helpers/logger'
+import Tr, { tr } from 'src/components/Tr'
 
 const PasswordResetRequestPage: FunctionComponent<F7Props> = ({}) => {
   const [emailOrMobile, setEmailOrMobile] = useState('')
@@ -32,20 +32,24 @@ const PasswordResetRequestPage: FunctionComponent<F7Props> = ({}) => {
         if (!isValid) return
         try {
           await passwordResetRequest(emailOrMobile)
-          const alertTitle = t({ id: 'PasswordResetRequestPage.request_sent', message: 'Password Reset Request Sent' })
+          const alertTitle = tr({
+            en: 'Password Reset Request Sent',
+            es: 'Solicitud Enviada',
+          })
+
           if (emailOrMobile.includes('@')) {
             f7.dialog.alert(
-              t({
-                id: 'PasswordResetRequestPage.will_get_email',
-                message: 'You should receive an email shortly with a password reset page in link.',
+              tr({
+                en: 'You should receive an email shortly with a password reset link.',
+                es: 'Recibirá un correo electrónico con un enlace para restablecer la contraseña.',
               }),
               alertTitle,
             )
           } else {
             f7.dialog.alert(
-              t({
-                id: 'PasswordResetRequestPage.will_get_text',
-                message: 'You should receive a text shortly with a password reset page in link.',
+              tr({
+                en: 'You should receive a text shortly with a password reset link.',
+                es: 'Recibirás un mensaje de texto con un enlace para restablecer la contraseña.',
               }),
               alertTitle,
             )
@@ -53,13 +57,13 @@ const PasswordResetRequestPage: FunctionComponent<F7Props> = ({}) => {
         } catch (e) {
           logger.error(e.response)
           f7.dialog.alert(
-            t({
-              id: 'PasswordResetRequestPage.failed_setup',
-              message: "We couldn't set up a password reset request for that info.",
+            tr({
+              en: "We couldn't create a password reset request for that info.",
+              es: 'No pudimos crear un restablecimiento de contraseña para esa información.',
             }),
-            t({
-              id: 'PasswordResetRequestPage.request_failed',
-              message: 'Password Reset Request Failed',
+            tr({
+              en: 'Password Reset Failed',
+              es: 'Error al restablecer la contraseña',
             }),
           )
         }
@@ -70,12 +74,13 @@ const PasswordResetRequestPage: FunctionComponent<F7Props> = ({}) => {
 
   return (
     <Page className="PasswordResetRequestPage" noToolbar noSwipeback loginScreen>
-      <Navbar title={t({ id: 'PasswordResetRequestPage.title', message: 'Forgot Password' })} />
+      <Navbar title={tr({ en: 'Forgot Password', es: 'Olvidé Mi Contraseña' })} backLink />
       <List form onSubmit={sendRequest}>
         <Block>
-          <Trans id="PasswordResetRequestPage.instructions">
-            Enter your email or mobile number, and we'll send you a link to reset your password.
-          </Trans>
+          <Tr
+            en="Enter your email or mobile number, and we'll send you a link to reset your password."
+            es="Ingrese su correo electrónico o número de teléfono móvil y le enviaremos un enlace para restablecer su contraseña."
+          />
         </Block>
         <li>
           <EmailOrPhoneListInput
@@ -86,7 +91,10 @@ const PasswordResetRequestPage: FunctionComponent<F7Props> = ({}) => {
         </li>
         <Block>
           <Button type="submit" outline fill>
-            Request Reset
+            <Tr
+              en="Request Reset"
+              es="Enviar"
+            />
           </Button>
         </Block>
       </List>
