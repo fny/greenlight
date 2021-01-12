@@ -25,6 +25,7 @@ import './RegisterLocationPages.css'
 import { Router } from 'framework7/modules/router/router'
 import SessionStorage from 'src/helpers/SessionStorage'
 import { resetRegistration } from 'src/helpers/global'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 
 const MESSAGE_IDS = [
   'school', 'not-durham', 'durham-large', 'durham', 'curamericas-school',
@@ -50,9 +51,9 @@ function aboutText(location: RegisteringLocation, user: RegisteringUser, locale:
   return `¡${greeting()}, Greenlight! Mi nombre es ${user.firstName} ${user.lastName}. Me interesa registrar mi ${location.category} que tiene ${location.employeeCount} ${lcPeople(location.category || LocationCategories.COMMUNITY)}.`
 }
 
-function ContactForm({ f7router }: { f7router: Router.Router }) {
+function ContactForm({ f7router, messageId }: { f7router: Router.Router, messageId: string }) {
   const submitHandler = new SubmitHandler(f7, {
-    successMessage: "Thanks! We'll be reaching out to you shortly with more details.",
+    successMessage: tr({ en: "Thanks! We'll be reaching out to you shortly with more details.", es: '¡Gracias! Pronto nos comunicaremos con usted con más detalles.' }),
     onSuccess: () => {
       f7router.navigate(paths.rootPath)
       resetRegistration()
@@ -71,31 +72,27 @@ function ContactForm({ f7router }: { f7router: Router.Router }) {
         const serialized = serializeForm(e.target)
         submitHandler.submit(async () => {
           await mailHelloAtGreenlight(
-            `[Registration Interest] A new ${global.registeringLocation.category} is interested.`,
+            `[Registration Interest] A new ${global.registeringLocation.category} is interested. (${messageId})`,
             `${aboutText(global.registeringLocation, global.registeringUser, global.locale)} ${serialized.moreAbout || ''}\n\n${JSON.stringify(global.registeringUser, null, 2)}\n\n${JSON.stringify(global.registeringLocation, null, 2)}`,
           )
         })
       }}
     >
       <p style={{ fontWeight: 'bold' }}>Your Message</p>
-      {/* <ListInput
-        name="about"
-        type="textarea"
-        readonly
-        value={aboutText(global.registeringLocation, global.registeringUser, global.locale)}
-        style={{ lineHeight: '5em', overflow: 'hidden' }}
-      /> */}
 
       <p>{aboutText(global.registeringLocation, global.registeringUser, global.locale)}</p>
 
       <ListInput
         name="moreAbout"
         type="textarea"
-        placeholder="What else would you like to share?"
+        placeholder={tr({ en: 'What else would you like to share?', es: '¿Qué más le gustaría compartir?' })}
       />
       <br />
       <Button type="submit" fill>
-        Send Message
+        <Tr
+          en="Send Message"
+          es="Enviar"
+        />
       </Button>
     </List>
   )
@@ -109,29 +106,42 @@ function Content({ messageId, f7router }: {messageId: RegisterLocationMessageIds
   switch (messageId) {
     case 'not-durham': return (
       <Block>
-        <h1>Get In Touch</h1>
+        <h1>
+          <Tr en="Get In Touch" es="Mandanos un mensaje" />
+        </h1>
         <p>
-          Almost done! Due to your location, we'll need to get in touch to finalize your onboarding with us.
+          <Tr
+            en="Almost done! Due to your zip code, we'll need to contact you to finalize your onboarding with us."
+            es="Debido a su código postal, necesitaremos comunicarnos con usted para finalizar su cuenta."
+          />
         </p>
-        <ContactForm f7router={f7router} />
+        <ContactForm messageId={messageId} f7router={f7router} />
       </Block>
     )
     case 'school': return (
       <Block>
-        <h1>Get In Touch</h1>
+        <h1>
+          <Tr en="Get In Touch" es="Mandanos un mensaje" />
+        </h1>
         <p>
-          We work directly with schools to help get them started.
-          Send us a note, and we'll set up a time to meet!
+          <Tr
+            en="We work directly with schools to help get them started. Send us a note, and we'll set up a time to meet!"
+            es="Trabajamos directamente con las escuelas para ayudarlas a comenzar. Envíenos una nota y programaremos una hora para reunirnos."
+          />
         </p>
-        <ContactForm f7router={f7router} />
+        <ContactForm messageId={messageId} f7router={f7router} />
       </Block>
     )
     case 'curamericas-school': return (
       <Block>
-        <h1>Get In Touch</h1>
+        <h1>
+          <Tr en="Get In Touch" es="Mandanos un mensaje" />
+        </h1>
         <p>
-          Greenlight is free for your school thanks to
-          to funding from the NC DHHS, Durham City and County, and our partner Curamericas Global.
+          <Tr
+            en="Greenlight is free for your school thanks to funding from the NC DHHS, Durham City and County, and our partner Curamericas Global."
+            es="Greenlight es gratis para su escuela gracias a los fondos de NC DHHS, la ciudad y el condado de Durham y nuestro socio Curamericas Global."
+          />
         </p>
         <div className="logos">
           <img alt="Duhram City" src={durhamCityLogo} className="logo" />
@@ -142,15 +152,26 @@ function Content({ messageId, f7router }: {messageId: RegisterLocationMessageIds
           We work directly with schools to help get them started. Send us a note
           and we'll set up a time to meet!
         </p>
-        <ContactForm f7router={f7router} />
+        <ContactForm messageId={messageId} f7router={f7router} />
       </Block>
     )
     case 'durham-large': return (
       <Block>
-        <h1>Get Started for Free!</h1>
+        <h1>
+          <Tr en="Get Started for Free!" es="¡Empezar gratis!" />
+        </h1>
         <p>
-          Greenlight is free for your {location.category} thanks to
-          to funding from the NC DHHS, Durham City and County, and our partner Curamericas Global.
+          <Tr>
+            <En>
+              Greenlight is free for your {location.category} thanks to
+              to funding from the NC DHHS, Durham City and County, and our partner Curamericas Global.
+            </En>
+            <Es>
+              Greenlight es gratis para tu {location.category} gracias a
+              a la financiación del DHHS de Carolina del Norte, la ciudad y el condado de Durham, y nuestro socio Curamericas Global.
+            </Es>
+          </Tr>
+
         </p>
         <div className="logos">
           <img alt="Duhram City" src={durhamCityLogo} className="logo" />
@@ -158,18 +179,36 @@ function Content({ messageId, f7router }: {messageId: RegisterLocationMessageIds
           <img alt="Durham County" src={durhamCountyLogo} className="logo" />
         </div>
         <p>
-          Given the size of your {location.category}, we'll need to set up a meeting to get you started.
-          Submit the form below, and a member of our staff will reach out to you shortly.
+          <Tr>
+            <En>
+              Given the size of your {location.category}, we'll need tomeet to get you started.
+              Submit the form below, and a member of our staff will reach out to you shortly.
+            </En>
+            <Es>
+              Dada la cantidad de personas en su {location.category}, necesitamos reunirnos para comenzar.
+              Envíe el formulario a continuación y un miembro de nuestro personal se comunicará con usted en breve.
+            </Es>
+          </Tr>
         </p>
-        <ContactForm f7router={f7router} />
+        <ContactForm messageId={messageId} f7router={f7router} />
       </Block>
     )
     case 'durham': return (
       <Block>
-        <h1>Get Started for Free!</h1>
+        <h1>
+          <Tr en="Get Started for Free!" es="¡Empezar gratis!" />
+        </h1>
         <p>
-          Greenlight is free for your {location.category} thanks to
-          to funding from the NC DHHS, Durham City and County, and our partner Curamericas Global.
+          <Tr>
+            <En>
+              Greenlight is free for your {location.category} thanks to
+              to funding from the NC DHHS, Durham City and County, and our partner Curamericas Global.
+            </En>
+            <Es>
+              Greenlight es gratis para tu {location.category} gracias a
+              a la financiación del DHHS de Carolina del Norte, la ciudad y el condado de Durham, y nuestro socio Curamericas Global.
+            </Es>
+          </Tr>
         </p>
 
         <div className="logos">
@@ -183,12 +222,9 @@ function Content({ messageId, f7router }: {messageId: RegisterLocationMessageIds
           }
           fill
         >
-          Continue
+          <Tr en="Continue" es="Seguir" reviewTrans />
         </Button>
       </Block>
-    )
-    default: return (
-      <></>
     )
   }
 }

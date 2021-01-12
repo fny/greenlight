@@ -22,6 +22,7 @@ import { User } from 'src/models'
 import ReleaseCard from 'src/components/ReleaseCard'
 import { F7Props } from 'src/types'
 import Redirect from 'src/components/Redirect'
+import { tr } from 'src/components/Tr'
 import UserJDenticon from '../components/UserJDenticon'
 
 function UserList({ users }: { users: User[] }) {
@@ -162,7 +163,7 @@ export default function DashboardPage(props: F7Props): JSX.Element {
           {currentUser.hasLocationThatRequiresSurvey() && currentUser.isParent()
               && <Trans id="DashboardPage.your_family">Your Family</Trans>}
           {/* User is only a parent */}
-          {currentUser.isParent() && <Trans id="DashboardPage.your_children">Your Children</Trans>}
+          {!currentUser.hasLocationThatRequiresSurvey() && currentUser.isParent() && <Trans id="DashboardPage.your_children">Your Children</Trans>}
           {/* User is not a parent */}
           {!currentUser.isParent() && <Trans id="DashboardPage.your_status">Your Status</Trans>}
         </BlockTitle>
@@ -198,25 +199,32 @@ export default function DashboardPage(props: F7Props): JSX.Element {
           }
 
         <ListItem
-          title="Help! I'm Symptomatic or Positive"
-          footer="Resources for when someone has symptoms or has COVID"
+          title={tr({ en: "Help! I'm Symptomatic or Positive", es: '¡Ayuda! Estoy Sintomático o Positivo' })}
+          footer={tr({ en: 'Resources for when someone has symptoms or COVID', es: 'Recursos para cuando alguien tiene síntomas o COVID' })}
           link={paths.positiveResourcesPath}
         >
           <Icon slot="media" f7="exclamationmark_triangle" />
         </ListItem>
         <ListItem
           link={paths.chwRequestPath}
-          title={t({ id: 'DashboardPage.connect_to_care_title2', message: 'Connect to Services' })}
-          footer={t({
-            id: 'DashboardPage.connect_to_care_footer2',
-            message: 'Send a request to a community health worker for help with healthcare, housing, legal services, COVID-19 supplies and more.',
+          title={tr({ en: 'Connect to Services', es: 'Conectarse a los servicios' })}
+          footer={tr({
+            en: 'Send a request to a community health worker for help with healthcare, housing, legal services, COVID-19 supplies and more.',
+            es: 'Envíe una solicitud a un trabajador de salud de la comunidad para que le ayude con la atención médica, la vivienda, los servicios legales, los suministros de COVID-19 y más.',
           })}
         >
           <Icon slot="media" f7="heart" />
         </ListItem>
         <ListItem
-          title="All Resources"
-          footer="More information, search for testing"
+          title={
+            tr({ en: 'All Resources', es: 'Todos los recursos' })
+          }
+          footer={
+            tr({
+              en: 'More information, search for testing',
+              es: 'Más información, buscar pruebas',
+            })
+          }
           accordionItem
         >
           <Icon slot="media" f7="compass" />

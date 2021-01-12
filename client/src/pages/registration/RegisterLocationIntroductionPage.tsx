@@ -4,7 +4,7 @@ import {
 } from 'framework7-react'
 import React, { useState } from 'react'
 import {
-  isBlank, titleCase, upperCaseFirst,
+  isBlank, upperCaseFirst,
 } from 'src/helpers/util'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import { RegisteringLocation } from 'src/models/RegisteringLocation'
@@ -23,6 +23,7 @@ import { getEmailTaken } from 'src/api'
 import GLPhoneNumber from 'src/helpers/GLPhoneNumber'
 import Framework7 from 'framework7'
 import { Router } from 'framework7/modules/router/router'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 
 class State {
   locationCategoriesOpened = false
@@ -96,8 +97,7 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
   const [registeringUser, setRegisteringUser] = useGlobal('registeringUser')
   const [registeringLocation, setRegisteringLocation] = useGlobal('registeringLocation')
   const [state, setState] = useState(new State())
-  logger.dev(registeringUser)
-  logger.dev(registeringLocation)
+
   return (
     <Page className="RegisterLocationPages">
       <Block>
@@ -105,14 +105,17 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
           {
             currentUser
               ? (
-                <Trans id="RegisterLocationIntroductionPage.0_introduce_location">
-                  Tell us about your community.
-                </Trans>
+
+                <Tr
+                  en="Tell us about the organization you want to register."
+                  es="Cuéntanos sobre la organización que quieres registrar."
+                />
               )
               : (
-                <Trans id="RegisterLocationIntroductionPage.0_introduce_yourself">
-                  Introduce yourself!
-                </Trans>
+                <Tr
+                  en="Introduce yoursf!"
+                  es="¡Preséntese!"
+                />
               )
           }
 
@@ -126,26 +129,31 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
               setRegisteringUser(new RegisteringUser())
             }}
           >
-            <Trans id="Common.clear">Clear</Trans>
+            <Tr en="Clear" es="Borrar" />
           </Link>
         </h1>
 
         {state.emailTaken && (
         <p className="error">
-          The email listed is already in use. Please <a href={paths.signInPath}>sign in first</a> and then register a new organization.
+          <Tr>
+            <En>
+              That email is already in use. Please <a href={paths.signInPath}>sign in first</a> and then register a new organization.
+            </En>
+            <Es>
+              El correo electrónico ya está en uso. <a href={paths.signInPath}>Inicie sesión primero </a> y luego registre una nueva organización.
+            </Es>
+          </Tr>
         </p>
         )}
 
         <p className={`introduction ${currentUser ? 'hide' : ''}`}>
-          <Trans id="RegisterLocationIntroductionPage.1_hello_my_name_is">
-            Hello, Greenlight! My name is
-          </Trans>
+          <Tr en="Hello, Greenlight! My name is" es="¡Hola, Greenlight! Me llamo" />
           <br />
           <input
             name="firstName"
             className={`fill-in-the-blank ${state.showErrors && validateUser(registeringUser).includes('firstName') && 'has-error'}`}
             type="text"
-            placeholder={t({ id: 'Common.first_name_short', message: 'First' })}
+            placeholder={tr({ en: 'First', es: 'Primero' })}
             value={registeringUser.firstName}
             onChange={(e) => {
               setRegisteringUser({ ...registeringUser, firstName: (e.target as HTMLInputElement).value })
@@ -157,48 +165,44 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
             className={`fill-in-the-blank ${state.showErrors && validateUser(registeringUser).includes('lastName') && 'has-error'}`}
             type="text"
             value={registeringUser.lastName}
-            placeholder={t({ id: 'Common.last_name_short', message: 'Last' })}
+            placeholder={tr({ en: 'Last', es: 'Apellido' })}
             onChange={(e) => setRegisteringUser({ ...registeringUser, lastName: (e.target as HTMLInputElement).value })}
           />,
           <br />
-          and my email is
+          <Tr en="and my email is" es="y mi correo electrónico es" />
           <input
             name="email"
             className={`fill-in-the-blank ${state.showErrors && validateUser(registeringUser).includes('email') && 'has-error'}`}
             type="email"
-            placeholder={titleCase(t({ id: 'Common.email', message: 'email' }))}
+            placeholder={tr({ en: 'Email', es: 'Correo Electrónico' })}
             value={registeringUser.email}
             onChange={(e) => setRegisteringUser({ ...registeringUser, email: (e.target as HTMLInputElement).value })}
           />.
         </p>
 
         <p className="introduction">
-          <Trans id="RegisterLocationIntroductionPage.2_and_i_want_to_register_my">
-            I want to register my
-          </Trans>
+          <Tr en="I want to register my" es="quiero registrar mi" />
           <input
             name="locationCategory"
             className={`fill-in-the-blank ${state.showErrors && validateLocation(registeringLocation).includes('category') && 'has-error'}`}
             type="text"
-            placeholder="Community"
+            placeholder={tr({ en: 'Community', es: 'Comunidad' })}
             onFocus={() => setState({ ...state, locationCategoriesOpened: true })}
             readOnly
             value={registeringLocation.category ? lcTrans(registeringLocation.category) : ''}
           />
           <br />
-          called
+          <Tr en="called" es="llamdo" />
           <input
             name="locationName"
             className={`fill-in-the-blank ${state.showErrors && validateLocation(registeringLocation).includes('locationName') && 'has-error'}`}
             type="text"
-            placeholder="Name"
+            placeholder={tr({ en: 'Name', es: 'Nombre' })}
             value={registeringLocation.name}
             onChange={(e) => setRegisteringLocation({ ...registeringLocation, name: (e.target as HTMLInputElement).value })}
           />
           <br />
-          <Trans id="RegisterLocationIntroductionPage.3_with_about">
-            with about
-          </Trans>
+          <Tr en="with about" es="con unos" />
           <input
             name="employeeCount"
             className={`fill-in-the-blank ${state.showErrors && validateLocation(registeringLocation).includes('employeeCount') && 'has-error'}`}
@@ -210,15 +214,13 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
           />
           {lcPeople(registeringLocation.category || LocationCategories.COMMUNITY)}
           <br />
-          <Trans id="RegisterLocationIntroductionPage.4_located_in">
-            located in
-          </Trans>
+          <Tr en="located in" es="ubicada en" />
           {' '}
           <input
             name="zipCode"
             className={`fill-in-the-blank ${state.showErrors && validateLocation(registeringLocation).includes('zipCode') && 'has-error'}`}
             type="text"
-            placeholder={t({ id: 'Common.zip_code', message: 'Zip Code' })}
+            placeholder={tr({ en: 'Zip Code', es: 'Código Postal' })}
             value={registeringLocation.zipCode}
             onChange={(e) => setRegisteringLocation({ ...registeringLocation, zipCode: (e.target as HTMLInputElement).value })}
           />.
@@ -229,7 +231,7 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
         <Row tag="p">
           <Col tag="span">
             <Button href={paths.registerLocationWelcomePath}>
-              <Trans id="Common.back">Back</Trans>
+              <Tr en="Back" es="Atrás" />
             </Button>
           </Col>
           <Col tag="span">
