@@ -4,10 +4,11 @@ module PasswordResetsController
 
   included do
     post '/v1/password-resets', auth: false do
-      reset = PasswordReset.new(
+      reset = ResetPassword.new(
         email_or_mobile: request_json[:email_or_mobile],
         locale: current_locale
       )
+      reset.run
       if reset.succeeded?
         success_response
       else
