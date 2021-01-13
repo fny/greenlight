@@ -49,7 +49,8 @@ Users:
         <%= link_to la.location.name, admin_location_path(la.location) %>
 
         <%= la.role %>, <%= la.permission_level %>,
-        <%= link_to 'Edit', edit_admin_user_location_account_path(la.user, la) %>
+        <%= link_to 'Edit', edit_admin_user_location_account_path(la) %>,
+        <%= link_to 'Destroy', admin_user_location_account_path(la), data: { confirm: 'Are you sure?'}, method: :delete  %>
     </li>
   <% end %>
 </ul>
