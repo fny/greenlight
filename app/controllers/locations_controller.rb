@@ -12,7 +12,7 @@ module LocationsController
 
     post '/v1/locations' do
       location = Location.new(Location.restrict_params(request_json))
-      location.category = 'other'
+      location.category = 'business'
       location.created_by = current_user
 
       if current_user.locations.exists?(id: location.id)
