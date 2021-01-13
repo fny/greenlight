@@ -4,7 +4,7 @@ module MailController
   included do
     post '/v1/mail/hello-at-greenlight', auth: false do
       EmailWorker.perform_async(
-        params[:from], # from
+        'hello@greenlightready.com', # from
         'hello@greenlightready.com', # to
         params[:subject], # subject
         params[:body] # body

@@ -34,7 +34,7 @@ class GreenlightStrategyNorthCarolina
   end
 
   def exposure_within_last_14_days
-    events_last_14_days.filter { |e| e.event_type == MedicalEvent::COVID_EXPOSURE }.max(&:occurred_at)
+    events_last_14_days.filter { |e| e.event_type == MedicalEvent::COVID_EXPOSURE }.max_by(&:occurred_at)
   end
 
   def asymptomatic_last_14_days?

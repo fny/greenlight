@@ -35,11 +35,9 @@ export default function SplashPage(props: F7Props) {
           <Trans id="SplashPage.create_account">Create Account</Trans>
         </Button>
 
-        <Button outline href={paths.registerLocationWelcomePath}>
-          <Trans id="SplashPage.register_business_or_school">
-            Register Organization
-          </Trans>
-        </Button>
+        {/* <Button outline href={paths.registerLocationWelcomePath}>
+          Register Organization
+        </Button> */}
 
         <Button outline href={paths.durhamRegistationPath}>
           <Trans id="SplashPage.register_business">Register Business</Trans>

@@ -61,7 +61,7 @@ export default function RegisterLocationDetailsPage(props: F7Props): JSX.Element
       <Block>
         <h1>
           Tell us more about your<br />
-          {category}.
+          {lcTrans(category)}.
         </h1>
         <FormikProvider value={formik}>
           <List
@@ -73,16 +73,12 @@ export default function RegisterLocationDetailsPage(props: F7Props): JSX.Element
           >
             <Block>
               <BlockTitle>
-                <Trans id="LocationsNewPage.school_info_title">
-                  Your {upperCaseFirst(lcTrans(category))}'s Information
-                </Trans>
+                Your {upperCaseFirst(lcTrans(category))}'s Information
               </BlockTitle>
 
               {ownerCount > 0 && (
               <span>{' '}
-                <Trans id="RegisterLocationDetailsPage.total_count">
-                  Note you already have registered {ownerCount} locations. If you're having trouble with access send us an email: help@greenlightready.com
-                </Trans>
+                Note you already have registered {ownerCount} locations. If you're having trouble with access send us an email: help@greenlightready.com
               </span>
               )}
 
@@ -96,7 +92,7 @@ export default function RegisterLocationDetailsPage(props: F7Props): JSX.Element
               <LocationNotificationFields formik={formik} category={category} />
             </Block>
             <Button fill type="submit">
-              <Trans id="SchoolLocationForm.create_location">Create Your {upperCaseFirst(lcTrans(category))}</Trans>
+              Create Your {upperCaseFirst(lcTrans(category))}
             </Button>
           </List>
         </FormikProvider>
