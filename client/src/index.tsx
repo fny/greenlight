@@ -7,6 +7,7 @@ import Framework7 from 'framework7/framework7.esm.bundle'
 import Framework7React from 'framework7-react'
 import App from './App'
 import * as serviceWorker from './initializers/serviceWorker'
+import cordovaApp from './initializers/cordova'
 
 import 'framework7/css/framework7.bundle.css'
 import 'framework7-icons'
@@ -28,14 +29,6 @@ function render() {
 }
 
 function startApp() {
-  if (env.isCordova()) {
-    // Check token if it is cordova
-    const rememberMe = localStorage.getItem('rememberMe')
-    if (rememberMe !== 'true') {
-      localStorage.clear()
-    }
-  }
-
   getCurrentUser()
     .then((user) => {
       setGlobal({ currentUser: user, locale: user.locale })
@@ -53,34 +46,9 @@ function startApp() {
 }
 
 if (env.isCordova()) {
-  document.addEventListener('deviceready', startApp, false)
-
-  // document.addEventListener('resume', () => {
-  //   logger.log('resume')
-  //   ;(window as any).codePush.checkForUpdate(
-  //     function (update: boolean) {
-  //       if (!update) {
-  //         logger.log('The app is up to date.')
-  //       } else {
-  //         logger.log('An update is available! Should we download it?')
-  //         ;(window as any).codePush.sync(
-  //           null,
-  //           {
-  //             updateDialog: true,
-  //             installMode: (window as any).InstallMode.IMMEDIATE,
-  //             deploymentKey: env.codePushDeploymentKey(),
-  //           },
-  //           null,
-  //           function (error: any) {
-  //             logger.log('codepush sync error', error)
-  //           },
-  //         )
-  //       }
-  //     },
-  //     null,
-  //     env.codePushDeploymentKey(),
-  //   )
-  // })
+  cordovaApp.initialize({
+    startApp: startApp,
+  })
 } else {
   startApp()
 }
