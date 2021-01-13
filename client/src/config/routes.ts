@@ -46,6 +46,7 @@ import WelcomeReviewPage from 'src/pages/welcome/WelcomeReviewPage'
 import WelcomeSurveyPage from 'src/pages/welcome/WelcomeSurveyPage'
 import BrevardResourcesPage from 'src/pages/resources/BrevardResourcesPage'
 import AdminUserPage from 'src/pages/admin/AdminUserPage'
+import AdminUserEditPage from 'src/pages/admin/AdminUserEditPage'
 import HelpScoutPage from 'src/pages/resources/HelpScoutPage'
 import PositiveResourcesPage from 'src/pages/resources/PositiveResourcesPage'
 import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
@@ -316,9 +317,19 @@ const routeMap = {
     component: AdminUsersPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
+  adminUserAddPath: {
+    path: '/admin/locations/:locationId/users/new',
+    component: AdminUserEditPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
   adminUserPath: {
     path: '/admin/locations/:locationId/users/:userId',
     component: AdminUserPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  adminUserEditPath: {
+    path: '/admin/locations/:locationId/users/:userId/edit',
+    component: AdminUserEditPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   adminDashboardPath: {

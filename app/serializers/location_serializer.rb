@@ -21,4 +21,5 @@ class LocationSerializer < ApplicationSerializer
   attribute :updated_at
   attribute :registration_code
   attribute :employee_count
+  attribute :full_cohort_schema
 end

@@ -102,5 +102,69 @@ module LocationsController
       stats = LocationStatsOverview.new(location, params[:date])
       render json: LocationStatsOverviewSerializer.new(stats)
     end
+
+    post '/v1/locations/:location_id/users' do
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+      ensure_or_forbidden! { current_user.admin_at? location }
+
+      is_mobile_taken = User.mobile_taken?(request_json[:mobile_number])
+      is_email_taken = User.email_taken?(request_json[:email])
+
+      puts request_json[:mobile_number]
+      puts request_json[:email]
+      puts is_mobile_taken
+      puts is_email_taken
+
+      if is_mobile_taken || is_email_taken
+        simple_error_response({
+          source: { parameter: is_email_taken ? 'email' : 'mobile_number' },
+          title: 'Already Taken',
+          detail: 'User already exists. He/she should link his/her account to the location instead.'
+        })
+      else
+        user = User.create_account!(
+          **request_json.merge(location: location.id).symbolize_keys
+        )
+
+        InviteWorker.perform_async(user.id)
+
+        set_status_created
+        render json: UserSerializer.new(user)
+      end
+    end
+
+    patch '/v1/locations/:location_id/users/:user_id' do
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+      user = User.find(params[:user_id])
+
+      ensure_or_forbidden! { current_user.admin_at? location }
+      ensure_or_forbidden! { user.location_accounts.exists?(location_id: location.id) }
+
+      user.update_account!(
+        **request_json.merge(location: location.id).symbolize_keys
+      )
+
+      set_status_updated
+      render json: UserSerializer.new(user)
+    end
+
+    delete '/v1/locations/:location_id/users/:user_id' do
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+      user = User.find(params[:user_id])
+
+      ensure_or_forbidden! { current_user.admin_at? location }
+      ensure_or_forbidden! { user.location_accounts.exists?(location_id: location.id) }
+
+      if params[:nuke]
+        ActiveRecord::Base.transaction do
+          user.children.each(&:destroy)
+          user.destroy
+        end
+      else
+        user.destroy
+      end
+
+      success_response
+    end
   end
 end
