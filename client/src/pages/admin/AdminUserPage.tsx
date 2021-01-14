@@ -2,7 +2,7 @@ import React, {
   useState, useEffect,
 } from 'reactn'
 import {
-  Page, Block, Button, Navbar, f7, ListInput, List, ListItem,
+  Page, Block, Button, Navbar, NavRight, f7, ListInput, List, ListItem, ListButton, Link, Icon, Checkbox,
 } from 'framework7-react'
 import { Trans, t } from '@lingui/macro'
 
@@ -11,7 +11,7 @@ import { assertNotNull, assertNotUndefined, formatPhone } from 'src/helpers/util
 
 import { Location, User } from 'src/models'
 import {
-  getLocation, getUser, store, updateLocationAccount,
+  getLocation, getUser, store, updateLocationAccount, deleteLocationAccount, deleteUser,
 } from 'src/api'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { LocationAccount, PermissionLevels } from 'src/models/LocationAccount'
@@ -23,15 +23,17 @@ interface State {
   location?: Location | null
   locationAccount?: LocationAccount | null
   permissionLevel: PermissionLevels
+  shouldDeleteChildren: boolean
 }
 
-export default function AdminUserPage(props: F7Props) {
+export default function AdminUserPage(props: F7Props): JSX.Element {
   const { locationId, userId } = props.f7route.params
   assertNotUndefined(locationId)
   assertNotUndefined(userId)
 
   const [state, setState] = useState<State>({
     permissionLevel: PermissionLevels.NONE,
+    shouldDeleteChildren: false,
   })
 
   useEffect(() => {
@@ -43,34 +45,96 @@ export default function AdminUserPage(props: F7Props) {
         locationAccount,
         location,
         permissionLevel: locationAccount?.permissionLevel || PermissionLevels.NONE,
+        shouldDeleteChildren: false,
       })
     })()
   }, [])
 
-  assertNotNull(state.location)
-  assertNotNull(state.locationAccount)
-  assertNotNull(state.user)
-  assertNotUndefined(state.location)
-  assertNotUndefined(state.locationAccount)
-  assertNotUndefined(state.user)
-  const { user, locationAccount, location } = state
-  const handler = new SubmitHandler(f7)
+  // assertNotNull(state.location)
+  // assertNotNull(state.locationAccount)
+  // assertNotNull(state.user)
+  // assertNotUndefined(state.location)
+  // assertNotUndefined(state.locationAccount)
+  // assertNotUndefined(state.user)
+  const { user, locationAccount, location, shouldDeleteChildren } = state
+  const unlinkHandler = new SubmitHandler(f7)
+  const deleteHandler = new SubmitHandler(f7)
+
+  const handleDeleteAttempt = () => {
+    f7.dialog.confirm(
+      t({
+        id: shouldDeleteChildren ? 'AdminUserPage.delete_with_children_caution' : 'AdminUserPage.delete_caution',
+        message: shouldDeleteChildren ?
+          "Are you sure to delete this user? The children of this user will also be deleted.":
+          "Are you sure to delete this user?",
+      }),
+      t({ id: 'AdminUserPage.delete', message: 'Delete' }),
+      () => {
+        deleteHandler.submit()
+      },
+    )
+  }
+
+  const handleUnlinkAttempt = () => {
+    f7.dialog.confirm(
+      t({
+        id: 'AdminUserPage.unlink_caution',
+        message: "Are you sure to unlink this user from the location?"
+      }),
+      t({ id: 'AdminUserPage.unlink', message: 'Unlink' }),
+      () => {
+        unlinkHandler.submit()
+      },
+    )
+  }
+
+  deleteHandler.onSubmit = async () => {
+    assertNotNull(user)
+    assertNotUndefined(user)
+    assertNotNull(location)
+    assertNotUndefined(location)
+
+    await deleteUser(user, location, shouldDeleteChildren)
+  }
+  deleteHandler.onSuccess = () => {
+    props.f7router.navigate(dynamicPaths.adminUsersPath({ locationId }))
+  }
+
+  unlinkHandler.onSubmit = async () => {
+    assertNotNull(locationAccount)
+    assertNotUndefined(locationAccount)
+
+    await deleteLocationAccount(locationAccount)
+  }
+  unlinkHandler.onSuccess = () => {
+    props.f7router.navigate(dynamicPaths.adminUsersPath({ locationId }))
+  }
 
   let content
-  if (!state.user || !state.location) {
+  if (!user || !location || !locationAccount) {
     content = <LoadingPage />
   } else {
     content = (
       <>
-        <Navbar title={`${state.user.firstName} ${state.user.lastName}`} />
+        <Navbar title={`${user.firstName} ${user.lastName}`}>
+          {(locationAccount.role === 'teacher' ||
+            locationAccount.role === 'staff') &&
+            (
+              <NavRight>
+                <Link href={dynamicPaths.adminUserEditPath({ locationId: location.id, userId: user.id })}>
+                  <Icon f7="pencil_circle" />
+                </Link>
+              </NavRight>
+            )}          
+        </Navbar>
         <Block>
           <p>
-            {state.user.firstName} {state.user.lastName} is a {locationAccount.role} at {location.name}
+            {user.firstName} {user.lastName} is a {locationAccount.role} at {location.name}
           </p>
-          {state.user.firstName === 'Aidan'
+          {user.firstName === 'Aidan'
           && (
           <>
-            <p>{state.user.firstName} is in the following Cohorts</p>
+            <p>{user.firstName} is in the following Cohorts</p>
             <ul>
               <li>Homeroom: Verdell, Lucy</li>
               <li>Bus Route: 711, 811</li>
@@ -79,19 +143,19 @@ export default function AdminUserPage(props: F7Props) {
           )}
 
           <List>
-            {state.user.mobileNumber && (
+            {user.mobileNumber && (
             <ListItem
               external
-              link={`tel:${state.user.mobileNumber}`}
-              title={`Call ${state.user.firstName}: ${state.user.mobileNumber}`}
+              link={`tel:${user.mobileNumber}`}
+              title={`Call ${user.firstName}: ${user.mobileNumber}`}
             />
             )}
             {
-          state.user.email && (
+          user.email && (
           <ListItem
             external
-            link={`mailto:${state.user.email}`}
-            title={`Email ${state.user.firstName}: ${state.user.email}`}
+            link={`mailto:${user.email}`}
+            title={`Email ${user.firstName}: ${user.email}`}
           />
           )
           }
@@ -135,6 +199,36 @@ export default function AdminUserPage(props: F7Props) {
               )
             }
           </List>
+        </Block>
+
+        <Block>
+          <List>
+            <ListButton onClick={handleUnlinkAttempt} color="red">
+              <Trans id="AdminUserPage.unlink">Unlink</Trans>
+            </ListButton>
+          </List>
+        </Block>
+
+        <Block>
+          <List>
+          {(locationAccount.role === 'teacher' ||
+            locationAccount.role === 'staff') ? (
+              <ListItem
+                checkbox
+                checked={shouldDeleteChildren}
+                onChange={(e) => setState({ ...state, shouldDeleteChildren: e.target.checked })}
+                title={t({ id: 'AdminUserPage.with_children', message: 'Together with Children' })}
+              >
+                <Button slot="after" color="red" onClick={handleDeleteAttempt}>
+                  <Trans id="AdminUserPage.delete">Delete</Trans>
+                </Button>
+              </ListItem>
+            ) : (
+              <ListButton onClick={handleDeleteAttempt} color="red">
+                <Trans id="AdminUserPage.delete">Delete</Trans>
+              </ListButton>
+            )}            
+          </List>            
         </Block>
       </>
     )

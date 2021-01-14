@@ -113,7 +113,7 @@ class User < ApplicationRecord
 
   def self.create_account!(
     first_name:, last_name:, location:, role:,
-    password: nil, title: nil, external_id: nil,
+    password: nil, external_id: nil, cohorts: [],
     email: nil, mobile_number: nil, permission_level: 'none'
   )
     ActiveRecord::Base.transaction do
@@ -122,7 +122,8 @@ class User < ApplicationRecord
         last_name: last_name,
         email: email,
         mobile_number: mobile_number,
-        password: password
+        password: password,
+        cohorts: Cohort.where(code: cohorts)
       )
 
       l = Location.find_by_id_or_permalink!(location)
@@ -132,7 +133,30 @@ class User < ApplicationRecord
         user_id: u.id,
         location: l,
         role: role,
-        title: title,
+        permission_level: permission_level
+      )
+
+      u
+    end
+  end
+
+  def update_account!(
+    first_name:, last_name:, location:, role:,
+    email: nil, cohorts: [],
+    mobile_number: nil, permission_level: 'none'
+  )
+    ActiveRecord::Base.transaction do
+      self.update!(
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        mobile_number: mobile_number,
+        cohorts: Cohort.where(code: cohorts)
+      )
+
+      la = location_accounts.find_by!(location_id: location)
+      la.update!(
+        role: role,
         permission_level: permission_level
       )
     end

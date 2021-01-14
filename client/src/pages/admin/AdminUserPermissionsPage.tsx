@@ -26,7 +26,7 @@ interface State {
   permissionLevel: PermissionLevels
 }
 
-export default function AdminUserPermissionsPage(props: F7Props) {
+export default function AdminUserPermissionsPage(props: F7Props): JSX.Element {
   const { locationId, userId } = props.f7route.params
   assertNotUndefined(locationId)
   assertNotUndefined(userId)

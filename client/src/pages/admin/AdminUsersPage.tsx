@@ -231,6 +231,9 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
         </Subnavbar>
         )}
         <NavRight>
+          <Link href={dynamicPaths.adminUserAddPath({ locationId: location.id })}>
+            <Icon f7="person_badge_plus" />
+          </Link>
           <Link onClick={() => window.location.reload()}>
             <Icon f7="arrow_2_circlepath" />
           </Link>

@@ -12,6 +12,9 @@ export enum PermissionLevels {
 
 export enum Roles {
   STUDENT = 'student',
+  TEACHER = 'teacher',
+  STAFF = 'staff',
+  UNKNOWN = 'unknown',
 }
 
 export class LocationAccount extends Model {

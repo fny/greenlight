@@ -15,6 +15,7 @@ import {
 } from 'src/models'
 import { RecordResponse } from 'src/types'
 import { transformRecordResponse, recordStore } from './stores'
+import { TeacherStaffInput } from 'src/pages/admin/TeacherStaffForm'
 
 const BASE_URL = `${env.API_URL}/v1`
 
@@ -158,6 +159,10 @@ export async function updateLocationAccount(
   return entity
 }
 
+export async function deleteLocationAccount(locationAccount: LocationAccount) {
+  await v1.delete(`/location-accounts/${locationAccount.id}`)
+}
+
 //
 // Users
 //
@@ -178,6 +183,37 @@ export async function updateUser(user: User, updates: Partial<User>): Promise<Us
   const entity = transformRecordResponse<User>(response.data)
   assertNotArray(entity)
   return entity
+}
+
+export async function createTeacherStaff(
+  location: Location,
+  user: TeacherStaffInput,
+  send_invite: boolean
+): Promise<User> {
+  const response = await v1.post(
+    `/locations/${location.id}/users?send_invite=${send_invite}`,
+    transformForAPI(user)
+  )
+
+  const entity = transformRecordResponse<User>(response.data)
+  assertNotArray(entity)
+  return entity
+}
+
+export async function updateTeacherStaff(
+  user: User,
+  location: Location,
+  updates: TeacherStaffInput
+): Promise<User> {
+  const response = await v1.patch(`/locations/${location.id}/users/${user.id}`, transformForAPI(updates))
+
+  const entity = transformRecordResponse<User>(response.data)
+  assertNotArray(entity)
+  return entity
+}
+
+export async function deleteUser(user: User, location: Location, with_children: boolean) {
+  await v1.delete(`/locations/${location.id}/users/${user.id}?nuke=${with_children}`)
 }
 
 export async function completeWelcomeUser(user: User): Promise<User> {

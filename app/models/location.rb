@@ -216,6 +216,21 @@ class Location < ApplicationRecord
     parsed.transform_keys(&:downcase).transform_values { |v| v.map(&:downcase) }
   end
 
+  # cohort schema for front-end usage
+  def full_cohort_schema
+    return cohort_schema if cohort_schema.blank?
+    parsed = cohort_schema.is_a?(String) ? JSON.parse(cohort_schema) : cohort_schema
+    full_cohort_schema = {}
+
+    parsed.each do |category, names|
+      full_cohort_schema[category] = names.map do |name|
+        [Cohort.format_code(category, name), name]
+      end
+    end
+
+    full_cohort_schema
+  end
+
   def valid_cohort_category?(category)
     downcased_cohort_schema.key?(category.tr('#', '').downcase)
   end

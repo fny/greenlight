@@ -28,6 +28,8 @@ export enum LocationCategories {
   LOCATION = 'location',
 }
 
+type CohortSchema = { [key: string]: Array<string>[] }
+
 type CategoryTranlsations = { [key in LocationCategories]: string[] }
 // HACK: We need a proper way to organize translations like this
 const LC: CategoryTranlsations = {
@@ -164,11 +166,21 @@ export class Location extends Model {
   @attr({ type: STRING })
   parentRegistrationCode: string | null = ''
 
+  @attr({ type: Object })
+  fullCohortSchema: CohortSchema | null = null
+
   registrationWithCodeURL(): string {
     return `glit.me/go/${this.permalink}/code/${this.registrationCode}`
   }
 
   parentRegistrationWithCodeURL(): string {
     return `glit.me/go/${this.permalink}/code/${this.parentRegistrationCode}`
+  }
+
+  hasCohortSchema(): boolean {
+    if (!this.fullCohortSchema) return false
+    if (Object.keys(this.fullCohortSchema).length === 0) return false
+
+    return true
   }
 }

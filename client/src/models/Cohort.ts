@@ -20,6 +20,9 @@ export class Cohort extends Model {
   @attr({ type: STRING })
   name: string = ''
 
+  @attr({ type: STRING })
+  code: string = ''
+
   @attr({ type: DATETIME })
   createdAt: DateTime = DateTime.fromISO('')
 }

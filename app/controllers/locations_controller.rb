@@ -102,5 +102,59 @@ module LocationsController
       stats = LocationStatsOverview.new(location, params[:date])
       render json: LocationStatsOverviewSerializer.new(stats)
     end
+
+    post '/v1/locations/:location_id/users' do
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+      ensure_or_forbidden! { current_user.admin_at? location }
+
+      user = User.new(
+        cohorts: Cohort.where(code: request_json[:cohorts]),
+        location_accounts: [
+          LocationAccount.new(location: location, **request_json.slice(:role, :permission_level)),
+        ],
+        **request_json.slice(:first_name, :last_name, :email, :mobile_number)
+      )
+
+      if user.save
+        InviteWorker.perform_async(user.id) if params[:send_invite]
+
+        set_status_created
+        render json: UserSerializer.new(user)
+      else
+        error_response(user)
+      end      
+    end
+
+    patch '/v1/locations/:location_id/users/:user_id' do
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+      user = location.users.find(params[:user_id])
+
+      ensure_or_forbidden! { current_user.admin_at? location }
+
+      user.update_account!(
+        **request_json.merge(location: location.id).symbolize_keys
+      )
+
+      set_status_updated
+      render json: UserSerializer.new(user)
+    end
+
+    delete '/v1/locations/:location_id/users/:user_id' do
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+      user = location.users.find(params[:user_id])
+
+      ensure_or_forbidden! { current_user.admin_at? location }
+
+      if params[:nuke]
+        ActiveRecord::Base.transaction do
+          user.children.each(&:destroy!)
+          user.destroy!
+        end
+      else
+        user.destroy!
+      end
+
+      success_response
+    end
   end
 end
