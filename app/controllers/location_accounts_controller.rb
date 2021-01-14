@@ -22,7 +22,7 @@ module LocationAccountsController
 
       ensure_or_forbidden! { current_user.admin_at?(location) }
 
-      location_account.destroy
+      location_account.destroy!
 
       success_response
     end

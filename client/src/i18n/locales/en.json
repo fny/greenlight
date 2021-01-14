@@ -132,6 +132,7 @@
   "Forms.password": "Password",
   "Forms.reveal_password": "Reveal Password",
   "Forms.role": "Role",
+  "Forms.send_invite": "Send Invitation",
   "GreenlightStatus.absent": "Absent",
   "GreenlightStatus.cleared": "Cleared",
   "GreenlightStatus.not_submitted": "Not Submitted",

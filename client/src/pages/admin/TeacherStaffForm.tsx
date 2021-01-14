@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { t, Trans } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
 import {
-  Button, f7, List, ListInput, ListItem,
+  Button, f7, List, ListInput, ListItem, Toggle,
 } from 'framework7-react'
 
 import { LocationAccount, PermissionLevels, Roles } from 'src/models/LocationAccount'
@@ -32,11 +32,12 @@ interface Props {
   onSuccess: () => void
 }
 
-export default function TeacherStaffForm({ user, location, locationAccount, onSuccess }: Props) {
+export default function TeacherStaffForm({ user, location, locationAccount, onSuccess }: Props): JSX.Element {
   const submissionHandler = new SubmitHandler(f7)
   const initialValues: TeacherStaffInput = new TeacherStaffInput()
   let initialCohorts: string[] = []
   const cohortsRef = React.createRef<ListItem>()
+  const [sendInviteEmail, setSendInviteEmail] = useState(false)
 
   if (user) {
     initialValues.firstName = user.firstName
@@ -68,7 +69,7 @@ export default function TeacherStaffForm({ user, location, locationAccount, onSu
         if (user) {
           await updateTeacherStaff(user, location, { ...values, cohorts: cohorts || []})
         } else {
-          await createTeacherStaff(location, { ...values, cohorts: cohorts || [] })
+          await createTeacherStaff(location, { ...values, cohorts: cohorts || [] }, sendInviteEmail)
         }
       })
     },
@@ -152,6 +153,13 @@ export default function TeacherStaffForm({ user, location, locationAccount, onSu
           <option value={Roles.TEACHER}>Teacher</option>
           <option value={Roles.STAFF}>Staff</option>
         </ListInput>
+        
+        {!user && (
+          <ListItem>
+            <span><Trans id="Forms.send_invite">Send Invitation</Trans></span>
+            <Toggle color="green" checked={sendInviteEmail} onChange={() => setSendInviteEmail(!sendInviteEmail)} />
+          </ListItem>
+        )}
 
         <Button style={{ marginTop: '1rem' }} type="submit" outline fill>
           <Trans id="Common.save">Save</Trans>

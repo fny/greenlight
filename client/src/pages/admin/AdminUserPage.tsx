@@ -26,7 +26,7 @@ interface State {
   shouldDeleteChildren: boolean
 }
 
-export default function AdminUserPage(props: F7Props) {
+export default function AdminUserPage(props: F7Props): JSX.Element {
   const { locationId, userId } = props.f7route.params
   assertNotUndefined(locationId)
   assertNotUndefined(userId)

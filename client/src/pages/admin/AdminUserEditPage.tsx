@@ -21,7 +21,7 @@ interface State {
   locationAccount?: LocationAccount | null
 }
 
-export default function AdminUserEditPage(props: F7Props) {
+export default function AdminUserEditPage(props: F7Props): JSX.Element {
   const { locationId, userId } = props.f7route.params
   assertNotUndefined(locationId)
 
