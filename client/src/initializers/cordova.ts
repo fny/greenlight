@@ -22,15 +22,15 @@ class CordovaApp {
   }
 
   private bindEvents() {
-    document.addEventListener('deviceready', this.onDeviceReady, false)
-    document.addEventListener('resume', this.onResume, false)
+    document.addEventListener('deviceready', () => this.onDeviceReady(), false)
+    document.addEventListener('resume', () => this.onResume(), false)
   }
 
   // app events
   private onDeviceReady() {
     assertNotNull(this.options)
 
-    logger.log('onDeviceReady')
+    logger.log('onDeviceReady', this, (window as any).IonicDeeplink)
     this.handleDeepLinks()
     this.options.startApp()
   }
@@ -69,9 +69,20 @@ class CordovaApp {
   }
 
   private handleDeepLinks() {
-    logger.log('handle deep links')
+    const IonicDeeplink = (window as any).IonicDeeplink
+
+    IonicDeeplink.route(
+      ['*', '/test', '/sign-in', '/test/:key'],
+      function (match: any) {
+        alert('matched:' + JSON.stringify(match))
+      },
+      function (nomatch: any) {
+        alert('not matched:' + JSON.stringify(nomatch))
+      },
+    )
   }
 }
 
 const cordovaApp = new CordovaApp()
+
 export default cordovaApp

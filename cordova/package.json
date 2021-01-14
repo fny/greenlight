@@ -52,7 +52,6 @@
       }
     },
     "platforms": [
-      "ios",
       "android"
     ]
   }
