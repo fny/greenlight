@@ -9,8 +9,6 @@
     "@lingui/react": "^3.2.1",
     "axios": "^0.21.1",
     "chart.js": "^2.9.4",
-    "echarts": "^4.9.0",
-    "echarts-for-react": "^2.0.16",
     "formik": "^2.2.5",
     "framework7": "^5.7.13",
     "framework7-icons": "^3.0.1",

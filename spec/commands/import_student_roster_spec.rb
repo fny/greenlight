@@ -36,7 +36,7 @@ RSpec.describe ImportStudentRoster, type: :model do
     expect(greenlight.users.count).to eq(0)
   end
 
-  it 'imports a student roster after a staff roster', focus: true do
+  it 'imports a student roster after a staff roster' do
     expect(RosterImport.count).to eq(0)
     import = ImportStaffRoster.new(
       location: greenlight,

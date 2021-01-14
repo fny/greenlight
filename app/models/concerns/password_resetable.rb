@@ -14,7 +14,7 @@ module PasswordResetable
     "#{Greenlight::SHORT_URL}/pwdrst/#{password_reset&.token}"
   end
 
-  def reset_password!(password)  
+  def reset_password!(password)
     self.password = password
     save!
 

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class PasswordReset < ApplicationCommand
+class ResetPassword < ApplicationCommand
   argument :email_or_mobile
   argument :locale
   validates :email_or_mobile, presence: true

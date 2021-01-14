@@ -16,6 +16,11 @@ module Admin
 
     def destroy
       @location_account = LocationAccount.find(params[:id])
+      if @location_account.destroy
+        redirect_to [:admin, @location_account.user], notice: "Updated account at #{@location_account.location.name}"
+      else
+        redirect_to [:admin, @location_account.user], alert: "Failed to delete account at #{@location_account.location.name}"
+      end
     end
   end
 end
