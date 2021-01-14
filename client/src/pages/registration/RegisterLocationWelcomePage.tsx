@@ -13,6 +13,7 @@ import Redirect from 'src/components/Redirect'
 import { User } from 'src/models'
 
 import './RegisterLocationPages.css'
+import Tr, { En, Es } from 'src/components/Tr'
 
 export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element {
   const [currentUser] = useGlobal('currentUser')
@@ -27,43 +28,82 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
 
       <Block>
         <h1>
-          Welcome!
+          <Tr
+            en="Welcome!"
+            es="¡Bienvenido!"
+          />
           <Link style={{ fontSize: '12px', paddingLeft: '1rem' }} onClick={() => toggleLocale()}>
             <Trans id="Common.toggle_locale">En Español</Trans>
           </Link>
         </h1>
 
         <p>
-          Greenlight provides a suite of COVID-19 monitoring tools to keep
-          schools, business, and organizations of different sizes safe, healthy, and opened:
-          <ul>
-            <li>COVID-19 monitoring</li>
-            <li>COVID-19 relief payments</li>
-            <li>Guidance from experts in times of crisis</li>
-            <li>Social services support</li>
-            <li>Testing access</li>
-            <li>Vaccine tracking</li>
-          </ul>
+          <Tr>
+            <En>
+              Greenlight provides a suite of COVID-19 monitoring tools to keep
+              schools, business, and organizations of different sizes safe, healthy, and opened:
+              <ul>
+                <li>COVID-19 monitoring</li>
+                <li>COVID-19 relief payments</li>
+                <li>Guidance from experts in times of crisis</li>
+                <li>Social services support</li>
+                <li>Testing access</li>
+                <li>Vaccine tracking</li>
+              </ul>
+            </En>
+            <Es>
+              Greenlight proporciona un conjunto de herramientas de monitoreo COVID-19 para mantener
+              escuelas, empresas y organizaciones de diferentes tamaños seguros, saludables y abiertos:
+              <ul>
+                <li> Monitoreo de COVID-19 </li>
+                <li> Pagos de ayuda COVID-19 </li>
+                <li> Orientación de expertos en tiempos de crisis </li>
+                <li> Soporte de servicios sociales </li>
+                <li> Prueba de acceso </li>
+                <li> Seguimiento de vacunas </li>
+              </ul>
+            </Es>
+          </Tr>
         </p>
 
         <p>
-          Greenlight is free or subsidized in many locations! Continue to learn
-          more about what's available in your area.
+          <Tr>
+            <En>
+              Greenlight is free or subsidized in many locations! Continue to learn
+              more about what's available in your area.
+            </En>
+            <Es>
+              ¡Greenlight es gratis o subsidiado en muchos lugares! Continuar aprendiendo
+              más sobre lo que está disponible en su área.
+            </Es>
+          </Tr>
+
         </p>
         <p style={{ textAlign: 'center' }}>
           <img alt="Welcome to Greenlight!" src={welcomeDoctorImage} height="150px" />
         </p>
 
         <p>
-          <Trans id="RegisterLocationWelcomePage.terms_and_conditions">
-            By continuing, you accept Greenlight's{' '}
-            <Link
-              onClick={() => {
-                setState({ ...state, termsOpened: true })
-              }}
-            > Terms and Conditions
-            </Link>.
-          </Trans>
+          <Tr>
+            <En>
+              By continuing you accept Greenlight's{' '}
+              <Link
+                onClick={() => {
+                  setState({ ...state, termsOpened: true })
+                }}
+              > Terms and Conditions
+              </Link>.
+            </En>
+            <Es>
+              Al continuar, acepta {' '}
+              <Link
+                onClick={() => {
+                  setState({ ...state, termsOpened: true })
+                }}
+              >los términos y condiciones
+              </Link> de Greenlight.
+            </Es>
+          </Tr>
         </p>
       </Block>
       <Block>

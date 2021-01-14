@@ -397,6 +397,10 @@ class User < ApplicationRecord
     update_columns({completed_welcome_at: nil })
   end
 
+  def complete_welcome!
+    update_columns({completed_welcome_at: Time.zone.now })
+  end
+
   private
 
   def email_or_mobile_number_present

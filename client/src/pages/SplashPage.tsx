@@ -36,9 +36,7 @@ export default function SplashPage(props: F7Props) {
         </Button>
 
         {/* <Button outline href={paths.registerLocationWelcomePath}>
-          <Trans id="SplashPage.register_business_or_school">
-            Register Organization
-          </Trans>
+          Register Organization
         </Button> */}
 
         <Button outline href={paths.durhamRegistationPath}>

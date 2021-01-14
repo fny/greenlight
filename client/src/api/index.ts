@@ -248,9 +248,8 @@ export async function createSymptomSurvey(user: User, medicalEvents: Partial<Med
 // Mailman
 //
 
-export function mailHelloAtGreenlight(from: string, subject: string, body: string): Promise<AxiosResponse<any>> {
+export function mailHelloAtGreenlight(subject: string, body: string): Promise<AxiosResponse<any>> {
   return v1.post('mail/hello-at-greenlight', {
-    from,
     subject,
     body,
   })

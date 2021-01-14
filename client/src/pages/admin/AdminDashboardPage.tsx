@@ -191,7 +191,7 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
             />
           </div>
 
-          <UsersFilter />
+          {/* <UsersFilter /> */}
 
           <div className="compliance-chart">
             <Line data={data} options={options} />
