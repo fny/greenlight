@@ -38,7 +38,7 @@ class ImportStaffRoster < ApplicationCommand
     headers.each_with_index do |h, i|
       next unless h.present? && h.start_with?('#')
 
-      row[i].split(COHORT_DELIMITER).each do |name|
+      (row[i] || '' ).split(COHORT_DELIMITER).each do |name|
         cohorts << Cohort.format_code(h, name)
       end
     end
