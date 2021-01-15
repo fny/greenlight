@@ -5,7 +5,10 @@
       {
         "appID": "DKSAH86564.com.greenlightready.app",
         "paths": [
-          "/test/*"
+          "/pwdrst/*",
+          "/mgk/*",
+          "/go/*",
+          "/d/*",
         ]
       }
     ]

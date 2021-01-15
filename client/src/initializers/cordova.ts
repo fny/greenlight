@@ -11,6 +11,7 @@ interface CordovaAppOptions {
 class CordovaApp {
   private options: CordovaAppOptions | null = null
   private f7Instance: Framework7 | null = null
+  private nextRoute: string | null = null
 
   public initialize(options: CordovaAppOptions) {
     this.options = options
@@ -25,6 +26,11 @@ class CordovaApp {
     f7ready((f7) => {
       logger.log('f7 ready')
       this.f7Instance = f7
+      setTimeout(() => {
+        if (this.nextRoute) {
+          this.f7Instance?.view.current.router.navigate(this.nextRoute)
+        }
+      })
     })
 
     this.bindEvents()
@@ -80,14 +86,17 @@ class CordovaApp {
     const IonicDeeplink = (window as any).IonicDeeplink
 
     IonicDeeplink.route(
-      ['*', '/test', '/sign-in', '/test/:key'],
+      ['/pwdrst/:token', '/mgk/:token/:remember', '/go/:loaction_permalink', '/d/:action'],
       (match: any) => {
-        alert('matched:' + JSON.stringify(match))
-        this.f7Instance?.view.current.router.navigate(match.$link.path)
+        logger.log('matched', match)
+        if (this.f7Instance) {
+          this.f7Instance.view.current.router.navigate(match.$link.path)
+          this.nextRoute = null
+        } else {
+          this.nextRoute = match.$link.path
+        }
       },
-      (nomatch: any) => {
-        alert('not matched:' + JSON.stringify(nomatch))
-      },
+      (nomatch: any) => {},
     )
   }
 }

@@ -33,9 +33,23 @@
         <icon src="res/android/mipmap-xxxhdpi/ic_launcher.png" density="xxxhdpi" />
 
     </platform>
+
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
+
+        <!-- associtated domains -->
+        <config-file target="*-Debug.plist" parent="com.apple.developer.associated-domains">
+            <array>
+                <string>applinks:app.greenlightready.com</string>
+            </array>
+        </config-file>
+
+        <config-file target="*-Release.plist" parent="com.apple.developer.associated-domains">
+            <array>
+                <string>applinks:app.greenlightready.com</string>
+            </array>
+        </config-file>
 
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
 
