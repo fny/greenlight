@@ -8,7 +8,7 @@
 
 <%= form_with url: admin_locations_path, method: :get, class: 'inline' do |form| %>
   <%= form.text_field :query, value: params[:query] %>
-  <%= form.submit "Search" %>
+  <%= form.submit "Search", data: { disable_with: false } %>
 <% end %>
 
 <br />

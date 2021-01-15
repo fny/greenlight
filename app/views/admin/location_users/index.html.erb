@@ -17,7 +17,7 @@
   <%= form.label :staff %>
   <%= form.check_box :staff, checked: params[:staff] == '1' %>
 
-  <%= form.submit "Search" %>
+  <%= form.submit "Search", data: { disable_with: false } %>
 <% end %>
 
 <br />
