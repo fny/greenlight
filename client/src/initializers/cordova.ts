@@ -2,12 +2,15 @@ import logger from 'src/helpers/logger'
 import env from 'src/config/env'
 import { assertNotNull } from 'src/helpers/util'
 
+import { f7ready } from 'framework7-react'
+import Framework7 from 'framework7/framework7.esm.bundle'
+
 interface CordovaAppOptions {
   startApp: () => any
 }
-
 class CordovaApp {
   private options: CordovaAppOptions | null = null
+  private f7Instance: Framework7 | null = null
 
   public initialize(options: CordovaAppOptions) {
     this.options = options
@@ -17,6 +20,12 @@ class CordovaApp {
     if (rememberMe !== 'true') {
       localStorage.clear()
     }
+
+    // get f7 instance
+    f7ready((f7) => {
+      logger.log('f7 ready')
+      this.f7Instance = f7
+    })
 
     this.bindEvents()
   }
@@ -31,13 +40,12 @@ class CordovaApp {
     assertNotNull(this.options)
 
     logger.log('onDeviceReady', this, (window as any).IonicDeeplink)
-    this.handleDeepLinks()
     this.options.startApp()
+    this.handleDeepLinks()
   }
 
   private onResume() {
     logger.log('onResume')
-    // this.handleCodePush()
   }
 
   // handlers
@@ -73,10 +81,11 @@ class CordovaApp {
 
     IonicDeeplink.route(
       ['*', '/test', '/sign-in', '/test/:key'],
-      function (match: any) {
+      (match: any) => {
         alert('matched:' + JSON.stringify(match))
+        this.f7Instance?.view.current.router.navigate(match.$link.path)
       },
-      function (nomatch: any) {
+      (nomatch: any) => {
         alert('not matched:' + JSON.stringify(nomatch))
       },
     )
