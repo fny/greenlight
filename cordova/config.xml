@@ -23,6 +23,9 @@
     <platform name="android">
         <allow-intent href="market:*" />
 
+        <!-- Universal links configuration -->
+        <preference name="AndroidLaunchMode" value="singleTask" />
+
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
         <!-- <preference name="OverrideUserAgent" value="Cordova" /> -->
 
