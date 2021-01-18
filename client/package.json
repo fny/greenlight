@@ -26,6 +26,7 @@
     "react-verification-code-input": "^1.2.8",
     "reactn": "^2.2.7",
     "reflect-metadata": "^0.1.13",
+    "swr": "^0.4.0",
     "yup": "^0.31.0"
   },
   "scripts": {

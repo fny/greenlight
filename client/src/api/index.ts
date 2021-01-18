@@ -11,9 +11,12 @@ import Honeybadger from 'honeybadger-js'
 import logger from 'src/helpers/logger'
 import env from 'src/config/env'
 import {
-  User, Location, LocationAccount, Model, MedicalEvent, GreenlightStatus, UserSettings,
+  User, Location, LocationAccount, Model, MedicalEvent, GreenlightStatus, UserSettings, CurrentUser,
 } from 'src/models'
-import { RecordResponse } from 'src/types'
+import { Dict, RecordResponse } from 'src/types'
+import useSWR, { responseInterface } from 'swr'
+import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
+import qs from 'qs'
 import { transformRecordResponse, recordStore } from './stores'
 
 const BASE_URL = `${env.API_URL}/v1`
@@ -27,6 +30,7 @@ export const v1 = axios.create({
   headers: {
     'X-Client-Env': env.isCordova() ? 'cordova' : 'standard',
   },
+  paramsSerializer: (params) => qs.stringify(params),
 })
 
 v1.interceptors.request.use((request) => {
@@ -86,35 +90,35 @@ export async function createSession(emailOrMobile: string, password: string, rem
   localStorage.setItem('rememberMe', rememberMe.toString())
 }
 
-export async function deleteSession() {
+export async function deleteSession(): Promise<void> {
   await v1.delete('/sessions')
 }
 
-export async function createMagicSignIn(emailOrMobile: string, rememberMe: boolean) {
+export async function createMagicSignIn(emailOrMobile: string, rememberMe: boolean): Promise<void> {
   await v1.post<any>('/magic-sign-in', {
     emailOrMobile,
     rememberMe,
   })
 }
 
-export async function magicSignIn(token: string, rememberMe: boolean) {
+export async function magicSignIn(token: string, rememberMe: boolean): Promise<void> {
   const response = await v1.post(`/magic-sign-in/${token}`, {
     rememberMe,
   })
   localStorage.setItem('token', response.data.token)
 }
 
-export async function passwordResetRequest(emailOrMobile: string) {
+export async function passwordResetRequest(emailOrMobile: string): Promise<void> {
   await v1.post('/password-resets', {
     emailOrMobile,
   })
 }
 
-export async function checkPasswordResetToken(token: string) {
+export async function checkPasswordResetToken(token: string): Promise<void> {
   await v1.get(`/password-resets/${token}/valid`)
 }
 
-export async function passwordReset(token: string, password: string) {
+export async function passwordReset(token: string, password: string): Promise<void> {
   await v1.post(`/password-resets/${token}`, {
     password,
   })
@@ -201,10 +205,16 @@ export async function updateUserSettings(user: User, updates: Partial<UserSettin
   return entity
 }
 
-export async function getUsersForLocation(location: number | string | Location, page = 1, query?: string): Promise<PagedResource<User>> {
+export async function getUsersForLocation(location: number | string | Location): Promise<User[]> {
   const locationId = location instanceof Location ? location.id : location
   const path = `/locations/${locationId}/users`
-  return getPagedResources<User>(path, page, query)
+  return getResources<User>(path)
+}
+
+export async function getPagedUsersForLocation(location: number | string | Location, page: number = 1, name?: string, status?: GreenlightStatusTypes): Promise<PagedResource<User>> {
+  const locationId = location instanceof Location ? location.id : location
+  const path = `/locations/${locationId}/users`
+  return getPagedResources<User>(path, page, { status, name })
 }
 
 //
@@ -285,46 +295,43 @@ export async function getResources<T extends Model>(path: string): Promise<T[]> 
   return entities
 }
 
-interface PagedResource<T> {
+//
+// Pagination and Filtering
+//
+
+export interface PagedResource<T> {
   data: T[]
+  filter: Filter
   pagination: Pagination
 }
 
 export interface Pagination {
-  // first: number
-  // prev: number
-  current: number
+  /** The number of the next page */
   next: number
+  /** The number of the last page */
   last: number
-  count: number
-  // perPage: number
+  /** The total number of elements across all pages */
+  total: number
 }
 
-export async function getPagedResources<T extends Model>(path: string, page: number, query?: string): Promise<PagedResource<T>> {
-  const response = await v1.get(path, { params: { page, query } })
+export async function getPagedResources<T extends Model>(
+  path: string, page?: number, filter: Filter = {},
+): Promise<PagedResource<T>> {
+  const response = await v1.get(path, { params: { page, filter } })
   recordStore.writeRecordResponse(response.data)
   const entities = transformRecordResponse<T>(response.data)
   assertArray(entities)
 
-  if (!response.data.data) {
-    return {
-      data: [],
-      pagination: {
-        // first: 0,
-        // prev: 0,
-        current: 0,
-        next: 1,
-        last: 0,
-        count: 0,
-        // perPage: 0,
-        // total: 0,
-      },
-    }
-  }
-
   const pagination = response.data.meta.pagination as Pagination
   return {
     data: entities,
+    filter,
     pagination,
   }
+}
+
+export type Filter = Dict<string | number | string[] | number[] | undefined | null >
+
+export function usePagedResources<T extends Model>(path: string, page?: number, filter?: Filter): responseInterface<PagedResource<T>, any> {
+  return useSWR([path, page, filter], (path, page, filter) => getPagedResources<T>(path, page, filter))
 }

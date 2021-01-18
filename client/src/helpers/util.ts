@@ -7,6 +7,7 @@ import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import logger from 'src/helpers/logger'
 import GLPhoneNumber from 'src/helpers/GLPhoneNumber'
+import { useCallback } from 'react'
 
 //
 // Date and Time Related
@@ -435,12 +436,18 @@ export function lowerCaseFirst(str: string): string {
   return str.charAt(0).toLowerCase() + str.slice(1)
 }
 
-export function printObject(obj: any, depth = 0) {
-  return JSON.stringify(obj, (k, v) => (k && v && typeof v !== 'number'
-    ? Array.isArray(v)
-      ? '[object Array]'
-      : `${v}`
-    : v))
+export function stringify(val: any, depth: number, replacer?: null | ((this: any, key: string, value: any) => any), space?: string | number, onGetObjID?: (val: object) => string): string {
+  depth = isNaN(+depth) ? 1 : depth
+  const recursMap = new WeakMap()
+  function _build(val: any, depth: number, o?: any, a?: boolean, r?: boolean) {
+    return !val || typeof val !== 'object' ? val
+      : (r = recursMap.has(val),
+      recursMap.set(val, true),
+      a = Array.isArray(val),
+      r ? (o = onGetObjID && onGetObjID(val) || null) : JSON.stringify(val, (k, v) => { if (a || depth > 0) { if (replacer) v = replacer(k, v); if (!k) return (a = Array.isArray(v), val = v); !o && (o = a ? [] : {}); o[k] = _build(v, a ? depth : depth - 1) } }),
+      o === void 0 ? (a ? [] : {}) : o)
+  }
+  return JSON.stringify(_build(val, depth), null, space)
 }
 
 export function titleCase(x: string): string {
@@ -479,4 +486,12 @@ export function debounce<F extends (...args: any[]) => any>(func: F, waitFor: nu
   }
 
   return debounced as (...args: Parameters<F>) => ReturnType<F>
+}
+
+function useDebounce(callback: any, delay: number) {
+  const debouncedFn = useCallback(
+    debounce((...args) => callback(...args), delay),
+    [delay], // will recreate if delay changes
+  )
+  return debouncedFn
 }

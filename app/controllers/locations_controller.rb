@@ -40,9 +40,20 @@ module LocationsController
       end
     end
 
+    patch '/v1/locations/:location_id' do
+      # TODO: ENSURE
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+
+      if location.update(params[:location])
+        render json: LocationSerializer.new(location)
+      else
+        error_response(location)
+      end
+    end
+
     post '/v1/locations/:location_id/join' do
       location_id = params[:location_id]
-      location = Location.find_by_id_or_permalink!(location_id)
+
       la = current_user.location_accounts.where(location_id: location_id).first
       if la
         render json: LocationAccountSerializer.new(la)
@@ -69,21 +80,20 @@ module LocationsController
       location = Location.find_by_id_or_permalink(params[:location_id])
       return [] unless location || !current_user.admin_at?(location)
 
-      # We do not include the current user because it may conflict with data
-      # in the store.
-      users = location.users.where.not(id: current_user.id)
-        .includes(UserSerializer::ADMIN_INCLUDES.dup).order(last_name: :asc, first_name: :asc, id: :asc)
-      if params[:query]
-        users = users.where(
-          %w[first_name last_name].map { |col| "lower(#{col}) LIKE :query"}.join(' OR '),
-          query: "%#{params[:query]}%"
-        )
+      users = location.users.order_by_name.includes(:last_greenlight_status, :location_accounts, :cohort_users, :cohorts)
+
+      Rails.logger.debug(params)
+      name_filter = params.dig(:filter, :name)
+      status_filter = params.dig(:filter, :status)
+
+      if name_filter
+        users = users.where('lower(contact(first_name, last_name}) LIKE :name_filter', name_filter: "%#{name_filter}%")
       end
-      @pagy, @users = pagy(users, items: 25)
+      @pagy, @users = pagy(users, items: 13)
 
       render json: UserSerializer.new(
         @users,
-        include: UserSerializer::ADMIN_INCLUDES.dup,
+        include: UserSerializer::ADMIN_INCLUDES,
         # links: pagy_links(@pagy),
         meta: { pagination: pagy_numbers(@pagy) }
       )

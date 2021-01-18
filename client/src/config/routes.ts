@@ -52,6 +52,7 @@ import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
 import SchoolScoreCardPage from 'src/pages/resources/SchoolScoreCardPage'
 
 import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
+import PageWithRequest from 'src/pages/util/PageWithRequest'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -374,6 +375,10 @@ const routeMap = {
   editChildrenPath: {
     path: '/users/:userId/children/:childId',
     component: UserEditPage,
+  },
+  testPath: {
+    path: '/test',
+    component: PageWithRequest,
   },
   notFoundPath: {
     path: '/not-found',

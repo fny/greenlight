@@ -37,7 +37,6 @@ export async function signOut(router?: Router.Router): Promise<void> {
   // TODO: There should be a way of doing this without a hard redirect
   setGlobal({ currentUser: null })
   localStorage.clear()
-
 }
 
 export function toggleLocale(): void {

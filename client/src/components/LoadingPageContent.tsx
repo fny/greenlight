@@ -1,4 +1,3 @@
-import { t, Trans } from '@lingui/macro'
 import {
   Block, Navbar, Preloader,
 } from 'framework7-react'
@@ -6,11 +5,14 @@ import React from 'react'
 import EmailLink, { SUPPORT_EMAIL } from 'src/components/EmailLink'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import './LoadingPageContent.css'
+import Tr, { En, Es, tr } from './Tr'
 
-export default function LoadingPageContent({ title }: { title?: string}): JSX.Element {
+export default function LoadingPageContent({ title }: { title?: string }): JSX.Element {
   return (
     <>
-      <Navbar title={title || t({ id: 'LoadingPageContent.title', message: 'Loading...' })}>
+      <Navbar title={title
+        || tr({ en: 'Loading...', es: 'Cargando...' })}
+      >
         <NavbarHomeLink slot="left" />
       </Navbar>
       <Block className="LoadingPageContent container">
@@ -20,10 +22,20 @@ export default function LoadingPageContent({ title }: { title?: string}): JSX.El
       </Block>
       <Block>
         <p>
-          <Trans id="LoadingPageContent.message2">
-            Stuck here for too long? If your connection is stable, try refreshing the page.
-            If you still need help feel free to email support at <EmailLink email={SUPPORT_EMAIL} />.
-          </Trans>
+          <Tr>
+            <En>
+              Stuck here for too long?
+              If your connection is stable, try refreshing the page.
+              If you still need help, email support
+              at <EmailLink email={SUPPORT_EMAIL} />.
+            </En>
+            <Es>
+              ¿Esperando demasiado?
+              Si su conexión es estable, actualiza la página.
+              Si aún necesita ayuda, envia un correo electrónico
+              a <EmailLink email={SUPPORT_EMAIL} />.
+            </Es>
+          </Tr>
         </p>
       </Block>
     </>
