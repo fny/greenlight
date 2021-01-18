@@ -171,4 +171,8 @@ export class Location extends Model {
   parentRegistrationWithCodeURL(): string {
     return `glit.me/go/${this.permalink}/code/${this.parentRegistrationCode}`
   }
+
+  isSchool(): boolean {
+    return this.category === LocationCategories.SCHOOL
+  }
 }
