@@ -14,7 +14,6 @@ body, #root {
   color: var(--gl-green-dark) !important;
 }
 
-
 .simple-list li:after, .links-list a:after, .list .item-inner:after {
   opacity: 0;
 }
