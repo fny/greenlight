@@ -11,7 +11,7 @@ import { RegisteringLocation } from 'src/models/RegisteringLocation'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import SessionStorage from './SessionStorage'
 
-export function isSignedIn() {
+export function isSignedIn(): boolean {
   const user = currentUser()
   return user !== null && user !== undefined
 }
