@@ -162,8 +162,8 @@ export async function updateLocationAccount(
 // Users
 //
 
-export async function getCurrentUser(): Promise<User> {
-  const user = await getResource<User>('/current-user')
+export async function getCurrentUser(): Promise<CurrentUser> {
+  const user = await getResource<CurrentUser>('/current-user')
   Honeybadger.setContext({ userId: user.id })
   return user
 }

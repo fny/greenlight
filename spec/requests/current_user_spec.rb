@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 require 'swagger_helper'
 
-RSpec.describe "Current User Endpoint", type: :request do
-  let(:user) { Fabricate(:user) }
+RSpec.describe 'Current User Endpoint', type: :request do
+  fixtures :all
+  let(:user) {
+    user = users(:marge)
+    user.password = 'verysecure'
+    user
+  }
 
   describe 'GET' do
     it 'returns with a 401 if not signed in' do
@@ -10,7 +15,7 @@ RSpec.describe "Current User Endpoint", type: :request do
       expect(response.status).to eq(401)
     end
 
-    context 'Cordova' do
+    context 'with Cordova' do
       let(:headers) { { 'X-Client-Env' => 'cordova' } }
 
       it 'returns with a 401 if no Authorization header set' do
@@ -23,26 +28,24 @@ RSpec.describe "Current User Endpoint", type: :request do
         expect(response.status).to eq(401)
       end
     end
-  end
 
-  get '/v1/current-user' do
-    produces 'application/json'
+    path '/v1/current-user' do
+      get 'returns current user' do
+        produces 'application/json'
 
-    response 200, 'Current user signed in' do
-      schema UserSerializer::SWAGGER_SCHEMA
+        response 200, 'Current user signed in' do
+          schema CurrentUserSerializer::SWAGGER_SCHEMA
 
-      before do |example|
-        sign_in(user)
-      end
+          before do |example|
+            sign_in!(user)
+            submit_request(example.metadata)
+          end
 
-      it 'returns a valid 200 response' do |example|
-        submit_request(example.metadata)
-        assert_response_matches_metadata(example.metadata)
+          it 'returns a valid 200 response' do |example|
+            assert_response_matches_metadata(example.metadata)
+          end
+        end
       end
     end
-
-    # TODO: response 401, 'User not signed in' do
-
-    # end
   end
 end

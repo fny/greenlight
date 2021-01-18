@@ -12,4 +12,21 @@ class GreenlightStatusSerializer < ApplicationSerializer
   # attribute :deleted_at
 
   has_one :user
+
+  SWAGGER_SCHEMA = SwaggerSchemaBuilder.build do
+    data {
+      id :string
+      type :string, enum: [:greenlightStatus]
+      attributes {
+        status :string
+        reason :string
+        submissionDate :string
+        expirationDate :string
+        followUpDate :string
+        createdAt :string
+        updatedAt :string
+      }
+    }
+    has_one :user, :user
+  end
 end

@@ -3,9 +3,9 @@ module CurrentUserController
   extend ActiveSupport::Concern
   included do
     get '/v1/current-user' do
-      render json: UserSerializer.new(
+      render json: CurrentUserSerializer.new(
         current_user,
-        include: UserSerializer::PERSONAL_INCLUDES.dup
+        include: CurrentUserSerializer::INCLUDES
       )
     end
   end

@@ -3,6 +3,8 @@ marge:
   first_name: Marge
   last_name: Simpson
   email: marge@springfield.com
+  password_digest: <%= BCrypt::Password.create('verysecure', cost: 4) %>
+  auth_token: <%= SecureRandom.hex %>
 
 # A parent who has two kids in a school and uses Greenlight for work
 homer:

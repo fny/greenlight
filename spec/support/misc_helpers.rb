@@ -2,10 +2,15 @@
 module MiscHelpers
   def sign_in(user, remember_me: false)
     request_json(:post, '/v1/sessions', body: {
-      emailOrMobile: user.mobile_number,
+      emailOrMobile: user.email || user.mobile_number,
       password: user.password,
       rememberMe: remember_me
     })
+  end
+
+  def sign_in!(user, remember_me: false)
+    result = sign_in(user, remember_me: false)
+    raise "Invalid credentials!" unless result == 204
   end
 
   def valid_mobile_number
