@@ -4,6 +4,8 @@ class StudentImport
   UnhandledCase = Class.new(StandardError)
   InvalidState = Class.new(StandardError)
 
+  attr_reader :notices
+
   attribute :first_name, type: String
   attribute :last_name, type: String
   attribute :external_id, type: String
@@ -67,11 +69,26 @@ class StudentImport
   end
 
   def parent2
-    return nil if parent2_email.blank? && parent2_mobile_number.blank?
     return @parent2 if defined?(@parent2)
 
-    @parent2 ||= User.find_by(email: parent2_email&.downcase&.strip) if parent2_email.present?
-    @parent2 ||= User.find_by(mobile_number: PhoneNumber.parse(parent2_mobile_number)) if parent2_mobile_number.present?
+    # If the email is used twice in the same row, ignore it
+    email = parent2_email
+    if parent2_email.present? && parent1_email.present? && parent2_email&.downcase&.strip == parent1_email&.downcase&.strip
+      add_notice('emails match, erasing email for guardian 2')
+      email = nil
+    end
+
+    # If the mobile number is used twice in the same row, ignore it
+    mobile_number = parent2_mobile_number
+    if parent2_mobile_number.present? && parent1_mobile_number.present? && PhoneNumber.equal?(parent2_mobile_number, parent1_mobile_number)
+      add_notice('phones match, erasing phone for guardian 2')
+      mobile_number = nil
+    end
+
+    return nil if parent2_email.blank? && parent2_mobile_number.blank?
+
+    @parent2 ||= User.find_by(email: email&.downcase&.strip) if email.present?
+    @parent2 ||= User.find_by(mobile_number: PhoneNumber.parse(mobile_number)) if mobile_number.present?
     @parent2 ||= User.new
     @parent2.assign_attributes(
       first_name: parent2_first_name.presence || @parent2.first_name || 'Greenlight User',
@@ -151,6 +168,7 @@ class StudentImport
     if (!parent1.persisted? || !parent2.persisted?) && child.persisted?
       # Location account should exist in this case
       raise InvalidState unless child_location_account.persisted?
+
       return persist!
     end
 
@@ -189,6 +207,11 @@ class StudentImport
   # rubocop:enable all
 
   private
+
+  def add_notice(notice)
+    @notices ||= []
+    @notices << notice
+  end
 
   # Excel will return numbers formatted as scientific numbers sometimes.
   # This catches that.

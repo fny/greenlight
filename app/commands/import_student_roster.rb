@@ -74,7 +74,6 @@ class ImportStudentRoster < ApplicationCommand
       begin
         raise 'File not found' unless File.exists?(spreadsheet_path)
         sheet = Creek::Book.new(spreadsheet_path).sheets[0]
-
       rescue => e
         import.message << "Couldn't load spreadsheet from provided path, make sure its an Excel file. #{e.message}\n"
         import.status = :failed
@@ -131,6 +130,7 @@ class ImportStudentRoster < ApplicationCommand
 
     ActiveRecord::Base.transaction do
       sheet.rows.each_with_index do |row, i|
+        row_num = i + 1
         next if i.zero?
         next if row.values.all?(&:blank?)
 
@@ -139,27 +139,29 @@ class ImportStudentRoster < ApplicationCommand
         attrs[:cohorts] = extract_cohorts(headers, row.values)
         attrs[:location] = location
 
-        staff_import = StudentImport.new(attrs)
-        if staff_import.valid?
-          account_exists = LocationAccount.exists?(location: location, external_id: staff_import.external_id)
+        student_import = StudentImport.new(attrs)
+        if student_import.valid?
+          account_exists = LocationAccount.exists?(location: location, external_id: student_import.external_id)
           if account_exists && !overwrite
-            import.message << "Row #{i} with ID #{staff_import.external_id} already exists, skipping.\n"
-          elsif LocationAccount.exists?(location: location, external_id: staff_import.external_id) && overwrite
-            staff_import.save!
-            import.message << "Row #{i} with ID #{staff_import.external_id} exists, overwriting.\n"
+            import.message << "Row #{row_num} with ID #{student_import.external_id} already exists, skipping.\n"
+          elsif LocationAccount.exists?(location: location, external_id: student_import.external_id) && overwrite
+            student_import.save!
+            import.message << "Row #{row_num} with ID #{student_import.external_id} exists, overwriting.\n"
           else
-            staff_import.save!
-            import.message << "Row #{i} with ID #{staff_import.external_id} saved.\n"
+            student_import.save!
+            if dry_run && !student_import.notices.blank?
+              import.message << "Row #{row_num} with ID #{student_import.external_id} notices: #{student_import.notices.join('; ')}.\n"
+            end
           end
         else
-          import.message << "Row #{i} with ID #{staff_import.external_id} had errors.\n"
-          import.message << staff_import.errors.to_json << "\n"
+          import.message << "Row #{row_num} with ID #{student_import.external_id} had errors.\n"
+          import.message << student_import.errors.to_json << "\n"
           import.status = :failed
         end
       rescue => e
-        import.message << "Row #{i} crashed.\n"
+        import.message << "Row #{row_num} with ID #{student_import&.external_id || '???'} crashed.\n"
         import.message << e.message << "\n"
-        import.message << e.backtrace.join("\n") if SAVE_BACKTRACE
+        import.message << e.backtrace.join("\n") << "\n" if SAVE_BACKTRACE
         import.status = :failed
       end
       raise(ActiveRecord::Rollback) if import.status == :failed || dry_run

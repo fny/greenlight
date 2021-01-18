@@ -5,21 +5,27 @@ function loadIframe(src: string, attributes: any = {}) {
   if (env.isDevelopment()) {
     return
   }
+  if (env.isCordova()) {
+    return
+  }
   const el = document.createElement('iframe')
   el.src = src
   Object.keys(attributes).forEach((key) => {
-    (el as any)[key] = attributes[key]
+    ;(el as any)[key] = attributes[key]
   })
   document.getElementById('preload')?.appendChild(el)
   return el
 }
 
-export const castlightTestSiteFinderFrame = loadIframe('https://my.castlighthealth.com/corona-virus-testing-sites/?embed=true&from=greenlight', {
-  title: 'Lookup Test Location',
-  frameBorder: '0',
-  width: '0',
-  height: '0',
-})
+export const castlightTestSiteFinderFrame = loadIframe(
+  'https://my.castlighthealth.com/corona-virus-testing-sites/?embed=true&from=greenlight',
+  {
+    title: 'Lookup Test Location',
+    frameBorder: '0',
+    width: '0',
+    height: '0',
+  },
+)
 
 export const chwRequestEnFrame = loadIframe('https://airtable.com/embed/shrIt4hurTNBrZD0g', {
   class: 'airtable-embed',

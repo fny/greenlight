@@ -27,6 +27,13 @@ const env = {
     }
     return required('REACT_APP_API_URL')
   })(),
+  codePushDeploymentKey(): string {
+    return (window as any).device.platform === 'iOS'
+      ? process.env.REACT_APP_CODEPUSH_IOS || ''
+      : (window as any).device.platform === 'Android'
+      ? process.env.REACT_APP_CODEPUSH_ANDROID || ''
+      : ''
+  },
 }
 
 ;(window as any).env = env
