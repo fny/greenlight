@@ -65,7 +65,7 @@ class Location < ApplicationRecord
   validates :registration_code_downcase, presence: true
   validates :student_registration_code, presence: true
   validates :student_registration_code_downcase, presence: true
-  validates :zip_code, format: { with: /\A\d{5}(-\d{4})?\z/ }
+  validates :zip_code, format: { with: /\A\d{5}(-\d{4})?\z/ }, presence: true
 
   before_validation :set_registration_codes
   before_save :sync_cohorts!
