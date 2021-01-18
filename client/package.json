@@ -23,6 +23,7 @@
     "react": "^16.13.1",
     "react-chartjs-2": "^2.11.1",
     "react-dom": "^16.13.1",
+    "react-query": "^3.5.10",
     "react-verification-code-input": "^1.2.8",
     "reactn": "^2.2.7",
     "reflect-metadata": "^0.1.13",

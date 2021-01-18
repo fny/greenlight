@@ -1,6 +1,18 @@
 import { t } from '@lingui/macro'
 import {
-  AccordionContent, f7, Icon, Link, List, ListGroup, ListItem, Navbar, NavLeft, NavRight, Page, Searchbar, Subnavbar,
+  AccordionContent,
+  f7,
+  Icon,
+  Link,
+  List,
+  ListGroup,
+  ListItem,
+  Navbar,
+  NavLeft,
+  NavRight,
+  Page,
+  Searchbar,
+  Subnavbar,
 } from 'framework7-react'
 
 import {

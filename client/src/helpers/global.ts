@@ -30,7 +30,7 @@ export async function signOut(router?: Router.Router): Promise<void> {
   if (router) {
     router.navigate(paths.splashPath)
   } else {
-    (window.location as any) = '/'
+    ;(window.location as any) = '/'
   }
   await deleteSession()
   Honeybadger.resetContext()

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.greenlightready.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.greenlightready.app" android-versionCode="10001" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Greenlight</name>
     <description>
         Greenlight
@@ -13,8 +13,6 @@
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="cordova-plugin-cors" spec="1" />
 
-
-
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -25,10 +23,8 @@
     <platform name="android">
         <allow-intent href="market:*" />
 
-        <!-- Staging -->
-        <preference name="CodePushDeploymentKey" value="96q-1na96bCWTbl8tTzLTukmelM9JHZJjfttN" />
-        <!-- Production -->
-        <!-- <preference name="CodePushDeploymentKey" value="HIVBTCnL3SOftwZS_IRifwRfwu3N4NN5UbQEb" /> -->
+        <!-- Universal links configuration -->
+        <preference name="AndroidLaunchMode" value="singleTask" />
 
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
         <!-- <preference name="OverrideUserAgent" value="Cordova" /> -->
@@ -40,15 +36,24 @@
         <icon src="res/android/mipmap-xxxhdpi/ic_launcher.png" density="xxxhdpi" />
 
     </platform>
+
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
 
-        <!-- Staging -->
-        <preference name="CodePushDeploymentKey" value="9tJypW_IQTNQi9xRaVPkZ1wLwyFodeEs0xnmx" />
-        <!-- Production -->
-        <!-- <preference name="CodePushDeploymentKey" value="JuQchGK6vPnDBH208x3_9TvCS7FWKPHWj7Ca0" />  -->
-        
+        <!-- associtated domains -->
+        <config-file target="*-Debug.plist" parent="com.apple.developer.associated-domains">
+            <array>
+                <string>applinks:app.greenlightready.com</string>
+            </array>
+        </config-file>
+
+        <config-file target="*-Release.plist" parent="com.apple.developer.associated-domains">
+            <array>
+                <string>applinks:app.greenlightready.com</string>
+            </array>
+        </config-file>
+
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
 
         <!-- <preference name="OverrideUserAgent" value="Cordova" /> -->
