@@ -6,10 +6,10 @@ class UserGreenlightStatusMaker < ApplicationCommand
   argument :end_date
 
   WEIGHTED_STATUSES = {
-    GreenlightStatus::CLEARED => 90,
-    GreenlightStatus::PENDING => 1,
-    GreenlightStatus::RECOVERY => 1,
-    GreenlightStatus::UNKNOWN => 8,
+    GreenlightStatus::CLEARED => 70,
+    GreenlightStatus::PENDING => 20,
+    GreenlightStatus::RECOVERY => 20,
+    GreenlightStatus::UNKNOWN => 2,
   }.freeze
 
   def generate_status
