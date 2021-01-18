@@ -25,6 +25,7 @@ class User < ApplicationRecord
   enumerize :daily_reminder_type, in: DAILY_REMINDER_TYPES
   enumerize :time_zone, in: TIME_ZONES, default: 'America/New_York'
   enumerize :locale, in: %w[en es], default: 'en'
+
   scope :affiliated_with, ->(location) {
     permalink = location.is_a?(Location) ? location.permalink : location
     joins(:locations).where(locations: { permalink: permalink })
@@ -35,6 +36,12 @@ class User < ApplicationRecord
     joins('INNER JOIN location_accounts ON location_accounts.user_id = users.id')
       .where.not(location_accounts: { role: LocationAccount::STUDENT })
   }
+
+  # TODO: Fix casing so that its case insensitive
+  scope :order_by_name, -> {
+    order(last_name: :asc, first_name: :asc, id: :asc)
+  }
+
   # User's relationships as a child to other users
   has_many :child_relationships, foreign_key: :child_id, class_name: 'ParentChild', inverse_of: :child
 
