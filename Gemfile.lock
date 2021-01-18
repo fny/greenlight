@@ -129,8 +129,6 @@ GEM
     fast_blank (1.0.0)
     fast_excel (0.3.0)
       ffi (> 1.9, < 2)
-    fast_jsonapi (1.5)
-      activesupport (>= 4.2)
     fast_xs (0.8.0)
     ffi (1.14.2)
     foreman (0.87.2)
@@ -147,6 +145,8 @@ GEM
     json (2.5.1)
     json-schema (2.8.1)
       addressable (>= 2.4)
+    jsonapi-serializer (2.1.0)
+      activesupport (>= 4.2)
     jwt (2.2.2)
     kramdown (2.3.0)
       rexml
@@ -402,12 +402,10 @@ DEPENDENCIES
   faraday
   fast_blank
   fast_excel
-  fast_jsonapi
   fast_xs
   foreman
-  jaro_winkler
   json (~> 2.0)
-  jwt
+  jsonapi-serializer
   listen (~> 3.2)
   lograge
   memoist

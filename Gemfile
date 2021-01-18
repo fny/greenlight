@@ -66,11 +66,7 @@ gem 'faraday'
 # Ultra Fast Excel Writer for Ruby
 gem 'fast_excel'
 # A lightning fast JSON:API serializer for Ruby Objects.
-gem 'fast_jsonapi'
-# Implementation of Jaro-Winkler string similary
-gem 'jaro_winkler'
-# JSON web tokens
-gem 'jwt'
+gem 'jsonapi-serializer'
 # Tame Rails' default policy to log everything
 gem 'lograge'
 # ActiveSupport::Memoizable with a few enhancements
