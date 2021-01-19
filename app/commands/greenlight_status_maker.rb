@@ -1,16 +1,22 @@
 # Generates random Greenlight Statuses for the given user over the dates given.
 #
-class UserGreenlightStatusMaker < ApplicationCommand
-  argument :user
-  argument :start_date
-  argument :end_date
-
+class GreenlightStatusMaker < ApplicationCommand
   WEIGHTED_STATUSES = {
     GreenlightStatus::CLEARED => 70,
     GreenlightStatus::PENDING => 20,
     GreenlightStatus::RECOVERY => 20,
     GreenlightStatus::UNKNOWN => 2,
   }.freeze
+
+  argument :user
+  argument :start_date
+  argument :end_date
+
+  def self.run_for_location(location, start_date = nil, end_date = nil)
+    location.users.map { |u|
+      GreenlightStatusMaker.new(user: u, start_date: start_date, end_date: end_date).run
+    }
+  end
 
   def generate_status
     normalized = WEIGHTED_STATUSES.transform_values { |v| v.to_f / WEIGHTED_STATUSES.values.sum }
