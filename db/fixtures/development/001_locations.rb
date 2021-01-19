@@ -6,7 +6,7 @@ Location.seed(:permalink, {
   zip_code: '32779',
   category: 'school',
   cohort_schema: {
-    'Activites' => ['Soccer Team', 'Football Team'],
+    'Activities' => ['Soccer Team', 'Football Team'],
     'Grade' => %w[Freshman Sophomore Junior Senior]
   }
 })
