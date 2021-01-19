@@ -241,6 +241,7 @@ class StudentImport
       assign_cohorts
       child.save!
       child_location_account.save!
+      parent1.save!
       parent1.children << child
       if two_parents?
         parent2.save!

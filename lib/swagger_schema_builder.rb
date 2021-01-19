@@ -68,7 +68,6 @@ class SwaggerSchemaBuilder
 
   def method_missing(method, *args, **options, &block)
     if args.any?
-      binding.pry if TYPES.exclude?(args[0])
       raise(InvalidSwaggerTypeError, "Not sure how to handle method #{method} type #{args[0]}") if TYPES.exclude?(args[0])
 
       @schema[:properties][method] = { type: args[0] }
