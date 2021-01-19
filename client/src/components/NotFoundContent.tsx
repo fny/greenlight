@@ -6,14 +6,22 @@ import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import notFoundImage from 'src/assets/images/404.png'
 import Tr, { tr } from './Tr'
 
-export default function NotFoundContent({ title }: { title?: string }): JSX.Element {
+interface Props {
+  title?: string,
+  hideNavbar?: boolean
+}
+
+export default function NotFoundContent({ title, hideNavbar }: Props): JSX.Element {
   return (
     <>
+      {!hideNavbar
+      && (
       <Navbar title={title
         || tr({ en: 'Not Found', es: 'No Encontrado' })}
       >
         <NavbarHomeLink slot="left" />
       </Navbar>
+      )}
       <Block style={{ textAlign: 'center' }}>
         <img alt="404" src={notFoundImage} style={{ width: '40vh' }} />
         <p>

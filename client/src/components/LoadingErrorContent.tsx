@@ -3,8 +3,8 @@ import {
   Block, Navbar,
 } from 'framework7-react'
 import React from 'react'
-import EmailLink, { SUPPORT_EMAIL } from 'src/components/EmailLink'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import EmailSupportLink from 'src/components/EmailSupportLink'
 import Tr, { En, Es, tr } from './Tr'
 
 function errorMessage(error: any): string {
@@ -18,14 +18,22 @@ function errorMessage(error: any): string {
   return error.message
 }
 
-export default function LoadingErrorContent({ title, error }: { title?: string, error?: any }): JSX.Element {
+interface Props {
+  title?: string
+  error?: any
+  hideNavbar?: boolean
+}
+
+export default function LoadingErrorContent({ title, error, hideNavbar }: Props): JSX.Element {
   return (
     <>
+      {!hideNavbar && (
       <Navbar title={title
         || tr({ en: 'Loading failed!', es: 'Carga falló!' })}
       >
         <NavbarHomeLink slot="left" />
       </Navbar>
+      )}
       <Block>
         <p>
           <Tr
@@ -44,11 +52,11 @@ export default function LoadingErrorContent({ title, error }: { title?: string, 
           <Tr>
             <En>
               If you need help, email support
-              at <EmailLink email={SUPPORT_EMAIL} />.
+              at <EmailSupportLink />.
             </En>
             <Es>
               Si necesita ayuda, envia un correo electrónico
-              a <EmailLink email={SUPPORT_EMAIL} />.
+              a <EmailSupportLink />.
             </Es>
           </Tr>
         </p>
