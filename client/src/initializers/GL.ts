@@ -6,7 +6,7 @@ import { ModelRegistry } from 'src/models'
 import { CUTOFF_TIME } from 'src/models/GreenlightStatus'
 import { Dict } from 'src/types'
 import CookieJar from 'src/helpers/CookieJar'
-import { f7 } from 'framework7-react'
+import { f7ready } from 'framework7-react'
 import Honeybadger from './honeybadger'
 /**
  * Namespace on which to hang globals for debugging.
@@ -25,7 +25,10 @@ GL.paths = paths
 GL.Honeybadger = Honeybadger
 
 GL.CookieJar = CookieJar
-GL.f7 = f7
+
+f7ready((f7) => {
+  GL.f7 = f7
+})
 
 export default GL;
 (window as any).GL = GL

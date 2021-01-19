@@ -3,7 +3,6 @@ module UtilController
   extend ActiveSupport::Concern
 
   included do
-    # Show a user
     get '/v1/util/email-taken', auth: false do
       if params[:email].blank?
         simple_error_response({
@@ -45,6 +44,21 @@ module UtilController
       else
         render json: {
           taken: User.email_or_mobile_taken?(params[:value])
+        }
+      end
+    end
+
+    get '/v1/util/handle-taken', auth: false do
+      if params[:handle].blank?
+        simple_error_response({
+          status: '422',
+          source: { parameter: 'handle' },
+          title: 'Missing Parameter',
+          detail: 'You need to provide a URL handle'
+        })
+      else
+        render json: {
+          taken: Location.handle_taken?(params[:handle])
         }
       end
     end

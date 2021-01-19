@@ -17,6 +17,7 @@ import { Dict, RecordResponse } from 'src/types'
 import useSWR, { responseInterface } from 'swr'
 import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
 import qs from 'qs'
+import { Roles } from 'src/models/LocationAccount'
 import { transformRecordResponse, recordStore } from './stores'
 
 const BASE_URL = `${env.API_URL}/v1`
@@ -167,9 +168,11 @@ export async function updateLocationAccount(
 //
 
 export async function getCurrentUser(): Promise<CurrentUser> {
-  const user = await getResource<CurrentUser>('/current-user')
-  Honeybadger.setContext({ userId: user.id })
-  return user
+  const currentUser = await getResource<CurrentUser>('/current-user')
+  Honeybadger.setContext({ userId: currentUser.id })
+  // Now load the standard user entity so it gets cached too
+  await getResource<User>(`/users/${currentUser.id}`)
+  return currentUser
 }
 
 export async function getUser(id: string): Promise<User> {
@@ -211,10 +214,10 @@ export async function getUsersForLocation(location: number | string | Location):
   return getResources<User>(path)
 }
 
-export async function getPagedUsersForLocation(location: number | string | Location, page: number = 1, name?: string, status?: GreenlightStatusTypes): Promise<PagedResource<User>> {
+export async function getPagedUsersForLocation(location: number | string | Location, page: number = 1, name?: string, status?: GreenlightStatusTypes, role?: Roles): Promise<PagedResource<User>> {
   const locationId = location instanceof Location ? location.id : location
   const path = `/locations/${locationId}/users`
-  return getPagedResources<User>(path, page, { status, name })
+  return getPagedResources<User>(path, page, { status, name, role })
 }
 
 //

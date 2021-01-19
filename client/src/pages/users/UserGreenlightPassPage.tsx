@@ -1,5 +1,7 @@
 import React from 'reactn'
-import { Page, Navbar, Block, Chip } from 'framework7-react'
+import {
+  Page, Navbar, Block, Chip,
+} from 'framework7-react'
 import { store } from 'src/api'
 import { User } from 'src/models'
 
@@ -45,17 +47,24 @@ export default class UserGreenlightPassPage extends React.Component<any, any> {
                 <Trans id="UserGreenlightPassPage.submitted">
                   Submitted at {status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}
                 </Trans>
-                <br />
-                <Tr>
-                  <En>
-                    Anticipated return date
-                    <br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
-                  </En>
-                  <Es>
-                    Fecha de regreso anticipada
-                    <br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
-                  </Es>
-                </Tr>
+
+                {!status.isCleared()
+                && (
+                <>
+                  <br />
+                  <Tr>
+                    <En>
+                      Anticipated return date
+                      <br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
+                    </En>
+                    <Es>
+                      Fecha de regreso anticipada
+                      <br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
+                    </Es>
+                  </Tr>
+                </>
+                )}
+
               </When>
               <When value={false}>
                 <Trans id="UserGreenlightPassPage.not_submitted">Status has not been submitted for today.</Trans>

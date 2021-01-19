@@ -1,3 +1,4 @@
+import './framework7'
 import './honeybadger'
 import './reactn-devtools'
 import 'src/models'

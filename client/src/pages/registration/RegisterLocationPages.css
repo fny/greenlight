@@ -63,7 +63,7 @@ input[name="locationCategory"].fill-in-the-blank {
 }
 
 input[name="email"].fill-in-the-blank {
-  width: 55%;
+  width: 50%;
   margin-left: 2%;
   margin-right: 2%;
 }

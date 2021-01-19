@@ -13,6 +13,7 @@
     "yard.spacers.afterTags": false,
     "yard.spacers.beforeDescription": false,
     "yard.spacers.beforeTags": false,
+    "peacock.color": "#200000",
     "files.exclude": {
       "**/.git": true,
       "**/.svn": true,
@@ -20,7 +21,23 @@
       "**/CVS": true,
       "**/.DS_Store": true,
       "**/node_modules": true,
-      "client/src/locales/_build": true,
-      "client/src/locales/*/messages.js": true
+      "client": true,
+  },
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#530000",
+    "activityBar.activeBorder": "#008000",
+    "activityBar.background": "#530000",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#008000",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "statusBar.background": "#200000",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#530000",
+    "titleBar.activeBackground": "#200000",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#20000099",
+    "titleBar.inactiveForeground": "#e7e7e799"
   },
 }
+ 

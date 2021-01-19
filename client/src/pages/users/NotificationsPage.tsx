@@ -88,9 +88,7 @@ export default function NotificationsPage(props: F7Props) {
 
   return (
     <Page>
-      <Navbar title={t({ id: 'NotificationsPage.title', message: 'Notifications' })}>
-        <NavbarHomeLink slot="left" />
-      </Navbar>
+      <Navbar title={t({ id: 'NotificationsPage.title', message: 'Notifications' })} />
       <Block>
         <BlockTitle>
           <Trans id="NotificationsPage.daily_reminders_title">Daily Reminders</Trans>

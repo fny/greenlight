@@ -8,9 +8,7 @@ module UsersController
       user = User.includes(:locations, :location_accounts).find(params[:user_id])
       ensure_or_forbidden! { current_user.authorized_to_view?(user) }
 
-      render json: UserSerializer.new(user, include: %i[
-        location_accounts location_accounts.location cohorts parents
-      ])
+      render json: UserSerializer.new(user, include: UserSerializer::ADMIN_INCLUDES)
     end
 
     # Update a user

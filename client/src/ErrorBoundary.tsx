@@ -2,7 +2,7 @@ import React from 'reactn'
 import { Page, Block, Button } from 'framework7-react'
 import { Trans } from '@lingui/macro'
 import logger from './helpers/logger'
-import EmailLink, { SUPPORT_EMAIL } from './components/EmailLink'
+import EmailSupportLink from './components/EmailSupportLink'
 
 export class ErrorBoundary extends React.Component<any, any> {
   state = {
@@ -37,7 +37,7 @@ export class ErrorBoundary extends React.Component<any, any> {
               {this.state.message}
             </pre>
             <p>
-              If this continues to happen please contact us at <EmailLink email={SUPPORT_EMAIL} />
+              If this continues to happen please contact us at <EmailSupportLink />
             </p>
             <Button fill onClick={() => { window.location.href = '/' }}>
               <Trans id="ErrorBoundary.return_home">Return Home</Trans>

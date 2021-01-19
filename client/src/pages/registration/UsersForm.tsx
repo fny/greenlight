@@ -126,7 +126,7 @@ const schema = Yup.object<UserInput>().shape({
     .email(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
     .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
   mobileNumber: Yup.string()
-    .phone('US', t({ id: 'Form.error_invalid', message: 'Is invalid' }))
+    .phone(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
     .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
   password: Yup.string().min(8, t({ id: 'Form.password_invalid', message: 'must be at least 8 characters' })),
 })

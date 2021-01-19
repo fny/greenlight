@@ -14,7 +14,7 @@ import {
 } from 'framework7-react'
 
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
-import './SignInPage.css'
+import './SessionsPage.css'
 import { createSession, getCurrentUser } from 'src/api'
 import { t, Trans } from '@lingui/macro'
 import { paths, dynamicPaths } from 'src/config/routes'
@@ -22,6 +22,8 @@ import { F7Props, JSONAPIError } from 'src/types'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import logger from 'src/helpers/logger'
 import Tr, { En, Es } from 'src/components/Tr'
+
+import greenlightLogo from 'src/assets/images/logos/greenlight-banner-logo.svg'
 
 export default function SignInPage(props: F7Props) {
   const emailOrMobileRef = React.createRef<EmailOrPhoneListInput>()
@@ -91,9 +93,8 @@ export default function SignInPage(props: F7Props) {
         <NavbarHomeLink slot="left" />
       </Navbar>
 
-      <div style={{ marginTop: '20px' }} className="greenlight-logo">
-        Greenlight
-        <span>.</span>
+      <div className="greenlight-logo" style={{ marginTop: '50px' }}>
+        <img src={greenlightLogo} alt="Greenlight" />
       </div>
 
       <List form id="sign-in-form">
@@ -136,7 +137,7 @@ export default function SignInPage(props: F7Props) {
         </Block>
       </List>
       <BlockFooter>
-        <Tr reviewTrans={true}>
+        <Tr reviewTrans>
           <En>
             Forgot your password?
             {' '}

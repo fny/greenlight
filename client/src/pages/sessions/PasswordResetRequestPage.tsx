@@ -12,6 +12,8 @@ import { assertNotNull } from 'src/helpers/util'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import logger from 'src/helpers/logger'
 import Tr, { tr } from 'src/components/Tr'
+import './SessionsPage.css'
+import greenlightLogo from 'src/assets/images/logos/greenlight-banner-logo.svg'
 
 const PasswordResetRequestPage: FunctionComponent<F7Props> = ({}) => {
   const [emailOrMobile, setEmailOrMobile] = useState('')
@@ -75,6 +77,9 @@ const PasswordResetRequestPage: FunctionComponent<F7Props> = ({}) => {
   return (
     <Page className="PasswordResetRequestPage" noToolbar noSwipeback loginScreen>
       <Navbar title={tr({ en: 'Forgot Password', es: 'Olvidé Mi Contraseña' })} backLink />
+      <div className="greenlight-logo">
+        <img src={greenlightLogo} alt="Greenlight" />
+      </div>
       <List form onSubmit={sendRequest}>
         <Block>
           <Tr

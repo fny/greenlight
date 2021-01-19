@@ -1,4 +1,3 @@
-import { t, Trans } from '@lingui/macro'
 import {
   Block, Button, Col, f7, Link, List, ListItem, Page, PageContent, Row, Sheet, Toolbar,
 } from 'framework7-react'
@@ -14,7 +13,7 @@ import {
 import { paths } from 'src/config/routes'
 import { useGlobal } from 'reactn'
 import { F7Props } from 'src/types'
-import SessionStorage from 'src/helpers/SessionStorage'
+import LocalStorage from 'src/helpers/SessionStorage'
 import { User } from 'src/models'
 
 import './RegisterLocationPages.css'
@@ -24,6 +23,8 @@ import GLPhoneNumber from 'src/helpers/GLPhoneNumber'
 import Framework7 from 'framework7'
 import { Router } from 'framework7/modules/router/router'
 import Tr, { En, Es, tr } from 'src/components/Tr'
+
+import welcomeImage from 'src/assets/images/illustrations/hello.png'
 
 class State {
   locationCategoriesOpened = false
@@ -63,15 +64,15 @@ async function submit(f7: Framework7, f7router: Router.Router, state: State, set
       validateUser(registeringUser))
     return
   }
-  f7.dialog.preloader(t({ id: 'RegisterLocationIntroductionPage.checking_email', message: 'Validating your email...' }))
+  f7.dialog.preloader(tr({ en: 'Validating your email...', es: 'Validando su correo electrónico...' }))
   let emailTaken
   try {
     emailTaken = await getEmailTaken(registeringUser.email)
   } catch (e) {
     f7.dialog.close()
     f7.dialog.alert(
-      t({ id: 'RegisterLocationIntroductionPage.email_check_error', message: "Couldn't connect to Greenlight to validate your email address." }),
-      t({ id: 'Common.submission_failed', message: 'Submission Failed' }),
+      tr({ en: "Couldn't connect to Greenlight to validate your email address.", es: 'No se pudo conectar a Greenlight para validar su correo electrónico.' }),
+      tr({ en: 'Submission Failed', es: 'Envío Fallido' }),
     )
     return
   }
@@ -82,17 +83,19 @@ async function submit(f7: Framework7, f7router: Router.Router, state: State, set
 
   if (emailTaken) {
     f7.dialog.alert(
-      t({ id: 'RegisterLocationIntroductionPage.email_taken_message', message: 'That email address is already in use. Please sign in to register a new location.' }),
-      t({ id: 'Common.email_taken_title', message: 'Email Taken' }),
+      tr({ en: 'That email address is already in use. Please sign in to register a new location.', es: 'Esa dirección de correo electrónico ya está en uso. Inicie sesión para registrar una nueva ubicación.' }),
+      tr({ en: 'Email Taken', es: 'Correo Electrónico Tomado' }),
     )
     return
   }
-  SessionStorage.setRegisteringUser(registeringUser)
-  SessionStorage.setRegisteringLocation(registeringLocation)
+  LocalStorage.setRegisteringUser(registeringUser)
+  LocalStorage.setRegisteringLocation(registeringLocation)
   f7router.navigate(paths.registerLocationMessagePath)
 }
 
 export default function RegisterLocationIntroductionPage(props: F7Props): JSX.Element {
+  const [locale] = useGlobal('locale')
+
   const [currentUser] = useGlobal('currentUser')
   const [registeringUser, setRegisteringUser] = useGlobal('registeringUser')
   const [registeringLocation, setRegisteringLocation] = useGlobal('registeringLocation')
@@ -113,7 +116,7 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
               )
               : (
                 <Tr
-                  en="Introduce yoursf!"
+                  en="Introduce yourself!"
                   es="¡Preséntese!"
                 />
               )
@@ -123,8 +126,8 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
           <Link
             style={{ fontSize: '12px', paddingLeft: '1rem', textAlign: 'right' }}
             onClick={() => {
-              SessionStorage.deleteRegisteringLocation()
-              SessionStorage.deleteRegisteringUser()
+              LocalStorage.deleteRegisteringLocation()
+              LocalStorage.deleteRegisteringUser()
               setRegisteringLocation(new RegisteringLocation())
               setRegisteringUser(new RegisteringUser())
             }}
@@ -181,7 +184,7 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
         </p>
 
         <p className="introduction">
-          <Tr en="I want to register my" es="quiero registrar mi" />
+          <Tr en="I want to register my" es="Quiero registrar mi" />
           <input
             name="locationCategory"
             className={`fill-in-the-blank ${state.showErrors && validateLocation(registeringLocation).includes('category') && 'has-error'}`}
@@ -226,7 +229,9 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
           />.
         </p>
       </Block>
-
+      <div style={{ textAlign: 'center' }}>
+        <img alt="Welcome to Greenlight!" src={welcomeImage} height="200px" />
+      </div>
       <Block>
         <Row tag="p">
           <Col tag="span">
@@ -239,13 +244,14 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
               fill
               onClick={() => submit(f7, props.f7router, state, setState, registeringUser, registeringLocation)}
             >
-              <Trans id="Common.continue">Continue</Trans>
+              <Tr en="Continue" es="Seguir" />
             </Button>
           </Col>
         </Row>
       </Block>
 
       <Sheet
+        key={locale}
         opened={state.locationCategoriesOpened}
         onSheetClosed={() => {
           setState({ ...state, locationCategoriesOpened: false })
@@ -254,7 +260,7 @@ export default function RegisterLocationIntroductionPage(props: F7Props): JSX.El
         <Toolbar>
           <div className="left" />
           <div className="right">
-            <Link sheetClose><Trans id="Common.close">Close</Trans></Link>
+            <Link sheetClose><Tr en="Close" es="Cerrar" /></Link>
           </div>
         </Toolbar>
 

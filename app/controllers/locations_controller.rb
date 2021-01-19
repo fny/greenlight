@@ -85,11 +85,21 @@ module LocationsController
       Rails.logger.debug(params)
       name_filter = params.dig(:filter, :name)
       status_filter = params.dig(:filter, :status)
+      role_filter = params.dig(:filter, :role)
+      Rails.logger.debug("PARAMS: #{params}")
 
-      if name_filter
-        users = users.where('lower(contact(first_name, last_name}) LIKE :name_filter', name_filter: "%#{name_filter}%")
+      if role_filter.present?
+        users = users.joins(:location_accounts).where(location_accounts: { location: location, role: role_filter })
       end
-      @pagy, @users = pagy(users, items: 13)
+
+      if status_filter.present?
+        users = users.joins(:greenlight_statuses).where('greenlight_statuses.expiration_date >= ?', Date.current).where(greenlight_statuses: { status: status_filter })
+      end
+
+      if name_filter.present?
+        users = users.where('lower(concat(first_name, last_name)) LIKE :name_filter', name_filter: "%#{name_filter}%")
+      end
+      @pagy, @users = pagy(users, items: 20)
 
       render json: UserSerializer.new(
         @users,

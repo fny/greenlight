@@ -6,48 +6,51 @@ export enum StorageKeys {
   REGISTERING_LOCATION = 'GL.registering_location',
 }
 /**
- * Singleton that wraps the sessionStorage API
+ * Singleton that wraps the localStorage API
  */
-const SessionStorage = {
+const LocalStorage = {
+  clear(): void {
+    localStorage.clear()
+  },
   serialize(key: StorageKeys, value: any): string {
     const serialized = JSON.stringify(value)
-    sessionStorage.setItem(key, serialized)
+    localStorage.setItem(key, serialized)
     return serialized
   },
 
   deserialize<T>(key: StorageKeys): T | null {
-    const stored = sessionStorage.getItem(key)
+    const stored = localStorage.getItem(key)
     if (!stored) { return null }
     return JSON.parse(stored)
   },
 
   delete(key: StorageKeys): void {
-    sessionStorage.removeItem(key)
+    localStorage.removeItem(key)
   },
 
   getRegisteringUser(): RegisteringUser | null {
-    return SessionStorage.deserialize<RegisteringUser>(StorageKeys.REGISTERING_USER)
+    return LocalStorage.deserialize<RegisteringUser>(StorageKeys.REGISTERING_USER)
   },
 
   setRegisteringUser(user: RegisteringUser): string {
-    return SessionStorage.serialize(StorageKeys.REGISTERING_USER, user)
+    return LocalStorage.serialize(StorageKeys.REGISTERING_USER, user)
   },
 
   deleteRegisteringUser(): void {
-    SessionStorage.delete(StorageKeys.REGISTERING_USER)
+    LocalStorage.delete(StorageKeys.REGISTERING_USER)
   },
 
   getRegisteringLocation(): RegisteringLocation | null {
-    return SessionStorage.deserialize<RegisteringLocation>(StorageKeys.REGISTERING_LOCATION)
+    return LocalStorage.deserialize<RegisteringLocation>(StorageKeys.REGISTERING_LOCATION)
   },
 
   setRegisteringLocation(location: RegisteringLocation): string {
-    return SessionStorage.serialize(StorageKeys.REGISTERING_LOCATION, location)
+    return LocalStorage.serialize(StorageKeys.REGISTERING_LOCATION, location)
   },
 
   deleteRegisteringLocation(): void {
-    SessionStorage.delete(StorageKeys.REGISTERING_LOCATION)
+    LocalStorage.delete(StorageKeys.REGISTERING_LOCATION)
   },
 }
 
-export default SessionStorage
+export default LocalStorage

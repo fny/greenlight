@@ -23,11 +23,11 @@ export class RegisteringLocation {
 
   employeeCount: number | null = null
 
+  remindersEnabled = true
+
   dailyReminderHour = 8
 
   dailyReminderAMPM: 'am' | 'pm' = 'am'
-
-  remindersEnabled = true
 
   remindMon = true
 

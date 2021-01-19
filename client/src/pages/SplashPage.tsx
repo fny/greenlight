@@ -8,7 +8,10 @@ import releaseData from 'src/assets/data/releases'
 import { paths } from 'src/config/routes'
 import { F7Props } from 'src/types'
 
-export default function SplashPage(props: F7Props) {
+import greenlightLogo from 'src/assets/images/logos/greenlight-banner-logo.svg'
+import Tr from 'src/components/Tr'
+
+export default function SplashPage(props: F7Props): JSX.Element {
   const [currentUser] = useGlobal('currentUser')
   return (
     <Page className="SplashPage" noToolbar noNavbar noSwipeback loginScreen>
@@ -17,17 +20,21 @@ export default function SplashPage(props: F7Props) {
           <Trans id="SplashPage.welcome">Welcome to</Trans>
         </div>
         <div className="logo">
-          Greenlight
-          <span>.</span>
+          <img src={greenlightLogo} alt="Greenlight" />
         </div>
 
         {currentUser ? (
-          <Button outline onClick={() => signOut(props.f7router)}>
-            <Trans id="Common.sign_out">Sign Out</Trans>
-          </Button>
+          <>
+            <Button outline href={paths.rootPath}>
+              <Tr en="Panel principal" es="Cerrar Sesión" />
+            </Button>
+            <Button outline onClick={() => signOut(props.f7router)}>
+              <Tr en="Sign Out" es="Cerrar Sesión" />
+            </Button>
+          </>
         ) : (
           <Button outline href={paths.signInPath}>
-            <Trans id="SplashPage.sign_in">Sign In</Trans>
+            <Tr en="Sign In" es="Iniciar Sesión" />
           </Button>
         )}
 
@@ -35,13 +42,14 @@ export default function SplashPage(props: F7Props) {
           <Trans id="SplashPage.create_account">Create Account</Trans>
         </Button>
 
-        {/* <Button outline href={paths.registerLocationWelcomePath}>
-          Register Organization
-        </Button> */}
+        <Button outline href={paths.registerLocationWelcomePath}>
+          <Tr en="Register Organization" es="Registrar Organización" />
 
-        <Button outline href={paths.durhamRegistationPath}>
-          <Trans id="SplashPage.register_business">Register Business</Trans>
         </Button>
+
+        {/* <Button outline href={paths.durhamRegistationPath}>
+          <Trans id="SplashPage.register_business">Register Business</Trans>
+        </Button> */}
 
         <Button outline onClick={() => toggleLocale()} style={{ border: 0 }}>
           <Trans id="SplashPage.choose_language">En Español</Trans>

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import React from 'reactn'
 
-import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
+import welcomeImage from 'src/assets/images/illustrations/hello.png'
 
 import {
   Page, Block, Button, Toolbar, Link, Row, Col, Sheet, PageContent,
@@ -119,7 +119,7 @@ export default class WelcomePage extends ReactNComponent<any, State> {
             </When>
           </Case>
 
-          <img alt="Welcome to Greenlight!" src={welcomeDoctorImage} />
+          <img alt="Welcome to Greenlight!" src={welcomeImage} width="100%" />
           <p>
             <Trans id="WelcomePage.terms_and_conditions">
               By continuing, you accept Greenlight's{' '}

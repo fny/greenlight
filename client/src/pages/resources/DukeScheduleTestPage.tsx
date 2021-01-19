@@ -4,7 +4,7 @@ import {
 } from 'framework7-react'
 import { t, Trans } from '@lingui/macro'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import EmailLink, { SUPPORT_EMAIL } from 'src/components/EmailLink'
+import EmailSupportLink from 'src/components/EmailSupportLink'
 
 export default function DukeScheduleTestPage(): JSX.Element {
   return (
@@ -38,7 +38,7 @@ export default function DukeScheduleTestPage(): JSX.Element {
         <p>
           <Trans id="DukeScheduleTestPage.instructions5">
             Before the holidays, Duke had significant delays. This has been resolved.
-            If you experience significant delays, please let us know: <EmailLink email={SUPPORT_EMAIL} />.
+            If you experience significant delays, please let us know: <EmailSupportLink />.
           </Trans>
         </p>
 

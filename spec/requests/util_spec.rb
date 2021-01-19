@@ -103,4 +103,35 @@ RSpec.describe 'Utility endpoints', type: :request do
       end
     end
   end
+
+  path '/v1/util/handle-taken' do
+    it 'returns true when the handle is taken' do
+      location = Fabricate(:location)
+      get_json "/v1/util/handle-taken?handle=#{location.permalink}"
+      expect(response_json[:taken]).to eq(true)
+    end
+
+    it 'returns false when the handle is not taken' do
+      location = Fabricate(:location)
+      location.destroy
+      get_json "/v1/util/handle-taken?handle=#{location.permalink}"
+      expect(response_json[:taken]).to eq(false)
+    end
+
+    get 'Returns whether the handle is in use' do
+      produces 'application/json'
+      parameter name: :handle, in: :query, type: :string
+
+      response 200, 'Handle provided' do
+        schema(SwaggerSchemaBuilder.build { taken :boolean, required: true })
+        let(:handle) { Fabricate(:location).permalink }
+        run_test!
+      end
+
+      response 422, 'Handle provided' do
+        let(:handle) { nil }
+        run_test!
+      end
+    end
+  end
 end

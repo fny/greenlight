@@ -495,3 +495,13 @@ function useDebounce(callback: any, delay: number) {
   )
   return debouncedFn
 }
+
+export function isInViewport(element: Element) {
+  const rect = element.getBoundingClientRect()
+  return (
+    rect.top >= 0
+      && rect.left >= 0
+      && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+      && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  )
+}

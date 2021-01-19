@@ -1,10 +1,11 @@
 import { setGlobal } from 'reactn'
 import { i18n } from 'src/i18n'
-import SessionStorage from 'src/helpers/SessionStorage'
+import LocalStorage from 'src/helpers/SessionStorage'
 
 import { cookieLocale } from 'src/helpers/global'
 import { RegisteringLocation } from 'src/models/RegisteringLocation'
 import { RegisteringUser } from 'src/models/RegisteringUser'
+import { f7, f7ready } from 'framework7-react'
 
 export class Filters {
   filters: string[]
@@ -29,10 +30,16 @@ setGlobal({
   i18n,
   currentUser: null,
   test: null,
-  registeringUser: SessionStorage.getRegisteringUser() || new RegisteringUser(),
-  registeringLocation: SessionStorage.getRegisteringLocation() || new RegisteringLocation(),
+  registeringUser: LocalStorage.getRegisteringUser() || new RegisteringUser(),
+  registeringLocation: LocalStorage.getRegisteringLocation() || new RegisteringLocation(),
   progress: null,
   filters: new Filters(),
 })
 
 i18n.activate(cookieLocale())
+
+f7ready((f7) => {
+  f7.on('routeChange', (newRoute) => {
+    setGlobal({ currentRoute: newRoute })
+  })
+})

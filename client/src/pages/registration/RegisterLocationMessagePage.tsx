@@ -23,7 +23,7 @@ import curamericasLogo from 'src/assets/images/logos/curamericas-logo.svg'
 
 import './RegisterLocationPages.css'
 import { Router } from 'framework7/modules/router/router'
-import SessionStorage from 'src/helpers/SessionStorage'
+import LocalStorage from 'src/helpers/SessionStorage'
 import { resetRegistration } from 'src/helpers/global'
 import Tr, { En, Es, tr } from 'src/components/Tr'
 
@@ -160,19 +160,22 @@ function Content({ messageId, f7router }: {messageId: RegisterLocationMessageIds
         <h1>
           <Tr en="Get Started for Free!" es="¡Empezar gratis!" />
         </h1>
-        <p>
-          <Tr>
-            <En>
-              Greenlight is free for your {location.category} thanks to
-              to funding from the NC DHHS, Durham City and County, and our partner Curamericas Global.
-            </En>
-            <Es>
-              Greenlight es gratis para tu {location.category} gracias a
-              a la financiación del DHHS de Carolina del Norte, la ciudad y el condado de Durham, y nuestro socio Curamericas Global.
-            </Es>
-          </Tr>
 
-        </p>
+        <Tr>
+          <En>
+            <p>
+              Greenlight is free for your {lcTrans(location.category)} thanks to
+              to funding from the NC DHHS, Durham City and County, and our partner Curamericas Global.
+            </p>
+          </En>
+          <Es>
+            <p>
+              Greenlight es gratis para tu {lcTrans(location.category)} gracias a
+              a la financiación del DHHS de Carolina del Norte, la ciudad y el condado de Durham, y nuestro socio Curamericas Global.
+            </p>
+          </Es>
+        </Tr>
+
         <div className="logos">
           <img alt="Duhram City" src={durhamCityLogo} className="logo" />
           <img alt="Curamericas" src={curamericasLogo} className="logo" />
@@ -198,18 +201,35 @@ function Content({ messageId, f7router }: {messageId: RegisterLocationMessageIds
         <h1>
           <Tr en="Get Started for Free!" es="¡Empezar gratis!" />
         </h1>
-        <p>
-          <Tr>
-            <En>
-              Greenlight is free for your {location.category} thanks to
+
+        <Tr>
+          <En>
+            <p>
+              Greenlight is free for your {lcTrans(location.category)} thanks to
               to funding from the NC DHHS, Durham City and County, and our partner Curamericas Global.
-            </En>
-            <Es>
-              Greenlight es gratis para tu {location.category} gracias a
+              On the following pages, you will:
+            </p>
+            <ul>
+              {!currentUser && <li>Create your personal account</li>}
+              <li>Register your {lcTrans(location.category)}</li>
+              <li>Get a link for others to join your {lcTrans(location.category)}</li>
+              {!currentUser && <li>Walkthrough the app</li>}
+            </ul>
+          </En>
+          <Es>
+            <p>
+              Greenlight es gratis para tu {lcTrans(location.category)} gracias a
               a la financiación del DHHS de Carolina del Norte, la ciudad y el condado de Durham, y nuestro socio Curamericas Global.
-            </Es>
-          </Tr>
-        </p>
+              En las siguientes páginas, podrá:
+            </p>
+            <ul>
+              {!currentUser && <li>Crear su cuenta personal</li>}
+              <li>Registrar su {lcTrans(location.category)}</li>
+              <li>Obtener un enlace para que otros se unan a su {lcTrans(location.category)}</li>
+              {!currentUser && <li>Explorar la aplicación</li>}
+            </ul>
+          </Es>
+        </Tr>
 
         <div className="logos">
           <img alt="Duhram City" src={durhamCityLogo} className="logo" />

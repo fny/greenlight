@@ -55,13 +55,17 @@ const LC: CategoryTranlsations = {
 }
 
 // HACK: We need a proper way to organize translations like this
-export function lcTrans(category: LocationCategories): string {
+export function lcTrans(category: LocationCategories | null): string {
   const { locale } = getGlobal()
-  return LC[category][locale === 'en' ? 0 : 1]
+  return LC[category || LocationCategories.LOCATION][locale === 'en' ? 0 : 1]
 }
 
-export function lcPeople(category: LocationCategories): string {
+export function lcPeople(category: LocationCategories | null): string {
   const { locale } = getGlobal()
+  if (!category) {
+    return locale === 'en' ? 'people' : 'personas'
+  }
+
   if ([LocationCategories.SCHOOL, LocationCategories.UNIVERSITY, LocationCategories.COLLEGE].includes(category)) {
     return locale === 'en' ? 'students and staff' : 'estudiantes y empleados'
   }

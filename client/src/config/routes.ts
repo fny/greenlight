@@ -1,5 +1,5 @@
 import { getGlobal } from 'reactn'
-import { isSignedIn } from 'src/helpers/global'
+import { isRegisteringLocation, isSignedIn } from 'src/helpers/global'
 import { resolvePath } from 'src/helpers/util'
 import { Router } from 'framework7/modules/router/router'
 import { User } from 'src/models'
@@ -80,7 +80,9 @@ const beforeEnter = {
     resolve: Function,
     reject: Function,
   ) {
-    if (isSignedIn()) {
+    if (isRegisteringLocation()) {
+      resolve()
+    } else if (isSignedIn()) {
       reject()
       this.navigate(dynamicPaths.currentUserHomePath())
     } else {
@@ -141,7 +143,7 @@ const registrationRoutes = {
     component: RegisterLocationDetailsPage,
   },
   registerLocationConfirmationPath: {
-    path: '/register/location/confirmation',
+    path: '/register/location/:locationId/confirmation',
     component: RegisterLocationConfirmationPage,
   },
   durhamRegistationPath: {

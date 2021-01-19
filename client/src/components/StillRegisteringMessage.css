@@ -1,0 +1,30 @@
+.StillRegisteringMessage {
+  text-align: center;
+  line-height: 2.5rem;
+  color: #0A322B;
+  font-weight: bold;
+  background-color: #ffacd3;
+}
+
+.StillRegisteringMessage .continue {
+  border: 2px solid #0A322B;
+  color: #0A322B;
+  border-radius: 5px;
+  padding: 2px 8px;
+  margin-left: 10px;
+  display: inline;
+  width: auto;
+  background-color: #ffacd3;
+  transition: background-color 0.5s ease;
+  outline: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.StillRegisteringMessage .continue:hover, .StillRegisteringMessage .continue:focus {
+  background-color: #ffb8d9;
+}
+
+.StillRegisteringMessage .continue:active {
+  background-color: #ff0077;
+}

@@ -30,6 +30,7 @@ class Location < ApplicationRecord
     employee_count
     daily_reminder_time
     remind_mon remind_tue remind_wed remind_thu remind_fri remind_sat remind_sun
+    reminders_enabled
   ]
 
   self.queryable_columns = %i[
@@ -77,6 +78,10 @@ class Location < ApplicationRecord
   def self.find_by_id_or_permalink!(id)
     find_by_id_or_permalink(id) ||
       raise(ActiveRecord::RecordNotFound, "Location could not be found by #{id}")
+  end
+
+  def self.handle_taken?(handle)
+    Location.exists?(permalink: handle)
   end
 
   # Assigns the phone number and formats it in e164 format.

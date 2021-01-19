@@ -18,6 +18,8 @@ import { assertNotNull } from 'src/helpers/util'
 import logger from 'src/helpers/logger'
 import { paths } from 'src/config/routes'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import './SessionsPage.css'
+import greenlightLogo from 'src/assets/images/logos/greenlight-banner-logo.svg'
 
 interface State {
   emailOrMobile: string
@@ -73,8 +75,7 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
           <NavbarHomeLink slot="left" />
         </Navbar>
         <div className="greenlight-logo">
-          Greenlight
-          <span>.</span>
+          <img src={greenlightLogo} alt="Greenlight" />
         </div>
         <List form>
           <Block>

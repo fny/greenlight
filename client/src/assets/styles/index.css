@@ -1,6 +1,6 @@
 :root, .ios, .md {
-  --f7-font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --gl-title-font: 'Poppins', 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --f7-font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --gl-title-font: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --gl-green-light: #33DA97;
   --gl-green: #00A183;
   --gl-green-dark: #0A322B;
@@ -8,8 +8,8 @@
   --gl-yellow: #FFD034;
   --gl-pink: #FF3494;
   --gl-pink-light: #f7a6cc;
-  --gl-gold-light: #FFFAA1;
   --gl-gold: #FFCD65;
+  --gl-gold-light: #FFFAA1;
   --gl-blue: #8accff;
   --gl-blue-light: #c5e6ff;
   --gl-gold-grad: linear-gradient(90deg, var(--gl-gold-light), var(--gl-gold));
@@ -20,18 +20,128 @@
   --f7-page-bg-color: #fff;
   --f7-button-fill-bg-color: var(--gl-green);
   --f7-button-fill-pressed-bg-color: var(--gl-green-light);
+  --gl-theme-splash-bg: var(#fff);
+  --gl-emb-logo-green1: #9FD64D;
+  --gl-emb-logo-green2: #B3E565;
+  --gl-emb-green1: #8CC635;
+  --gl-emb-green2: #9FCD58;
+  --gl-emb-green3: #A9DC5A;
+  --gl-emb-green4: #AFDB6B;
+  --gl-emb-green5: #C4F37A;
+  --gl-emb-green6: #C8ED8E;
+  --gl-emb-green7: #E7F0DB;
+  --gl-emb-red: #E87767;
+  --gl-emb-cream: #FFF5E0;
+  --gl-emb-blue: #DEE8F3;
+  --gl-emb-black: #2E3744;
+  --f7-font-family: 'Rubik', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --gl-title-font: 'Aeonik', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --gl-green-light: hsl(110, 47%, 70%);
+  --gl-green: #54b641;
+  --gl-green-dark: hsl(110, 47%, 20%);
+  --gl-green-fade: #00A18370;
+  --gl-yellow: #FFD034;
+  /* --gl-pink: hsl(7, 74%, 50%);
+  --gl-pink-light: hsl(7, 74%, 80%);; */
+  /* --gl-gold: hsl(41, 100%, 50%);
+  --gl-gold-light: #FFF5E0; */
+  /* --gl-blue: #8accff;
+  --gl-blue-light: #c5e6ff; */
+  --f7-theme-color: var(--gl-green);
+  --f7-button-fill-bg-color: var(--gl-green);
+  --f7-button-fill-pressed-bg-color: var(--gl-green-light);
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+body, #root {
+  background-image: url(../images/gl-desktop-bg.png);
+  background-repeat: repeat-y;
+  background-size: cover;
+  background-position: center;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--f7-font-family);
   color: var(--gl-green-dark);
+}
+
+@keyframes heartbeat {
+  0% {
+    transform: scale( .75);
+  }
+  20% {
+    transform: scale( 1);
+  }
+  40% {
+    transform: scale( .75);
+  }
+  60% {
+    transform: scale( 1);
+  }
+  80% {
+    transform: scale( .75);
+  }
+  100% {
+    transform: scale( .75);
+  }
+}
+
+#heart-wrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+#heart {
+  position: relative;
+  width: 100px;
+  height: 90px;
+  animation: heartbeat 2s infinite;
+}
+
+#heart:before,
+#heart:after {
+  position: absolute;
+  content: "";
+  left: 50px;
+  top: 0;
+  width: 50px;
+  height: 80px;
+  background: var(--gl-green7);
+  -moz-border-radius: 50px 50px 0 0;
+  border-radius: 50px 50px 0 0;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  -webkit-transform-origin: 0 100%;
+  -moz-transform-origin: 0 100%;
+  -ms-transform-origin: 0 100%;
+  -o-transform-origin: 0 100%;
+  transform-origin: 0 100%;
+}
+
+#heart:after {
+  left: 0;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+  -webkit-transform-origin: 100% 100%;
+  -moz-transform-origin: 100% 100%;
+  -ms-transform-origin: 100% 100%;
+  -o-transform-origin: 100% 100%;
+  transform-origin: 100% 100%;
 }

@@ -7,9 +7,9 @@ import CookieJar, { Cookie } from 'src/helpers/CookieJar'
 
 import { paths } from 'src/config/routes'
 import Honeybadger from 'src/initializers/honeybadger'
-import { RegisteringLocation } from 'src/models/RegisteringLocation'
+import { hasFinishedStepOne, RegisteringLocation } from 'src/models/RegisteringLocation'
 import { RegisteringUser } from 'src/models/RegisteringUser'
-import SessionStorage from './SessionStorage'
+import LocalStorage from './SessionStorage'
 
 export function isSignedIn(): boolean {
   const user = currentUser()
@@ -30,24 +30,27 @@ export async function signOut(router?: Router.Router): Promise<void> {
   if (router) {
     router.navigate(paths.splashPath)
   } else {
-    ;(window.location as any) = '/'
+    (window.location as any) = '/'
   }
+  resetRegistration()
   await deleteSession()
   Honeybadger.resetContext()
-  // TODO: There should be a way of doing this without a hard redirect
-  setGlobal({ currentUser: null })
+
   localStorage.clear()
+  setGlobal({ currentUser: null })
 }
 
 export function toggleLocale(): void {
   const newLocale = cookieLocale() === 'en' ? 'es' : 'en'
   CookieJar.set(Cookie.LOCALE, newLocale)
-  setGlobal({ locale: newLocale })
-  i18n.activate(newLocale)
+  // setGlobal({ locale: newLocale })
+  // i18n.activate(newLocale)
   const { currentUser } = getGlobal()
   if (currentUser) {
     updateUser(currentUser, { locale: newLocale })
   }
+  // FIXME: If we don't do this sheets break
+  window.location.reload()
 }
 
 export function cookieLocale(): GLLocales {
@@ -56,10 +59,14 @@ export function cookieLocale(): GLLocales {
 }
 
 export function resetRegistration(): void {
-  SessionStorage.deleteRegisteringLocation()
-  SessionStorage.deleteRegisteringUser()
+  LocalStorage.deleteRegisteringLocation()
+  LocalStorage.deleteRegisteringUser()
   setGlobal({
     registeringLocation: new RegisteringLocation(),
     registeringUser: new RegisteringUser(),
   })
+}
+
+export function isRegisteringLocation(): boolean {
+  return hasFinishedStepOne(getGlobal().registeringLocation)
 }

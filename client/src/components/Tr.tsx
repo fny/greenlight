@@ -1,6 +1,7 @@
-import React from "react"
-import { getGlobal, useGlobal } from "reactn"
-import logger from "src/helpers/logger"
+import React, { useContext } from 'react'
+import { getGlobal, useGlobal } from 'reactn'
+import logger from 'src/helpers/logger'
+import { MyI18n } from 'src/i18n'
 
 interface MessageProps {
   // Language specific content
@@ -63,8 +64,9 @@ interface TrProps {
 }
 
 export default function Tr(props: TrProps): JSX.Element {
-  const [locale] = useGlobal('locale')
-  let en, es
+  const locale = useContext(MyI18n)
+  let en
+  let es
 
   if (props.children) {
     const children = React.Children.toArray(props.children)
@@ -80,11 +82,11 @@ export default function Tr(props: TrProps): JSX.Element {
   es = es || props.es
 
   if (!en) {
-    throw new Error("English translation missing")
+    throw new Error('English translation missing')
   }
 
   if (!es) {
-    throw new Error("Spanish translation missing")
+    throw new Error('Spanish translation missing')
   }
 
   if (props.reviewTrans) {

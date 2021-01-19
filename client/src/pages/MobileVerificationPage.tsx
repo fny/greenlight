@@ -47,7 +47,6 @@ const MobileVerificationPage: FunctionComponent<F7Props> = () => {
     },
     onSubmit: (values) => {
       submissionHandler.submit(async () => {
-        console.log('submit', values)
         setCodeSent(true)
         return Promise.resolve()
       })

@@ -1,122 +1,259 @@
-import { t, Trans } from '@lingui/macro'
 import {
-  Block, BlockTitle, Button, f7, List, ListItem, ListItemCell, ListItemRow, Page,
+  Block, BlockTitle, Button, f7, List, ListItemCell, ListItemRow, Page,
 } from 'framework7-react'
-import React, { useState } from 'react'
+import React from 'react'
 import {
-  isBlank, isPresent, titleCase, upperCaseFirst,
+  isBlank, isPresent, upperCaseFirst,
 } from 'src/helpers/util'
-import { reloadCurrentUser } from 'src/helpers/global'
-import { RegisteringLocation } from 'src/models/RegisteringLocation'
+import { reloadCurrentUser, resetRegistration } from 'src/helpers/global'
 import {
-  lcTrans, LocationCategories, LOCATION_CATEGORIES,
+  lcPeople,
+  lcTrans,
 } from 'src/models/Location'
 
-import { paths } from 'src/config/routes'
+import { dynamicPaths, paths } from 'src/config/routes'
 import { useGlobal } from 'reactn'
-import { F7Props, FormikInstance } from 'src/types'
+import { F7Props } from 'src/types'
 import { FormikProvider, useFormik } from 'formik'
 import FormikInput from 'src/components/FormikInput'
 import * as Yup from 'yup'
-import { User } from 'src/models'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { createLocation } from 'src/api'
 
-import { Router } from 'framework7/modules/router/router'
 import 'src/lib/yup-phone'
 import FormikItem from 'src/components/FormikItem'
-import { SmartSelect } from 'framework7/components/smart-select/smart-select'
-
-class State {
-  locationCategory: LocationCategories = LocationCategories.COMMUNITY
-}
+import Tr, { En, Es, tr } from 'src/components/Tr'
+import FakeF7ListItem from 'src/components/FakeF7ListItem'
+import EmailSupportLink from 'src/components/EmailSupportLink'
 
 export default function RegisterLocationDetailsPage(props: F7Props): JSX.Element {
   const [registeringLocation] = useGlobal('registeringLocation')
   const [currentUser] = useGlobal('currentUser')
-  const [state, setState] = useState(new State())
 
   const submissionHandler = new SubmitHandler(f7)
-  const formik = useFormik<LocationInput>({
+  const formik = useFormik<LocationSetupInput>({
     validationSchema: schema,
-    initialValues: new LocationInput(),
+    initialValues: new LocationSetupInput(),
     onSubmit: (values) => {
       submissionHandler.submit(async () => {
         if (formik.dirty) {
-          await createLocation({
+          const location = await createLocation({
+            ...registeringLocation,
             ...values,
             dailyReminderTime: values.dailyReminderHour + (values.dailyReminderAMPM === 'pm' ? 12 : 0),
           })
-          await reloadCurrentUser()
-          props.f7router.navigate(paths.registerLocationConfirmationPath)
+
+          props.f7router.navigate(dynamicPaths.registerLocationConfirmationPath({ locationId: location.id }))
+          resetRegistration()
         }
       })
     },
   })
 
   const ownerCount = currentUser ? currentUser.locationAccounts.filter((x) => x.permissionLevel === 'owner').length : 0
-  const category = registeringLocation.category || state.locationCategory
   return (
     <Page className="RegisterLocationPages">
       <Block>
         <h1>
-          Tell us more about your<br />
-          {lcTrans(category)}.
+          <Tr>
+            <En>
+              Set up your {lcTrans(registeringLocation.category)}.
+            </En>
+            <Es>
+              Configura su {lcTrans(registeringLocation.category)}.
+            </Es>
+          </Tr>
         </h1>
-        <FormikProvider value={formik}>
-          <List
-            form
-            onSubmit={(e) => {
-              e.preventDefault()
-              formik.handleSubmit(e)
-            }}
-          >
-            <Block>
-              <BlockTitle>
-                Your {upperCaseFirst(lcTrans(category))}'s Information
-              </BlockTitle>
-
-              {ownerCount > 0 && (
-              <span>{' '}
-                Note you already have registered {ownerCount} locations. If you're having trouble with access send us an email: help@greenlightready.com
-              </span>
-              )}
-
-              <LocationDetailFields
-                formik={formik}
-                location={registeringLocation}
-                category={category}
-                state={state}
-                setState={setState}
-              />
-              <LocationNotificationFields formik={formik} category={category} />
-            </Block>
-            <Button fill type="submit">
-              Create Your {upperCaseFirst(lcTrans(category))}
-            </Button>
-          </List>
-        </FormikProvider>
+        <small>
+          <Tr
+            en={`You're almost done registering ${registeringLocation.name}!`}
+            es={`¡Está casi terminando de registrar ${registeringLocation.name}!`}
+          />
+        </small>
       </Block>
+      <FormikProvider value={formik}>
+        <List
+          form
+          onSubmit={(e) => {
+            e.preventDefault()
+            formik.handleSubmit(e)
+          }}
+        >
+          {ownerCount > 0 && (
+            <Block>
+              <small>
+                <Tr>
+                  <En>
+                    You already have registered {ownerCount} locations. If you're having trouble with access send us an email: <EmailSupportLink />
+                  </En>
+                  <Es>
+                    Ya tienes ubicaciones de {ownerCount} registradas. Si tiene problemas con el acceso, envíenos un correo electrónico: <EmailSupportLink />
+                  </Es>
+                </Tr>
+              </small>
+            </Block>
+          )}
+
+          <Block>
+            <BlockTitle>
+              Your {upperCaseFirst(lcTrans(registeringLocation.category))}'s Link
+            </BlockTitle>
+            <List noHairlines style={{ margin: 0 }}>
+              <p>
+                Create a custom link that {lcPeople(registeringLocation.category)} associated with your
+                {lcTrans(registeringLocation.category)} can visit to register for Greenlight.
+              </p>
+              <FormikInput
+                label={
+                  tr({ en: 'Customize Your Greenlight URL', es: 'Personaliza su URL de Greenlight' })
+                }
+                name="permalink"
+                info={tr({ en: 'Lowercase letters, numbers, and dashes only.', es: 'Solo letras minúsculas, números y guiones.' })}
+                onFocus={(e) => {
+                  e.target.value = 'glit.me/go/example'
+                }}
+                type="text"
+                floatingLabel
+              />
+              {isPresent(formik.values.permalink) && isBlank(formik.errors.permalink)
+              && (
+              <p>
+                <Tr>
+                  <En>
+                    Users can register for your
+                    {' '}
+                    {lcTrans(registeringLocation.category)} by visiting
+                    {' '}
+                    <br />
+                    <b>glit.me/go/{formik.values.permalink}</b>
+                  </En>
+                  <Es>
+                    Los usuarios pueden registrarse para su
+                    {' '}
+                    {lcTrans(registeringLocation.category)} visitando
+                    {' '}
+                    <br />
+                    <b>glit.me/go/{formik.values.permalink}</b>
+                  </Es>
+                </Tr>
+              </p>
+              )}
+            </List>
+          </Block>
+          <Block>
+            <BlockTitle>
+              <Tr
+                en="Daily Check Ins"
+                es="Encuestas Diarias"
+              />
+            </BlockTitle>
+            <p>
+              <Tr>
+                <En>
+                  We send health check in surveys to your
+                  {' '}
+                  {lcPeople(registeringLocation.category)}
+                  {' '}
+                  so you can know if they are well.
+                </En>
+                <Es>
+                  Enviamos enceustas de salud a sus
+                  {' '}
+                  {lcPeople(registeringLocation.category)}
+                  {' '}
+                  para que sepa si están bien.
+                </Es>
+              </Tr>
+            </p>
+            <List accordionList noHairlines>
+              <FormikItem
+                title={tr({ en: 'Enable reminders', es: 'Activar recordatorios' })}
+                name="remindersEnabled"
+                checkbox
+              />
+              {
+                    formik.values.remindersEnabled && (
+                      <FakeF7ListItem>
+                        <p>
+                          {tr({ en: 'What time would you like send reminders?', es: '¿A qué hora le gustaría enviar recordatorios?' })}
+                        </p>
+                        <ListItemRow>
+                          <ListItemCell>
+                            <FormikInput name="dailyReminderHour" label={tr({ en: 'Hour', es: 'Hora' })} type="number" min="1" max="12" />
+                          </ListItemCell>
+                          <ListItemCell>
+                            <FormikInput name="dailyReminderAMPM" label="AM/PM" type="select">
+                              <option value="am">AM</option>
+                              <option value="pm">PM</option>
+                            </FormikInput>
+                          </ListItemCell>
+                        </ListItemRow>
+                        <FakeF7ListItem>
+                          <p>
+                            <Tr
+                              en="What days would you like send reminders?"
+                              es="¿Qué días le gustaría enviar recordatorios?"
+                            />
+                          </p>
+                          <FormikItem
+                            title={tr({ en: 'Monday', es: 'Lunes' })}
+                            name="remindMon"
+                            checkbox
+                          />
+                          <FormikItem
+                            title={tr({ en: 'Tuesday', es: 'Martes' })}
+                            name="remindTue"
+                            checkbox
+                          />
+                          <FormikItem
+                            title={tr({ en: 'Wednesday', es: 'Miercoles' })}
+                            name="remindWed"
+                            checkbox
+                          />
+                          <FormikItem
+                            title={tr({ en: 'Thursday', es: 'Jueves' })}
+                            name="remindThu"
+                            checkbox
+                          />
+                          <FormikItem
+                            title={tr({ en: 'Friday', es: 'Viernes' })}
+                            name="remindFri"
+                            checkbox
+                          />
+                          <FormikItem
+                            title={tr({ en: 'Saturday', es: 'Sábado' })}
+                            name="remindSat"
+                            checkbox
+                          />
+                          <FormikItem
+                            title={tr({ en: 'Sunday', es: 'Domingo' })}
+                            name="remindSun"
+                            checkbox
+                          />
+                        </FakeF7ListItem>
+
+                      </FakeF7ListItem>
+                    )
+              }
+
+            </List>
+          </Block>
+          <Block>
+            <Button fill type="submit">
+              <Tr
+                en={`Create Your ${upperCaseFirst(lcTrans(registeringLocation.category))}`}
+                es={`Crear Su ${upperCaseFirst(lcTrans(registeringLocation.category))}`}
+              />
+            </Button>
+          </Block>
+        </List>
+      </FormikProvider>
     </Page>
   )
 }
 
-class LocationInput {
-  name: string = ''
-
-  zipCode: string = ''
-
-  email: string = ''
-
-  phoneNumber: string = ''
-
-  website: string = ''
-
+class LocationSetupInput {
   permalink: string = ''
-
-  category: LocationCategories | null = null
-
-  employeeCount: number | null = null
 
   dailyReminderHour = 8
 
@@ -135,126 +272,20 @@ class LocationInput {
   remindSat = true
 
   remindSun = true
+
+  remindersEnabled = true
+
+  monitoringEnabled = true
 }
 
-const cantBeBlankMessage = t({ id: 'Form.error_blank', message: "Can't be blank" })
-type Props = { location?: Location, f7router: Router.Router, category?: string }
-
-function LocationDetailFields({
-  formik, location, category, state, setState,
-}: { formik: FormikInstance<any>, location: RegisteringLocation, category: LocationCategories, state: State, setState: React.Dispatch<React.SetStateAction<State>>}) {
-  return (
-    <>
-      <List noHairlines>
-        <FormikInput
-          label={
-            t({ id: 'RegisterLocationDetailsPage.greenlight_url', message: 'Customize Your Greenlight URL' })
-          }
-          name="permalink"
-          info="Lowercase letters, numbers, and dashes only."
-          onFocus={(e) => {
-            e.target.value = 'glit.me/go/asf'
-          }}
-          type="text"
-          floatingLabel
-        />
-        {isPresent(formik.values.permalink) && isBlank(formik.errors.permalink)
-        && (
-        <ListItem>
-          <Trans id="LocationDetailsForm.registration">
-            Users will be able to register for your {upperCaseFirst(category)} by visiting:{' '}
-            glit.me/go/{formik.values.permalink}
-          </Trans>
-        </ListItem>
-        )}
-      </List>
-    </>
-  )
-}
-
-function LocationNotificationFields({ formik, category }: { formik: FormikInstance<any>, category: LocationCategories}) {
-  return (
-    <Block>
-      <BlockTitle>
-        <Trans id="RegisterLocationDetailsPage.daily_check_in_title">
-          Daily Check Ins
-        </Trans>
-      </BlockTitle>
-      <p>
-        <Trans id="RegisterLocationDetailsPage.daily_check_in_message">
-          We send daily reminders to your community to fill out their daily check-ins.
-          Set the default time below. After everyone signs up, they can change the time and days they're notified.
-        </Trans>
-      </p>
-      <List accordionList noHairlines>
-        <p>
-          {t({ id: 'LocationNotificationsForm.time_to_remind', message: 'What time would you like send reminders?' })}
-        </p>
-        <ListItemRow>
-          <ListItemCell>
-            <FormikInput name="dailyReminderHour" label={t({ id: 'Common.hour', message: 'Hour' })} type="number" min="1" max="12" />
-          </ListItemCell>
-          <ListItemCell>
-            <FormikInput name="dailyReminderAMPM" label="AM/PM" type="select">
-              <option value="am">AM</option>
-              <option value="pm">PM</option>
-            </FormikInput>
-          </ListItemCell>
-        </ListItemRow>
-        <List style={{ marginTop: 0 }}>
-          <p>
-            {t({ id: 'LocationNotificationsForm.days_to_remind', message: 'What days would you like send survey reminders?' })}
-          </p>
-          <FormikItem
-            title={t({ id: 'Weekday.monday', message: 'Monday' })}
-            name="remindMon"
-            checkbox
-          />
-          <FormikItem
-            title={t({ id: 'Weekday.tuesday', message: 'Tuesday' })}
-            name="remindTue"
-            checkbox
-          />
-          <FormikItem
-            title={t({ id: 'Weekday.wednesday', message: 'Wednesday' })}
-            name="remindWed"
-            checkbox
-          />
-          <FormikItem
-            title={t({ id: 'Weekday.thursday', message: 'Thursday' })}
-            name="remindThu"
-            checkbox
-          />
-          <FormikItem
-            title={t({ id: 'Weekday.friday', message: 'Friday' })}
-            name="remindFri"
-            checkbox
-          />
-          <FormikItem
-            title={t({ id: 'Weekday.saturday', message: 'Saturday' })}
-            name="remindSat"
-            checkbox
-          />
-          <FormikItem
-            title={t({ id: 'Weekday.sunday', message: 'Sunday' })}
-            name="remindSun"
-            checkbox
-          />
-        </List>
-      </List>
-    </Block>
-  )
-}
-
-const schema = Yup.object<LocationInput>().shape({
-  name: Yup.string().required(cantBeBlankMessage),
+const schema = Yup.object<LocationSetupInput>().shape({
   permalink: Yup.string()
-    .matches(/^[a-z0-9-]+$/, { message: t({ id: 'LocationForm.permalink_error', message: 'only lowercase letters, dashes for spaces, and numbers' }) })
+    .matches(/^[a-z0-9-]+$/, {
+      message: tr({
+        en: 'only lowercase letters, dashes for spaces, and numbers',
+        es: 'solo letras minúsculas, guiones para espacios y números',
+      }),
+    })
     .min(3)
-    .required(cantBeBlankMessage),
-  zipCode: Yup.string().matches(/^\d{5}$/, {
-    excludeEmptyString: false,
-    message: t({ id: 'LocationForm.invalid_zip_code', message: 'Zip code should be 5 digits' }),
-  }).required(cantBeBlankMessage),
-  employeeCount: Yup.number().min(1).required(cantBeBlankMessage).typeError(t({ id: 'LocationForm.employee_count_error', message: 'Please specify a number' })),
+    .required(tr({ en: "Can't be blank", es: 'No puede quedar vacío' })),
 })

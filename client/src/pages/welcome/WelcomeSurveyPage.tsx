@@ -18,7 +18,7 @@ import { NoCurrentUserError } from 'src/helpers/errors'
 import { t, Trans } from '@lingui/macro'
 import { completeWelcomeUser } from 'src/api'
 
-import onlineCheckupImage from 'src/assets/images/online-checkup.svg'
+import welcomeSurveyImage from 'src/assets/images/illustrations/survey.png'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { reloadCurrentUser } from 'src/helpers/global'
 
@@ -68,7 +68,7 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
           }
           </p>
           <br />
-          <img src={onlineCheckupImage} alt="Daily Check-In" />
+          <img src={welcomeSurveyImage} alt="Daily Check-In" width="100%" />
 
           <br />
           <br />
