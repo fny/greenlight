@@ -3,7 +3,7 @@ import {
   Page, Navbar, Block, List, ListInput, Button, Toggle, ListItem,
 } from 'framework7-react'
 import { SyntheticEvent } from 'react'
-import { updateUser } from 'src/api'
+import { updateCurrentUser, updateUser } from 'src/api'
 import { dynamicPaths } from 'src/config/routes'
 import { User } from 'src/models'
 import { ReactNComponent } from 'reactn/build/components'
@@ -57,7 +57,7 @@ export default class extends ReactNComponent<any, State> {
 
     this.$f7.dialog.preloader(t({ id: 'WelcomePasswordPage.submitting_changes', message: 'Submitting changes...' }))
     try {
-      const user = await updateUser(this.state.currentUser, { password: this.state.password } as Partial<User>)
+      const user = await updateCurrentUser({ password: this.state.password })
       this.setGlobal({ currentUser: user })
       this.$f7.dialog.close()
       this.$f7router.navigate(dynamicPaths.afterWelcomePasswordPath())

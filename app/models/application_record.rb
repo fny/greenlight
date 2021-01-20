@@ -33,8 +33,12 @@ class ApplicationRecord < ActiveRecord::Base
   #
   # @param [Hash] attrs
   # @return [HashWithIndifferentAccess]
-  def self.restrict_params(attrs)
-    HashWithIndifferentAccess.new(attrs).slice(*self.permitted_params)
+  def self.restrict_params(attrs, additional = [])
+    hash = HashWithIndifferentAccess.new(attrs).slice(*self.permitted_params)
+    additional.each do |key|
+      hash[key] = attrs[key]
+    end
+    hash
   end
 
   # @param [Array<String>] columns
@@ -55,6 +59,14 @@ class ApplicationRecord < ActiveRecord::Base
     return all if query.blank?
 
     self.search(queryable_columns || [], query)
+  end
+
+  # @param [String] query
+  # @return [ActiveRecord::Base, nil]
+  def self.qf(query)
+    return all if query.blank?
+
+    self.search(queryable_columns || [], query).first
   end
 
   def self.dedupe(columns)

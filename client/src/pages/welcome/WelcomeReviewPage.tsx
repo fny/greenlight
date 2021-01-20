@@ -5,7 +5,7 @@ import {
 } from 'framework7-react'
 
 import { formatPhone, haveEqualAttrs, deleteBlanks } from 'src/helpers/util'
-import { updateUser } from 'src/api'
+import { updateCurrentUser, updateUser } from 'src/api'
 import { paths } from 'src/config/routes'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/helpers/errors'
@@ -58,7 +58,6 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
     })
   }
 
-  // TODO: Reactor: Extract this pattern
   async submit() {
     if (!this.validate()) {
       return
@@ -73,7 +72,7 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
 
     this.$f7.dialog.preloader(t({ id: 'WelcomeReviewPage.submitting_changes', message: 'Submitting changes...' }))
     try {
-      const user = await updateUser(this.state.currentUser, updatedUserAttrs)
+      const user = await updateCurrentUser(updatedUserAttrs)
       this.setGlobal({ currentUser: user })
       this.$f7.dialog.close()
       this.$f7router.navigate(paths.welcomePasswordPath)

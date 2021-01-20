@@ -175,6 +175,14 @@ export async function getCurrentUser(): Promise<CurrentUser> {
   return currentUser
 }
 
+export async function updateCurrentUser(updates: Partial<CurrentUser>): Promise<CurrentUser> {
+  const response = await v1.patch<RecordResponse<User>>('/current-user', transformForAPI(updates))
+
+  const entity = transformRecordResponse<CurrentUser>(response.data)
+  assertNotArray(entity)
+  return entity
+}
+
 export async function getUser(id: string): Promise<User> {
   return getResource<User>(`/users/${id}`)
 }

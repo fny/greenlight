@@ -2,7 +2,7 @@
 
 class User < ApplicationRecord
   self.permitted_params = %i[
-    first_name last_name email password mobile_number mobile_carrier locale
+    first_name last_name email mobile_number mobile_carrier locale
     zip_code time_zone birth_date physician_name physician_phone_number
     daily_reminder_type needs_physician
   ]
