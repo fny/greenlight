@@ -34,6 +34,10 @@ class ReminderWorker < ApplicationWorker
   def perform(user_id)
     user = User.find(user_id)
 
+    # Don't send reminders unless the person has completed the registration
+    # process
+    return if !user.completed_welcome_at
+
     # Don't send reminders twice in the same day
     return if user.daily_reminder_sent_at&.today?
 
