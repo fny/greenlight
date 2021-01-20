@@ -52,12 +52,17 @@ RSpec.describe User, type: :model do
 
   describe '.restrict_params' do
     it 'restricts the attributes to those that are permitted for symbols'  do
-      permitted = User.restrict_params({ email: 'a', password: 'b', created_at: 'c' })
-      expect(permitted).to eq({ 'email' => 'a', 'password' => 'b' })
+      permitted = User.restrict_params({ email: 'a', 'password' => 'b', created_at: 'c' })
+      expect(permitted).to eq({ 'email' => 'a' })
     end
 
     it 'restricts the attributes to those that are permitted for strings' do
-      permitted = User.restrict_params({ 'email' => 'a', 'password' => 'b', 'created_at' => 'c' })
+      permitted = User.restrict_params({ 'email' => 'a', 'created_at' => 'c' })
+      expect(permitted).to eq({ 'email' => 'a' })
+    end
+
+    it 'allows additional params' do
+      permitted = User.restrict_params({ email: 'a', password: 'b' }, [:password])
       expect(permitted).to eq({ 'email' => 'a', 'password' => 'b' })
     end
   end
