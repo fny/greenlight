@@ -5,7 +5,7 @@ import {
 } from 'framework7-react'
 
 import { formatPhone, haveEqualAttrs, deleteBlanks } from 'src/helpers/util'
-import { updateCurrentUser, updateUser } from 'src/api'
+import { updateCurrentUser } from 'src/api'
 import { paths } from 'src/config/routes'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/helpers/errors'

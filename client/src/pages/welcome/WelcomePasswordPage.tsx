@@ -3,7 +3,7 @@ import {
   Page, Navbar, Block, List, ListInput, Button, Toggle, ListItem,
 } from 'framework7-react'
 import { SyntheticEvent } from 'react'
-import { updateCurrentUser, updateUser } from 'src/api'
+import { updateCurrentUser } from 'src/api'
 import { dynamicPaths } from 'src/config/routes'
 import { User } from 'src/models'
 import { ReactNComponent } from 'reactn/build/components'

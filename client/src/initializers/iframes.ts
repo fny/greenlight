@@ -1,17 +1,16 @@
-import { IframeHTMLAttributes } from 'react'
 import env from 'src/config/env'
 
-function loadIframe(src: string, attributes: any = {}) {
+function loadIframe(src: string, attributes: any = {}): HTMLIFrameElement | undefined {
   if (env.isDevelopment()) {
-    return
+    return undefined
   }
   if (env.isCordova()) {
-    return
+    return undefined
   }
   const el = document.createElement('iframe')
   el.src = src
   Object.keys(attributes).forEach((key) => {
-    ;(el as any)[key] = attributes[key]
+    (el as any)[key] = attributes[key]
   })
   document.getElementById('preload')?.appendChild(el)
   return el

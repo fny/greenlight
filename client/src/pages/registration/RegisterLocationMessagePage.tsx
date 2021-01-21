@@ -9,7 +9,6 @@ import { hasFinishedStepOne, RegisteringLocation } from 'src/models/RegisteringL
 
 import { Dict, F7Props } from 'src/types'
 import SubmitHandler from 'src/helpers/SubmitHandler'
-import { setGlobal, useGlobal } from 'reactn'
 import { GLLocales } from 'src/i18n'
 import {
   assertNotNull, greeting, isInDurham, isInOnslow, titleCase,
@@ -23,9 +22,9 @@ import curamericasLogo from 'src/assets/images/logos/curamericas-logo.svg'
 
 import './RegisterLocationPages.css'
 import { Router } from 'framework7/modules/router/router'
-import LocalStorage from 'src/helpers/SessionStorage'
 import { resetRegistration } from 'src/helpers/global'
 import Tr, { En, Es, tr } from 'src/components/Tr'
+import { useGlobal } from 'reactn'
 
 const MESSAGE_IDS = [
   'school', 'not-durham', 'durham-large', 'durham', 'curamericas-school',

@@ -28,8 +28,7 @@ function startApp() {
     })
     .catch((err) => {
       if (err.response && err.response.status === 401) {
-        // Not signed in, so lets clear up anything thats hanging around
-        localStorage.clear()
+        // Not signed in
       } else {
         throw err
       }
