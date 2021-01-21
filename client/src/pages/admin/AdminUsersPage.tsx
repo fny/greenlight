@@ -26,7 +26,7 @@ import { Dict, F7Props } from 'src/types'
 import UserJDenticon from 'src/components/UserJDenticon'
 import { dynamicPaths, paths } from 'src/config/routes'
 import {
-  assertNotNull, assertNotUndefined, sortBy, isBlank, stringify, isInViewport,
+  assertNotNull, assertNotUndefined, sortBy, isBlank, stringify, isInViewport, countVisible,
 } from 'src/helpers/util'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import React, { useEffect, useState, useRef } from 'react'
@@ -37,7 +37,6 @@ import LoadingContent, { LoadingState } from 'src/components/LoadingContent'
 import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
 import { Roles } from 'src/models/LocationAccount'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
-import { currentUser } from 'src/helpers/global'
 import { useGlobal } from 'reactn'
 // import { UsersFilter } from 'src/components/UsersFilter'
 
@@ -117,6 +116,10 @@ function groupUsersByFirstLetter(users: User[]): [string, User[]][] {
   return Object.entries(grouped)
 }
 
+function countVisibleUserItems() {
+  return countVisible('.user-item')
+}
+
 export default function AdminUsersPage(props: F7Props): JSX.Element {
   const { locationId } = props.f7route.params
   assertNotUndefined(locationId)
@@ -155,7 +158,7 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
   } = useSWRInfinite<PagedResource<User>>(getKey, async (locationid: string, page: number, name?: string, status?: GreenlightStatusTypes, role?: Roles) => getPagedUsersForLocation(locationid, page, name, status, role))
 
   const users = sortUsersByReversedName(
-    _.uniqBy(data ? data.map((d) => d.data).flat() : [currentUser], (u) => u.id),
+    _.uniqBy(data ? data.map((d) => d.data).flat() : [], (u) => u.id),
   )
 
   const groupedUsers = groupUsersByFirstLetter(users)
@@ -196,13 +199,6 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
             searchContainer=".search-list"
             searchIn=".user-item > .item-link > .item-content > .item-inner"
             searchItem="li.user-item"
-            onSearchbarSearch={(x: F7SearchbarExtended) => {
-              const totalVisible = Array.from(x.foundEl.getElementsByClassName('user-item')).map(isInViewport).reduce(
-                (acc, curr: boolean) => acc + (curr ? 1 : 0),
-                0,
-              )
-              // console.log(totalVisible)
-            }}
           />
         </Subnavbar>
         <NavRight>
