@@ -6,26 +6,35 @@ import { f7, Page, Block, Sheet, Row, Button, Col, Link, PageContent, Toolbar, N
 import { t, Trans } from '@lingui/macro'
 import { User, Location } from 'src/models'
 import { F7Props } from 'src/types'
-import { checkLocationRegistrationCode, getLocation, joinLocation } from 'src/api'
+import { checkLocationRegistrationCode, getLocation, joinLocation, registerUser } from 'src/api'
 import { paths } from 'src/config/routes'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import LoadingPage from 'src/pages/util/LoadingPage'
 import UserForm from './UsersForm'
 import SubmitHandler from 'src/helpers/SubmitHandler'
-import { RegisteringUser } from 'src/models/RegisteringUser'
+import { RegisteringUser, Roles } from 'src/models/RegisteringUser'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import { Router } from 'framework7/modules/router/router'
 
 export default function RegisterUserPage(props: F7Props) {
   const [page, setPage] = useState('')
-  const { locationId } = useMemo(() => props.f7route.params, [props.f7route.params])
-  const [registeringUser] = useGlobal('registeringUser')
-
-  console.log('registeringUser', registeringUser)
-
   const [currentUser] = useGlobal('currentUser') as [User, any] // FIXME
+  const [registeringUser, setRegisteringUser] = useGlobal('registeringUser')
+  const { locationId } = useMemo(() => props.f7route.params, [props.f7route.params])
 
   assertNotUndefined(locationId)
+
+  const handleRegisterUser = useCallback(async (user: RegisteringUser, location: Location) => {
+    setRegisteringUser(user)
+
+    if (user.role === Roles.Student || user.role === Roles.Staff) {
+      // create user
+      registerUser(location.id, user)
+    } else {
+      // go to add children
+      props.f7router.navigate(`/l/${locationId}/register/children`)
+    }
+  }, [])
 
   return (
     <Page>
@@ -52,7 +61,13 @@ export default function RegisterUserPage(props: F7Props) {
           }
 
           if (page === 'register') {
-            return <CreateAccountPage location={location} registeringUser={registeringUser} f7router={props.f7router} />
+            return (
+              <CreateAccountPage
+                location={location}
+                registeringUser={registeringUser}
+                onRegister={(user) => handleRegisterUser(user, location)}
+              />
+            )
           }
 
           return <WelcomePage setPage={setPage} />
@@ -275,11 +290,11 @@ function CreateLocationAccountPage({ location }: { location: Location }): JSX.El
 function CreateAccountPage({
   location,
   registeringUser,
-  f7router,
+  onRegister,
 }: {
   location: Location
   registeringUser: RegisteringUser
-  f7router: Router.Router
+  onRegister: (user: RegisteringUser) => void
 }): JSX.Element {
   return (
     <Fragment>
@@ -289,7 +304,7 @@ function CreateAccountPage({
       <Block>
         <h1>Create Your Account</h1>
         <p>Fill in the information below to create your account for {location.name}</p>
-        {/* <UserForm user={registeringUser} f7router={f7router} /> */}
+        <UserForm user={registeringUser} onUpdateUser={onRegister} />
       </Block>
     </Fragment>
   )

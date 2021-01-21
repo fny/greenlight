@@ -24,6 +24,7 @@ import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
 import qs from 'qs'
 import { Roles } from 'src/models/LocationAccount'
 import { transformRecordResponse, recordStore } from './stores'
+import { RegisteringUser } from 'src/models/RegisteringUser'
 
 const BASE_URL = `${env.API_URL}/v1`
 
@@ -173,6 +174,12 @@ export async function checkLocationRegistrationCode(locationId: string, registra
     registrationCode,
   })
   return result.data.result
+}
+
+export async function registerUser(locationId: string, user: RegisteringUser) {
+  await v1.post(`/location/${locationId}/register`, user)
+  const currentUser = await getCurrentUser()
+  setGlobal({ currentUser })
 }
 
 //
