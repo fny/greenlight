@@ -41,10 +41,14 @@ class ReminderWorker < ApplicationWorker
     # Don't send reminders twice in the same day
     return if user.daily_reminder_sent_at&.today?
 
+    # Don't send if ther user has reminders disabled
+    return if user.daily_reminder_type == User::NONE
 
-    if user.inferred_status.status != GreenlightStatus::UNKNOWN
-      return
-    end
+    # Don't send if ther user has reminders disabled
+    return if user.settings&.daily_reminder_type == UserSettings::NONE
+
+    # Don't send if the users locations have all disabled notifications
+    return if !user.affiliated_locations.pluck(:reminders_enabled).any?
 
     user.update_columns(daily_reminder_sent_at: Time.now)
 

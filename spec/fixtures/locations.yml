@@ -9,7 +9,7 @@ springfield_elementary:
 
 springfield_nuclear:
   name: Springfield Nuclear Plant
-  category: other
+  category: utility
   permalink: springfield-nuclear
   phone_number: 541-333-2148
   email: admin@springfieldnuclear.com

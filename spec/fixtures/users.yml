@@ -5,12 +5,16 @@ marge:
   email: marge@springfield.com
   password_digest: <%= BCrypt::Password.create('verysecure', cost: 4) %>
   auth_token: <%= SecureRandom.hex %>
+  completed_welcome_at: <%= 20.days.ago %>
 
 # A parent who has two kids in a school and uses Greenlight for work
 homer:
   first_name: Homer
   last_name: Simpson
   email: homer@springfield.com
+  password_digest: <%= BCrypt::Password.create('verysecure', cost: 4) %>
+  auth_token: <%= SecureRandom.hex %>
+  completed_welcome_at: <%= 1.day.ago %>
 
 # A student at a school
 lisa:
