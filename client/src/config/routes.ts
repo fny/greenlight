@@ -38,7 +38,7 @@ import SurveyThankYouPage from 'src/pages/surveys/SurveyThankYouPage'
 import UserEditPage from 'src/pages/users/UserEditPage'
 import UserGreenlightPassPage from 'src/pages/users/UserGreenlightPassPage'
 import UserLocationPage from 'src/pages/user-locations/UserLocationPage'
-import UsersNewPage from 'src/pages/registration/RegisterUserPage'
+import RegisterUserPage, { CheckLocationCodePage } from 'src/pages/registration/RegisterUserPage'
 import WelcomeChildPage from 'src/pages/welcome/WelcomeChildPage'
 import WelcomePage from 'src/pages/welcome/WelcomePage'
 import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage'
@@ -50,6 +50,7 @@ import HelpScoutPage from 'src/pages/resources/HelpScoutPage'
 import PositiveResourcesPage from 'src/pages/resources/PositiveResourcesPage'
 import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
 import SchoolScoreCardPage from 'src/pages/resources/SchoolScoreCardPage'
+import UsersNewPage from 'src/pages/users/UsersNewPage'
 
 import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
 import PageWithRequest from 'src/pages/util/PageWithRequest'
@@ -251,6 +252,24 @@ const resourcesRoutes = {
   },
 }
 
+const adminRoutes = {
+  adminUsersPath: {
+    path: '/admin/locations/:locationId/users',
+    component: AdminUsersPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  adminUserPath: {
+    path: '/admin/locations/:locationId/users/:userId',
+    component: AdminUserPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  adminDashboardPath: {
+    path: '/admin/locations/:locationId/dashboard',
+    component: AdminDashboardPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+}
+
 const routeMap = {
   rootPath: {
     path: '/',
@@ -261,6 +280,7 @@ const routeMap = {
   ...welcomeRoutes,
   ...resourcesRoutes,
   ...registrationRoutes,
+  ...adminRoutes,
   dashboardPath: {
     path: '/dashboard',
     component: DashboardPage,
@@ -314,21 +334,6 @@ const routeMap = {
     path: '/mobile-verifications',
     component: MobileVerificationPage,
   },
-  adminUsersPath: {
-    path: '/admin/locations/:locationId/users',
-    component: AdminUsersPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  adminUserPath: {
-    path: '/admin/locations/:locationId/users/:userId',
-    component: AdminUserPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  adminDashboardPath: {
-    path: '/admin/locations/:locationId/dashboard',
-    component: AdminDashboardPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
   debugPath: {
     path: '/debug',
     component: DebugPage,
@@ -357,13 +362,18 @@ const routeMap = {
     path: '/l/:locationId',
     component: LocationPage,
   },
+  // !TODO: need to make this link to go to another page where we check registration code and redirect to RegisterUserPage if it's valid.
   newLocationUserPath: {
     path: '/go/:permalink/code/:registrationCode',
-    component: UsersNewPage,
+    component: CheckLocationCodePage,
   },
   oldNewLocationUserPath: {
     path: '/l/:permalink/code/:registrationCode',
-    component: UsersNewPage,
+    component: CheckLocationCodePage,
+  },
+  registerUserPath: {
+    path: '/l/:locationId/register/user',
+    component: RegisterUserPage,
   },
   userLocationPermissionsPath: {
     path: '/admin/locations/:locationId/users/:userId/permissions',

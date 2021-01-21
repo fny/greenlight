@@ -122,5 +122,27 @@ module LocationsController
       stats = LocationStatsOverview.new(location, params[:date])
       render json: LocationStatsOverviewSerializer.new(stats)
     end
+
+    # check registration code
+    post '/v1/locations/:location_id/check-registration-code', auth: false do
+      location_id = params[:location_id]
+      registration_code = request_json[:registration_code]
+
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+
+      if registration_code.casecmp?(location.registration_code)
+        render json: {
+          result: 'teacher_or_stuff'
+        }
+      else
+        if registration_code.casecmp?(location.student_registration_code)
+          render json: {
+            result: 'parent_or_student'
+          } 
+        else
+          simple_error_response('incorrect registration code')
+        end
+      end
+    end
   end
 end

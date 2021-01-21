@@ -14,9 +14,9 @@ export default class SubmitHandler {
 
   successMessage?: string
 
-  onSuccess: () => void
+  onSuccess: (params?: any) => void
 
-  onSubmit:() => Promise<any>
+  onSubmit: () => Promise<any>
 
   onError: (error: any) => void
 
@@ -36,20 +36,37 @@ export default class SubmitHandler {
     this.f7.dialog.preloader(this.submittingMessage)
     const fn = action || this.onSubmit
     try {
-      await fn()
+      const result = await fn()
       this.f7.dialog.close()
-      this.onSuccess()
       if (this.successMessage) {
-        this.f7.dialog.alert(this.successMessage, t({ id: 'Common.success', message: 'Success' }))
+        this.f7.dialog.alert(this.successMessage, t({ id: 'Common.success', message: 'Success' }), () =>
+          this.handleSuccess(result),
+        )
+      } else {
+        this.handleSuccess(result)
       }
     } catch (error) {
       this.f7.dialog.close()
       logger.error(error)
       if (error.response) {
-        this.f7.dialog.alert(this.processErrors(error) || this.errorMessage, this.errorTitle)
+        this.f7.dialog.alert(this.processErrors(error) || this.errorMessage, this.errorTitle, () =>
+          this.handleError(error),
+        )
       } else {
-        this.f7.dialog.alert(this.errorMessage, this.errorTitle)
+        this.f7.dialog.alert(this.errorMessage, this.errorTitle, () => this.handleError(error))
       }
+    }
+  }
+
+  private handleSuccess(result?: any) {
+    if (this.onSuccess) {
+      this.onSuccess(result)
+    }
+  }
+
+  private handleError(error: any) {
+    if (this.onError) {
+      this.onError(error)
     }
   }
 

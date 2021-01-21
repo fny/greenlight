@@ -1,54 +1,36 @@
 import { t, Trans } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
-import {
-  Button, f7, List, ListInput, ListItem, Toggle,
-} from 'framework7-react'
-import { Router } from 'framework7/modules/router/router'
+import { Button, f7, List, ListInput, ListItem, Toggle } from 'framework7-react'
 import React, { useState } from 'react'
 import { useGlobal } from 'reactn'
-import { createUserAndSignIn, getCurrentUser } from 'src/api'
-import FormikInput from 'src/components/FormikInput'
-import { GLLocales } from 'src/i18n'
 import SubmitHandler from 'src/helpers/SubmitHandler'
-import { User } from 'src/models'
 import * as Yup from 'yup'
 import 'src/lib/yup-phone'
-import { reloadCurrentUser } from 'src/helpers/global'
+import { RegisteringUser } from 'src/models/RegisteringUser'
+import FormikInput from 'src/components/FormikInput'
 
-class UserInput {
-  firstName: string = ''
-
-  lastName: string = ''
-
-  email: string = ''
-
-  mobileNumber: string= ''
-
-  password: string= ''
-
-  locale: GLLocales= 'en'
-}
-
-export default function UserForm({ user, f7router }: { user?: User, f7router: Router.Router}) {
+export default function UserForm({
+  user,
+  onUpdateUser,
+}: {
+  user?: Partial<RegisteringUser>
+  onUpdateUser: (user: RegisteringUser) => any
+}) {
   const [locale] = useGlobal('locale')
   const [revealPassword, setRevealPassword] = useState(false)
 
   const submissionHandler = new SubmitHandler(f7)
 
-  const formik = useFormik<UserInput>({
+  const formik = useFormik<RegisteringUser>({
     validationSchema: schema,
-    initialValues: new UserInput(),
+    initialValues: {
+      ...new RegisteringUser(),
+      ...user,
+    },
     onSubmit: (values) => {
-      submissionHandler.submit(async () => {
-        if (formik.dirty) {
-          await createUserAndSignIn(values)
-          await getCurrentUser()
-          await reloadCurrentUser()
-          f7router.refreshPage()
-          // FIXME: We shouldn't have to do a hard refresh
-          window.location.reload()
-        }
-      })
+      if (formik.dirty) {
+        onUpdateUser(values)
+      }
     },
   })
 
@@ -74,12 +56,7 @@ export default function UserForm({ user, f7router }: { user?: User, f7router: Ro
           type="text"
           floatingLabel
         />
-        <FormikInput
-          label={t({ id: 'Forms.email', message: 'Email' })}
-          name="email"
-          type="email"
-          floatingLabel
-        />
+        <FormikInput label={t({ id: 'Forms.email', message: 'Email' })} name="email" type="email" floatingLabel />
         <FormikInput
           label={t({ id: 'Forms.mobile_number', message: 'Mobile Number' })}
           name="mobileNumber"
@@ -95,20 +72,14 @@ export default function UserForm({ user, f7router }: { user?: User, f7router: Ro
         />
 
         <ListItem>
-          <span><Trans id="Forms.reveal_password">Reveal Password</Trans></span>
+          <span>
+            <Trans id="Forms.reveal_password">Reveal Password</Trans>
+          </span>
           <Toggle color="green" checked={revealPassword} onChange={() => setRevealPassword(!revealPassword)} />
         </ListItem>
-        <ListInput
-          label={t({ id: 'Forms.language', message: 'Language' })}
-          type="select"
-          defaultValue={locale}
-        >
-          <option value="en">
-            {t({ id: 'Common.english', message: 'English' })}
-          </option>
-          <option value="es">
-            {t({ id: 'Common.spanish', message: 'Español' })}
-          </option>
+        <ListInput label={t({ id: 'Forms.language', message: 'Language' })} type="select" defaultValue={locale}>
+          <option value="en">{t({ id: 'Common.english', message: 'English' })}</option>
+          <option value="es">{t({ id: 'Common.spanish', message: 'Español' })}</option>
         </ListInput>
 
         <Button style={{ marginTop: '1rem' }} type="submit" outline fill>
@@ -119,9 +90,10 @@ export default function UserForm({ user, f7router }: { user?: User, f7router: Ro
   )
 }
 
-const schema = Yup.object<UserInput>().shape({
+const schema = Yup.object<RegisteringUser>().shape({
   firstName: Yup.string().required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
   lastName: Yup.string().required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
+  // !TODO: Should be able to check if the email or mobile number is available (not duplicated)
   email: Yup.string()
     .email(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
     .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),

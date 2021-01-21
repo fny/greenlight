@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 
 import { getGlobal, setGlobal } from 'reactn'
-import {
-  assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
-} from 'src/helpers/util'
+import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from 'src/helpers/util'
 
 // FIXME: This shouldn't be assigned here. It should go in a provider
 import Honeybadger from 'honeybadger-js'
@@ -11,7 +9,14 @@ import Honeybadger from 'honeybadger-js'
 import logger from 'src/helpers/logger'
 import env from 'src/config/env'
 import {
-  User, Location, LocationAccount, Model, MedicalEvent, GreenlightStatus, UserSettings, CurrentUser,
+  User,
+  Location,
+  LocationAccount,
+  Model,
+  MedicalEvent,
+  GreenlightStatus,
+  UserSettings,
+  CurrentUser,
 } from 'src/models'
 import { Dict, RecordResponse } from 'src/types'
 import useSWR, { responseInterface } from 'swr'
@@ -163,6 +168,13 @@ export async function updateLocationAccount(
   return entity
 }
 
+export async function checkLocationRegistrationCode(locationId: string, registrationCode: string): Promise<any> {
+  const result = await v1.post(`/locations/${locationId}/check-registration-code`, {
+    registrationCode,
+  })
+  return result.data.result
+}
+
 //
 // Users
 //
@@ -222,7 +234,13 @@ export async function getUsersForLocation(location: number | string | Location):
   return getResources<User>(path)
 }
 
-export async function getPagedUsersForLocation(location: number | string | Location, page: number = 1, name?: string, status?: GreenlightStatusTypes, role?: Roles): Promise<PagedResource<User>> {
+export async function getPagedUsersForLocation(
+  location: number | string | Location,
+  page: number = 1,
+  name?: string,
+  status?: GreenlightStatusTypes,
+  role?: Roles,
+): Promise<PagedResource<User>> {
   const locationId = location instanceof Location ? location.id : location
   const path = `/locations/${locationId}/users`
   return getPagedResources<User>(path, page, { status, name, role })
@@ -326,7 +344,9 @@ export interface Pagination {
 }
 
 export async function getPagedResources<T extends Model>(
-  path: string, page?: number, filter: Filter = {},
+  path: string,
+  page?: number,
+  filter: Filter = {},
 ): Promise<PagedResource<T>> {
   const response = await v1.get(path, { params: { page, filter } })
   recordStore.writeRecordResponse(response.data)
@@ -341,8 +361,12 @@ export async function getPagedResources<T extends Model>(
   }
 }
 
-export type Filter = Dict<string | number | string[] | number[] | undefined | null >
+export type Filter = Dict<string | number | string[] | number[] | undefined | null>
 
-export function usePagedResources<T extends Model>(path: string, page?: number, filter?: Filter): responseInterface<PagedResource<T>, any> {
+export function usePagedResources<T extends Model>(
+  path: string,
+  page?: number,
+  filter?: Filter,
+): responseInterface<PagedResource<T>, any> {
   return useSWR([path, page, filter], (path, page, filter) => getPagedResources<T>(path, page, filter))
 }

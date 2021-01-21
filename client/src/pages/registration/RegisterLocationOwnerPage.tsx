@@ -1,6 +1,19 @@
 import { t, Trans } from '@lingui/macro'
 import {
-  Block, Button, Col, f7, Link, List, ListInput, ListItem, Page, PageContent, Row, Sheet, Toggle, Toolbar,
+  Block,
+  Button,
+  Col,
+  f7,
+  Link,
+  List,
+  ListInput,
+  ListItem,
+  Page,
+  PageContent,
+  Row,
+  Sheet,
+  Toggle,
+  Toolbar,
 } from 'framework7-react'
 import React, { useState } from 'react'
 import { isBlank, isPresent, upperCaseFirst } from 'src/helpers/util'
@@ -29,12 +42,12 @@ class UserInput {
 
   email: string = ''
 
-  mobileNumber: string= ''
+  mobileNumber: string = ''
 
-  password: string= ''
+  password: string = ''
 }
 
-function UserForm({ user, f7router }: { user: UserInput, f7router: Router.Router}) {
+function UserForm({ user, f7router }: { user: UserInput; f7router: Router.Router }) {
   const [locale] = useGlobal('locale')
   const [revealPassword, setRevealPassword] = useState(false)
 
@@ -64,28 +77,23 @@ function UserForm({ user, f7router }: { user: UserInput, f7router: Router.Router
           formik.submitForm()
         }}
       >
-        { isBlank(user.firstName) && (
-        <FormikInput
-          label={t({ id: 'Forms.first_name', message: 'First Name' })}
-          name="firstName"
-          type="text"
-          floatingLabel
-        />
+        {isBlank(user.firstName) && (
+          <FormikInput
+            label={t({ id: 'Forms.first_name', message: 'First Name' })}
+            name="firstName"
+            type="text"
+            floatingLabel
+          />
         )}
-        { isBlank(user.lastName) && (
-        <FormikInput
-          label={t({ id: 'Forms.last_name', message: 'Last Name' })}
-          name="lastName"
-          type="text"
-          floatingLabel
-        />
+        {isBlank(user.lastName) && (
+          <FormikInput
+            label={t({ id: 'Forms.last_name', message: 'Last Name' })}
+            name="lastName"
+            type="text"
+            floatingLabel
+          />
         )}
-        <FormikInput
-          label={t({ id: 'Forms.email', message: 'Email' })}
-          name="email"
-          type="email"
-          floatingLabel
-        />
+        <FormikInput label={t({ id: 'Forms.email', message: 'Email' })} name="email" type="email" floatingLabel />
         <FormikInput
           label={t({ id: 'Forms.mobile_number', message: 'Mobile Number' })}
           name="mobileNumber"
@@ -100,7 +108,9 @@ function UserForm({ user, f7router }: { user: UserInput, f7router: Router.Router
         />
 
         <ListItem>
-          <span><Trans id="Forms.reveal_password">Reveal Password</Trans></span>
+          <span>
+            <Trans id="Forms.reveal_password">Reveal Password</Trans>
+          </span>
           <Toggle color="green" checked={revealPassword} onChange={() => setRevealPassword(!revealPassword)} />
         </ListItem>
 
@@ -130,13 +140,13 @@ export default function RegisterLocationOwnerPage(props: F7Props): JSX.Element {
   return (
     <Page>
       <Block>
-        <h1>
-          Let's create your sign in.
-        </h1>
+        <h1>Let's create your sign in.</h1>
         <p>
-          Before you tell us more about your {lcTrans(global.registeringLocation.category || LocationCategories.COMMUNITY)}, we'll need to create an account for you.
+          Before you tell us more about your{' '}
+          {lcTrans(global.registeringLocation.category || LocationCategories.COMMUNITY)}, we'll need to create an
+          account for you.
         </p>
-        <UserForm user={global.registeringUser} f7router={props.f7router} />
+        {/* <UserForm user={global.registeringUser} f7router={props.f7router} /> */}
       </Block>
     </Page>
   )
