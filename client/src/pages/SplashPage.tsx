@@ -57,6 +57,11 @@ export default function SplashPage(props: F7Props): JSX.Element {
       </Block>
 
       <p className="copyright">
+        <Tr
+          en="Made with 💚 in Durham, NC"
+          es="Hecho con 💚 en Durham, NC"
+        />
+        <br />
         &copy;
         {new Date().getFullYear()} Greenlight Ready LLC
         <br />
