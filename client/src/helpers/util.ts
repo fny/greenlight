@@ -496,12 +496,19 @@ function useDebounce(callback: any, delay: number) {
   return debouncedFn
 }
 
-export function isInViewport(element: Element) {
+export function isInViewport(element: Element): boolean {
   const rect = element.getBoundingClientRect()
   return (
     rect.top >= 0
       && rect.left >= 0
       && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
       && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  )
+}
+
+export function countVisible(selector: string): number {
+  return Array.from(document.querySelectorAll(selector)).map(isInViewport).reduce(
+    (acc, curr: boolean) => acc + (curr ? 1 : 0),
+    0,
   )
 }
