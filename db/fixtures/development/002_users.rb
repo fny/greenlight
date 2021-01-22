@@ -56,7 +56,8 @@ end
 def build_user
   user = {
     id: @user_id_seq.next(),
-    mobile_number: Faker::PhoneNumber.unique.cell_phone_in_e164
+    mobile_number: Faker::PhoneNumber.unique.cell_phone_in_e164,
+    completed_welcome_at: ((1..10).to_a.sample).days.ago
   }
   set_name_and_email(user)
 end
@@ -66,9 +67,10 @@ def owner_user
     id: @user_id_seq.next(),
     first_name: 'Lucinda',
     last_name: 'Verdella',
-    email: 'lucinda@greendwood.org',
+    email: 'lucinda@greenwood.org',
     mobile_number: Faker::PhoneNumber.unique.cell_phone_in_e164,
-    password: 'asdfasdf'
+    password: 'asdfasdf',
+    completed_welcome_at: ((1..10).to_a.sample).days.ago
   }
 end
 

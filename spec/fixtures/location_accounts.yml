@@ -22,3 +22,10 @@ skinner_at_springfield_elem:
   external_id: skinner
   role: staff
   permission_level: owner
+
+homer_at_plant:
+  location: springfield_nuclear
+  user: homer
+  external_id: homer
+  role: staff
+  permission_level: none

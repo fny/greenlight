@@ -1,7 +1,5 @@
-import { t } from '@lingui/macro'
 import {
   Block,
-  Link,
   List,
   ListItem,
   Navbar,
@@ -100,24 +98,20 @@ export default function PositiveResourcesPage(): JSX.Element {
               before symptom onset or positive test result?
             </p>
 
-            <p>
-              <span>No →</span><br />
-              <ul>
-                <li>Individual should undergo testing and isolate at home.</li>
-                <li>No additional testing or quarantine required for other individuals.</li>
-                <li>Spaces used by the individual should be <a href="https://www.cdc.gov/coronavirus/2019-ncov/community/organizations/cleaning-disinfection.html" target="_blank">disinfected per CDC guidance.</a></li>
-              </ul>
-            </p>
+            <span>No →</span><br />
+            <ul>
+              <li>Individual should undergo testing and isolate at home.</li>
+              <li>No additional testing or quarantine required for other individuals.</li>
+              <li>Spaces used by the individual should be <a href="https://www.cdc.gov/coronavirus/2019-ncov/community/organizations/cleaning-disinfection.html" rel="noreferrer" target="_blank">disinfected per CDC guidance.</a></li>
+            </ul>
 
-            <p>
-              <span>Yes →</span><br />
-              <ul>
-                <li>Individual should undergo testing and isolate at home</li>
-                <li>
-                  Identify close contacts (defined as distance &lt;6 feet for &gt;15 minutes). For schools, be sure to include close contacts on buses and during extracurricular activities. Siblings are also considered close contacts.
-                </li>
-              </ul>
-            </p>
+            <span>Yes →</span><br />
+            <ul>
+              <li>Individual should undergo testing and isolate at home</li>
+              <li>
+                Identify close contacts (defined as distance &lt;6 feet for &gt;15 minutes). For schools, be sure to include close contacts on buses and during extracurricular activities. Siblings are also considered close contacts.
+              </li>
+            </ul>
 
             <p style={{ fontWeight: 'bold' }}>Quarantine Protocol</p>
             <p>
@@ -135,24 +129,20 @@ export default function PositiveResourcesPage(): JSX.Element {
               antes del inicio de síntomas o resultado positivo de la prueba?
             </p>
 
-            <p>
-              <span> No → </span> <br />
-              <ul>
-                <li> La persona debe ser probado y aislarse en casa. </li>
-                <li> No se requieren pruebas adicionales ni cuarentena para otras personas. </li>
-                <li> Los espacios utilizados por la persona deben <a href="https://espanol.cdc.gov/coronavirus/2019-ncov/community/disinfecting-building-facility.html" target="_blank"> desinfectarse según los CDC orientación. </a> </li>
-              </ul>
-            </p>
+            <span> No → </span> <br />
+            <ul>
+              <li> La persona debe ser probado y aislarse en casa. </li>
+              <li> No se requieren pruebas adicionales ni cuarentena para otras personas. </li>
+              <li> Los espacios utilizados por la persona deben <a href="https://espanol.cdc.gov/coronavirus/2019-ncov/community/disinfecting-building-facility.html" target="_blank"> desinfectarse según los CDC orientación. </a> </li>
+            </ul>
 
-            <p>
-              <span> Sí → </span> <br />
-              <ul>
-                <li> La persona ser probado y aislarse en casa. </li>
-                <li>
-                  Identificar contactos cercanos (definidos como distancia &lt;6 pies durante &gt;15 minutos). Para las escuelas, asegúrese de incluir contactos cercanos en los autobuses y durante las actividades extracurriculares. Los hermanos también se consideran contactos cercanos.
-                </li>
-              </ul>
-            </p>
+            <span> Sí → </span> <br />
+            <ul>
+              <li> La persona ser probado y aislarse en casa. </li>
+              <li>
+                Identificar contactos cercanos (definidos como distancia &lt;6 pies durante &gt;15 minutos). Para las escuelas, asegúrese de incluir contactos cercanos en los autobuses y durante las actividades extracurriculares. Los hermanos también se consideran contactos cercanos.
+              </li>
+            </ul>
 
             <p style={{ fontWeight: 'bold' }}> Protocolo de cuarentena </p>
             <p>

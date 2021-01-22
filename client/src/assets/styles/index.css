@@ -104,8 +104,8 @@ h1, h2, h3, h4, h5, h6 {
 
 #heart {
   position: relative;
-  width: 100px;
-  height: 90px;
+  width: 200px;
+  height: 180px;
   animation: heartbeat 2s infinite;
 }
 
@@ -113,13 +113,13 @@ h1, h2, h3, h4, h5, h6 {
 #heart:after {
   position: absolute;
   content: "";
-  left: 50px;
+  left: 100px;
   top: 0;
-  width: 50px;
-  height: 80px;
-  background: var(--gl-green7);
-  -moz-border-radius: 50px 50px 0 0;
-  border-radius: 50px 50px 0 0;
+  width: 100px;
+  height: 160px;
+  background: var(--gl-emb-green7);
+  -moz-border-radius: 100px 100px 0 0;
+  border-radius: 100px 100px 0 0;
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
   -ms-transform: rotate(-45deg);

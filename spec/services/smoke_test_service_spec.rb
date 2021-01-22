@@ -2,12 +2,14 @@
 require 'rails_helper'
 
 RSpec.describe SmokeTestService do
+  before { skip("Awaiting completion of smoke screen") }
+
   let!(:wrong_token) { Faker::Lorem.word }
   let!(:right_token) { Faker::Lorem.characters(number: 10) }
 
   describe 'auth check' do
     context 'when an invalid token is provided' do
-      pending 'raises UnauthorizedError' do
+      it 'raises UnauthorizedError' do
         expect { SmokeTestService.new(wrong_token) }.to raise_error(
           SmokeTestService::UnauthorizedError
         )
@@ -28,7 +30,7 @@ RSpec.describe SmokeTestService do
       context 'when the context already exists' do
         before { Fabricate(:location, permalink: SmokeTestService::TEST_LOCATION_PERMALINK) }
 
-        pending 'raises ContextConflictError' do
+        it 'raises ContextConflictError' do
           expect { subject.populate }.to raise_error(SmokeTestService::ContextConflictError)
         end
       end
@@ -38,7 +40,7 @@ RSpec.describe SmokeTestService do
           @original_counts = entities_count_arr
         end
 
-        pending 'generates the context' do
+        it 'generates the context' do
           subject.populate(fixtures_path)
 
           expect(entities_count_arr.sum).to be > @original_counts.sum
@@ -48,7 +50,7 @@ RSpec.describe SmokeTestService do
 
     describe '#purge' do
       context 'when the context does not exist' do
-        pending 'raises NoContextError' do
+        it 'raises NoContextError' do
           expect { subject.purge }.to raise_error(SmokeTestService::NoContextError)
         end
       end
@@ -59,7 +61,7 @@ RSpec.describe SmokeTestService do
           subject.populate(fixtures_path)
         end
 
-        pending 'cleans up the context' do
+        it 'cleans up the context' do
           subject.purge
 
           expect(entities_count_arr).to eq(@original_counts)
