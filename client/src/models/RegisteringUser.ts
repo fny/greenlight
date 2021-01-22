@@ -1,17 +1,10 @@
 import { GLLocales } from 'src/i18n'
+import { Roles } from './LocationAccount'
 
 /**
  * Represents a user that is in the process of registering.
  * Never persisted through the backend.
  */
-
-export enum Roles {
-  Unknown = 'unknown',
-  Student = 'student',
-  Parent = 'parent',
-  Teacher = 'teacher',
-  Staff = 'stuff',
-}
 
 export class RegisteringUser {
   firstName: string = ''
@@ -24,6 +17,7 @@ export class RegisteringUser {
 
   password: string = ''
 
+  isStudent: boolean | null = null
   registrationCode: string = ''
 
   role: Roles = Roles.Unknown

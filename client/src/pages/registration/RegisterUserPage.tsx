@@ -12,9 +12,12 @@ import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import LoadingPage from 'src/pages/util/LoadingPage'
 import UserForm from './UsersForm'
 import SubmitHandler from 'src/helpers/SubmitHandler'
-import { RegisteringUser, Roles } from 'src/models/RegisteringUser'
+import { RegisteringUser } from 'src/models/RegisteringUser'
+import { Roles } from 'src/models/LocationAccount'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import { Router } from 'framework7/modules/router/router'
+import LocalStorage from 'src/helpers/SessionStorage'
+import { LocationCategories } from 'src/models/Location'
 
 export default function RegisterUserPage(props: F7Props) {
   const [page, setPage] = useState('')
@@ -26,6 +29,7 @@ export default function RegisterUserPage(props: F7Props) {
 
   const handleRegisterUser = useCallback(async (user: RegisteringUser, location: Location) => {
     setRegisteringUser(user)
+    LocalStorage.setRegisteringUser(user)
 
     if (user.role === Roles.Student || user.role === Roles.Staff) {
       // create user
@@ -174,6 +178,11 @@ export function CheckLocationCodePage(props: F7Props): JSX.Element {
     onSuccess: (result) => {
       const registeringUser = new RegisteringUser()
       registeringUser.registrationCode = registrationCode
+      if (result === 'not school') {
+        registeringUser.isStudent = null
+      } else {
+        registeringUser.isStudent = result === 'parent or student'
+      }
       setRegisteringUser(registeringUser)
 
       // !TODO: the page does not change if we don't wait for a reasonable time.
@@ -304,7 +313,7 @@ function CreateAccountPage({
       <Block>
         <h1>Create Your Account</h1>
         <p>Fill in the information below to create your account for {location.name}</p>
-        <UserForm user={registeringUser} onUpdateUser={onRegister} />
+        <UserForm user={registeringUser} onUpdateUser={onRegister} isStudent={registeringUser.isStudent} />
       </Block>
     </Fragment>
   )

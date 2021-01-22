@@ -1,8 +1,6 @@
 import { User } from './User'
 import { Location } from './Location'
-import {
-  Model, attribute as attr, initialize, STRING, hasOne,
-} from 'src/lib/Model'
+import { Model, attribute as attr, initialize, STRING, hasOne } from 'src/lib/Model'
 
 export enum PermissionLevels {
   OWNER = 'owner',
@@ -11,7 +9,11 @@ export enum PermissionLevels {
 }
 
 export enum Roles {
-  STUDENT = 'student',
+  Unknown = 'unknown',
+  Student = 'student',
+  Parent = 'parent',
+  Teacher = 'teacher',
+  Staff = 'staff',
 }
 
 export class LocationAccount extends Model {
@@ -49,6 +51,6 @@ export class LocationAccount extends Model {
   }
 
   isStudent(): boolean {
-    return this.role === Roles.STUDENT
+    return this.role === Roles.Student
   }
 }

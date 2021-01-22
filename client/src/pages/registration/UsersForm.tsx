@@ -1,25 +1,25 @@
 import { t, Trans } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
-import { Button, f7, List, ListInput, ListItem, Toggle } from 'framework7-react'
+import { Button, List, ListInput, ListItem, Toggle } from 'framework7-react'
 import React, { useState } from 'react'
 import { useGlobal } from 'reactn'
-import SubmitHandler from 'src/helpers/SubmitHandler'
 import * as Yup from 'yup'
 import 'src/lib/yup-phone'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import FormikInput from 'src/components/FormikInput'
+import { Roles } from 'src/models/LocationAccount'
 
 export default function UserForm({
   user,
+  isStudent,
   onUpdateUser,
 }: {
   user?: Partial<RegisteringUser>
+  isStudent: boolean | null // null: not a school, true: parent or student, false: teacher or stuff
   onUpdateUser: (user: RegisteringUser) => any
 }) {
   const [locale] = useGlobal('locale')
   const [revealPassword, setRevealPassword] = useState(false)
-
-  const submissionHandler = new SubmitHandler(f7)
 
   const formik = useFormik<RegisteringUser>({
     validationSchema: schema,
@@ -44,6 +44,15 @@ export default function UserForm({
           formik.submitForm()
         }}
       >
+        {isStudent !== null && (
+          <FormikInput label={t({ id: 'Forms.user_role', message: 'Role' })} name="role" type="select" floatingLabel>
+            {(isStudent ? ['Parent', 'Student'] : ['Teacher', 'Staff']).map((role) => (
+              <option key={role} value={Roles[role as 'Parent' | 'Student' | 'Teacher' | 'Staff']}>
+                {role}
+              </option>
+            ))}
+          </FormikInput>
+        )}
         <FormikInput
           label={t({ id: 'Forms.first_name', message: 'First Name' })}
           name="firstName"

@@ -54,6 +54,8 @@ import UsersNewPage from 'src/pages/users/UsersNewPage'
 
 import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
 import PageWithRequest from 'src/pages/util/PageWithRequest'
+import AddChildrenPage from 'src/pages/locations/AddChildPage'
+import RegisterChildrenPage from 'src/pages/registration/RegisterChildrenPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -374,6 +376,14 @@ const routeMap = {
   registerUserPath: {
     path: '/l/:locationId/register/user',
     component: RegisterUserPage,
+  },
+  registerChildrenPath: {
+    path: '/l/:locationId/register/children',
+    component: RegisterChildrenPage,
+  },
+  registerChildPath: {
+    path: '/l/:locationId/register/child',
+    component: AddChildrenPage,
   },
   userLocationPermissionsPath: {
     path: '/admin/locations/:locationId/users/:userId/permissions',
