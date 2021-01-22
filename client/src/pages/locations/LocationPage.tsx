@@ -27,7 +27,6 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
         locationId={locationId}
         content={(state) => {
           const { location } = state
-          console.log('location', location)
           assertNotNull(location)
           assertNotUndefined(location)
 

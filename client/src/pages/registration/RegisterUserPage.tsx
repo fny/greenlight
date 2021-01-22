@@ -35,25 +35,27 @@ export default function RegisterUserPage(props: F7Props) {
         },
         errorTitle: 'Something went wrong',
         errorMessage: 'User registration is failed',
-        onSubmit: async () => {
-          await registerUser(locationId, registeringUser)
-        },
       }),
-    [locationId, registeringUser],
+    [],
   )
 
-  const handleRegisterUser = useCallback(async (user: RegisteringUser, location: Location) => {
-    setRegisteringUser(user)
-    LocalStorage.setRegisteringUser(user)
+  const handleRegisterUser = useCallback(
+    async (user: RegisteringUser) => {
+      await setRegisteringUser(user)
+      LocalStorage.setRegisteringUser(user)
 
-    if (user.role === Roles.Student || user.role === Roles.Staff) {
-      // create user
-      submitHandler.submit()
-    } else {
-      // go to add children
-      props.f7router.navigate(`/l/${locationId}/register/children`)
-    }
-  }, [])
+      if (user.role === Roles.Student || user.role === Roles.Staff) {
+        // create user
+        submitHandler.submit(async () => {
+          await registerUser(locationId, user)
+        })
+      } else {
+        // go to add children
+        props.f7router.navigate(`/l/${locationId}/register/children`)
+      }
+    },
+    [submitHandler],
+  )
 
   return (
     <Page>
@@ -84,7 +86,7 @@ export default function RegisterUserPage(props: F7Props) {
               <CreateAccountPage
                 location={location}
                 registeringUser={registeringUser}
-                onRegister={(user) => handleRegisterUser(user, location)}
+                onRegister={handleRegisterUser}
               />
             )
           }
@@ -198,13 +200,13 @@ export function CheckLocationCodePage(props: F7Props): JSX.Element {
       } else if (result === 'student_parent') {
         registeringUser.availableRoles = [Roles.Parent, Roles.Student]
       } else {
+        registeringUser.role = Roles.Staff
         registeringUser.availableRoles = []
       }
       setRegisteringUser(registeringUser)
 
       // !TODO: the page does not change if we don't wait for a reasonable time.
       setTimeout(() => {
-        console.log('navigate')
         props.f7router.navigate(`/l/${permalink}/register/user`)
       }, 500)
     },
