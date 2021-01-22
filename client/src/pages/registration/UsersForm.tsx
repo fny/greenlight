@@ -8,14 +8,13 @@ import 'src/lib/yup-phone'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import FormikInput from 'src/components/FormikInput'
 import { Roles } from 'src/models/LocationAccount'
+import { getKeyName } from 'src/helpers/util'
 
 export default function UserForm({
   user,
-  isStudent,
   onUpdateUser,
 }: {
   user?: Partial<RegisteringUser>
-  isStudent: boolean | null // null: not a school, true: parent or student, false: teacher or stuff
   onUpdateUser: (user: RegisteringUser) => any
 }) {
   const [locale] = useGlobal('locale')
@@ -44,11 +43,11 @@ export default function UserForm({
           formik.submitForm()
         }}
       >
-        {isStudent !== null && (
+        {formik.values.availableRoles.length > 0 && (
           <FormikInput label={t({ id: 'Forms.user_role', message: 'Role' })} name="role" type="select" floatingLabel>
-            {(isStudent ? ['Parent', 'Student'] : ['Teacher', 'Staff']).map((role) => (
-              <option key={role} value={Roles[role as 'Parent' | 'Student' | 'Teacher' | 'Staff']}>
-                {role}
+            {formik.values.availableRoles.map((role) => (
+              <option key={role} value={role}>
+                {getKeyName(Roles, role)}
               </option>
             ))}
           </FormikInput>

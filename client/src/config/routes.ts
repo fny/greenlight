@@ -54,7 +54,6 @@ import UsersNewPage from 'src/pages/users/UsersNewPage'
 
 import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
 import PageWithRequest from 'src/pages/util/PageWithRequest'
-import AddChildrenPage from 'src/pages/locations/AddChildPage'
 import RegisterChildrenPage from 'src/pages/registration/RegisterChildrenPage'
 
 const beforeEnter = {
@@ -380,10 +379,6 @@ const routeMap = {
   registerChildrenPath: {
     path: '/l/:locationId/register/children',
     component: RegisterChildrenPage,
-  },
-  registerChildPath: {
-    path: '/l/:locationId/register/child',
-    component: AddChildrenPage,
   },
   userLocationPermissionsPath: {
     path: '/admin/locations/:locationId/users/:userId/permissions',

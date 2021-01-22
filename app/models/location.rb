@@ -139,6 +139,20 @@ class Location < ApplicationRecord
     self.student_registration_code_downcase = code.downcase
   end
 
+  def registration_type(code)
+    code_ = code.strip.downcase
+    if category != SCHOOL && code_ == registration_code
+      return :staff
+    end
+    if category == SCHOOL && code_ == student_registration_code
+      return :student_parent
+    end
+    if category == SCHOOL && code_ == registration_code
+      return :teacher_staff
+    end
+    return :invalid
+  end
+
   # Any users that should recieve a notification
   def users_to_notify
     location = Location.includes(

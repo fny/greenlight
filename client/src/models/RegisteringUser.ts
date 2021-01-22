@@ -17,9 +17,9 @@ export class RegisteringUser {
 
   password: string = ''
 
-  isStudent: boolean | null = null
   registrationCode: string = ''
 
+  availableRoles: Roles[] = []
   role: Roles = Roles.Unknown
 
   locale: GLLocales = 'en'

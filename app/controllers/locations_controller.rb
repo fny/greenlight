@@ -130,18 +130,14 @@ module LocationsController
 
       location = Location.find_by_id_or_permalink!(params[:location_id])
 
-      if registration_code.casecmp?(location.registration_code)
+      response = location.registration_type(registration_code)
+
+      if response != :invalid
         render json: {
-          result: 'teacher_or_stuff'
+          result: response
         }
       else
-        if registration_code.casecmp?(location.student_registration_code)
-          render json: {
-            result: 'parent_or_student'
-          } 
-        else
-          simple_error_response('incorrect registration code')
-        end
+        simple_error_response(:invalid)
       end
     end
   end

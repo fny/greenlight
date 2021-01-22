@@ -177,7 +177,7 @@ export async function checkLocationRegistrationCode(locationId: string, registra
 }
 
 export async function registerUser(locationId: string, user: RegisteringUser) {
-  await v1.post(`/location/${locationId}/register`, user)
+  await v1.post(`/locations/${locationId}/register`, user)
   const currentUser = await getCurrentUser()
   setGlobal({ currentUser })
 }

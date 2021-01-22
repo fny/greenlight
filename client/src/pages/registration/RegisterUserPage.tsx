@@ -27,13 +27,28 @@ export default function RegisterUserPage(props: F7Props) {
 
   assertNotUndefined(locationId)
 
+  const submitHandler = useMemo(
+    () =>
+      new SubmitHandler(f7, {
+        onSuccess: () => {
+          props.f7router.navigate(paths.welcomeSurveyPath)
+        },
+        errorTitle: 'Something went wrong',
+        errorMessage: 'User registration is failed',
+        onSubmit: async () => {
+          await registerUser(locationId, registeringUser)
+        },
+      }),
+    [locationId, registeringUser],
+  )
+
   const handleRegisterUser = useCallback(async (user: RegisteringUser, location: Location) => {
     setRegisteringUser(user)
     LocalStorage.setRegisteringUser(user)
 
     if (user.role === Roles.Student || user.role === Roles.Staff) {
       // create user
-      registerUser(location.id, user)
+      submitHandler.submit()
     } else {
       // go to add children
       props.f7router.navigate(`/l/${locationId}/register/children`)
@@ -178,10 +193,12 @@ export function CheckLocationCodePage(props: F7Props): JSX.Element {
     onSuccess: (result) => {
       const registeringUser = new RegisteringUser()
       registeringUser.registrationCode = registrationCode
-      if (result === 'not school') {
-        registeringUser.isStudent = null
+      if (result === 'teacher_staff') {
+        registeringUser.availableRoles = [Roles.Teacher, Roles.Staff]
+      } else if (result === 'student_parent') {
+        registeringUser.availableRoles = [Roles.Parent, Roles.Student]
       } else {
-        registeringUser.isStudent = result === 'parent or student'
+        registeringUser.availableRoles = []
       }
       setRegisteringUser(registeringUser)
 
@@ -313,7 +330,7 @@ function CreateAccountPage({
       <Block>
         <h1>Create Your Account</h1>
         <p>Fill in the information below to create your account for {location.name}</p>
-        <UserForm user={registeringUser} onUpdateUser={onRegister} isStudent={registeringUser.isStudent} />
+        <UserForm user={registeringUser} onUpdateUser={onRegister} />
       </Block>
     </Fragment>
   )

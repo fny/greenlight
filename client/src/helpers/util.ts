@@ -92,18 +92,22 @@ export function isEmptyType(data: any): boolean {
 
 export function isPrimitiveType(data: any): boolean {
   return (
-    typeof data === 'string'
-    || typeof data === 'number'
-    || typeof data === 'boolean'
-    || typeof data === 'bigint'
-    || typeof data === 'symbol'
-    || data === null
-    || data === undefined
+    typeof data === 'string' ||
+    typeof data === 'number' ||
+    typeof data === 'boolean' ||
+    typeof data === 'bigint' ||
+    typeof data === 'symbol' ||
+    data === null ||
+    data === undefined
   )
 }
 
 export function hasKey(obj: any, key: string): boolean {
   return obj[key] !== undefined
+}
+
+export function getKeyName<T>(obj: { [i: string]: T }, value: T): string | undefined {
+  return Object.keys(obj).find((key) => obj[key] === value)
 }
 
 export function isInDurham(zipCode: string): boolean {
@@ -436,16 +440,32 @@ export function lowerCaseFirst(str: string): string {
   return str.charAt(0).toLowerCase() + str.slice(1)
 }
 
-export function stringify(val: any, depth: number, replacer?: null | ((this: any, key: string, value: any) => any), space?: string | number, onGetObjID?: (val: object) => string): string {
+export function stringify(
+  val: any,
+  depth: number,
+  replacer?: null | ((this: any, key: string, value: any) => any),
+  space?: string | number,
+  onGetObjID?: (val: object) => string,
+): string {
   depth = isNaN(+depth) ? 1 : depth
   const recursMap = new WeakMap()
   function _build(val: any, depth: number, o?: any, a?: boolean, r?: boolean) {
-    return !val || typeof val !== 'object' ? val
-      : (r = recursMap.has(val),
-      recursMap.set(val, true),
-      a = Array.isArray(val),
-      r ? (o = onGetObjID && onGetObjID(val) || null) : JSON.stringify(val, (k, v) => { if (a || depth > 0) { if (replacer) v = replacer(k, v); if (!k) return (a = Array.isArray(v), val = v); !o && (o = a ? [] : {}); o[k] = _build(v, a ? depth : depth - 1) } }),
-      o === void 0 ? (a ? [] : {}) : o)
+    return !val || typeof val !== 'object'
+      ? val
+      : ((r = recursMap.has(val)),
+        recursMap.set(val, true),
+        (a = Array.isArray(val)),
+        r
+          ? (o = (onGetObjID && onGetObjID(val)) || null)
+          : JSON.stringify(val, (k, v) => {
+              if (a || depth > 0) {
+                if (replacer) v = replacer(k, v)
+                if (!k) return (a = Array.isArray(v)), (val = v)
+                !o && (o = a ? [] : {})
+                o[k] = _build(v, a ? depth : depth - 1)
+              }
+            }),
+        o === void 0 ? (a ? [] : {}) : o)
   }
   return JSON.stringify(_build(val, depth), null, space)
 }
@@ -457,24 +477,46 @@ export function titleCase(x: string): string {
 
   // Certain minor words should be left lowercase unless
   // they are the first or last words in the string
-  const lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
-    'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With']
+  const lowers = [
+    'A',
+    'An',
+    'The',
+    'And',
+    'But',
+    'Or',
+    'For',
+    'Nor',
+    'As',
+    'At',
+    'By',
+    'For',
+    'From',
+    'In',
+    'Into',
+    'Near',
+    'Of',
+    'On',
+    'Onto',
+    'To',
+    'With',
+  ]
   for (i = 0, j = lowers.length; i < j; i += 1) {
-    str = str.replace(new RegExp(`\\s${lowers[i]}\\s`, 'g'),
-      (txt) => txt.toLowerCase())
+    str = str.replace(new RegExp(`\\s${lowers[i]}\\s`, 'g'), (txt) => txt.toLowerCase())
   }
 
   // Certain words such as initialisms or acronyms should be left uppercase
   const uppers = ['Id', 'Tv']
   for (i = 0, j = uppers.length; i < j; i += 1) {
-    str = str.replace(new RegExp(`\\b${uppers[i]}\\b`, 'g'),
-      uppers[i].toUpperCase())
+    str = str.replace(new RegExp(`\\b${uppers[i]}\\b`, 'g'), uppers[i].toUpperCase())
   }
 
   return str
 }
 
-export function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number): (...args: Parameters<F>) => ReturnType<F> {
+export function debounce<F extends (...args: any[]) => any>(
+  func: F,
+  waitFor: number,
+): (...args: Parameters<F>) => ReturnType<F> {
   let timeout: ReturnType<typeof setTimeout> | null = null
 
   const debounced = (...args: Parameters<F>) => {
@@ -499,16 +541,15 @@ function useDebounce(callback: any, delay: number) {
 export function isInViewport(element: Element): boolean {
   const rect = element.getBoundingClientRect()
   return (
-    rect.top >= 0
-      && rect.left >= 0
-      && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-      && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   )
 }
 
 export function countVisible(selector: string): number {
-  return Array.from(document.querySelectorAll(selector)).map(isInViewport).reduce(
-    (acc, curr: boolean) => acc + (curr ? 1 : 0),
-    0,
-  )
+  return Array.from(document.querySelectorAll(selector))
+    .map(isInViewport)
+    .reduce((acc, curr: boolean) => acc + (curr ? 1 : 0), 0)
 }
