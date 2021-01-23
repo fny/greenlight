@@ -18,6 +18,7 @@ export default function RegisterChildrenPage(props: F7Props): JSX.Element {
   const { locationId } = props.f7route.params
   const [page, setPage] = useState('') // '' for children page, 'child' for add child page
   const [registeringUser, setRegisteringUser] = useGlobal('registeringUser')
+  const [selectedUser, setSelectedUser] = useState<number | null>(null)
 
   assertNotUndefined(locationId)
 
@@ -36,18 +37,34 @@ export default function RegisterChildrenPage(props: F7Props): JSX.Element {
     [locationId, registeringUser],
   )
 
-  const handleAddChild = useCallback(
+  const handleUpdateChild = useCallback(
     (child: RegisteringUser) => {
       const newRegisteringUser = {
         ...registeringUser,
-        children: [...registeringUser.children, child],
+      }
+      if (selectedUser !== null) {
+        newRegisteringUser.children = newRegisteringUser.children.map((v, i) => (i === selectedUser ? child : v))
+      } else {
+        newRegisteringUser.children = [...newRegisteringUser.children, child]
       }
       LocalStorage.setRegisteringUser(newRegisteringUser)
+      setSelectedUser(null)
       setRegisteringUser(newRegisteringUser)
       setPage('')
     },
-    [registeringUser],
+    [selectedUser, registeringUser],
   )
+
+  const handleDelete = useCallback(() => {
+    if (selectedUser !== null) {
+      setRegisteringUser({
+        ...registeringUser,
+        children: registeringUser.children.filter((v, i) => i !== selectedUser),
+      })
+      setSelectedUser(null)
+      setPage('')
+    }
+  }, [selectedUser, registeringUser])
 
   if (!registeringUser || registeringUser.registrationCode === '') {
     props.f7router.navigate(`/go/${locationId}`)
@@ -63,13 +80,21 @@ export default function RegisterChildrenPage(props: F7Props): JSX.Element {
           assertNotNull(location)
 
           if (page === 'child') {
-            return <AddChild onAddChild={handleAddChild} setPage={setPage} />
+            return (
+              <AddChild
+                selectedUser={selectedUser !== null ? registeringUser.children[selectedUser] : null}
+                onSubmitChild={handleUpdateChild}
+                setPage={setPage}
+                onDelete={handleDelete}
+              />
+            )
           }
 
           return (
             <ChildrenList
               registeringUser={registeringUser}
               location={location}
+              setSelectedUser={setSelectedUser}
               setPage={setPage}
               onRegister={() => submitHandler.submit()}
             />
@@ -84,10 +109,12 @@ function ChildrenList({
   registeringUser,
   location,
   setPage,
+  setSelectedUser,
   onRegister,
 }: {
   registeringUser: RegisteringUser
   location: Location
+  setSelectedUser: (userIndex: number | null) => any
   setPage: (page: string) => any
   onRegister: () => any
 }): JSX.Element {
@@ -102,7 +129,17 @@ function ChildrenList({
         <BlockTitle>My Children</BlockTitle>
         <List>
           {registeringUser.children.map((child, index) => (
-            <ListItem key={index} title={`${child.firstName} ${child.lastName}`} />
+            <ListItem
+              link="#"
+              key={index}
+              title={`${child.firstName} ${child.lastName}`}
+              after="Edit"
+              onClick={(e) => {
+                e.preventDefault()
+                setSelectedUser(index)
+                setPage('child')
+              }}
+            />
           ))}
           <ListItem
             link="#"
@@ -129,18 +166,22 @@ function ChildrenList({
 }
 
 function AddChild({
-  onAddChild,
+  selectedUser,
+  onSubmitChild,
   setPage,
+  onDelete,
 }: {
-  onAddChild: (child: RegisteringUser) => any
+  selectedUser: RegisteringUser | null
+  onSubmitChild: (child: RegisteringUser) => any
   setPage: (page: string) => any
+  onDelete: () => any
 }): JSX.Element {
   return (
     <Fragment>
       <Navbar title={t({ id: 'locationRegistered.add_children', message: 'Add your children' })}>
         <NavbarHomeLink slot="left" />
       </Navbar>
-      <AddChildForm onSubmit={onAddChild} onDiscard={() => setPage('')} />
+      <AddChildForm user={selectedUser} onSubmit={onSubmitChild} onDiscard={() => setPage('')} onDelete={onDelete} />
     </Fragment>
   )
 }

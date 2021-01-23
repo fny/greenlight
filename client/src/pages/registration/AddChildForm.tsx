@@ -3,12 +3,15 @@ import { useState } from 'reactn'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 
 interface AddChildFormProps {
+  user: RegisteringUser | null
   onSubmit: (child: RegisteringUser) => any
+  onDelete: () => any
   onDiscard?: () => any
 }
 
 export default function AddChildForm(props: AddChildFormProps): JSX.Element {
-  const [value, setValue] = useState(new RegisteringUser())
+  const [value, setValue] = useState({ ...new RegisteringUser(), ...(props.user || {}) })
+
   return (
     <Block>
       <BlockTitle>Add your child's information</BlockTitle>
@@ -45,6 +48,13 @@ export default function AddChildForm(props: AddChildFormProps): JSX.Element {
               Submit
             </Button>
           </Col>
+          {props.user && props.onDelete && (
+            <Col>
+              <Button fill type="button" onClick={props.onDelete}>
+                Delete
+              </Button>
+            </Col>
+          )}
           {props.onDiscard && (
             <Col>
               <Button fill type="button" onClick={props.onDiscard}>
