@@ -1,4 +1,4 @@
-import React, { useEffect, useGlobal, useState, useMemo, Fragment, useCallback } from 'reactn'
+import React, { useLayoutEffect, useGlobal, useState, useMemo, Fragment, useCallback } from 'reactn'
 import { assertNotNull, assertNotUndefined, esExclaim, greeting } from 'src/helpers/util'
 
 import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
@@ -206,10 +206,9 @@ export function CheckLocationCodePage(props: F7Props): JSX.Element {
       setRegisteringUser(registeringUser)
 
       // !TODO: the page does not change if we don't wait for a reasonable time.
-      setTimeout(() => {
-        props.f7router.history.pop()
-        props.f7router.navigate(`/go/${permalink}/register/user`)
-      }, 500)
+      props.f7router.allowPageChange = true
+      props.f7router.history.pop()
+      props.f7router.navigate(`/go/${permalink}/register/user`)
     },
     errorTitle: 'Incorrect Code',
     errorMessage: 'The registration code you input is incorrect. Please try again with correct code!',
@@ -221,15 +220,11 @@ export function CheckLocationCodePage(props: F7Props): JSX.Element {
     },
   })
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     submitHandler.submit()
   }, [])
 
-  return (
-    <Page>
-      <LoadingPage />
-    </Page>
-  )
+  return <LoadingPage />
 }
 
 function CurrentUserAlreadyRegisteredPage({
