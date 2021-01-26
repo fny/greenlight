@@ -1,13 +1,13 @@
 // TODO: I18N
 // TODO: UGLY
 // TODO: Add link to create account
-import React, { useState, useEffect, useMemo } from 'reactn'
-import { Page, BlockTitle, Badge, Block, Button, Link, List, ListItem, ListInput, f7 } from 'framework7-react'
+import React, { useState, useEffect, useMemo, useGlobal } from 'reactn'
+import { Page, BlockTitle, Badge, Block, Button, Link, List, ListItem, ListInput, f7, Icon } from 'framework7-react'
 import { Trans, t } from '@lingui/macro'
 
 import { F7Props } from 'src/types'
 import { assertNotNull, assertNotUndefined, formatPhone } from 'src/helpers/util'
-import { paths } from 'src/config/routes'
+import { dynamicPaths, paths } from 'src/config/routes'
 
 import './LocationPage.css'
 import { Location } from 'src/models'
@@ -16,8 +16,11 @@ import SubmitHandler from 'src/helpers/SubmitHandler'
 import LoadingPageContent from 'src/components/LoadingPageContent'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import { Router } from 'framework7/modules/router/router'
+import { toggleLocale } from 'src/helpers/global'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 
 export default function LocationPage({ f7route, f7router }: F7Props): JSX.Element {
+  const [ currentUser ] = useGlobal('currentUser')
   const { locationId } = f7route.params
   assertNotUndefined(locationId)
 
@@ -36,37 +39,81 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
                 <b>{location.name}</b>
                 <Badge className="title-badge">{location.category}</Badge>
               </BlockTitle>
+              <Link style={{ fontSize: '12px', paddingLeft: '1rem' }} onClick={() => toggleLocale()}>
+                <Tr en="En Español" es="In English" />
+              </Link>
               <ul>
                 {location.website && (
                   <li>
-                    Website: <Link href={location.website}>{location.website}</Link>
-                    <br />
+                    <Tr en="Website" es="Sitio" />: <Link href={location.website}>{location.website}</Link>
                   </li>
                 )}
                 {location.phoneNumber && (
                   <li>
-                    Phone Number: <Link href={`tel:${location.phoneNumber}`}>{formatPhone(location.phoneNumber)}</Link>
+                    <Tr en="Phone" es="Teléfono" />: <Link href={`tel:${location.phoneNumber}`}>{formatPhone(location.phoneNumber)}</Link>
                   </li>
                 )}
                 {location.email && (
                   <li>
-                    Email: <Link href={`mailto:${location.email}`}>{location.email}</Link>
+                    <Tr en="Email" es="Correo Electrónico" />: <Link href={`mailto:${location.email}`}>{location.email}</Link>
                   </li>
                 )}
               </ul>
-              <p>Greenlight provides daily symptom monitoring for {location.name}.</p>
               <p>
-                By registering, this location will have access to health statuses (cleared, pending, recovery), COVID
-                test results you submit, and vaccination status. You can revoke access at any time.
+                <Tr>
+                  <En>
+                    Greenlight provides daily symptom monitoring and additional resources for {location.name}.
+                  </En>
+                  <Es>
+                    Greenlight ofrece encuestas diarias de síntomas y recursos adicionales para {location.name}.
+                  </Es>
+                </Tr>
               </p>
               <p>
-                If you have a Hotmail, MSN, Live, Outlook or other Microsoft email account and don't receive an invite,
-                please contact us at <a href="mailto:help@greenlightready.com">help@greenlightready.com</a>.
+                <Tr>
+                  <En>
+                    By registering, you permit {location.name} to have access to health statuses (cleared, pending, recovery) and COVID
+                    test results you submit. You can revoke access at any time.
+                  </En>
+                  <Es>
+                    Al registrarse, permite que {location.name} tenga acceso a los estados de salud (aprobado, pendiente, recuperación) y COVID
+                    resultados de la prueba que envíe. Puedes revocar el acceso en cualquier momento.
+                  </Es>
+                </Tr>
+
               </p>
-
-              <LookupAccount />
-
-              <RegisterWithCode location={location} f7router={f7router} />
+                {
+                  currentUser
+                  ?
+                  <List>
+                    <ListItem
+                      title={tr({en: "Link Your Account", es: 'Conectar Su Cuenta'})}
+                      footer={tr({
+                        en: `Click here to link your account to ${location.name}.`,
+                        es: `Haga clic aquí para conectar su cuenta a ${location.name}.`})}
+                      link="#"
+                    >
+                      <Icon slot="media" f7="person" />
+                    </ListItem>
+                  </List>
+                  :
+                  <List>
+                    <ListItem
+                      title={tr({en: "Create Your Account", es: 'Crear Su Cuenta'})}
+                      footer={tr({en: `Click here if ${location.name} needs you to create an account.`, es: `Haga clic aquí si ${location.name} necesita que cree una cuenta.`})}
+                      link={dynamicPaths.locationLookupAccountPath({ locationId })}
+                    >
+                      <Icon slot="media" f7="person" />
+                    </ListItem>
+                    <ListItem
+                      title={tr({en: "Lookup Your Account", es: 'Busqar Su Cuenta'})}
+                      footer={tr({en: `Click here if ${location.name} already created an account for you.`, es: `Haga clic aquí si ${location.name} ya creó una cuenta para usted.`})}
+                      link={dynamicPaths.locationRegistrationCodePath({ locationId })}
+                    >
+                      <Icon slot="media" f7="search" />
+                    </ListItem>
+                  </List>
+                }
 
               <Link href={paths.rootPath}>Return to Home Screen</Link>
             </Block>
@@ -74,87 +121,5 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
         }}
       />
     </Page>
-  )
-}
-
-function LookupAccount(): JSX.Element {
-  const [emailOrMobile, setEmailOrMobile] = useState<string>('')
-
-  // TODO: Tell them if their account is already active
-  // TODO: Show an error specific to email or mobile number
-  const submitHandler = useMemo(
-    () =>
-      new SubmitHandler(f7, {
-        onSuccess: () => {
-          f7.dialog.alert(
-            'You should receive a text or email with instructions from Greenlight soon. Please check spam too! ',
-            'Success',
-          )
-        },
-        errorTitle: 'Not Found',
-        errorMessage: 'No matching email or phone number was found. Maybe you already signed up?',
-        onSubmit: async () => {
-          await mailInvite(emailOrMobile)
-        },
-      }),
-    [emailOrMobile],
-  )
-
-  return (
-    <List
-      form
-      noHairlines
-      onSubmit={(e) => {
-        e.preventDefault()
-
-        submitHandler.submit()
-      }}
-    >
-      {/* TODO: Switch to email or mobile input type */}
-      <ListInput
-        label="Email or Mobile Number"
-        placeholder="Your Email or Mobile Number"
-        type="text"
-        required
-        onChange={(e) => {
-          setEmailOrMobile(e.target.value)
-        }}
-      />
-      <br />
-      <Button fill type="submit">
-        <Trans id="LocationPage.claim_account">Lookup Account</Trans>
-      </Button>
-    </List>
-  )
-}
-
-function RegisterWithCode({ location, f7router }: { location: Location; f7router: Router.Router }): JSX.Element {
-  const [registrationCode, setRegistrationCode] = useState<string>('')
-
-  return (
-    <List
-      form
-      noHairlines
-      onSubmit={(e) => {
-        e.preventDefault()
-
-        f7router.navigate(`/l/${location.id}/code/${registrationCode}`)
-      }}
-    >
-      {/* TODO: Switch to email or mobile input type */}
-      <ListInput
-        label="Registration Code"
-        placeholder="Your Registration Code"
-        type="text"
-        required
-        onChange={(e) => {
-          setRegistrationCode(e.target.value)
-        }}
-      />
-      <br />
-      <Button fill type="submit">
-        <Trans id="LocationPage.register_account">Register with code</Trans>
-      </Button>
-    </List>
   )
 }

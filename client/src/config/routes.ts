@@ -55,6 +55,8 @@ import UsersNewPage from 'src/pages/users/UsersNewPage'
 import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
 import PageWithRequest from 'src/pages/util/PageWithRequest'
 import RegisterChildrenPage from 'src/pages/registration/RegisterChildrenPage'
+import LocationLookupAccountPage from 'src/pages/locations/LocationLookupAccountPage'
+import LocationRegistrationCodePage from 'src/pages/locations/LocationRegistrationCodePage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -271,6 +273,78 @@ const adminRoutes = {
   },
 }
 
+const locationRoutes = {
+  locationPath: {
+    path: '/go/:locationId',
+    component: LocationPage,
+  },
+  oldLocationPath: {
+    path: '/l/:locationId',
+    component: LocationPage,
+  },
+  locationLookupAccountPath: {
+    path: '/go/:locationId/lookup-account',
+    component: LocationLookupAccountPage
+  },
+  locationRegistrationCodePath: {
+    path: '/go/:locationId/registration-code',
+    component: LocationRegistrationCodePage
+  },
+  // !TODO: need to make this link to go to another page where we check registration code and redirect to RegisterUserPage if it's valid.
+  newLocationUserPath: {
+    path: '/go/:permalink/code/:registrationCode',
+    component: CheckLocationCodePage,
+  },
+  registerUserPath: {
+    path: '/go/:locationId/register/user',
+    component: RegisterUserPage,
+  },
+  registerChildrenPath: {
+    path: '/go/:locationId/register/children',
+    component: RegisterChildrenPage,
+  },
+}
+
+const surveyRoutes = {
+  userSurveysNewPath: {
+    path: '/users/:userId/surveys/new',
+    component: SurveyNewPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  userSeqSurveysNewPath: {
+    path: '/users/seq/surveys/new',
+    component: SurveyNewPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  surveysThankYouPath: {
+    path: '/surveys/thank-you',
+    component: SurveyThankYouPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+}
+
+const userRoutes = {
+  userGreenlightPassPath: {
+    path: '/users/:userId/greenlight-pass',
+    component: UserGreenlightPassPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  userLocationPath: {
+    path: '/users/:userId/locations/:locationId',
+    component: UserLocationPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+
+  editUserPath: {
+    path: '/users/:userId/edit',
+    component: UserEditPage,
+  },
+  editChildrenPath: {
+    path: '/users/:userId/children/:childId',
+    component: UserEditPage,
+  },
+}
+
 const routeMap = {
   rootPath: {
     path: '/',
@@ -282,6 +356,9 @@ const routeMap = {
   ...resourcesRoutes,
   ...registrationRoutes,
   ...adminRoutes,
+  ...locationRoutes,
+  ...surveyRoutes,
+  ...userRoutes,
   dashboardPath: {
     path: '/dashboard',
     component: DashboardPage,
@@ -305,31 +382,6 @@ const routeMap = {
   splashPath: {
     path: '/splash',
     component: SplashPage,
-  },
-  userSurveysNewPath: {
-    path: '/users/:userId/surveys/new',
-    component: SurveyNewPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  userSeqSurveysNewPath: {
-    path: '/users/seq/surveys/new',
-    component: SurveyNewPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  surveysThankYouPath: {
-    path: '/surveys/thank-you',
-    component: SurveyThankYouPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  userGreenlightPassPath: {
-    path: '/users/:userId/greenlight-pass',
-    component: UserGreenlightPassPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  userLocationPath: {
-    path: '/users/:userId/locations/:locationId',
-    component: UserLocationPage,
-    beforeEnter: beforeEnter.requireSignIn,
   },
   mobileVerificationPath: {
     path: '/mobile-verifications',
@@ -355,43 +407,10 @@ const routeMap = {
     path: '/users/new',
     component: UsersNewPage,
   },
-  locationPath: {
-    path: '/go/:locationId',
-    component: LocationPage,
-  },
-  oldLocationPath: {
-    path: '/l/:locationId',
-    component: LocationPage,
-  },
-  // !TODO: need to make this link to go to another page where we check registration code and redirect to RegisterUserPage if it's valid.
-  newLocationUserPath: {
-    path: '/go/:permalink/code/:registrationCode',
-    component: CheckLocationCodePage,
-  },
-  oldNewLocationUserPath: {
-    path: '/l/:permalink/code/:registrationCode',
-    component: CheckLocationCodePage,
-  },
-  registerUserPath: {
-    path: '/l/:locationId/register/user',
-    component: RegisterUserPage,
-  },
-  registerChildrenPath: {
-    path: '/l/:locationId/register/children',
-    component: RegisterChildrenPage,
-  },
   userLocationPermissionsPath: {
     path: '/admin/locations/:locationId/users/:userId/permissions',
     component: AdminUserPermissionsPage,
     beforeEnter: beforeEnter.requireSignIn,
-  },
-  editUserPath: {
-    path: '/users/:userId/edit',
-    component: UserEditPage,
-  },
-  editChildrenPath: {
-    path: '/users/:userId/children/:childId',
-    component: UserEditPage,
   },
   testPath: {
     path: '/test',

@@ -207,7 +207,7 @@ export function CheckLocationCodePage(props: F7Props): JSX.Element {
 
       // !TODO: the page does not change if we don't wait for a reasonable time.
       setTimeout(() => {
-        props.f7router.navigate(`/l/${permalink}/register/user`)
+        props.f7router.navigate(`/go/${permalink}/register/user`)
       }, 500)
     },
     errorTitle: 'Incorrect Code',
