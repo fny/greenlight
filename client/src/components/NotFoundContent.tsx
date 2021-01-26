@@ -23,7 +23,7 @@ export default function NotFoundContent({ title, hideNavbar }: Props): JSX.Eleme
       </Navbar>
       )}
       <Block style={{ textAlign: 'center' }}>
-        <img alt="404" src={notFoundImage} style={{ width: '40vh' }} />
+        <img alt="404" src={notFoundImage} style={{ width: '80%' }} />
         <p>
           <Tr
             en="We're sorry. The page you're looking for can't be found."
