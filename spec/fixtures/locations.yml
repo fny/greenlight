@@ -6,6 +6,8 @@ springfield_elementary:
   email: admin@springfieldelementary.org
   website: springfieldelementary.org
   zip_code: 97477
+  registration_code: Staff14
+  student_registration_code: Student44
 
 springfield_nuclear:
   name: Springfield Nuclear Plant
@@ -15,3 +17,5 @@ springfield_nuclear:
   email: admin@springfieldnuclear.com
   website: springfieldnuclear.com
   zip_code: 97477
+  registration_code: Bomb14
+  student_registration_code: NotUsedBoom44
