@@ -84,5 +84,42 @@ module UsersController
         error_response(survey.greenlight_status)
       end
     end
+
+    # delete last greenlight status for user
+    delete '/v1/users/:user_id/last_greenlight_status' do
+      user_id = params[:user_id]
+      user = User.includes(:location_accounts).find(user_id)
+      ensure_or_forbidden! { current_user.authorized_to_view?(user) }
+
+      if user.last_greenlight_status
+        SymptomSurvey.find(user.last_greenlight_status.id).destroy
+        success_response
+      else
+        error_response(user)
+      end
+    end
+
+    # update last greenlight status for user
+    patch '/v1/users/:user_id/last_greenlight_status' do
+      user_id = params[:user_id]
+      user = User.includes(:location_accounts).find(user_id)
+      ensure_or_forbidden! { current_user.authorized_to_view?(user) }
+
+      if user.last_greenlight_status
+        survey = SymptomSurvey.find(user.last_greenlight_status.id)
+        if survey
+        survey.update(
+          status: request_json[:status],
+          expirationDate: request_json[:expiration_date]
+        )
+        else
+          
+        end
+        success_response
+      else
+        error_response(user)
+      end
+    end
+
   end
 end
