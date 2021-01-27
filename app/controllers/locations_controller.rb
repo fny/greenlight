@@ -43,8 +43,7 @@ module LocationsController
     post '/v1/locations/:location_id/register', auth: false do
       location = Location.find_by_id_or_permalink!(params[:location_id])
       params[:location] = location
-
-      register = RegisterAccount.new(params)
+      register = RegisterAccount.new(camelize_hash(params))
       if register.run
         user = register.result
         sign_in(user, request.remote_ip)

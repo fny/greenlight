@@ -30,7 +30,7 @@ module UsersController
       if user.save
         set_status_created
         sign_in(user, request.ip)
-        render json: UserSerializer.new(user)
+        success_response_with_token
       else
         error_response(user)
       end

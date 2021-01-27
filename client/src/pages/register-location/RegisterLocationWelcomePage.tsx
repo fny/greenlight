@@ -1,4 +1,3 @@
-import { t, Trans } from '@lingui/macro'
 import {
   Block, Button, Col, Link, Page, PageContent, Row, Sheet, Toolbar,
 } from 'framework7-react'
@@ -13,11 +12,10 @@ import Redirect from 'src/components/Redirect'
 
 import './RegisterLocationPages.css'
 import Tr, { En, Es } from 'src/components/Tr'
-import { hasFinishedStepOne } from 'src/models/RegisteringLocation'
+import TermsAndConditionsSheet from 'src/components/TermsAndConditionsSheet'
 
 export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element {
   const [currentUser] = useGlobal('currentUser')
-  const [registeringLocation] = useGlobal('registeringLocation')
   const [state, setState] = useState({ termsOpened: false })
 
   if (currentUser) {
@@ -34,7 +32,7 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
             es="¡Bienvenido!"
           />
           <Link style={{ fontSize: '12px', paddingLeft: '1rem' }} onClick={() => toggleLocale()}>
-            <Trans id="Common.toggle_locale">En Español</Trans>
+            <Tr en="En Español" es="In English" />
           </Link>
         </h1>
 
@@ -109,7 +107,7 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
         <Row tag="p">
           <Col tag="span">
             <Button large href={paths.splashPath}>
-              <Trans id="Common.back_home">Back Home</Trans>
+              <Tr en="Back Home" es="Volver al Inicio" />
             </Button>
           </Col>
           <Col tag="span">
@@ -118,35 +116,18 @@ export default function RegisterLocationWelcomePage(props: F7Props): JSX.Element
               fill
               href={paths.registerLocationIntroductionPath}
             >
-              <Trans id="Common.continue">Continue</Trans>
+              <Tr en="Continue" es="Seguir" />
             </Button>
           </Col>
         </Row>
       </Block>
 
-      <Sheet
+      <TermsAndConditionsSheet
         opened={state.termsOpened}
-        onSheetClosed={() => {
+        onClose={() => {
           setState({ ...state, termsOpened: false })
         }}
-      >
-        <Toolbar>
-          <div className="left" />
-          <div className="right">
-            <Link sheetClose><Trans id="Common.close">Close</Trans></Link>
-          </div>
-        </Toolbar>
-
-        <PageContent> {/*  Use this to make sheet scrollable */}
-          <iframe
-            title={
-              t({ id: 'Common.terms_and_conditions', message: 'Terms and Conditions' })
-            }
-            src="https://docs.greenlightready.com/terms"
-            style={{ width: '100%', border: 0, height: '90%' }}
-          />
-        </PageContent>
-      </Sheet>
+      />
     </Page>
   )
 }

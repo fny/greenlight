@@ -1,7 +1,7 @@
 module Admin
   class LocationsController < ApplicationController
     def index
-      @pagy, @locations = pagy(Location.q(params[:query]))
+      @pagy, @locations = pagy(Location.q(params[:query]).order(id: :desc))
     end
 
     def new

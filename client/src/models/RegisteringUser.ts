@@ -15,14 +15,21 @@ export class RegisteringUser {
 
   mobileNumber: string = ''
 
-  password: string = ''
-
   registrationCode: string = ''
 
   availableRoles: Roles[] = []
+
   role: Roles = Roles.Unknown
 
   locale: GLLocales = 'en'
 
   children: RegisteringUser[] = []
+
+  needsPhysician: boolean = false
+
+  physicianName: string = ''
+
+  physicianPhoneNumber: string = ''
+
+  zipCode: string = ''
 }

@@ -3,7 +3,7 @@ import Framework7 from 'framework7'
 import logger from 'src/helpers/logger'
 import { JSONAPIError } from 'src/types'
 
-export default class SubmitHandler {
+export default class SubmitHandler<T = any> {
   f7: Framework7
 
   submittingMessage: string
@@ -14,7 +14,7 @@ export default class SubmitHandler {
 
   successMessage?: string
 
-  onSuccess: (params?: any) => void
+  onSuccess: (result?: T) => void
 
   onSubmit: () => Promise<any>
 
@@ -39,9 +39,7 @@ export default class SubmitHandler {
       const result = await fn()
       this.f7.dialog.close()
       if (this.successMessage) {
-        this.f7.dialog.alert(this.successMessage, t({ id: 'Common.success', message: 'Success' }), () =>
-          this.handleSuccess(result),
-        )
+        this.f7.dialog.alert(this.successMessage, t({ id: 'Common.success', message: 'Success' }), () => this.handleSuccess(result))
       } else {
         this.handleSuccess(result)
       }
@@ -49,9 +47,7 @@ export default class SubmitHandler {
       this.f7.dialog.close()
       logger.error(error)
       if (error.response) {
-        this.f7.dialog.alert(this.processErrors(error) || this.errorMessage, this.errorTitle, () =>
-          this.handleError(error),
-        )
+        this.f7.dialog.alert(this.processErrors(error) || this.errorMessage, this.errorTitle, () => this.handleError(error))
       } else {
         this.f7.dialog.alert(this.errorMessage, this.errorTitle, () => this.handleError(error))
       }

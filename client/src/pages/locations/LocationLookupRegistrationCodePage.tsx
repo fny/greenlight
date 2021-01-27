@@ -1,4 +1,6 @@
-import { Badge, Block, BlockTitle, Button, f7, List, ListInput, Page } from 'framework7-react'
+import {
+  Badge, Block, BlockTitle, Button, f7, List, ListInput, Page,
+} from 'framework7-react'
 import React, { useMemo, useState } from 'react'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import SubmitHandler from 'src/helpers/SubmitHandler'
@@ -8,7 +10,7 @@ import { Location } from 'src/models'
 import { Router } from 'framework7/modules/router/router'
 import { dynamicPaths } from 'src/config/routes'
 
-export default function LocationRegistrationCodePage({ f7route, f7router }: F7Props) {
+export default function LocationLookupRegistrationCodePage({ f7route, f7router }: F7Props): JSX.Element {
   const { locationId } = f7route.params
   assertNotUndefined(locationId)
 
@@ -19,7 +21,6 @@ export default function LocationRegistrationCodePage({ f7route, f7router }: F7Pr
         content={(state) => {
           const { location } = state
           assertNotNull(location)
-          assertNotUndefined(location)
 
           return (
             <Block>
@@ -27,19 +28,16 @@ export default function LocationRegistrationCodePage({ f7route, f7router }: F7Pr
                 <b>{location.name}</b>
                 <Badge className="title-badge">
                   {location.category}
-                  </Badge>
+                </Badge>
               </BlockTitle>
               <RegisterWithCode location={location} f7router={f7router} />
             </Block>
           )
-        }
-      }
+        }}
       />
-  </Page>
+    </Page>
   )
 }
-
-
 
 function RegisterWithCode({ location, f7router }: { location: Location; f7router: Router.Router }): JSX.Element {
   const [registrationCode, setRegistrationCode] = useState<string>('')
@@ -63,7 +61,7 @@ function RegisterWithCode({ location, f7router }: { location: Location; f7router
         }}
       />
       <br />
-      <Button fill type="submit">
+      <Button fill href={dynamicPaths.locationCheckRegistrationCodePath({ locationId: location.id, registrationCode })}>
         Register with Code
       </Button>
     </List>

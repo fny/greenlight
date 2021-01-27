@@ -31,7 +31,7 @@ module Admin
           User.union(*relationships)
         end
 
-      @pagy, @users = pagy(users.order(:id))
+      @pagy, @users = pagy(users.order(id: :desc))
     end
 
     def new

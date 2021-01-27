@@ -212,14 +212,14 @@ For each action, you should add helpers to generate routes which map to pages as
 
 Note this is very similar to how Rails does routing, however, we deliberately but the action after the resource for sorting.
 
-All components corresponsing to pages should be in the `./pages/` directory or nested by resource (e.g. `./pages/posts/`)
+All components corresponding to pages should be in the `./pages/` directory or nested by resource (e.g. `./pages/posts/`)
 
 Nested resources follow the same convention above:
 
 - `userPostsPath => 'users/:userId/posts' => UsersPostsPage(userId)`: View all posts for this user
 - `userPostPath => 'users/:userId/posts/:id' => UserPostsPage(userId, id)`: View a post by this user
 
-Again components corresponsing to pages should be in the `./pages` directory. If you want to create a separate folder, follow the same pattern as before but do not nest (e.g. `./pages/usersPosts/`).
+Again components corresponding to pages should be in the `./pages` directory. If you want to create a separate folder, follow the same pattern as before but do not nest (e.g. `./pages/usersPosts/`).
 
 #### Shared Components
 

@@ -1,8 +1,12 @@
 // TODO: I18N
 // TODO: UGLY
 // TODO: Add link to create account
-import React, { useState, useEffect, useMemo, useGlobal } from 'reactn'
-import { Page, BlockTitle, Badge, Block, Button, Link, List, ListItem, ListInput, f7, Icon } from 'framework7-react'
+import React, {
+  useState, useEffect, useMemo, useGlobal,
+} from 'reactn'
+import {
+  Page, BlockTitle, Badge, Block, Button, Link, List, ListItem, ListInput, f7, Icon,
+} from 'framework7-react'
 import { Trans, t } from '@lingui/macro'
 
 import { F7Props } from 'src/types'
@@ -20,7 +24,7 @@ import { toggleLocale } from 'src/helpers/global'
 import Tr, { En, Es, tr } from 'src/components/Tr'
 
 export default function LocationPage({ f7route, f7router }: F7Props): JSX.Element {
-  const [ currentUser ] = useGlobal('currentUser')
+  const [currentUser] = useGlobal('currentUser')
   const { locationId } = f7route.params
   assertNotUndefined(locationId)
 
@@ -82,37 +86,40 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
                 </Tr>
 
               </p>
-                {
+              {
                   currentUser
-                  ?
-                  <List>
-                    <ListItem
-                      title={tr({en: "Link Your Account", es: 'Conectar Su Cuenta'})}
-                      footer={tr({
-                        en: `Click here to link your account to ${location.name}.`,
-                        es: `Haga clic aquí para conectar su cuenta a ${location.name}.`})}
-                      link="#"
-                    >
-                      <Icon slot="media" f7="person" />
-                    </ListItem>
-                  </List>
-                  :
-                  <List>
-                    <ListItem
-                      title={tr({en: "Create Your Account", es: 'Crear Su Cuenta'})}
-                      footer={tr({en: `Click here if ${location.name} needs you to create an account.`, es: `Haga clic aquí si ${location.name} necesita que cree una cuenta.`})}
-                      link={dynamicPaths.locationLookupAccountPath({ locationId })}
-                    >
-                      <Icon slot="media" f7="person" />
-                    </ListItem>
-                    <ListItem
-                      title={tr({en: "Lookup Your Account", es: 'Busqar Su Cuenta'})}
-                      footer={tr({en: `Click here if ${location.name} already created an account for you.`, es: `Haga clic aquí si ${location.name} ya creó una cuenta para usted.`})}
-                      link={dynamicPaths.locationRegistrationCodePath({ locationId })}
-                    >
-                      <Icon slot="media" f7="search" />
-                    </ListItem>
-                  </List>
+                    ? (
+                      <List>
+                        <ListItem
+                          title={tr({ en: 'Link Your Account', es: 'Conectar Su Cuenta' })}
+                          footer={tr({
+                            en: `Click here to link your account to ${location.name}.`,
+                            es: `Haga clic aquí para conectar su cuenta a ${location.name}.`,
+                          })}
+                          link="#"
+                        >
+                          <Icon slot="media" f7="person" />
+                        </ListItem>
+                      </List>
+                    )
+                    : (
+                      <List>
+                        <ListItem
+                          title={tr({ en: 'Create Your Account', es: 'Crear Su Cuenta' })}
+                          footer={tr({ en: `Click here if ${location.name} needs you to create an account.`, es: `Haga clic aquí si ${location.name} necesita que cree una cuenta.` })}
+                          link={dynamicPaths.locationLookupRegistrationCodePath({ locationId })}
+                        >
+                          <Icon slot="media" f7="person" />
+                        </ListItem>
+                        <ListItem
+                          title={tr({ en: 'Lookup Your Account', es: 'Busqar Su Cuenta' })}
+                          footer={tr({ en: `Click here if ${location.name} already created an account for you.`, es: `Haga clic aquí si ${location.name} ya creó una cuenta para usted.` })}
+                          link={dynamicPaths.locationLookupAccountPath({ locationId })}
+                        >
+                          <Icon slot="media" f7="search" />
+                        </ListItem>
+                      </List>
+                    )
                 }
 
               <Link href={paths.rootPath}>Return to Home Screen</Link>

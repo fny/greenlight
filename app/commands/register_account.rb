@@ -48,7 +48,7 @@ class RegisterAccount < ApplicationCommand
         role: role
       )
     end
-    if location.school? && role == PARENT
+    if location.school? && role != STUDENT
       @user.children << (children || []).map { |c|
         User.new(
           first_name: c[:first_name],
@@ -101,7 +101,7 @@ class RegisterAccount < ApplicationCommand
   def user_valid
     user.valid?
     user.errors.each do |error|
-      errors.add(error)
+      errors.add(error.attribute, error.message)
     end
   end
 end

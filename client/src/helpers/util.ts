@@ -92,13 +92,13 @@ export function isEmptyType(data: any): boolean {
 
 export function isPrimitiveType(data: any): boolean {
   return (
-    typeof data === 'string' ||
-    typeof data === 'number' ||
-    typeof data === 'boolean' ||
-    typeof data === 'bigint' ||
-    typeof data === 'symbol' ||
-    data === null ||
-    data === undefined
+    typeof data === 'string'
+    || typeof data === 'number'
+    || typeof data === 'boolean'
+    || typeof data === 'bigint'
+    || typeof data === 'symbol'
+    || data === null
+    || data === undefined
   )
 }
 
@@ -204,7 +204,8 @@ export function resolvePath(path: string, substitutions?: any[] | Dict<any> | nu
 
     for (const match of matches) {
       const subtitutionKey = match.replace(':', '')
-      if (!substitutions[subtitutionKey]) {
+      const value = substitutions[subtitutionKey]
+      if (value === null || value === undefined) {
         throw new Error(`Missing key ${subtitutionKey} in substitutions: ${JSON.stringify(substitutions)}`)
       }
       path = path.replace(`${match}`, String(substitutions[subtitutionKey]))
@@ -408,9 +409,9 @@ export function haveEqualAttrs(a: any, b: any): boolean {
   return true
 }
 
-export function transformForAPI(data: any): any {
+export function transformForAPI(data: any, options: { removeBlanks: boolean } = { removeBlanks: false }): any {
   if (Array.isArray(data)) {
-    return data.map(transformForAPI)
+    return data.map((d) => transformForAPI(d, options))
   }
   if (isPrimitiveType(data)) {
     return data
@@ -420,7 +421,11 @@ export function transformForAPI(data: any): any {
   }
   const transformed: any = {}
   Object.keys(data).forEach((k) => {
-    transformed[k] = transformForAPI(data[k])
+    if (options.removeBlanks && isBlank(data[k])) {
+      delete transformed[k]
+    } else {
+      transformed[k] = transformForAPI(data[k], options)
+    }
   })
   return transformed
 }
@@ -453,19 +458,19 @@ export function stringify(
     return !val || typeof val !== 'object'
       ? val
       : ((r = recursMap.has(val)),
-        recursMap.set(val, true),
-        (a = Array.isArray(val)),
-        r
-          ? (o = (onGetObjID && onGetObjID(val)) || null)
-          : JSON.stringify(val, (k, v) => {
-              if (a || depth > 0) {
-                if (replacer) v = replacer(k, v)
-                if (!k) return (a = Array.isArray(v)), (val = v)
-                !o && (o = a ? [] : {})
-                o[k] = _build(v, a ? depth : depth - 1)
-              }
-            }),
-        o === void 0 ? (a ? [] : {}) : o)
+      recursMap.set(val, true),
+      (a = Array.isArray(val)),
+      r
+        ? (o = (onGetObjID && onGetObjID(val)) || null)
+        : JSON.stringify(val, (k, v) => {
+          if (a || depth > 0) {
+            if (replacer) v = replacer(k, v)
+            if (!k) return (a = Array.isArray(v)), (val = v)
+            !o && (o = a ? [] : {})
+            o[k] = _build(v, a ? depth : depth - 1)
+          }
+        }),
+      o === void 0 ? (a ? [] : {}) : o)
   }
   return JSON.stringify(_build(val, depth), null, space)
 }
@@ -515,8 +520,7 @@ export function titleCase(x: string): string {
 
 export function debounce<F extends (...args: any[]) => any>(
   func: F,
-  waitFor: number,
-): (...args: Parameters<F>) => ReturnType<F> {
+  waitFor: number): (...args: Parameters<F>) => ReturnType<F> {
   let timeout: ReturnType<typeof setTimeout> | null = null
 
   const debounced = (...args: Parameters<F>) => {
@@ -541,10 +545,10 @@ function useDebounce(callback: any, delay: number) {
 export function isInViewport(element: Element): boolean {
   const rect = element.getBoundingClientRect()
   return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    rect.top >= 0
+    && rect.left >= 0
+    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+    && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   )
 }
 

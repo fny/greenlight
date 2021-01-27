@@ -35,3 +35,5 @@ f7ready((f7) => {
 
 export default GL;
 (window as any).GL = GL
+
+GL.LocalStorage

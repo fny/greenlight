@@ -1,39 +1,27 @@
-import { t, Trans } from '@lingui/macro'
 import {
   Block,
   Button,
-  Col,
   f7,
-  Link,
   List,
-  ListInput,
   ListItem,
   Page,
-  PageContent,
-  Row,
-  Sheet,
   Toggle,
-  Toolbar,
 } from 'framework7-react'
 import React, { useState } from 'react'
-import { isBlank, isPresent, upperCaseFirst } from 'src/helpers/util'
-import { toggleLocale } from 'src/helpers/global'
-import { RegisteringUser } from 'src/models/RegisteringUser'
-import { RegisteringLocation } from 'src/models/RegisteringLocation'
-import { lcTrans, LocationCategories, LOCATION_CATEGORIES } from 'src/models/Location'
-import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
+import { isBlank } from 'src/helpers/util'
+import { reloadCurrentUser } from 'src/helpers/global'
+import { lcTrans } from 'src/models/Location'
 import { paths } from 'src/config/routes'
 import { useGlobal } from 'reactn'
 import { F7Props } from 'src/types'
 import { FormikProvider, useFormik } from 'formik'
 import FormikInput from 'src/components/FormikInput'
 import * as Yup from 'yup'
-import { User } from 'src/models'
 import SubmitHandler from 'src/helpers/SubmitHandler'
-import { createUserAndSignIn, getCurrentUser } from 'src/api'
-import { GLLocales } from 'src/i18n'
+import { createUserAndSignIn } from 'src/api'
 import { Router } from 'framework7/modules/router/router'
 import 'src/lib/yup-phone'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 
 class UserInput {
   firstName: string = ''
@@ -60,7 +48,7 @@ function UserForm({ user, f7router }: { user: UserInput; f7router: Router.Router
       submissionHandler.submit(async () => {
         if (formik.dirty) {
           await createUserAndSignIn({ ...values, locale })
-          await getCurrentUser()
+          await reloadCurrentUser()
           f7router.navigate(paths.registerLocationDetailsPath)
         }
       })
@@ -79,7 +67,7 @@ function UserForm({ user, f7router }: { user: UserInput; f7router: Router.Router
       >
         {isBlank(user.firstName) && (
           <FormikInput
-            label={t({ id: 'Forms.first_name', message: 'First Name' })}
+            label={tr({ en: 'First Name', es: 'Primero' })}
             name="firstName"
             type="text"
             floatingLabel
@@ -87,21 +75,21 @@ function UserForm({ user, f7router }: { user: UserInput; f7router: Router.Router
         )}
         {isBlank(user.lastName) && (
           <FormikInput
-            label={t({ id: 'Forms.last_name', message: 'Last Name' })}
+            label={tr({ en: 'Last Name', es: 'Apellido' })}
             name="lastName"
             type="text"
             floatingLabel
           />
         )}
-        <FormikInput label={t({ id: 'Forms.email', message: 'Email' })} name="email" type="email" floatingLabel />
+        <FormikInput label={tr({ en: 'Email', es: 'Correo Electrónico' })} name="email" type="email" floatingLabel />
         <FormikInput
-          label={t({ id: 'Forms.mobile_number', message: 'Mobile Number' })}
+          label={tr({ en: 'Mobile Number', es: 'Teléfono móvil' })}
           name="mobileNumber"
           type="tel"
           floatingLabel
         />
         <FormikInput
-          label={t({ id: 'Forms.password', message: 'Password' })}
+          label={tr({ en: 'Password', es: 'Contraseña' })}
           name="password"
           type={revealPassword ? 'text' : 'password'}
           floatingLabel
@@ -109,7 +97,7 @@ function UserForm({ user, f7router }: { user: UserInput; f7router: Router.Router
 
         <ListItem>
           <span>
-            <Trans id="Forms.reveal_password">Reveal Password</Trans>
+            <Tr en="Reveal Password" es="Mostrar Contraseña" />
           </span>
           <Toggle color="green" checked={revealPassword} onChange={() => setRevealPassword(!revealPassword)} />
         </ListItem>
@@ -123,15 +111,15 @@ function UserForm({ user, f7router }: { user: UserInput; f7router: Router.Router
 }
 
 const schema = Yup.object<UserInput>().shape({
-  firstName: Yup.string().required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
-  lastName: Yup.string().required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
+  firstName: Yup.string().required(tr({ en: "Can't be blank", es: 'No puede quedar vacío' })),
+  lastName: Yup.string().required(tr({ en: "Can't be blank", es: 'No puede quedar vacío' })),
   email: Yup.string()
-    .email(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
-    .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
+    .email(tr({ en: 'Is invalid', es: 'No es válido' }))
+    .required(tr({ en: "Can't be blank", es: 'No puede quedar vacío' })),
   mobileNumber: Yup.string()
-    .phone(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
-    .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
-  password: Yup.string().min(8, t({ id: 'Form.password_invalid', message: 'must be at least 8 characters' })),
+    .phone(tr({ en: 'Is invalid', es: 'No es válido' }))
+    .required(tr({ en: "Can't be blank", es: 'No puede quedar vacío' })),
+  password: Yup.string().min(8, tr({ en: 'must be at least 8 characters', es: 'debe tener al menos 8 caracteres' })),
 })
 
 export default function RegisterLocationOwnerPage(props: F7Props): JSX.Element {
@@ -140,13 +128,26 @@ export default function RegisterLocationOwnerPage(props: F7Props): JSX.Element {
   return (
     <Page>
       <Block>
-        <h1>Let's create your sign in.</h1>
+        <h1>
+          <Tr en="Let's create your sign in." es="Crear su inicio de sesión." />
+        </h1>
         <p>
-          Before you tell us more about your{' '}
-          {lcTrans(global.registeringLocation.category || LocationCategories.COMMUNITY)}, we'll need to create an
-          account for you.
+          <Tr>
+            <En>
+              Before you tell us more about your
+              {' '}
+              {lcTrans(global.registeringLocation.category)}, we'll need to create an
+              account for you.
+            </En>
+            <Es>
+              Antes de describir su
+
+              {lcTrans(global.registeringLocation.category)}, necesitaremos crear una
+              cuenta por usted.
+            </Es>
+          </Tr>
         </p>
-        {/* <UserForm user={global.registeringUser} f7router={props.f7router} /> */}
+        <UserForm user={{ ...global.registeringUser, password: '' }} f7router={props.f7router} />
       </Block>
     </Page>
   )

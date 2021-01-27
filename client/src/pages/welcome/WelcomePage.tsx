@@ -17,6 +17,7 @@ import { NoCurrentUserError } from 'src/helpers/errors'
 
 import { toggleLocale, signOut } from 'src/helpers/global'
 import { plural, Trans } from '@lingui/macro'
+import TermsAndConditionsSheet from 'src/components/TermsAndConditionsSheet'
 
 interface State {
   termsOpened: boolean
@@ -149,26 +150,13 @@ export default class WelcomePage extends ReactNComponent<any, State> {
             </Col>
           </Row>
         </Block>
-        <Sheet
+
+        <TermsAndConditionsSheet
           opened={this.state.termsOpened}
-          onSheetClosed={() => {
+          onClose={() => {
             this.setState({ termsOpened: false })
           }}
-        >
-          <Toolbar>
-            <div className="left" />
-            <div className="right">
-              <Link sheetClose>
-                <Trans id="Common.close">Close</Trans>
-              </Link>
-            </div>
-          </Toolbar>
-          {/*  Scrollable sheet content */}
-          <PageContent>
-            {/* TODO: Host this elsewhere. */}
-            <iframe src="https://docs.greenlightready.com/terms" style={{ width: '100%', border: 0, height: '90%' }} />
-          </PageContent>
-        </Sheet>
+        />
       </Page>
     )
   }

@@ -87,7 +87,7 @@ export default function SettingsPage() {
         />
 
         <ListItem
-          link={paths.newUserPath}
+          link={paths.locationLookupPath}
           title={t({ id: 'SettingsPage.join_location', message: 'Join Location' })}
         />
 

@@ -1,39 +1,42 @@
 import { t } from '@lingui/macro'
-import { Block, Button, Link, Navbar, Page, List, ListItem, BlockTitle, Icon, f7 } from 'framework7-react'
-import { Fragment, useGlobal, useCallback, useState, useMemo } from 'reactn'
+import {
+  Block, Button, Navbar, Page, List, ListItem, BlockTitle, f7,
+} from 'framework7-react'
+import React, {
+  Fragment, useGlobal, useCallback, useState, useMemo,
+} from 'reactn'
 import { registerUser } from 'src/api'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import LocalStorage from 'src/helpers/SessionStorage'
+import LocalStorage from 'src/helpers/LocalStorage'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { assertNotNull, assertNotUndefined } from 'src/helpers/util'
 import { Location } from 'src/models'
 import { Roles } from 'src/models/LocationAccount'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import { F7Props } from 'src/types'
-import AddChildForm from './AddChildForm'
 import { paths } from 'src/config/routes'
+import AddChildForm from './AddChildForm'
 
 export default function RegisterChildrenPage(props: F7Props): JSX.Element {
   const { locationId } = props.f7route.params
   const [page, setPage] = useState('') // '' for children page, 'child' for add child page
   const [registeringUser, setRegisteringUser] = useGlobal('registeringUser')
   const [selectedUser, setSelectedUser] = useState<number | null>(null)
-
+  const [registeringUserDetail] = useGlobal('registeringUserDetail')
   assertNotUndefined(locationId)
 
   const submitHandler = useMemo(
-    () =>
-      new SubmitHandler(f7, {
-        onSuccess: () => {
-          props.f7router.navigate(paths.welcomeSurveyPath)
-        },
-        errorTitle: 'Something went wrong',
-        errorMessage: 'User registration is failed',
-        onSubmit: async () => {
-          await registerUser(locationId, registeringUser)
-        },
-      }),
+    () => new SubmitHandler(f7, {
+      onSuccess: () => {
+        props.f7router.navigate(paths.welcomeSurveyPath)
+      },
+      errorTitle: 'Something went wrong',
+      errorMessage: 'User registration is failed',
+      onSubmit: async () => {
+        await registerUser(locationId, { ...registeringUser, password: registeringUserDetail })
+      },
+    }),
     [locationId, registeringUser],
   )
 
@@ -124,7 +127,7 @@ function ChildrenList({
         <NavbarHomeLink slot="left" />
       </Navbar>
       <Block>
-        <BlockTitle>If you have any children that attend {location.name} add them here.</BlockTitle>
+        <p>If you have any children that attend {location.name} add them here.</p>
 
         <BlockTitle>My Children</BlockTitle>
         <List>

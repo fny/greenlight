@@ -311,4 +311,8 @@ export class User extends Model {
   isInBrevard__HACK() {
     return this.locations__HACK().some((l) => l.permalink === 'brevard-academy')
   }
+
+  isMemberOf(location: Location): boolean {
+    return this.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0
+  }
 }

@@ -13,7 +13,7 @@ import {
 import { paths } from 'src/config/routes'
 import { useGlobal } from 'reactn'
 import { F7Props } from 'src/types'
-import LocalStorage from 'src/helpers/SessionStorage'
+import LocalStorage from 'src/helpers/LocalStorage'
 import { User } from 'src/models'
 
 import './RegisterLocationPages.css'

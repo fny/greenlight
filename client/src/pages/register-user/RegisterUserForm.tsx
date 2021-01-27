@@ -1,6 +1,8 @@
 import { t, Trans } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
-import { Button, List, ListInput, ListItem, Toggle } from 'framework7-react'
+import {
+  Button, List, ListInput, ListItem, Toggle,
+} from 'framework7-react'
 import React, { useState } from 'react'
 import { useGlobal } from 'reactn'
 import * as Yup from 'yup'
@@ -9,25 +11,30 @@ import { RegisteringUser } from 'src/models/RegisteringUser'
 import FormikInput from 'src/components/FormikInput'
 import { Roles } from 'src/models/LocationAccount'
 import { getKeyName } from 'src/helpers/util'
+import Tr, { tr } from 'src/components/Tr'
 
-export default function UserForm({
+export default function RegisterUserForm({
   user,
   onUpdateUser,
 }: {
   user?: Partial<RegisteringUser>
   onUpdateUser: (user: RegisteringUser) => any
-}) {
+}): JSX.Element {
   const [locale] = useGlobal('locale')
   const [revealPassword, setRevealPassword] = useState(false)
 
-  const formik = useFormik<RegisteringUser>({
+  const formik = useFormik<RegisteringUser & { password: string }>({
     validationSchema: schema,
     initialValues: {
       ...new RegisteringUser(),
+      password: '',
       ...user,
     },
     onSubmit: (values) => {
       if (formik.dirty) {
+        if (values.role === Roles.Unknown) {
+          values.role = values.availableRoles[0]
+        }
         onUpdateUser(values)
       }
     },
@@ -44,7 +51,7 @@ export default function UserForm({
         }}
       >
         {formik.values.availableRoles.length > 0 && (
-          <FormikInput label={t({ id: 'Forms.user_role', message: 'Role' })} name="role" type="select" floatingLabel>
+          <FormikInput label={tr({ en: 'Role', es: 'Papel' })} name="role" type="select" floatingLabel>
             {formik.values.availableRoles.map((role) => (
               <option key={role} value={role}>
                 {getKeyName(Roles, role)}
@@ -53,27 +60,34 @@ export default function UserForm({
           </FormikInput>
         )}
         <FormikInput
-          label={t({ id: 'Forms.first_name', message: 'First Name' })}
+          label={tr({ en: 'First Name', es: 'Primero' })}
           name="firstName"
           type="text"
           floatingLabel
         />
         <FormikInput
-          label={t({ id: 'Forms.last_name', message: 'Last Name' })}
+          label={tr({ en: 'Last Name', es: 'Apellido' })}
           name="lastName"
           type="text"
           floatingLabel
         />
-        <FormikInput label={t({ id: 'Forms.email', message: 'Email' })} name="email" type="email" floatingLabel />
+        <FormikInput label={tr({ en: 'Email', es: 'Correo electrónico' })} name="email" type="email" floatingLabel />
         <FormikInput
-          label={t({ id: 'Forms.mobile_number', message: 'Mobile Number' })}
+          label={tr({ en: 'Mobile Number', es: 'Teléfono Móvil' })}
           name="mobileNumber"
           type="tel"
           floatingLabel
         />
 
         <FormikInput
-          label={t({ id: 'Forms.password', message: 'Password' })}
+          label={tr({ en: 'Zip Code', es: 'Código Postal' })}
+          name="zipCode"
+          type="text"
+          floatingLabel
+        />
+
+        <FormikInput
+          label={tr({ en: 'Password', es: 'Contraseña' })}
           name="password"
           type={revealPassword ? 'text' : 'password'}
           floatingLabel
@@ -81,17 +95,17 @@ export default function UserForm({
 
         <ListItem>
           <span>
-            <Trans id="Forms.reveal_password">Reveal Password</Trans>
+            <Tr en="Reveal Password" es="Mostrar Contraseña" />
           </span>
           <Toggle color="green" checked={revealPassword} onChange={() => setRevealPassword(!revealPassword)} />
         </ListItem>
-        <ListInput label={t({ id: 'Forms.language', message: 'Language' })} type="select" defaultValue={locale}>
-          <option value="en">{t({ id: 'Common.english', message: 'English' })}</option>
-          <option value="es">{t({ id: 'Common.spanish', message: 'Español' })}</option>
+        <ListInput label={tr({ en: 'Langauge', es: 'Lengua' })} type="select" defaultValue={locale}>
+          <option value="en">{tr({ en: 'English', es: 'English' })}</option>
+          <option value="es">{tr({ en: 'Español', es: 'Español' })}</option>
         </ListInput>
 
         <Button style={{ marginTop: '1rem' }} type="submit" outline fill>
-          <Trans id="Common.register">Register</Trans>
+          <Tr en="Register" es="Registrar" />
         </Button>
       </List>
     </FormikProvider>
@@ -109,4 +123,8 @@ const schema = Yup.object<RegisteringUser>().shape({
     .phone(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
     .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
   password: Yup.string().min(8, t({ id: 'Form.password_invalid', message: 'must be at least 8 characters' })),
+  zipCode: Yup.string().matches(/^\d{5}$/, {
+    excludeEmptyString: true,
+    message: t({ id: 'EditUserPage.invalid_zip_code', message: 'Zip code should be 5 digits' }),
+  }),
 })

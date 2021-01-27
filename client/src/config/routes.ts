@@ -13,7 +13,6 @@ import DebugPage from 'src/pages/util/DebugPage'
 import DukeScheduleTestPage from 'src/pages/resources/DukeScheduleTestPage'
 import GiphySchedulePage from 'src/pages/util/GiphySchedulePage'
 import LocationPage from 'src/pages/locations/LocationPage'
-import LocationsNewPage from 'src/pages/registration/RegisterBusinessPage'
 import MagicSignInAuthPage from 'src/pages/sessions/MagicSignInAuthPage'
 import MagicSignInPage from 'src/pages/sessions/MagicSignInPage'
 import MobileVerificationPage from 'src/pages/MobileVerificationPage'
@@ -24,11 +23,11 @@ import NotificationsPage from 'src/pages/users/NotificationsPage'
 import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
 import PasswordResetPage from 'src/pages/sessions/PasswordResetPage'
 import PasswordResetRequestPage from 'src/pages/sessions/PasswordResetRequestPage'
-import RegisterLocationConfirmationPage from 'src/pages/registration/RegisterLocationConfirmationPage'
-import RegisterLocationDetailsPage from 'src/pages/registration/RegisterLocationDetailsPage'
-import RegisterLocationMessagePage from 'src/pages/registration/RegisterLocationMessagePage'
-import RegisterLocationOwnerPage from 'src/pages/registration/RegisterLocationOwnerPage'
-import RegisterLocationWelcomePage from 'src/pages/registration/RegisterLocationWelcomePage'
+import RegisterLocationConfirmationPage from 'src/pages/register-location/RegisterLocationConfirmationPage'
+import RegisterLocationDetailsPage from 'src/pages/register-location/RegisterLocationDetailsPage'
+import RegisterLocationMessagePage from 'src/pages/register-location/RegisterLocationMessagePage'
+import RegisterLocationOwnerPage from 'src/pages/register-location/RegisterLocationOwnerPage'
+import RegisterLocationWelcomePage from 'src/pages/register-location/RegisterLocationWelcomePage'
 import ReleaseNotesPage from 'src/pages/ReleaseNotesPage'
 import SettingsPage from 'src/pages/users/SettingsPage'
 import SignInPage from 'src/pages/sessions/SignInPage'
@@ -38,7 +37,7 @@ import SurveyThankYouPage from 'src/pages/surveys/SurveyThankYouPage'
 import UserEditPage from 'src/pages/users/UserEditPage'
 import UserGreenlightPassPage from 'src/pages/users/UserGreenlightPassPage'
 import UserLocationPage from 'src/pages/user-locations/UserLocationPage'
-import RegisterUserPage, { CheckLocationCodePage } from 'src/pages/registration/RegisterUserPage'
+import RegisterUserPage from 'src/pages/register-user/RegisterUserPage'
 import WelcomeChildPage from 'src/pages/welcome/WelcomeChildPage'
 import WelcomePage from 'src/pages/welcome/WelcomePage'
 import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage'
@@ -50,13 +49,14 @@ import HelpScoutPage from 'src/pages/resources/HelpScoutPage'
 import PositiveResourcesPage from 'src/pages/resources/PositiveResourcesPage'
 import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
 import SchoolScoreCardPage from 'src/pages/resources/SchoolScoreCardPage'
-import UsersNewPage from 'src/pages/users/UsersNewPage'
+import LocationLookupPage from 'src/pages/locations/LocationLookupPage'
 
-import RegisterLocationIntroductionPage from 'src/pages/registration/RegisterLocationIntroductionPage'
+import RegisterLocationIntroductionPage from 'src/pages/register-location/RegisterLocationIntroductionPage'
 import PageWithRequest from 'src/pages/util/PageWithRequest'
-import RegisterChildrenPage from 'src/pages/registration/RegisterChildrenPage'
+import RegisterChildrenPage from 'src/pages/register-user/RegisterChildrenPage'
 import LocationLookupAccountPage from 'src/pages/locations/LocationLookupAccountPage'
-import LocationRegistrationCodePage from 'src/pages/locations/LocationRegistrationCodePage'
+import LocationLookupRegistrationCodePage from 'src/pages/locations/LocationLookupRegistrationCodePage'
+import LocationCheckRegistrationCodePage from 'src/pages/locations/LocationCheckRegistrationCodePage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -152,7 +152,7 @@ const registrationRoutes = {
   },
   durhamRegistationPath: {
     path: '/durham',
-    component: LocationsNewPage,
+    component: RegisterLocationWelcomePage,
   },
 }
 
@@ -282,18 +282,22 @@ const locationRoutes = {
     path: '/l/:locationId',
     component: LocationPage,
   },
+  locationLookupPath: {
+    path: '/location/lookup',
+    component: LocationLookupPage,
+  },
   locationLookupAccountPath: {
     path: '/go/:locationId/lookup-account',
-    component: LocationLookupAccountPage
+    component: LocationLookupAccountPage,
   },
-  locationRegistrationCodePath: {
+  locationLookupRegistrationCodePath: {
     path: '/go/:locationId/registration-code',
-    component: LocationRegistrationCodePage
+    component: LocationLookupRegistrationCodePage,
   },
   // !TODO: need to make this link to go to another page where we check registration code and redirect to RegisterUserPage if it's valid.
-  newLocationUserPath: {
-    path: '/go/:permalink/code/:registrationCode',
-    component: CheckLocationCodePage,
+  locationCheckRegistrationCodePath: {
+    path: '/go/:locationId/code/:registrationCode',
+    component: LocationCheckRegistrationCodePage,
   },
   registerUserPath: {
     path: '/go/:locationId/register/user',
@@ -402,10 +406,6 @@ const routeMap = {
   openSourcePath: {
     path: '/open-source',
     component: OpenSourceLicensesPage,
-  },
-  newUserPath: {
-    path: '/users/new',
-    component: UsersNewPage,
   },
   userLocationPermissionsPath: {
     path: '/admin/locations/:locationId/users/:userId/permissions',

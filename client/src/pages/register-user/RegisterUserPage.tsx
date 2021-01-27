@@ -1,23 +1,34 @@
-import React, { useEffect, useGlobal, useState, useMemo, Fragment, useCallback } from 'reactn'
-import { assertNotNull, assertNotUndefined, esExclaim, greeting } from 'src/helpers/util'
+import React, {
+  useEffect, useGlobal, useState, useMemo, Fragment, useCallback, getGlobal,
+} from 'reactn'
+import {
+  assertNotNull, assertNotUndefined, esExclaim, greeting,
+} from 'src/helpers/util'
 
 import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
-import { f7, Page, Block, Sheet, Row, Button, Col, Link, PageContent, Toolbar, Navbar } from 'framework7-react'
+import {
+  f7, Page, Block, Sheet, Row, Button, Col, Link, PageContent, Toolbar, Navbar,
+} from 'framework7-react'
 import { t, Trans } from '@lingui/macro'
 import { User, Location } from 'src/models'
 import { F7Props } from 'src/types'
-import { checkLocationRegistrationCode, getLocation, joinLocation, registerUser } from 'src/api'
+import {
+  checkLocationRegistrationCode, getLocation, joinLocation, registerUser,
+} from 'src/api'
 import { paths } from 'src/config/routes'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import LoadingPage from 'src/pages/util/LoadingPage'
-import UserForm from './UsersForm'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import { Roles } from 'src/models/LocationAccount'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import { Router } from 'framework7/modules/router/router'
-import LocalStorage from 'src/helpers/SessionStorage'
+import LocalStorage from 'src/helpers/LocalStorage'
 import { LocationCategories } from 'src/models/Location'
+import Tr, { En, Es, tr } from 'src/components/Tr'
+import TermsAndConditionsSheet from 'src/components/TermsAndConditionsSheet'
+import EmailSupportLink from 'src/components/EmailSupportLink'
+import RegisterUserForm from './RegisterUserForm'
 
 export default function RegisterUserPage(props: F7Props) {
   const [page, setPage] = useState('')
@@ -28,14 +39,13 @@ export default function RegisterUserPage(props: F7Props) {
   assertNotUndefined(locationId)
 
   const submitHandler = useMemo(
-    () =>
-      new SubmitHandler(f7, {
-        onSuccess: () => {
-          props.f7router.navigate(paths.welcomeSurveyPath)
-        },
-        errorTitle: 'Something went wrong',
-        errorMessage: 'User registration is failed',
-      }),
+    () => new SubmitHandler(f7, {
+      onSuccess: () => {
+        props.f7router.navigate(paths.welcomeSurveyPath)
+      },
+      errorTitle: 'Something went wrong',
+      errorMessage: 'User registration is failed',
+    }),
     [],
   )
 
@@ -43,15 +53,15 @@ export default function RegisterUserPage(props: F7Props) {
     async (user: RegisteringUser) => {
       await setRegisteringUser(user)
       LocalStorage.setRegisteringUser(user)
-
+      const { registeringUserDetail } = getGlobal()
       if (user.role === Roles.Student || user.role === Roles.Staff) {
         // create user
         submitHandler.submit(async () => {
-          await registerUser(locationId, user)
+          await registerUser(locationId, { ...user, password: registeringUserDetail })
         })
       } else {
         // go to add children
-        props.f7router.navigate(`/l/${locationId}/register/children`)
+        props.f7router.navigate(`/go/${locationId}/register/children`)
       }
     },
     [submitHandler],
@@ -66,8 +76,7 @@ export default function RegisterUserPage(props: F7Props) {
           assertNotNull(location)
 
           if (
-            currentUser &&
-            currentUser.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0
+            currentUser && currentUser.isMemberOf(location)
           ) {
             return <CurrentUserAlreadyRegisteredPage currentUser={currentUser} location={location} />
           }
@@ -110,10 +119,7 @@ function WelcomePage({ setPage }: WelcomePageProps): JSX.Element {
       <Block>
         <h1>
           {esExclaim()}
-          {greeting()}!&nbsp;&nbsp;
-          {/* <Link style={{ fontSize: '12px' }} onClick={() => toggleLocale()}>
-        <Trans id="WelcomePage.toggle_locale">En Español</Trans>
-      </Link> */}
+          {greeting()}!
         </h1>
         <p>
           <Trans id="locationRegistered.welcome1">
@@ -158,76 +164,13 @@ function WelcomePage({ setPage }: WelcomePageProps): JSX.Element {
           </Col>
         </Row>
       </Block>
-      <Sheet
+      <TermsAndConditionsSheet
         opened={termsOpened}
-        onSheetClosed={() => {
+        onClose={() => {
           setTermsOpened(false)
         }}
-      >
-        <Toolbar>
-          <div className="left" />
-          <div className="right">
-            <Link sheetClose>
-              <Trans id="Common.close">Close</Trans>
-            </Link>
-          </div>
-        </Toolbar>
-        {/*  Scrollable sheet content */}
-        <PageContent>
-          {/* TODO: Host this elsewhere. */}
-          <iframe src="https://docs.greenlightready.com/terms" style={{ width: '100%', border: 0, height: '90%' }} />
-        </PageContent>
-      </Sheet>
+      />
     </Fragment>
-  )
-}
-
-export function CheckLocationCodePage(props: F7Props): JSX.Element {
-  const { permalink, registrationCode } = useMemo(() => {
-    return props.f7route.params
-  }, [props.f7route.params])
-  const [, setRegisteringUser] = useGlobal('registeringUser')
-
-  assertNotUndefined(permalink)
-  assertNotUndefined(registrationCode)
-
-  const submitHandler = new SubmitHandler(f7, {
-    onSuccess: (result) => {
-      const registeringUser = new RegisteringUser()
-      registeringUser.registrationCode = registrationCode
-      if (result === 'teacher_staff') {
-        registeringUser.availableRoles = [Roles.Teacher, Roles.Staff]
-      } else if (result === 'student_parent') {
-        registeringUser.availableRoles = [Roles.Parent, Roles.Student]
-      } else {
-        registeringUser.role = Roles.Staff
-        registeringUser.availableRoles = []
-      }
-      setRegisteringUser(registeringUser)
-
-      // !TODO: the page does not change if we don't wait for a reasonable time.
-      setTimeout(() => {
-        props.f7router.navigate(`/go/${permalink}/register/user`)
-      }, 500)
-    },
-    errorTitle: 'Incorrect Code',
-    errorMessage: 'The registration code you input is incorrect. Please try again with correct code!',
-    onError: () => {
-      props.f7router.back()
-    },
-    onSubmit: async () => {
-      return await checkLocationRegistrationCode(permalink, registrationCode)
-    },
-  })
-
-  useEffect(() => {
-    submitHandler.submit()
-  }, [])
-
-  return (
-    <Page>
-      <LoadingPage />
-    </Page>
   )
 }
 
@@ -240,25 +183,23 @@ function CurrentUserAlreadyRegisteredPage({
 }): JSX.Element {
   return (
     <Fragment>
-      <Navbar title={t({ id: 'locationRegistered.success_title', message: 'Account Linked' })}>
+      <Navbar title={tr({ en: 'Account Linked', es: 'Cuenta Conectada' })}>
         <NavbarHomeLink slot="left" />
       </Navbar>
       <Block>
         <h1>
-          <Trans id="locationRegistered.success_header">Registered for {location.name}</Trans>
+          <Tr en={`Registered for ${location.name}`} es={`Registrado para ${location.name}`} />
         </h1>
         <p>
-          <Trans id="locationRegistered.success_message">
-            You are registered to submit check in to {location.name}.
-          </Trans>
+          <Tr en={`You are registered to submit check ins to ${location.name}.`} es={`Está registrado para enviar encuestas a ${location.name}`} />
         </p>
         {currentUser.hasCompletedWelcome() ? (
           <Button fill href={paths.dashboardPath}>
-            <Trans id="locationRegistered.return_to_dashboard">Return to Dashboard</Trans>
+            <Tr en="Return to Dashboard" es="Volver a Panel Pricipal" />
           </Button>
         ) : (
           <Button fill href={paths.welcomeSurveyPath}>
-            <Trans id="locationRegistered.submit_first_survey">Submit Your First Survey</Trans>
+            <Tr en="Submit Your First Check In" es="Enviar Su Primera Encuesta" />
           </Button>
         )}
       </Block>
@@ -279,36 +220,49 @@ function CreateLocationAccountPage({ location }: { location: Location }): JSX.El
 
   return (
     <Fragment>
-      <Navbar title={t({ id: 'locationRegistered.connect_title', message: 'Connect with a school' })}>
+      <Navbar title={tr({ en: 'Connect to a New Location', es: 'Conectarse a un Nuevo Lugar' })}>
         <NavbarHomeLink slot="left" />
       </Navbar>
       <Block>
         <h1>
-          <Trans id="locationRegistered.connect_heading">Link to {location.name}</Trans>
+          <Tr en={`Link to ${location.name}`} es={`Unitar con ${location.name}`} />
         </h1>
         <p>
-          <Trans id="locationRegistered.connect_message1">
-            Thank you for creating your account! {location.name} has decided to implement Greenlight Durham and may
-            require that you complete daily check-in’s to work on site. You have the option to share your daily check-in
-            status with {location.name} through Greenlight. Note that only your status (green, yellow, pink) is shared
-            with {location.name}, not your detailed symptoms or medical information. Even if you agree to share updates
-            with {location.name} at this time, you can stop sharing updates at any time.
-          </Trans>
+          <Tr>
+            <En>
+              {location.name} has decided to implement Greenlight and may
+              require that you complete daily check-in's. Only your status (green, yellow, pink) is shared
+              with {location.name}, not your detailed symptoms or medical information unless there is medical staff on site.
+              You can stop sharing information at any time.
+            </En>
+            <Es>
+              {location.name} ha decidido implementar Greenlight Durham y puede
+              requiere que complete las encuestas diarias. Solo se comparte su estado (verde, amarillo, rosa)
+              con {location.name}, no sus síntomas detallados o información médica a menos que haya personal médico en el lugar.
+              Puede dejar de compartir información en cualquier momento.
+            </Es>
+          </Tr>
         </p>
         <p>
-          <Trans id="locationRegistered.connect_message2">
-            Click the button below to allow {location.name} to receive your check-in status.
-          </Trans>
+          <Tr
+            en={`Click the button below to allow ${location.name} to receive your check-in status.`}
+            es={`Haga clic en el botón de abajo para permitir que ${location.name} reciba su estado de salud.`}
+          />
         </p>
         {error && (
           <p>
-            <Trans id="locationRegistered.connect_error">
-              Something went wrong. Please try again or contact us at help@greenlightready.com
-            </Trans>
+            <Tr>
+              <En>
+                Something went wrong. Please try again or contact us at <EmailSupportLink />
+              </En>
+              <Es>
+                Algo salió mal. Vuelva a intentarlo o contáctenos a <EmailSupportLink />
+              </Es>
+            </Tr>
           </p>
         )}
         <Button fill onClick={handleJoinLocation}>
-          <Trans id="locationRegistered.join_location">Join location</Trans>
+          <Tr en="Join Location" es="Unitar" />
         </Button>
       </Block>
     </Fragment>
@@ -330,9 +284,26 @@ function CreateAccountPage({
         <NavbarHomeLink slot="left" />
       </Navbar>
       <Block>
-        <h1>Create Your Account</h1>
-        <p>Fill in the information below to create your account for {location.name}</p>
-        <UserForm user={registeringUser} onUpdateUser={onRegister} />
+        <h1>
+          <Tr en="Create Your Account" es="Crear Su Cuenta" />
+        </h1>
+        <p>
+          <Tr
+            en={`Fill in the information below to create your account for ${location.name}`}
+            es={`Complete la siguiente información para crear su cuenta para ${location.name}`}
+          />
+        </p>
+        <Link
+          style={{ fontSize: '12px', paddingLeft: '1rem', textAlign: 'right' }}
+          onClick={() => {
+            LocalStorage.deleteRegisteringLocation()
+            LocalStorage.deleteRegisteringUser()
+            window.location.reload()
+          }}
+        >
+          <Tr en="Clear" es="Borrar" />
+        </Link>
+        <RegisterUserForm user={registeringUser} onUpdateUser={onRegister} />
       </Block>
     </Fragment>
   )

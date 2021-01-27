@@ -9,7 +9,7 @@ import { paths } from 'src/config/routes'
 import Honeybadger from 'src/initializers/honeybadger'
 import { hasFinishedStepOne, RegisteringLocation } from 'src/models/RegisteringLocation'
 import { RegisteringUser } from 'src/models/RegisteringUser'
-import LocalStorage from './SessionStorage'
+import LocalStorage from './LocalStorage'
 
 export function isSignedIn(): boolean {
   const user = currentUser()
