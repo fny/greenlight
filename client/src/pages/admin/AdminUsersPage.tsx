@@ -166,9 +166,7 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
   const submitHandler = useMemo(
     () =>
       new SubmitHandler(f7, {
-        onSuccess: () => {
-          console.log('success')
-        },
+        successMessage: 'The status has been deleted successfully.',
         errorTitle: 'Something went wrong',
         errorMessage: 'Deleting the last greenlight status is failed.',
       }),

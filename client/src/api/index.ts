@@ -260,7 +260,7 @@ export async function createSymptomSurvey(user: User, medicalEvents: Partial<Med
 }
 
 export async function deleteLastGreenlightStatus(user: User): Promise<string | null> {
-  return await v1.delete(`/users/${user.id}/last_greenlight_status`)
+  return await v1.delete(`/users/${user.id}/last-greenlight-status`)
 }
 
 export async function updateGreenlightStatus(
@@ -268,10 +268,20 @@ export async function updateGreenlightStatus(
   status: string,
   expirationDate: string,
 ): Promise<string | null> {
-  return await v1.patch(`/users/${user.id}/last_greenlight_status`, {
-    status,
-    expirationDate,
-  })
+  const response = await v1.patch<RecordResponse<GreenlightStatus>>(
+    `/users/${user.id}/last-greenlight-status`,
+    transformForAPI({
+      status,
+      expirationDate,
+    }),
+  )
+
+  const record = response.data.data
+
+  assertNotArray(record)
+  assertNotUndefined(record.attributes)
+
+  return record.attributes.status || null
 }
 
 //

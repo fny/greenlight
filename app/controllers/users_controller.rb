@@ -92,7 +92,7 @@ module UsersController
       status = user.last_greenlight_status
       if !status
         simple_error_response("no last status")
-      elsif status.update(expiration_date: params[:expiration_date], status: params[:status], is_override: true)
+      elsif status.update(expiration_date: request_json[:expiration_date], status: request_json[:status], is_override: true)
         render json: GreenlightStatusSerializer.new(status)
       else
         error_response(status)

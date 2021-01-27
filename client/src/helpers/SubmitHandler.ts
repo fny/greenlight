@@ -16,7 +16,7 @@ export default class SubmitHandler {
 
   onSuccess: () => void
 
-  onSubmit:() => Promise<any>
+  onSubmit: () => Promise<any>
 
   onError: (error: any) => void
 
@@ -38,9 +38,13 @@ export default class SubmitHandler {
     try {
       await fn()
       this.f7.dialog.close()
-      this.onSuccess()
+
       if (this.successMessage) {
-        this.f7.dialog.alert(this.successMessage, t({ id: 'Common.success', message: 'Success' }))
+        this.f7.dialog.alert(this.successMessage, t({ id: 'Common.success', message: 'Success' }), () =>
+          this.onSuccess(),
+        )
+      } else {
+        this.onSuccess()
       }
     } catch (error) {
       this.f7.dialog.close()

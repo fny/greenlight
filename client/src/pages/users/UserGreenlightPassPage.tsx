@@ -33,8 +33,9 @@ export default function UserGreenlightPassPage(props: F7Props) {
     () =>
       new SubmitHandler(f7, {
         onSuccess: () => {
-          console.log('success')
+          props.f7router.refreshPage()
         },
+        successMessage: 'Greenlight status has been updated successfully.',
         errorTitle: 'Something went wrong',
         errorMessage: 'Updating the last greenlight status is failed.',
       }),
