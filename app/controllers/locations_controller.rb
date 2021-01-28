@@ -26,7 +26,7 @@ module LocationsController
           user_id: current_user.id,
           location: location,
           permission_level: LocationAccount::OWNER,
-          role: 'unknown',
+          role: LocationAccount::STAFF,
           created_by: current_user
         )
 
