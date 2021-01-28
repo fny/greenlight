@@ -33,7 +33,7 @@ class PlivoSMS < ApplicationCommand
 
   def work
     ensure_message_in_range!
-
+    return if PhoneNumber.fivefivefive?(to)
     if Rails.env.production?
       PlivoSMS.client.messages.create(
         PhoneNumber.parse(from),

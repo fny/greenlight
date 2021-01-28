@@ -35,6 +35,10 @@ class PhoneNumber
     self.parse(number1) == self.parse(number2)
   end
 
+  def self.fivefivefive?(number)
+    self.parse(number1).match?(/\A\+1\d{3}555\d{4}\z/)
+  end
+
   def self.random_number
     number = Faker::PhoneNumber.cell_phone_in_e164[2, 10] until PhoneNumber.valid?(number)
     PhoneNumber.parse(number)
