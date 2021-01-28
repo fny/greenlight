@@ -1,11 +1,12 @@
 import { setGlobal } from 'reactn'
 import { i18n } from 'src/i18n'
-import LocalStorage from 'src/helpers/SessionStorage'
+import LocalStorage from 'src/helpers/LocalStorage'
 
 import { cookieLocale } from 'src/helpers/global'
 import { RegisteringLocation } from 'src/models/RegisteringLocation'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import { f7, f7ready } from 'framework7-react'
+import { string } from 'yup'
 
 export class Filters {
   filters: string[]
@@ -31,6 +32,7 @@ setGlobal({
   currentUser: null,
   test: null,
   registeringUser: LocalStorage.getRegisteringUser() || new RegisteringUser(),
+  registeringUserDetail: '',
   registeringLocation: LocalStorage.getRegisteringLocation() || new RegisteringLocation(),
   progress: null,
   filters: new Filters(),

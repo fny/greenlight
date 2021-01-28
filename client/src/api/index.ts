@@ -23,6 +23,7 @@ import useSWR, { responseInterface } from 'swr'
 import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
 import qs from 'qs'
 import { Roles } from 'src/models/LocationAccount'
+import { RegisteringUser } from 'src/models/RegisteringUser'
 import { transformRecordResponse, recordStore } from './stores'
 
 const BASE_URL = `${env.API_URL}/v1`
@@ -86,14 +87,16 @@ export const store = recordStore
 // Authentication
 //
 
-export async function createSession(emailOrMobile: string, password: string, rememberMe: boolean) {
+export async function createSession(emailOrMobile: string, password: string, rememberMe: boolean): Promise<void> {
   const response = await v1.post('sessions', {
     emailOrMobile,
     password,
     rememberMe,
   })
-  localStorage.setItem('token', response.data.token)
-  localStorage.setItem('rememberMe', rememberMe.toString())
+  if (env.isCordova()) {
+    localStorage.setItem('token', response.data.token)
+    localStorage.setItem('rememberMe', rememberMe.toString())
+  }
 }
 
 export async function deleteSession(): Promise<void> {
@@ -106,12 +109,14 @@ export async function createMagicSignIn(emailOrMobile: string, rememberMe: boole
     rememberMe,
   })
 }
-
 export async function magicSignIn(token: string, rememberMe: boolean): Promise<void> {
   const response = await v1.post(`/magic-sign-in/${token}`, {
     rememberMe,
   })
-  localStorage.setItem('token', response.data.token)
+  if (env.isCordova()) {
+    localStorage.setItem('token', response.data.token)
+    localStorage.setItem('rememberMe', rememberMe.toString())
+  }
 }
 
 export async function passwordResetRequest(emailOrMobile: string): Promise<void> {
@@ -168,6 +173,20 @@ export async function updateLocationAccount(
   return entity
 }
 
+export async function checkLocationRegistrationCode(locationId: string, registrationCode: string): Promise<any> {
+  const result = await v1.post(`/locations/${locationId}/check-registration-code`, {
+    registrationCode,
+  })
+  return result.data.result
+}
+
+export async function registerUser(locationId: string, user: RegisteringUser & { password: string}) {
+  const userWithoutBlanks = transformForAPI(user, { removeBlanks: true })
+  await v1.post(`/locations/${locationId}/register`, userWithoutBlanks)
+  const currentUser = await getCurrentUser()
+  setGlobal({ currentUser })
+}
+
 //
 // Users
 //
@@ -207,11 +226,11 @@ export async function completeWelcomeUser(user: User): Promise<User> {
   return entity
 }
 
-export async function createUserAndSignIn(user: Partial<User>): Promise<User> {
-  const response = await v1.post<RecordResponse<User>>('/users/create-and-sign-in', user)
-  const entity = transformRecordResponse<User>(response.data)
-  assertNotArray(entity)
-  return entity
+export async function createUserAndSignIn(user: Partial<RegisteringUser> & { password: string}): Promise<void> {
+  const signInResponse = await v1.post('/users/create-and-sign-in', user)
+  if (env.isCordova()) {
+    localStorage.setItem('token', signInResponse.data.token)
+  }
 }
 
 export async function updateUserSettings(user: User, updates: Partial<UserSettings>): Promise<UserSettings> {

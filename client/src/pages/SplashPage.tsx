@@ -3,7 +3,6 @@ import { Page, Block, Button } from 'framework7-react'
 
 import './SplashPage.css'
 import { signOut, toggleLocale } from 'src/helpers/global'
-import { Trans } from '@lingui/macro'
 import releaseData from 'src/assets/data/releases'
 import { paths } from 'src/config/routes'
 import { F7Props } from 'src/types'
@@ -17,7 +16,7 @@ export default function SplashPage(props: F7Props): JSX.Element {
     <Page className="SplashPage" noToolbar noNavbar noSwipeback loginScreen>
       <Block>
         <div className="welcome">
-          <Trans id="SplashPage.welcome">Welcome to</Trans>
+          <Tr en="Welcome to" es="Bienvenido a" />
         </div>
         <div className="logo">
           <img src={greenlightLogo} alt="Greenlight" />
@@ -26,7 +25,7 @@ export default function SplashPage(props: F7Props): JSX.Element {
         {currentUser ? (
           <>
             <Button outline href={paths.rootPath}>
-              <Tr en="Panel principal" es="Cerrar Sesión" />
+              <Tr en="Dashboard" es="Panel principal" />
             </Button>
             <Button outline onClick={() => signOut(props.f7router)}>
               <Tr en="Sign Out" es="Cerrar Sesión" />
@@ -38,21 +37,16 @@ export default function SplashPage(props: F7Props): JSX.Element {
           </Button>
         )}
 
-        <Button outline href={paths.newUserPath}>
-          <Trans id="SplashPage.create_account">Create Account</Trans>
+        <Button outline href={paths.locationLookupPath}>
+          <Tr en="Create Account" es="Crear una Cuenta" />
         </Button>
 
         <Button outline href={paths.registerLocationWelcomePath}>
           <Tr en="Register Organization" es="Registrar Organización" />
-
         </Button>
 
-        {/* <Button outline href={paths.durhamRegistationPath}>
-          <Trans id="SplashPage.register_business">Register Business</Trans>
-        </Button> */}
-
         <Button outline onClick={() => toggleLocale()} style={{ border: 0 }}>
-          <Trans id="SplashPage.choose_language">En Español</Trans>
+          <Tr en="En Español" es="In English" />
         </Button>
       </Block>
 
@@ -65,7 +59,7 @@ export default function SplashPage(props: F7Props): JSX.Element {
         &copy;
         {new Date().getFullYear()} Greenlight Ready LLC
         <br />
-        <Trans id="Common.version">Version</Trans> {releaseData[0].version}
+        <Tr en="Version" es="Versión" /> {releaseData[0].version}
       </p>
     </Page>
   )

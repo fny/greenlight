@@ -68,7 +68,7 @@ class Location < ApplicationRecord
   validates :student_registration_code_downcase, presence: true
   validates :zip_code, format: { with: /\A\d{5}(-\d{4})?\z/ }, presence: true
 
-  before_validation :set_registration_codes
+  before_validation :set_registration_codes, on: :create
   before_save :sync_cohorts!
 
   def self.find_by_id_or_permalink(id)
@@ -137,6 +137,19 @@ class Location < ApplicationRecord
   def student_registration_code=(code)
     self[:student_registration_code] = code
     self.student_registration_code_downcase = code.downcase
+  end
+
+  def registration_type(code)
+    if category != SCHOOL && code.casecmp?(registration_code)
+      return :staff
+    end
+    if category == SCHOOL && code.casecmp?(student_registration_code)
+      return :student_parent
+    end
+    if category == SCHOOL && code.casecmp?(registration_code)
+      return :teacher_staff
+    end
+    return :invalid
   end
 
   # Any users that should recieve a notification
@@ -264,6 +277,10 @@ class Location < ApplicationRecord
         Cohort.new(category: category, name: name)
       }
     end
+  end
+
+  def school?
+    category == Location::SCHOOL
   end
 
   private

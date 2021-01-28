@@ -40,14 +40,16 @@ module LocationsController
       end
     end
 
-    patch '/v1/locations/:location_id' do
-      # TODO: ENSURE
+    post '/v1/locations/:location_id/register', auth: false do
       location = Location.find_by_id_or_permalink!(params[:location_id])
-
-      if location.update(params[:location])
-        render json: LocationSerializer.new(location)
+      params[:location] = location
+      register = RegisterAccount.new(camelize_hash(params))
+      if register.run
+        user = register.result
+        sign_in(user, request.remote_ip)
+        render json: CurrentUserSerializer.new(user)
       else
-        error_response(location)
+        error_response(register)
       end
     end
 
@@ -82,11 +84,9 @@ module LocationsController
 
       users = location.users.order_by_name.includes(:last_greenlight_status, :location_accounts, :cohort_users, :cohorts)
 
-      Rails.logger.debug(params)
       name_filter = params.dig(:filter, :name)
       status_filter = params.dig(:filter, :status)
       role_filter = params.dig(:filter, :role)
-      Rails.logger.debug("PARAMS: #{params}")
 
       if role_filter.present?
         users = users.joins(:location_accounts).where(location_accounts: { location: location, role: role_filter })
@@ -121,6 +121,21 @@ module LocationsController
       location = Location.find_by_id_or_permalink!(params[:location_id])
       stats = LocationStatsOverview.new(location, params[:date])
       render json: LocationStatsOverviewSerializer.new(stats)
+    end
+
+    # check registration code
+    post '/v1/locations/:location_id/check-registration-code', auth: false do
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+
+      response = location.registration_type(request_json[:registration_code])
+
+      if response == :invalid
+        simple_error_response(:invalid)
+      else
+        render json: {
+          result: response
+        }
+      end
     end
   end
 end

@@ -17,8 +17,8 @@ module APIHelpers
     case data
     when Array
       data.map { |x| camelize_hash(x) }
-    when Hash
-      obj = {}
+    when Hash, ActionController::Parameters
+      obj = HashWithIndifferentAccess.new
       data.each { |k, v| obj[k.underscore] = camelize_hash(v) }
       obj
     else
@@ -36,6 +36,10 @@ module APIHelpers
 
   def set_status_updated
     response.status = 202 # Accepted
+  end
+
+  def set_status_ok
+    response.status = 200
   end
 
   def error_response(command)

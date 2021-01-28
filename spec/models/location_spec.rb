@@ -38,4 +38,12 @@ RSpec.describe Location, type: :model do
       expect(greenlight.cohorts.map(&:code)).to contain_exactly('team:ed', 'team:business', 'timezone:est', 'timezone:cst', 'timezone:mst', 'timezone:pst', 'education:medstudent', 'education:professional', 'education:undergrad')
     end
   end
+
+  describe 'registration codes' do
+    it 'will be set when a location is created' do
+      location = Fabricate(:location)
+      expect(location.registration_code).not_to eq(nil)
+      expect(location.student_registration_code).not_to eq(nil)
+    end
+  end
 end

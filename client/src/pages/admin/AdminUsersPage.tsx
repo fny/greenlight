@@ -202,7 +202,7 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
     const nextPage = pageIndex + 1
     // locationId, page, name?, status?, role?
     assertNotUndefined(locationId)
-    return [locationId, nextPage, undefined, GreenlightStatusTypes.CLEARED, undefined]
+    return [locationId, nextPage, undefined, undefined, undefined]
   }
 
   const { data, error, isValidating, mutate, size, setSize } = useSWRInfinite<PagedResource<User>>(
