@@ -1,0 +1,55 @@
+<br>
+<%= link_to "Back to Survey", admin_survey_path(@survey) %>
+
+<h1>
+  Send Survey: <%= @survey.question %>
+</h1>
+
+<h2>
+  Locations Sent
+</h2>
+<p id="sent-locations">
+  <% if @survey.last_sent_at.nil? %>
+    You haven't sent the survey yet.
+  <% else %>
+    <%= render 'sent_locations' %>
+  <% end %>
+</p>
+
+<h2>
+  Locations
+</h2>
+
+<br />
+
+<%= form_with url: admin_survey_targets_path, method: :get, class: 'inline' do |form| %>
+  <%= form.text_field :query, value: params[:query] %>
+  <%= form.submit "Search", data: { disable_with: false } %>
+<% end %>
+
+<br />
+<table>
+  <thead>
+    <th>ID</th>
+    <td>Name</td>
+    <th>Handle</th>
+    <th>Category</th>
+    <th>Employee Count</th>
+    <th></th>
+  </thead>
+  <% @locations.each do |l|%>
+    <% is_sent = @survey.location_ids.include? l.id %>
+    <tr>
+      <td><%= l.id %></td>
+      <td><%= link_to l.name, admin_location_path(l.id) %></td>
+      <td><%= l.permalink %></td>
+      <td><%= l.category %></td>
+      <td><%= l.employee_count %></td>
+      <td>
+        <%= link_to is_sent ? 'Resend' : 'Send', admin_survey_target_path(@survey, l.id), id: "send-#{l.id}", method: :put, remote: true %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<%== pagy_nav(@pagy) %>

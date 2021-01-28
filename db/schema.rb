@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_03_194101) do
+ActiveRecord::Schema.define(version: 2021_01_28_103252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "action_mailbox_inbound_emails", force: :cascade do |t|
+    t.integer "status", default: 0, null: false
+    t.string "message_id", null: false
+    t.string "message_checksum", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["message_id", "message_checksum"], name: "index_action_mailbox_inbound_emails_uniqueness", unique: true
+  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -196,6 +205,32 @@ ActiveRecord::Schema.define(version: 2021_01_03_194101) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["created_by_id"], name: "index_roster_imports_on_created_by_id"
     t.index ["location_id"], name: "index_roster_imports_on_location_id"
+  end
+
+  create_table "survey_responses", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "survey_id", null: false
+    t.string "response"
+    t.string "medium"
+    t.datetime "responded_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["survey_id", "user_id"], name: "index_survey_responses_on_survey_id_and_user_id", unique: true
+    t.index ["survey_id"], name: "index_survey_responses_on_survey_id"
+    t.index ["user_id"], name: "index_survey_responses_on_user_id"
+  end
+
+  create_table "surveys", force: :cascade do |t|
+    t.string "question", null: false
+    t.string "question_es"
+    t.string "question_type", default: "choices", null: false
+    t.jsonb "choices", default: {}
+    t.jsonb "choices_es", default: {}
+    t.jsonb "location_ids", default: []
+    t.datetime "last_sent_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "permalink"
   end
 
   create_table "user_settings", force: :cascade do |t|

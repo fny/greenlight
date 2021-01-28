@@ -12,6 +12,10 @@ class SendGridEmail < ApplicationCommand
   validates :to, presence: true
   validates :subject, presence: true
 
+  def logger
+    @logger ||= Logger.new(Rails.root.join('log', 'email.log'))
+  end
+
   def pony_payload
     return @pony_payload if defined?(@pony_payload)
 
@@ -28,6 +32,10 @@ class SendGridEmail < ApplicationCommand
   end
 
   def work
-    Pony.mail(pony_payload)
+    if Rails.env.production?
+      Pony.mail(pony_payload)
+    else
+      logger.info(pony_payload.inspect)
+    end
   end
 end

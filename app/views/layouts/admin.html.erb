@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@2.9.1/dist/Chart.min.css">
 
     <%= csrf_meta_tags %>
     <style>
@@ -36,9 +37,11 @@
     Main:
     <%= link_to 'Locations', admin_locations_path %> |
     <%= link_to 'Reports', admin_reports_path %> |
-    <%= link_to 'Users', admin_users_path %>
+    <%= link_to 'Users', admin_users_path %> |
+    <%= link_to 'Surveys', admin_surveys_path %>
    <%= yield %>
-  <%# <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ujs/1.2.2/rails.min.js"></script> %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ujs/1.2.2/rails.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.1/dist/Chart.min.js"></script>
   </body>
 </html>

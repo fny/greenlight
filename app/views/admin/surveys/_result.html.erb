@@ -1,0 +1,72 @@
+<div class="survey__result">
+  <h3>Overview</h3>
+  <ul>
+    <li>Total Sent: <%= result[:total] %></li>
+    <li>Responded: <%= result[:responded] %></li>
+    <li>Not Responded: <%= result[:not_responded] %></li>
+  </ul>
+
+  <% if result[:responded].zero? %>
+    <h3>No Responses Yet</h3>
+  <% else %>
+    <h3>Response Demographics</h3>
+    <input id="response-labels" type="hidden" value="<%= result[:responses].map {|label, _| label}.join(',') %>">
+    <canvas id="response-chart" width="400" height="200"></canvas>
+
+    <h3>Response Medium Demographics</h3>
+    <input id="medium-labels" type="hidden" value="<%= result[:mediums].map {|label, _| label}.join(',') %>">
+    <canvas id="medium-chart" width="400" height="200"></canvas>
+  <% end %>  
+</div>
+
+<script>
+  const colors = [
+    "#52A8AE",
+    "#CDDC39",
+    "#673AB7",
+    "#FFD600",
+    "#FF9800",
+    "#9C27B0",
+  ];
+  document.addEventListener('DOMContentLoaded', function() {
+    const responseCtx = document.getElementById('response-chart');
+    if (responseCtx) {
+      new Chart(responseCtx, {
+        type: 'doughnut',
+        data: {
+          labels: document.getElementById('response-labels').value.split(','),
+          datasets: [{
+            label: '# of Votes',
+            data: [<%= result[:responses].map {|_, count| count}.join(',') %>],
+            backgroundColor: colors,
+          }]
+        },
+        options: {
+          legend: {
+            position: 'top',
+          },
+        },
+      });
+    }
+
+    const mediumCtx = document.getElementById('medium-chart');
+    if (mediumCtx) {
+      new Chart(mediumCtx, {
+        type: 'doughnut',
+        data: {
+          labels: document.getElementById('medium-labels').value.split(','),
+          datasets: [{
+            label: '# of Votes',
+            data: [<%= result[:mediums].map {|_, count| count}.join(',') %>],
+            backgroundColor: colors,
+          }]
+        },
+        options: {
+          legend: {
+            position: 'top',
+          },
+        },
+      });
+    }
+  });
+</script>

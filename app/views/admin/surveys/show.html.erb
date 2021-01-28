@@ -1,0 +1,54 @@
+<br />Surveys:
+<%= link_to "All", admin_surveys_path %> |
+<%= link_to "New", new_admin_survey_path %>
+
+<h1>
+  Survey: <%= @survey.question %>
+</h1>
+
+<nav>
+  <a href="#result">
+    Result
+  </a> |
+  <a href="#result-locations">
+    Location Results
+  </a> |
+  <%= link_to "Send", admin_survey_targets_path(@survey) %> |
+  <%= link_to "Edit", edit_admin_survey_path(@survey) %> |
+  <a href="#delete">
+    Delete
+  </a>
+</nav>
+
+<ul>
+  <li>
+    Question: <%= @survey.question %>
+  </li>
+  <li>
+    Choices:
+      <ul>
+        <% @survey.choices.each do |key, label| %>
+          <li><%= key %>: <%= label %></li>
+        <% end %>
+      </ul>
+  </li>
+  <li>
+    Last Sent At: <%= @survey.last_sent_at %>
+  </li>
+  <li>
+    Created At: <%= @survey.created_at %>
+  </li>
+  <li>
+    Permalink: <%= @survey.permalink %>
+  </li>
+</ul>
+
+<h2 id="result">Result</h2>
+<%= render 'admin/surveys/result', result: @result %>
+
+<h2 id="result-locations">Location Results</h2>
+<ul>
+  <% @survey.locations.each do |location| %>
+    <li><%= link_to location.name, location_admin_survey_path(@survey, location) %></li>
+  <% end %>
+</ul>

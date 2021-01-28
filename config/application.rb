@@ -9,7 +9,7 @@ require 'active_record/railtie'
 require 'active_storage/engine'
 require 'action_controller/railtie'
 require 'action_mailer/railtie'
-# require 'action_mailbox/engine'
+require 'action_mailbox/engine'
 # require 'action_text/engine'
 require 'action_view/railtie'
 # require 'action_cable/engine'
@@ -45,5 +45,6 @@ module Greenlight
 
     config.skylight.probes += %w[redis]
     config.filter_parameters += %w[password password_confirmation password_digest]
+    config.action_view.form_with_generates_remote_forms = false
   end
 end

@@ -17,6 +17,7 @@ class APIController < ActionController::API
   include UsersController
   include CurrentUserController
   include MailController
+  include SMSController
   include SmokeTestsController
   include UtilController
 end

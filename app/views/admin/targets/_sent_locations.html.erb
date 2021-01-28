@@ -1,0 +1,6 @@
+<% @survey.locations.each_with_index do |location, index| %>
+  <% unless index.zero? %>
+    ,&nbsp;
+  <% end %>
+  <%= link_to location.name, location_admin_survey_path(@survey, location) %>
+<% end %>

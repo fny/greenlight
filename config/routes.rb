@@ -39,5 +39,11 @@ Rails.application.routes.draw do
       get :students_sheet
     end
     resources :reports
+    resources :surveys do
+      resources :targets
+      member do
+        get '/locations/:location_id', to: 'surveys#location', as: :location
+      end
+    end
   end
 end
