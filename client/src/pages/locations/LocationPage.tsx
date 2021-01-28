@@ -16,6 +16,7 @@ import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import { Router } from 'framework7/modules/router/router'
 import { toggleLocale } from 'src/helpers/global'
 import Tr, { En, Es, tr } from 'src/components/Tr'
+import EmailSupportLink from 'src/components/EmailSupportLink'
 
 export default function LocationPage({ f7route, f7router }: F7Props): JSX.Element {
   const [currentUser] = useGlobal('currentUser')
@@ -83,18 +84,28 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
               {
                   currentUser
                     ? (
-                      <List>
-                        <ListItem
-                          title={tr({ en: 'Link Your Account', es: 'Conectar Su Cuenta' })}
-                          footer={tr({
-                            en: `Click here to link your account to ${location.name}.`,
-                            es: `Haga clic aquí para conectar su cuenta a ${location.name}.`,
-                          })}
-                          link="#"
-                        >
-                          <Icon slot="media" f7="person" />
-                        </ListItem>
-                      </List>
+                      <p>
+                        <Tr>
+                          <En>
+                            Please contact support at <EmailSupportLink /> to link your existing account to this location.
+                          </En>
+                          <Es>
+                            Póngase en contacto con el servicio de asistencia en <EmailSupportLink /> para unitar su cuenta existente a esta lugar.
+                          </Es>
+                        </Tr>
+                      </p>
+                      // <List>
+                      //   <ListItem
+                      //     title={tr({ en: 'Link Your Account', es: 'Conectar Su Cuenta' })}
+                      //     footer={tr({
+                      //       en: `Click here to link your account to ${location.name}.`,
+                      //       es: `Haga clic aquí para conectar su cuenta a ${location.name}.`,
+                      //     })}
+                      //     link="#"
+                      //   >
+                      //     <Icon slot="media" f7="person" />
+                      //   </ListItem>
+                      // </List>
                     )
                     : (
                       <List>
