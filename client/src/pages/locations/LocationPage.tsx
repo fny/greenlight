@@ -127,7 +127,9 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
                     )
                 }
 
-              <Link href={paths.rootPath}>Return to Home Screen</Link>
+              <Link href={paths.rootPath}>
+                <Tr en="Go to Home Screen" es="Volver al Inicio" />
+              </Link>
             </Block>
           )
         }}
