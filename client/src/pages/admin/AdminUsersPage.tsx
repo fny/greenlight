@@ -177,7 +177,6 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
   const groupedUsers = groupUsersByFirstLetter(users)
 
   useEffect(() => {
-    console.log('toggle for force update', toggleForceUpdate, isValidating)
     if (!isValidating) {
       mutate()
     }

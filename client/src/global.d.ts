@@ -21,5 +21,6 @@ declare module 'reactn/default' {
     progress: number | null
     filters: Filters
     toggleForceUpdate: boolean // update when this value changes
+    recordStoreUpdatedAt: Date | null
   }
 }
