@@ -1,23 +1,17 @@
 // TODO: I18N
 // TODO: UGLY
 // TODO: Add link to create account
-import React, {
-  useState, useEffect, useMemo, useGlobal,
-} from 'reactn'
+import React, { useGlobal } from 'reactn'
 import {
   Page, BlockTitle, Badge, Block, Button, Link, List, ListItem, ListInput, f7, Icon,
 } from 'framework7-react'
-import { Trans, t } from '@lingui/macro'
 
 import { F7Props } from 'src/types'
 import { assertNotNull, assertNotUndefined, formatPhone } from 'src/helpers/util'
 import { dynamicPaths, paths } from 'src/config/routes'
 
 import './LocationPage.css'
-import { Location } from 'src/models'
-import { mailInvite, checkLocationRegistrationCode } from 'src/api'
-import SubmitHandler from 'src/helpers/SubmitHandler'
-import LoadingPageContent from 'src/components/LoadingPageContent'
+
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import { Router } from 'framework7/modules/router/router'
 import { toggleLocale } from 'src/helpers/global'
@@ -112,7 +106,7 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
                           <Icon slot="media" f7="person" />
                         </ListItem>
                         <ListItem
-                          title={tr({ en: 'Lookup Your Account', es: 'Busqar Su Cuenta' })}
+                          title={tr({ en: 'Lookup Your Account', es: 'Buscar Su Cuenta' })}
                           footer={tr({ en: `Click here if ${location.name} already created an account for you.`, es: `Haga clic aquí si ${location.name} ya creó una cuenta para usted.` })}
                           link={dynamicPaths.locationLookupAccountPath({ locationId })}
                         >

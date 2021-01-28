@@ -17,7 +17,9 @@ export default function AddChildForm(props: AddChildFormProps): JSX.Element {
 
   return (
     <Block>
-      <BlockTitle>Add your child's information</BlockTitle>
+      <BlockTitle>
+        <Tr en="Your child's information" es="La información de su hijo" />
+      </BlockTitle>
 
       <List
         form
@@ -27,17 +29,16 @@ export default function AddChildForm(props: AddChildFormProps): JSX.Element {
           props.onSubmit(state)
         }}
       >
-        <BlockTitle>Basic Info</BlockTitle>
         <List>
           <ListInput
-            label="First Name"
+            label={tr({ en: 'First Name', es: 'Primero' })}
             floatingLabel
             required
             value={state.firstName}
             onChange={(e) => setState({ ...state, firstName: e.target.value })}
           />
           <ListInput
-            label="Last Name"
+            label={tr({ en: 'Last Name', es: 'Apellido' })}
             floatingLabel
             required
             value={state.lastName}
@@ -92,7 +93,7 @@ export default function AddChildForm(props: AddChildFormProps): JSX.Element {
           {props.onDiscard && (
             <Col>
               <Button fill type="button" onClick={props.onDiscard}>
-                Back
+                <Tr en="Back" es="Atrás" />
               </Button>
             </Col>
           )}

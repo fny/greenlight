@@ -1,9 +1,12 @@
 import { Badge, Block, BlockTitle, Button, f7, List, ListInput, Page } from 'framework7-react'
 import React, { useMemo, useState } from 'react'
 import { mailInvite } from 'src/api'
+import EmailSupportLink from 'src/components/EmailSupportLink'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { assertNotNull, assertNotUndefined } from 'src/helpers/util'
+import { lcTrans } from 'src/models/Location'
 import { F7Props } from 'src/types'
 
 export default function LocationLookupAccountPage({ f7route, f7router }: F7Props) {
@@ -24,13 +27,22 @@ export default function LocationLookupAccountPage({ f7route, f7router }: F7Props
               <BlockTitle medium className="title">
                 <b>{location.name}</b>
                 <Badge className="title-badge">
-                  {location.category}
+                  {lcTrans(location.category)}
                   </Badge>
               </BlockTitle>
               <p>
-                If you have a Hotmail, MSN, Live, Outlook or other Microsoft email account
-                and don't receive an invite, please contact us at{' '}
-                <a href="mailto:help@greenlightready.com">help@greenlightready.com</a>.
+                <Tr>
+                  <En>
+                    If you have a Hotmail, MSN, Live, Outlook or other Microsoft email account
+                    and don't receive an invite, please contact us at{' '}
+                    <EmailSupportLink />
+                  </En>
+                  <Es>
+                    Si tiene una cuenta de correo electrónico de Hotmail, MSN, Live, Outlook u otra cuenta de Microsoft
+                    y no recibe una invitación, comuníquese con nosotros a <EmailSupportLink />
+                  </Es>
+                </Tr>
+
               </p>
               <LookupAccount />
             </Block>
@@ -47,19 +59,23 @@ export default function LocationLookupAccountPage({ f7route, f7router }: F7Props
 function LookupAccount(): JSX.Element {
   const [emailOrMobile, setEmailOrMobile] = useState<string>('')
 
-  // TODO: Tell them if their account is already active
-  // TODO: Show an error specific to email or mobile number
   const submitHandler = useMemo(
     () =>
       new SubmitHandler(f7, {
         onSuccess: () => {
           f7.dialog.alert(
-            'You should receive a text or email with instructions from Greenlight soon. Please check spam too! ',
-            'Success',
+            tr({
+              en: 'You should receive a text or email with instructions from Greenlight soon. Please check spam too!',
+              es: 'Pronto recibirá un mensaje de texto o correo electrónico con instrucciones. ¡Por favor revise el spam también!'
+            }),
+            tr({ en: 'Success', es: 'Éxito'}),
           )
         },
-        errorTitle: 'Not Found',
-        errorMessage: 'No matching email or phone number was found. Maybe you already signed up?',
+        errorTitle: tr({en: 'Not Found', es: 'No Encontrado'  }),
+        errorMessage: tr({
+          en: 'No matching email or phone number was found. Maybe you already finished registration?',
+          es: 'No se encontró ningún correo electrónico o número de teléfono que coincida. ¿Quizás ya terminó de registrarse?'
+        }),
         onSubmit: async () => {
           await mailInvite(emailOrMobile)
         },

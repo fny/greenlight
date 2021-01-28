@@ -9,6 +9,8 @@ import { F7Props } from 'src/types'
 import { Location } from 'src/models'
 import { Router } from 'framework7/modules/router/router'
 import { dynamicPaths } from 'src/config/routes'
+import { lcTrans } from 'src/models/Location'
+import Tr, { tr } from 'src/components/Tr'
 
 export default function LocationLookupRegistrationCodePage({ f7route, f7router }: F7Props): JSX.Element {
   const { locationId } = f7route.params
@@ -27,7 +29,7 @@ export default function LocationLookupRegistrationCodePage({ f7route, f7router }
               <BlockTitle medium className="title">
                 <b>{location.name}</b>
                 <Badge className="title-badge">
-                  {location.category}
+                  {lcTrans(location.category)}
                 </Badge>
               </BlockTitle>
               <RegisterWithCode location={location} f7router={f7router} />
@@ -52,8 +54,8 @@ function RegisterWithCode({ location, f7router }: { location: Location; f7router
       }}
     >
       <ListInput
-        label="Registration Code"
-        placeholder="Your Registration Code"
+        label={tr({ en: 'Registration Code', es: 'Código de Registro' })}
+        placeholder="Su código de registro"
         type="text"
         required
         onChange={(e) => {
@@ -62,7 +64,7 @@ function RegisterWithCode({ location, f7router }: { location: Location; f7router
       />
       <br />
       <Button fill href={dynamicPaths.locationCheckRegistrationCodePath({ locationId: location.id, registrationCode })}>
-        Register with Code
+        <Tr en="Register" es="Registrar" />
       </Button>
     </List>
   )
