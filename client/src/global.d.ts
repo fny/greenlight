@@ -20,5 +20,6 @@ declare module 'reactn/default' {
     test: string | null
     progress: number | null
     filters: Filters
+    toggleForceUpdate: boolean // update when this value changes
   }
 }

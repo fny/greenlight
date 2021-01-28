@@ -13,20 +13,33 @@ import {
   NavLeft,
   NavRight,
   Page,
+  Preloader,
   Searchbar,
   Subnavbar,
 } from 'framework7-react'
 
 import {
   getLocation,
-  getPagedResources, getPagedUsersForLocation, getUsersForLocation, Filter, PagedResource, Pagination, store,
+  getPagedResources,
+  getPagedUsersForLocation,
+  getUsersForLocation,
+  Filter,
+  PagedResource,
+  Pagination,
+  store,
 } from 'src/api'
 import { User, Location, GreenlightStatus } from 'src/models'
 import { Dict, F7Props } from 'src/types'
 import UserJDenticon from 'src/components/UserJDenticon'
 import { dynamicPaths, paths } from 'src/config/routes'
 import {
-  assertNotNull, assertNotUndefined, sortBy, isBlank, stringify, isInViewport, countVisible,
+  assertNotNull,
+  assertNotUndefined,
+  sortBy,
+  isBlank,
+  stringify,
+  isInViewport,
+  countVisible,
 } from 'src/helpers/util'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import React, { useEffect, useState, useRef } from 'react'
@@ -37,7 +50,7 @@ import LoadingContent, { LoadingState } from 'src/components/LoadingContent'
 import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
 import { Roles } from 'src/models/LocationAccount'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
-import { useGlobal } from 'reactn'
+import { useGlobal, useMemo } from 'reactn'
 // import { UsersFilter } from 'src/components/UsersFilter'
 
 interface UserItemProps {
@@ -63,27 +76,20 @@ function UserItem(props: UserItemProps & F7Props): JSX.Element {
       </div>
       <AccordionContent key={user.id}>
         <List>
-          {
-              user.hasNotSubmittedOwnSurvey() ? (
-                <ListItem
-                  link={dynamicPaths.userSurveysNewPath(user.id, { redirect: f7route.path })}
-                  title="Check-In"
-                />
-              ) : (
-                <ListItem
-                  link={dynamicPaths.userGreenlightPassPath(user.id)}
-                  title={t({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' })}
-                />
-              )
-            }
-          {
-              !locationAccount.isStudent() && (
-              <ListItem
-                link={dynamicPaths.userLocationPermissionsPath({ userId: user.id, locationId: location.id })}
-                title={t({ id: 'AdminUsersPage.location_permissions', message: 'Permissions' })}
-              />
-              )
-            }
+          {user.hasNotSubmittedOwnSurvey() ? (
+            <ListItem link={dynamicPaths.userSurveysNewPath(user.id, { redirect: f7route.path })} title="Check-In" />
+          ) : (
+            <ListItem
+              link={dynamicPaths.userGreenlightPassPath(user.id)}
+              title={t({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' })}
+            />
+          )}
+          {!locationAccount.isStudent() && (
+            <ListItem
+              link={dynamicPaths.userLocationPermissionsPath({ userId: user.id, locationId: location.id })}
+              title={t({ id: 'AdminUsersPage.location_permissions', message: 'Permissions' })}
+            />
+          )}
           {/* <ListItem
             link={dynamicPaths.adminUserPath({ userId: user.id, locationId: location.id })}
             title={t({ id: 'AdminUsersPage.user_more', message: 'More' })}
@@ -125,6 +131,7 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
   assertNotUndefined(locationId)
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
+  const [toggleForceUpdate] = useGlobal('toggleForceUpdate')
 
   const location = store.findEntity<Location>(Location.uuid(locationId))
   const [state, setState] = useState({
@@ -145,7 +152,10 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
 
   const allowInfinite = useRef(true)
 
-  function getKey(pageIndex: number, previousPageData: PagedResource<User> | null): [string, number, string?, GreenlightStatusTypes?, Roles?] | null {
+  function getKey(
+    pageIndex: number,
+    previousPageData: PagedResource<User> | null,
+  ): [string, number, string?, GreenlightStatusTypes?, Roles?] | null {
     if (previousPageData && !previousPageData.pagination.next) return null
     const nextPage = pageIndex + 1
     // locationId, page, name?, status?, role?
@@ -153,15 +163,25 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
     return [locationId, nextPage, undefined, undefined, undefined]
   }
 
-  const {
-    data, error, isValidating, mutate, size, setSize,
-  } = useSWRInfinite<PagedResource<User>>(getKey, async (locationid: string, page: number, name?: string, status?: GreenlightStatusTypes, role?: Roles) => getPagedUsersForLocation(locationid, page, name, status, role))
-
-  const users = sortUsersByReversedName(
-    _.uniqBy(data ? data.map((d) => d.data).flat() : [], (u) => u.id),
+  const { data, error, isValidating, mutate, size, setSize } = useSWRInfinite<PagedResource<User>>(
+    getKey,
+    async (locationid: string, page: number, name?: string, status?: GreenlightStatusTypes, role?: Roles) =>
+      getPagedUsersForLocation(locationid, page, name, status, role),
+    {
+      revalidateOnMount: false,
+    },
   )
 
+  const users = sortUsersByReversedName(_.uniqBy(data ? data.map((d) => d.data).flat() : [], (u) => u.id))
+
   const groupedUsers = groupUsersByFirstLetter(users)
+
+  useEffect(() => {
+    console.log('toggle for force update', toggleForceUpdate, isValidating)
+    if (!isValidating) {
+      mutate()
+    }
+  }, [toggleForceUpdate])
 
   function loadMore() {
     if (!allowInfinite.current) return
@@ -186,12 +206,7 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
     searchContainer: HTMLDivElement
   }
   return (
-    <Page
-      infinite
-      infiniteDistance={500}
-      infinitePreloader={isValidating}
-      onInfinite={error ? undefined : loadMore}
-    >
+    <Page infinite infiniteDistance={500} infinitePreloader={isValidating} onInfinite={error ? undefined : loadMore}>
       <Navbar title="Users">
         <NavbarHomeLink slot="left" />
         <Subnavbar inner={false}>
@@ -202,7 +217,7 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
           />
         </Subnavbar>
         <NavRight>
-          <Link onClick={() => window.location.reload()}>
+          <Link onClick={() => !isValidating && mutate()}>
             <Icon f7="arrow_2_circlepath" />
           </Link>
         </NavRight>
@@ -218,18 +233,21 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
                 <ListItem key="blank" title="Nothing found" />
               </List>
               <List className="search-list searchbar-found" contactsList>
-
                 {/* <UsersFilter isSchool={location.isSchool()} /> */}
-                {
-                  groupedUsers.map(([letter, users]) => (
-                    <ListGroup key={letter}>
-                      <ListItem key={letter} title={letter} groupTitle />
-                      {
-                        users.map((user) => <UserItem key={user.id} user={user} location={location} f7route={props.f7route} f7router={props.f7router} />)
-                      }
-                    </ListGroup>
-                  ))
-                }
+                {groupedUsers.map(([letter, users]) => (
+                  <ListGroup key={letter}>
+                    <ListItem key={letter} title={letter} groupTitle />
+                    {users.map((user) => (
+                      <UserItem
+                        key={user.id}
+                        user={user}
+                        location={location}
+                        f7route={props.f7route}
+                        f7router={props.f7router}
+                      />
+                    ))}
+                  </ListGroup>
+                ))}
               </List>
             </>
           )

@@ -36,6 +36,7 @@ setGlobal({
   registeringLocation: LocalStorage.getRegisteringLocation() || new RegisteringLocation(),
   progress: null,
   filters: new Filters(),
+  toggleForceUpdate: false,
 })
 
 i18n.activate(cookieLocale())
