@@ -52,6 +52,7 @@ import { Roles } from 'src/models/LocationAccount'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import { useGlobal } from 'reactn'
 import SubmitHandler from 'src/helpers/SubmitHandler'
+import { tr } from 'src/components/Tr'
 // import { UsersFilter } from 'src/components/UsersFilter'
 
 interface UserItemProps {
@@ -166,6 +167,9 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
   const submitHandler = useMemo(
     () =>
       new SubmitHandler(f7, {
+        onSuccess: () => {
+          window.location.reload()
+        },
         successMessage: 'The status has been deleted successfully.',
         errorTitle: 'Something went wrong',
         errorMessage: 'Deleting the last greenlight status is failed.',
@@ -174,9 +178,18 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
   )
 
   const handleDeleteGreenlightStatus = useCallback((user: User) => {
-    submitHandler.submit(async () => {
-      await deleteLastGreenlightStatus(user)
-    })
+    f7.dialog.confirm(
+      tr({
+        en: 'Do you really want to delete the status?',
+        es: '¿Realmente desea eliminar el estado?',
+        reviewTrans: true,
+      }),
+      () => {
+        submitHandler.submit(async () => {
+          await deleteLastGreenlightStatus(user)
+        })
+      },
+    )
   }, [])
 
   const allowInfinite = useRef(true)
