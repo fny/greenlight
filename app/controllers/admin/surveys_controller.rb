@@ -42,6 +42,16 @@ module Admin
       end
     end
 
+    def destroy
+      if params[:confirmation] == "DELETE #{@survey.permalink[0..3].upcase}"
+        @survey.destroy
+        redirect_to admin_surveys_path, notice: "Congrats! You deleted Survey: #{@survey.question}"
+      else
+        flash[:alert] = 'Incorrect confirmation code.'
+        redirect_to [:admin, @survey]
+      end
+    end
+
     private
 
     def set_survey

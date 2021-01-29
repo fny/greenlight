@@ -52,3 +52,13 @@
     <li><%= link_to location.name, location_admin_survey_path(@survey, location) %></li>
   <% end %>
 </ul>
+
+<h2 id="delete">
+  Delete Survey
+</h2>
+<p>Enter "DELETE <%= @survey.permalink[0..3].upcase %>" to delete this survey.</p>
+
+<%= form_with url: admin_survey_path(@survey), method: :delete do |form| %>
+  <%= form.text_field :confirmation, autocomplete: 'off' %>
+  <%= form.submit "Delete" %>
+<% end %>
