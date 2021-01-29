@@ -54,11 +54,11 @@ export function tr(props: TrFunctionProps): string {
   if (props.reviewTrans) {
     logger.dev(`Translation: "${props.en}" to "${props.es} requires review"`)
   }
-  if (!props.en) {
+  if (props.en === undefined) {
     throw new Error('English translation missing')
   }
 
-  if (!props.es) {
+  if (props.es === undefined) {
     throw new Error('Spanish translation missing')
   }
   return getGlobal().locale === 'es' ? props.es : props.en
@@ -124,11 +124,11 @@ export default function Tr(props: TrProps): JSX.Element {
   en = en || props.en
   es = es || props.es
 
-  if (!en) {
+  if (en === undefined) {
     throw new Error('English translation missing')
   }
 
-  if (!es) {
+  if (es === undefined) {
     throw new Error('Spanish translation missing')
   }
 

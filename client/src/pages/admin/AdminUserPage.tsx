@@ -67,16 +67,6 @@ export default function AdminUserPage(props: F7Props) {
           <p>
             {state.user.firstName} {state.user.lastName} is a {locationAccount.role} at {location.name}
           </p>
-          {state.user.firstName === 'Aidan'
-          && (
-          <>
-            <p>{state.user.firstName} is in the following Cohorts</p>
-            <ul>
-              <li>Homeroom: Verdell, Lucy</li>
-              <li>Bus Route: 711, 811</li>
-            </ul>
-          </>
-          )}
 
           <List>
             {state.user.mobileNumber && (

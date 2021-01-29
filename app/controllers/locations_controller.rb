@@ -82,29 +82,26 @@ module LocationsController
       location = Location.find_by_id_or_permalink(params[:location_id])
       return [] unless location || !current_user.admin_at?(location)
 
-      users = location.users.order_by_name.includes(:last_greenlight_status, :location_accounts, :cohort_users, :cohorts)
-
       name_filter = params.dig(:filter, :name)
       status_filter = params.dig(:filter, :status)
       role_filter = params.dig(:filter, :role)
 
-      if role_filter.present?
-        users = users.joins(:location_accounts).where(location_accounts: { location: location, role: role_filter })
-      end
-
-      if status_filter.present?
-        users = users.joins(:greenlight_statuses).where('greenlight_statuses.expiration_date >= ?', Date.current).where(greenlight_statuses: { status: status_filter })
-      end
-
-      if name_filter.present?
-        users = users.where('lower(concat(first_name, last_name)) LIKE :name_filter', name_filter: "%#{name_filter}%")
-      end
-      @pagy, @users = pagy(users, items: 20)
+      filter = UserFilter.new(
+        location,
+        name_filter,
+        (role_filter || '' ).split(','),
+        (status_filter || '' ).split(',')
+      )
+      @pagy, @users = pagy(filter.users, items: 20)
 
       render json: UserSerializer.new(
-        @users,
+        # HACK:
+        # I know this looks very strange, but for some reason if you put the
+        # filter in directly, the includes aren't correctly loaded
+        # Additionally, you can't just pluck an id or stick a relation here
+        # do to some issue with sorting by first name and last name.
+        User.where(id: @users.to_a.map(&:id)).order_by_name,
         include: UserSerializer::ADMIN_INCLUDES,
-        # links: pagy_links(@pagy),
         meta: { pagination: pagy_numbers(@pagy) }
       )
     end

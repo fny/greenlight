@@ -1,5 +1,6 @@
 import {
-  Block, List, ListItem, Navbar, Page,
+  AccordionContent,
+  Block, Icon, List, ListItem, Navbar, Page,
 } from 'framework7-react'
 import React from 'react'
 import { useEffect, useState } from 'reactn'
@@ -16,6 +17,7 @@ import { getLocation, store, v1 } from 'src/api'
 import { GreenlightStatus, Location } from 'src/models'
 import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
 import logger from 'src/helpers/logger'
+import FakeF7ListItem from 'src/components/FakeF7ListItem'
 
 interface StatsSquareProps {
   title: string
@@ -198,11 +200,46 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
           </div>
 
           <List>
-            <ListItem title="Roster" link={dynamicPaths.adminUsersPath(locationId)} />
+
             {
               state.location.category === 'school'
-            && <ListItem title="Score Card" link={paths.schoolScoreCardPath} />
+            && (
+            <FakeF7ListItem>
+              <ListItem title="Student Roster" accordionItem>
+                <AccordionContent>
+                  <List>
+                    <ListItem title="Recovery" link={dynamicPaths.adminUsersPath(locationId, { role: 'student', status: 'recovery' })}>
+                      <Icon slot="media" f7="heart" />
+                    </ListItem>
+                    <ListItem title="Pending" link={dynamicPaths.adminUsersPath(locationId, { role: 'student', status: 'pending' })}>
+                      <Icon slot="media" f7="flag" />
+                    </ListItem>
+                    <ListItem title="All" link={dynamicPaths.adminUsersPath(locationId, { role: 'student' })}>
+                      <Icon slot="media" f7="person_2" />
+                    </ListItem>
+                  </List>
+                </AccordionContent>
+              </ListItem>
+              <ListItem title="Score Card" link={paths.schoolScoreCardPath} />
+            </FakeF7ListItem>
+            )
             }
+            <ListItem title="Staff Roster" accordionItem>
+              <AccordionContent>
+                <List>
+                  <ListItem title="Recovery" link={dynamicPaths.adminUsersPath(locationId, { role: 'staff,teacher', status: 'recovery' })}>
+                    <Icon slot="media" f7="heart" />
+                  </ListItem>
+                  <ListItem title="Pending" link={dynamicPaths.adminUsersPath(locationId, { role: 'staff,teacher', status: 'pending' })}>
+                    <Icon slot="media" f7="flag" />
+                  </ListItem>
+                  <ListItem title="All" link={dynamicPaths.adminUsersPath(locationId, { role: 'staff,teacher' })}>
+                    <Icon slot="media" f7="person_2" />
+                  </ListItem>
+                </List>
+              </AccordionContent>
+            </ListItem>
+
           </List>
         </Block>
       </>

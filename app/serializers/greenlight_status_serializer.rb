@@ -9,9 +9,6 @@ class GreenlightStatusSerializer < ApplicationSerializer
 
   attribute :created_at
   attribute :updated_at
-  # attribute :deleted_at
-
-  has_one :user
 
   SWAGGER_SCHEMA = SwaggerSchemaBuilder.build do
     data {
@@ -27,6 +24,5 @@ class GreenlightStatusSerializer < ApplicationSerializer
         updatedAt :string
       }
     }
-    has_one :user, :user
   end
 end

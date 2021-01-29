@@ -354,7 +354,7 @@ export interface Pagination {
   /** The number of the last page */
   last: number
   /** The total number of elements across all pages */
-  total: number
+  count: number
 }
 
 export async function getPagedResources<T extends Model>(

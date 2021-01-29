@@ -8,6 +8,7 @@ import {
   Model, attribute as attr, initialize, STRING, DATETIME, BOOLEAN, hasOne,
 } from 'src/lib/Model'
 import { User } from './User'
+import { tr } from 'src/components/Tr'
 
 export const CUTOFF_TIME = new CutoffTime('2020-10-08 18:00')
 
@@ -117,17 +118,17 @@ export class GreenlightStatus extends Model {
 
   title(): string {
     if (this.status === GreenlightStatusTypes.CLEARED) {
-      return t({ id: 'GreenlightStatus.cleared', message: 'Cleared' })
+      return tr({ en: 'Cleared', es: 'Aprobado' })
     }
     if (this.status === GreenlightStatusTypes.PENDING) {
-      return t({ id: 'GreenlightStatus.pending', message: 'Pending' })
+      return tr({ en: 'Pending', es: 'Pendiente' })
     }
     if (this.status === GreenlightStatusTypes.RECOVERY) {
-      return t({ id: 'GreenlightStatus.recovery', message: 'Recovery' })
+      return tr({ en: 'Recovery', es: 'Recuperación' })
     }
     if (this.status === GreenlightStatusTypes.ABSENT) {
-      return t({ id: 'GreenlightStatus.absent', message: 'Absent' })
+      return tr({ en: 'Absent', es: '' })
     }
-    return t({ id: 'GreenlightStatus.not_submitted', message: 'Not Submitted' })
+    return tr({ en: '', es: '' })
   }
 }

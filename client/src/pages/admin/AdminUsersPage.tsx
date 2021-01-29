@@ -7,6 +7,7 @@ import {
   Icon,
   Link,
   List,
+  ListButton,
   ListGroup,
   ListItem,
   Navbar,
@@ -37,7 +38,8 @@ import LoadingContent, { LoadingState } from 'src/components/LoadingContent'
 import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
 import { Roles } from 'src/models/LocationAccount'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
-import { useGlobal } from 'reactn'
+import { useGlobal, useLayoutEffect } from 'reactn'
+import { setIn } from 'formik'
 // import { UsersFilter } from 'src/components/UsersFilter'
 
 interface UserItemProps {
@@ -102,10 +104,6 @@ class State extends LoadingState {
   nameQuery: string = ''
 }
 
-function sortUsersByReversedName(users: User[]): User[] {
-  return sortBy(users, (u) => u.reversedName().toUpperCase())
-}
-
 function groupUsersByFirstLetter(users: User[]): [string, User[]][] {
   const grouped: Dict<User[]> = {}
   for (const user of users) {
@@ -116,12 +114,9 @@ function groupUsersByFirstLetter(users: User[]): [string, User[]][] {
   return Object.entries(grouped)
 }
 
-function countVisibleUserItems() {
-  return countVisible('.user-item')
-}
-
 export default function AdminUsersPage(props: F7Props): JSX.Element {
   const { locationId } = props.f7route.params
+  const { role, status } = props.f7route.query
   assertNotUndefined(locationId)
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
@@ -150,18 +145,17 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
     const nextPage = pageIndex + 1
     // locationId, page, name?, status?, role?
     assertNotUndefined(locationId)
-    return [locationId, nextPage, undefined, undefined, undefined]
+    return [locationId, nextPage, undefined, status as GreenlightStatusTypes | undefined, role as Roles | undefined]
   }
 
   const {
     data, error, isValidating, mutate, size, setSize,
-  } = useSWRInfinite<PagedResource<User>>(getKey, async (locationid: string, page: number, name?: string, status?: GreenlightStatusTypes, role?: Roles) => getPagedUsersForLocation(locationid, page, name, status, role))
+  } = useSWRInfinite<PagedResource<User>>(getKey, async (locationId: string, page: number, name?: string, status?: GreenlightStatusTypes, role?: Roles) => getPagedUsersForLocation(locationId, page, name, status, role))
 
-  const users = sortUsersByReversedName(
-    _.uniqBy(data ? data.map((d) => d.data).flat() : [], (u) => u.id),
-  )
+  const users = data ? data.map((d) => d.data).flat() : []
 
-  const groupedUsers = groupUsersByFirstLetter(users)
+  const groupedUsers = groupUsersByFirstLetter(users);
+  (window as any).users = users
 
   function loadMore() {
     if (!allowInfinite.current) return
@@ -230,6 +224,11 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
                     </ListGroup>
                   ))
                 }
+                {
+                  data && users.length < data[0].pagination.count
+                  && <ListButton title="Click to Load More" onClick={() => loadMore()} />
+                }
+
               </List>
             </>
           )
