@@ -27,7 +27,6 @@ class SendSurveyWorker < ApplicationWorker
       <% choices.each do |key, label| %>
         <%= key %>. <%= label %>
       <% end %>
-      <%= I18n.t('emails.survey.closing') %>
     SMS
     ).src
   end
