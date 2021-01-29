@@ -37,7 +37,7 @@ export default function SettingsPage() {
                 {currentUser.locations__HACK().map((location) => (
                   <ListItem
                     title={location.name || ''}
-                    link={dynamicPaths.userLocationPath({ userId: currentUser.id, locationId: location.id })}
+                    // link={dynamicPaths.userLocationPath({ userId: currentUser.id, locationId: location.id })}
                   />
                 ))}
               </List>

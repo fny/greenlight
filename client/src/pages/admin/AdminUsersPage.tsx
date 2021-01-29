@@ -57,7 +57,7 @@ function UserItem(props: UserItemProps & F7Props): JSX.Element {
       accordionItem
       className="user-item"
       link="#"
-      title={`${user.reversedName()} ${locationAccount.role}`}
+      title={`${user.reversedName()}`}
       after={user.greenlightStatus().title()}
     >
       <div slot="media">
@@ -179,6 +179,7 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
     view: F7View
     searchContainer: HTMLDivElement
   }
+
   return (
     <Page
       infinite
@@ -186,8 +187,7 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
       infinitePreloader={isValidating}
       onInfinite={error ? undefined : loadMore}
     >
-      <Navbar title="Users">
-        <NavbarHomeLink slot="left" />
+      <Navbar title="Users" backLink>
         <Subnavbar inner={false}>
           <Searchbar
             searchContainer=".search-list"

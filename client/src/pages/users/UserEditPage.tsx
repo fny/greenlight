@@ -82,9 +82,7 @@ const UserEditPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
 
   return (
     <Page>
-      <Navbar title={t({ id: 'EditUserPage.title', message: 'Edit User' })}>
-        <NavbarHomeLink slot="left" />
-      </Navbar>
+      <Navbar title={t({ id: 'EditUserPage.title', message: 'Edit User' })} backLink />
 
       <FormikProvider value={formik}>
         <List form id="EditUserPage-form" onSubmit={formik.handleSubmit} noHairlines>

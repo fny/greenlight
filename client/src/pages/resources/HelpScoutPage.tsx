@@ -15,9 +15,8 @@ export default function HelpScoutPage(): JSX.Element {
         state.isLoaded ? (
           <Navbar
             title={t({ id: 'HelpScoutPage.title', message: 'Contact Support' })}
-          >
-            <NavbarHomeLink slot="left" />
-          </Navbar>
+            backLink
+          />
         )
           : <LoadingPageContent />
       }

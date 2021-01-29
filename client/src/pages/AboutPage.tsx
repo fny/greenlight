@@ -11,9 +11,7 @@ import NavbarHomeLink from 'src/components/NavbarHomeLink'
 export default function AboutPage(): JSX.Element {
   return (
     <Page>
-      <Navbar title={t({ id: 'AboutPage.title', message: 'About' })}>
-        <NavbarHomeLink slot="left" />
-      </Navbar>
+      <Navbar title={t({ id: 'AboutPage.title', message: 'About' })} backLink />
       <List noHairlines>
         <ListItem
           title={t({ id: 'AboutPage.greenlight_version', message: 'Greenlight Version' })}

@@ -88,7 +88,7 @@ export default function NotificationsPage(props: F7Props) {
 
   return (
     <Page>
-      <Navbar title={t({ id: 'NotificationsPage.title', message: 'Notifications' })} />
+      <Navbar title={t({ id: 'NotificationsPage.title', message: 'Notifications' })} backLink />
       <Block>
         <BlockTitle>
           <Trans id="NotificationsPage.daily_reminders_title">Daily Reminders</Trans>

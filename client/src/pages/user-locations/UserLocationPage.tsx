@@ -17,6 +17,8 @@ import SubmitHandler from 'src/helpers/SubmitHandler'
 import { LocationAccount, PermissionLevels } from 'src/models/LocationAccount'
 import { dynamicPaths, paths } from 'src/config/routes'
 import LoadingPage from 'src/pages/util/LoadingPage'
+import LoadingPageContent from 'src/components/LoadingPageContent'
+import EmailSupportLink from 'src/components/EmailSupportLink'
 
 interface State {
   user?: User | null
@@ -47,8 +49,10 @@ export default function UserLocationPage(props: F7Props) {
     })()
   }, [])
 
+  let content
+
   if (!state.user || !state.location) {
-    return <LoadingPage />
+    content = <LoadingPageContent />
   }
 
   assertNotNull(state.location)
@@ -61,58 +65,24 @@ export default function UserLocationPage(props: F7Props) {
   const l = state.location
   const handler = new SubmitHandler(f7)
 
-  return (
-    <Page>
-      <Navbar title={`${state.user.firstName}'s Permissions`} />
+  content = (
+    <>
+      <Navbar title={`${state.user.firstName}'s Account`} />
       <Block>
         <List
           form
           noHairlines
         >
           <p>
-            You are linked to {l.name}.
-            You can invite other people to link to this location by using this URL:
-            {la.isOwner()
-              ? 'You are listed as an owner.'
-              : la.isAdmin()
-                ? 'You are listed as an admin.'
-                : ''}
+            You are linked to {l.name}. To request removal, please contact <EmailSupportLink />.
           </p>
-          <p>
-            <Link href="#">{l.registrationWithCodeURL()}</Link>
-          </p>
-          {l.permalink === 'greenlight'
-          && (
-          <ListItem
-            title="Cohorts"
-            smartSelect
-            smartSelectParams={{ searchbar: true, searchbarPlaceholder: 'Search Cohorts' }}
-          >
-            <select name="cohort" multiple defaultValue={['honda', 'audi', 'ford']}>
-              <optgroup label="Bus Route">
-                <option value="honda">A</option>
-                <option value="lexus">B</option>
-                <option value="mazda">C</option>
-                <option value="nissan">D</option>
-                <option value="toyota">E</option>
-              </optgroup>
-              <optgroup label="Building">
-                <option value="audi">Middle</option>
-                <option value="bmw">High</option>
-                <option value="mercedes">Gym</option>
-              </optgroup>
-              <optgroup label="Homeroom">
-                <option value="cadillac">Cassidy</option>
-                <option value="chrysler">Daniels</option>
-                <option value="dodge">Ford</option>
-                <option value="ford">Zimmerman</option>
-              </optgroup>
-            </select>
-          </ListItem>
-          )}
-
         </List>
       </Block>
+    </>
+  )
+  return (
+    <Page>
+      {content}
     </Page>
   )
 }

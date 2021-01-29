@@ -4,8 +4,9 @@ import { Cohort, Location, MedicalEvent } from 'src/models'
 import {
   Model, attribute as attr, initialize, STRING, DATETIME, DATE, BOOLEAN, hasMany, hasOne,
 } from 'src/lib/Model'
+import { recordStore } from 'src/api/stores'
 import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
-import { LocationAccount } from './LocationAccount'
+import { LocationAccount, PermissionLevels } from './LocationAccount'
 import { UserSettings } from './UserSettings'
 
 /**
@@ -314,5 +315,11 @@ export class User extends Model {
 
   isMemberOf(location: Location): boolean {
     return this.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0
+  }
+
+  isOwnerAtVoyager__HACK(): boolean {
+    return this.locationAccounts.filter((la) => {
+      recordStore.findEntity<Location>(Location.uuid(la.locationId || 0))?.permalink?.startsWith('voyager') && la.permissionLevel === PermissionLevels.OWNER
+    }).length > 0
   }
 }

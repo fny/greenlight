@@ -3,7 +3,7 @@ import {
   Block, Icon, List, ListItem, Navbar, Page,
 } from 'framework7-react'
 import React from 'react'
-import { useEffect, useState } from 'reactn'
+import { useEffect, useGlobal, useState } from 'reactn'
 import LoadingPageContent from 'src/components/LoadingPageContent'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { Line } from 'react-chartjs-2'
@@ -11,7 +11,7 @@ import { Line } from 'react-chartjs-2'
 import './AdminDashboardPage.css'
 import { dynamicPaths, paths } from 'src/config/routes'
 import { UsersFilter } from 'src/components/UsersFilter'
-import { assertNotUndefined } from 'src/helpers/util'
+import { assertNotNull, assertNotUndefined } from 'src/helpers/util'
 import { F7Props } from 'src/types'
 import { getLocation, store, v1 } from 'src/api'
 import { GreenlightStatus, Location } from 'src/models'
@@ -92,6 +92,8 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
   assertNotUndefined(locationId)
   const [state, setState] = useState({ ...new State(), location: store.findEntity<Location>(Location.uuid(locationId)) })
 
+  const [currentUser] = useGlobal('currentUser')
+  assertNotNull(currentUser)
   useEffect(() => {
     if (state.location === null) {
       getLocation(locationId).then((loc) => setState({ ...state, location: loc }))
@@ -220,10 +222,13 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
                   </List>
                 </AccordionContent>
               </ListItem>
-              <ListItem title="Score Card" link={paths.schoolScoreCardPath} />
             </FakeF7ListItem>
             )
             }
+            {
+              (!state.location.permalink?.startsWith('voyager') || currentUser.isOwnerAtVoyager__HACK())
+
+            && (
             <ListItem title="Staff Roster" accordionItem>
               <AccordionContent>
                 <List>
@@ -239,7 +244,16 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
                 </List>
               </AccordionContent>
             </ListItem>
-
+            )
+            }
+            {
+              state.location.category === 'school'
+            && (
+            <FakeF7ListItem>
+              <ListItem title="Score Card" link={paths.schoolScoreCardPath} />
+            </FakeF7ListItem>
+            )
+            }
           </List>
         </Block>
       </>
