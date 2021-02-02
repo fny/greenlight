@@ -36,7 +36,7 @@ class PhoneNumber
   end
 
   def self.fivefivefive?(number)
-    self.parse(number1).match?(/\A\+1\d{3}555\d{4}\z/)
+    self.parse(number).match?(/\A\+1\d{3}555\d{4}\z/)
   end
 
   def self.random_number
