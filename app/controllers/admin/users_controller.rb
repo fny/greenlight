@@ -31,7 +31,20 @@ module Admin
           User.union(*relationships)
         end
 
-      @pagy, @users = pagy(users.order(id: :desc))
+
+      respond_to do |f|
+        f.html {
+          @pagy, @users = pagy(users.order(id: :desc))
+        }
+
+        f.xlsx {
+          download = UsersDownload.new
+          download.run
+          send_data File.read(download.file_path).force_encoding('binary'),
+            filename: File.basename(download.file_path),
+            type: 'application/vnd.ms-excel'
+        }
+      end
     end
 
     def new

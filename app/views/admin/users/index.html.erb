@@ -1,7 +1,8 @@
 <h1>Users</h1>
 
 <nav>
-  <%= link_to "New User", new_admin_user_path %>
+  <%= link_to "New User", new_admin_user_path %> |
+  <%= link_to "users.xlsx", admin_users_path(format: :xlsx) %>
 </nav>
 
 <br />
