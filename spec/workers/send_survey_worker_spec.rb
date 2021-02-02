@@ -13,7 +13,7 @@ RSpec.describe SendSurveyWorker do
 
       last_delivery = Mail::TestMailer.deliveries.last
       expect(last_delivery[:to].to_s).to include(user.email)
-      expect(last_delivery[:from].to_s).to include(survey.permalink)
+      expect(last_delivery[:reply_to].to_s).to include(survey.permalink)
       expect(last_delivery.html_part.to_s).to include(survey.question)
     end
 

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module SurveyParser
+  SURVEY_REPLY_TO_PATTERN = /survey\+(.+)@reply-to.greenlightready.com/i
+  SURVEY_REPLY_TO_EMAIL_ORIGIN = 'survey@reply-to.greenlightready.com'.freeze
+
   def self.clean_content(content)
     content.strip
   end
@@ -15,6 +18,10 @@ module SurveyParser
   end
 
   def self.reply_to_email(survey_permalink)
-    Greenlight::SURVEY_EMAIL.gsub('@', "+#{survey_permalink}@")
+    SURVEY_REPLY_TO_EMAIL_ORIGIN.gsub('@', "+#{survey_permalink}@")
+  end
+
+  def self.permalink_from_email(email)
+    email[SURVEY_REPLY_TO_PATTERN, 1]
   end
 end

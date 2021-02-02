@@ -38,7 +38,7 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
 
-  config.hosts += %w[api-dev.greenlightready.com api.greenlightready.net da1e7a1188a7.ngrok.io]
+  config.hosts += %w[api-dev.greenlightready.com api.greenlightready.net]
 
   # config.middleware.use PrettyJsonResponse
 
@@ -66,6 +66,4 @@ Rails.application.configure do
       port: '1025'
     }
   }
-
-  config.active_storage.service = :local
 end

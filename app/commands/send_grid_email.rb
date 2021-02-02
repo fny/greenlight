@@ -2,6 +2,7 @@
 class SendGridEmail < ApplicationCommand
   argument :from, default: "Greenlight <lucy@greenlightready.com>"
   argument :to
+  argument :reply_to
   argument :cc
   argument :bcc
   argument :subject
@@ -22,6 +23,7 @@ class SendGridEmail < ApplicationCommand
     @pony_payload = {}
     @pony_payload[:from] = self.from
     @pony_payload[:to] = self.to
+    @pony_payload[:reply_to] = self.reply_to if self.reply_to
     @pony_payload[:cc] = self.cc if self.cc
     @pony_payload[:bcc] = self.bcc if self.bcc
     @pony_payload[:subject] = self.subject

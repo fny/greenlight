@@ -40,7 +40,8 @@ class SendSurveyWorker < ApplicationWorker
     if user.email?
       mailer = SendGridEmail.new(
         to: user.name_with_email,
-        from: SurveyParser.reply_to_email(survey.permalink),
+        from: Greenlight::SURVEY_EMAIL,
+        reply_to: SurveyParser.reply_to_email(survey.permalink),
         subject: I18n.t('emails.survey.subject'),
         html: eval(html_template), # rubocop:disable Security/Eval
         text: eval(sms_template), # rubocop:disable Security/Eval
