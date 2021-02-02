@@ -226,7 +226,7 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
             )
             }
             {
-              (!state.location.permalink?.startsWith('voyager') || currentUser.isOwnerAtVoyager__HACK())
+              (!state.location.permalink?.startsWith('voyager') && !currentUser.isOwnerAtVoyager__HACK())
 
             && (
             <ListItem title="Staff Roster" accordionItem>
