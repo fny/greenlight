@@ -1,6 +1,4 @@
-import {
-  Block, BlockTitle, Button, List, ListInput, Row, Col, ListItem,
-} from 'framework7-react'
+import { Block, BlockTitle, Button, List, ListInput, Row, Col, ListItem } from 'framework7-react'
 import React, { useState } from 'reactn'
 import Tr, { tr } from 'src/components/Tr'
 import { RegisteringUser } from 'src/models/RegisteringUser'
@@ -8,8 +6,8 @@ import { RegisteringUser } from 'src/models/RegisteringUser'
 interface AddChildFormProps {
   user: RegisteringUser | null
   onSubmit: (child: RegisteringUser) => any
-  onDelete: () => any
-  onDiscard?: () => any
+  onDelete?: () => any
+  onBack?: () => any
 }
 
 export default function AddChildForm(props: AddChildFormProps): JSX.Element {
@@ -90,9 +88,9 @@ export default function AddChildForm(props: AddChildFormProps): JSX.Element {
               </Button>
             </Col>
           )}
-          {props.onDiscard && (
+          {props.onBack && (
             <Col>
-              <Button fill type="button" onClick={props.onDiscard}>
+              <Button fill type="button" onClick={props.onBack}>
                 <Tr en="Back" es="Atrás" />
               </Button>
             </Col>

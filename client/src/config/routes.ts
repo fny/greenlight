@@ -57,6 +57,8 @@ import RegisterChildrenPage from 'src/pages/register-user/RegisterChildrenPage'
 import LocationLookupAccountPage from 'src/pages/locations/LocationLookupAccountPage'
 import LocationLookupRegistrationCodePage from 'src/pages/locations/LocationLookupRegistrationCodePage'
 import LocationCheckRegistrationCodePage from 'src/pages/locations/LocationCheckRegistrationCodePage'
+import EditChildrenPage from 'src/pages/users/EditChildrenPage'
+import EditChildPage from 'src/pages/users/EditChildPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -344,8 +346,12 @@ const userRoutes = {
     component: UserEditPage,
   },
   editChildrenPath: {
+    path: '/users/:userId/children',
+    component: EditChildrenPage,
+  },
+  editChildPath: {
     path: '/users/:userId/children/:childId',
-    component: UserEditPage,
+    component: EditChildPage,
   },
 }
 

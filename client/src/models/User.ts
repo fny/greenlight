@@ -1,13 +1,12 @@
 import { DateTime } from 'luxon'
 import { isPresent, joinWords } from 'src/helpers/util'
 import { Cohort, Location, MedicalEvent } from 'src/models'
-import {
-  Model, attribute as attr, initialize, STRING, DATETIME, DATE, BOOLEAN, hasMany, hasOne,
-} from 'src/lib/Model'
+import { Model, attribute as attr, initialize, STRING, DATETIME, DATE, BOOLEAN, hasMany, hasOne } from 'src/lib/Model'
 import { recordStore } from 'src/api/stores'
 import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
 import { LocationAccount, PermissionLevels } from './LocationAccount'
 import { UserSettings } from './UserSettings'
+import { RegisteringUser } from './RegisteringUser'
 
 /**
  * Represent a user in the application, be it an employee, owner, parent,
@@ -318,8 +317,27 @@ export class User extends Model {
   }
 
   isOwnerAtVoyager__HACK(): boolean {
-    return this.locationAccounts.filter((la) => {
-      recordStore.findEntity<Location>(Location.uuid(la.locationId || 0))?.permalink?.startsWith('voyager') && la.permissionLevel === PermissionLevels.OWNER
-    }).length > 0
+    return (
+      this.locationAccounts.filter((la) => {
+        recordStore.findEntity<Location>(Location.uuid(la.locationId || 0))?.permalink?.startsWith('voyager') &&
+          la.permissionLevel === PermissionLevels.OWNER
+      }).length > 0
+    )
+  }
+
+  toRegisteringUser(): RegisteringUser {
+    return {
+      ...new RegisteringUser(),
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email || '',
+      mobileNumber: this.mobileNumber || '',
+      locale: this.locale || 'en',
+      children: this.children.map((child) => child.toRegisteringUser()),
+      needsPhysician: this.needsPhysician || false,
+      physicianName: this.physicianName || '',
+      physicianPhoneNumber: this.physicianPhoneNumber || '',
+      zipCode: this.zipCode || '',
+    }
   }
 }

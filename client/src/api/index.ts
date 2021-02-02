@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 
 import { getGlobal, setGlobal } from 'reactn'
-import {
-  assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
-} from 'src/helpers/util'
+import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from 'src/helpers/util'
 
 // FIXME: This shouldn't be assigned here. It should go in a provider
 import Honeybadger from 'honeybadger-js'
@@ -182,7 +180,7 @@ export async function checkLocationRegistrationCode(locationId: string, registra
   return result.data.result
 }
 
-export async function registerUser(locationId: string, user: RegisteringUser & { password: string}) {
+export async function registerUser(locationId: string, user: RegisteringUser & { password: string }) {
   const userWithoutBlanks = transformForAPI(user, { removeBlanks: true })
   await v1.post(`/locations/${locationId}/register`, userWithoutBlanks)
   const currentUser = await getCurrentUser()
@@ -197,6 +195,7 @@ export async function getCurrentUser(): Promise<CurrentUser> {
   const currentUser = await getResource<CurrentUser>('/current-user')
   Honeybadger.setContext({ userId: currentUser.id })
   // Now load the standard user entity so it gets cached too
+
   await getResource<User>(`/users/${currentUser.id}`)
   return currentUser
 }
@@ -210,7 +209,7 @@ export async function updateCurrentUser(updates: Partial<CurrentUser>): Promise<
 }
 
 export async function getUser(id: string): Promise<User> {
-  return getResource<User>(`/users/${id}`)
+  return await getResource<User>(`/users/${id}`)
 }
 
 export async function updateUser(user: User, updates: Partial<User>): Promise<User> {
@@ -228,7 +227,7 @@ export async function completeWelcomeUser(user: User): Promise<User> {
   return entity
 }
 
-export async function createUserAndSignIn(user: Partial<RegisteringUser> & { password: string}): Promise<void> {
+export async function createUserAndSignIn(user: Partial<RegisteringUser> & { password: string }): Promise<void> {
   const signInResponse = await v1.post('/users/create-and-sign-in', user)
   if (env.isCordova()) {
     localStorage.setItem('token', signInResponse.data.token)
@@ -258,6 +257,18 @@ export async function getPagedUsersForLocation(
   const locationId = location instanceof Location ? location.id : location
   const path = `/locations/${locationId}/users`
   return getPagedResources<User>(path, page, { status, name, role })
+}
+
+export async function addChild(userId: string, child: RegisteringUser) {
+  return await v1.post(`/users/${userId}/child`, child)
+}
+
+export async function updateChild(userId: string, childId: string, child: RegisteringUser) {
+  return await v1.patch(`/users/${userId}/child/${childId}`, child)
+}
+
+export async function deleteChild(userId: string, childId: string) {
+  return await v1.delete(`/users/${userId}/child/${childId}`)
 }
 
 //

@@ -1,6 +1,4 @@
-import {
-  Dict, Record, RecordResponse, RecordRelationship, RecordPointer, EntityId,
-} from 'src/types'
+import { Dict, Record, RecordResponse, RecordRelationship, RecordPointer, EntityId } from 'src/types'
 import { Model } from 'src/models'
 import { deserializeJSONAPI } from 'src/lib/Model'
 import { zipTwo } from 'src/helpers/util'
@@ -34,11 +32,16 @@ class RecordStore {
 
   findEntity<T extends Model>(id: EntityId): T | null {
     let entity = this.data[id]?.entity
-    if (entity) { return entity as T }
+    if (entity) {
+      return entity as T
+    }
 
     const record = this.findRecord(id)
-    if (!record) { return null }
-    entity = deserializeJSONAPI<T>(record)
+    if (!record) {
+      return null
+    }
+    // entity = deserializeJSONAPI<T>(record)
+    entity = transformRecord<T>(record)
     this.data[id].entity = entity
     return entity as T
   }
@@ -54,7 +57,9 @@ class RecordStore {
 
   writeRecords(records: Record<any> | Record<any>[]) {
     const recordsParsed = !Array.isArray(records) ? [records] : records
-    recordsParsed.forEach((r) => { this.data[uuid(r)] = { record: r } })
+    recordsParsed.forEach((r) => {
+      this.data[uuid(r)] = { record: r }
+    })
   }
 
   writeRecordResponse(res: RecordResponse<any>) {
@@ -118,7 +123,11 @@ function tranformRelationships<T extends Model>(entity: T, record: Record<any>) 
  * @param relationshipName the name of the relatinship to transform
  * @param relationship the relationship data as providedby the API
  */
-function transformRelationship<T extends Model>(entity: T, relationshipName: string, relationship: RecordRelationship): void {
+function transformRelationship<T extends Model>(
+  entity: T,
+  relationshipName: string,
+  relationship: RecordRelationship,
+): void {
   // Skip if we've already loaded the relationship
   if (entity._included.includes(relationshipName)) return
 
@@ -128,7 +137,7 @@ function transformRelationship<T extends Model>(entity: T, relationshipName: str
   }
 
   if (relationship.data === undefined || relationship.data === null) {
-    (entity as any)[relationshipName] = null
+    ;(entity as any)[relationshipName] = null
     return
   }
 
@@ -144,8 +153,8 @@ function transformRelationship<T extends Model>(entity: T, relationshipName: str
     // Set relationship for records on the relationship
     zipTwo(foundEntities, foundRecords).forEach(([e, r]) => {
       tranformRelationships(e as Model, r as Record<any>)
-    });
-    (entity as any)[relationshipName] = foundEntities
+    })
+    ;(entity as any)[relationshipName] = foundEntities
   } else {
     const foundEntity = recordStore.findEntity(uuid(relationship.data))
     const foundRecord = recordStore.findRecord(uuid(relationship.data))
@@ -158,7 +167,7 @@ function transformRelationship<T extends Model>(entity: T, relationshipName: str
     }
 
     // Set relationship for records on the relationship
-    tranformRelationships<any>(foundEntity, foundRecord);
-    (entity as any)[relationshipName] = foundEntity
+    tranformRelationships<any>(foundEntity, foundRecord)
+    ;(entity as any)[relationshipName] = foundEntity
   }
 }

@@ -1,9 +1,5 @@
-import {
-  Block, Button, Navbar, Page, List, ListItem, BlockTitle, f7,
-} from 'framework7-react'
-import React, {
-  Fragment, useGlobal, useCallback, useState, useMemo,
-} from 'reactn'
+import { Block, Button, Navbar, Page, List, ListItem, BlockTitle, f7 } from 'framework7-react'
+import React, { Fragment, useGlobal, useCallback, useState, useMemo } from 'reactn'
 import { registerUser } from 'src/api'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
@@ -15,7 +11,7 @@ import { Roles } from 'src/models/LocationAccount'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import { F7Props } from 'src/types'
 import { paths } from 'src/config/routes'
-import AddChildForm from './AddChildForm'
+import AddChildForm from '../../components/AddChildForm'
 import Tr, { tr } from 'src/components/Tr'
 
 export default function RegisterChildrenPage(props: F7Props): JSX.Element {
@@ -27,16 +23,17 @@ export default function RegisterChildrenPage(props: F7Props): JSX.Element {
   assertNotUndefined(locationId)
 
   const submitHandler = useMemo(
-    () => new SubmitHandler(f7, {
-      onSuccess: () => {
-        props.f7router.navigate(paths.welcomeSurveyPath)
-      },
-      errorTitle: 'Something went wrong',
-      errorMessage: 'User registration is failed',
-      onSubmit: async () => {
-        await registerUser(locationId, { ...registeringUser, password: registeringUserDetail })
-      },
-    }),
+    () =>
+      new SubmitHandler(f7, {
+        onSuccess: () => {
+          props.f7router.navigate(paths.welcomeSurveyPath)
+        },
+        errorTitle: 'Something went wrong',
+        errorMessage: 'User registration is failed',
+        onSubmit: async () => {
+          await registerUser(locationId, { ...registeringUser, password: registeringUserDetail })
+        },
+      }),
     [locationId, registeringUser],
   )
 
@@ -123,7 +120,7 @@ function ChildrenList({
 }): JSX.Element {
   return (
     <Fragment>
-      <Navbar title={tr({ en: 'Add Your Children', es: 'Registrar sus hijos'  })}>
+      <Navbar title={tr({ en: 'Add Your Children', es: 'Registrar sus hijos' })}>
         <NavbarHomeLink slot="left" />
       </Navbar>
       <Block>
@@ -132,7 +129,6 @@ function ChildrenList({
             en={`If you have any children that attend {location.name} add them here.`}
             es={`Si tiene algunos hijos quien asistir {location.name} registrarlos aquí.`}
           />
-
         </p>
 
         <BlockTitle>
@@ -154,7 +150,11 @@ function ChildrenList({
           ))}
           <ListItem
             link="#"
-            title={registeringUser.children.length > 0 ? tr({en: 'Add another child', es: 'Registrar otro hijo'}) : tr({en: 'Add a child', es: 'Registrar un hijo' })}
+            title={
+              registeringUser.children.length > 0
+                ? tr({ en: 'Add another child', es: 'Registrar otro hijo' })
+                : tr({ en: 'Add a child', es: 'Registrar un hijo' })
+            }
             onClick={(e) => {
               e.preventDefault()
               setPage('child')
@@ -169,9 +169,9 @@ function ChildrenList({
           onClick={onRegister}
           disabled={registeringUser.role === Roles.Parent && registeringUser.children.length === 0}
         >
-          {registeringUser.children.length > 0 ?
-              tr({ en: 'Done adding children', es: 'Terminado'}) : tr({ en: 'Skip adding children', es: 'Seguir' })
-            }
+          {registeringUser.children.length > 0
+            ? tr({ en: 'Done adding children', es: 'Terminado' })
+            : tr({ en: 'Skip adding children', es: 'Seguir' })}
         </Button>
       </Block>
     </Fragment>
@@ -194,7 +194,7 @@ function AddChild({
       <Navbar title={tr({ en: 'Add Your Children', es: 'Registrar sus hijos' })}>
         <NavbarHomeLink slot="left" />
       </Navbar>
-      <AddChildForm user={selectedUser} onSubmit={onSubmitChild} onDiscard={() => setPage('')} onDelete={onDelete} />
+      <AddChildForm user={selectedUser} onSubmit={onSubmitChild} onBack={() => setPage('')} onDelete={onDelete} />
     </Fragment>
   )
 }

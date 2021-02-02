@@ -32,14 +32,29 @@ export default class SubmitHandler<T = any> {
     this.errorMessage = options.errorMessage || t({ id: 'Common.somethings_wrong', message: 'Something went wrong' })
   }
 
-  async submit(action?: () => Promise<any>): Promise<void> {
+  setOptions(options: Partial<SubmitHandler>) {
+    this.submittingMessage = options.submittingMessage || t({ id: 'Common.submitting', message: 'Submitting...' })
+    this.onSubmit = options.onSubmit || (() => Promise.resolve())
+    this.onSuccess = options.onSuccess || (() => {})
+    this.successMessage = options.successMessage
+    this.onError = options.onError || (() => {})
+    this.errorTitle = options.errorTitle || t({ id: 'Common.submission_failed', message: 'Submission Failed' })
+    this.errorMessage = options.errorMessage || t({ id: 'Common.somethings_wrong', message: 'Something went wrong' })
+  }
+
+  async submit(action?: () => Promise<any>, options?: Partial<SubmitHandler>): Promise<void> {
     this.f7.dialog.preloader(this.submittingMessage)
+    if (options) {
+      this.setOptions(options)
+    }
     const fn = action || this.onSubmit
     try {
       const result = await fn()
       this.f7.dialog.close()
       if (this.successMessage) {
-        this.f7.dialog.alert(this.successMessage, t({ id: 'Common.success', message: 'Success' }), () => this.handleSuccess(result))
+        this.f7.dialog.alert(this.successMessage, t({ id: 'Common.success', message: 'Success' }), () =>
+          this.handleSuccess(result),
+        )
       } else {
         this.handleSuccess(result)
       }
@@ -47,7 +62,9 @@ export default class SubmitHandler<T = any> {
       this.f7.dialog.close()
       logger.error(error)
       if (error.response) {
-        this.f7.dialog.alert(this.processErrors(error) || this.errorMessage, this.errorTitle, () => this.handleError(error))
+        this.f7.dialog.alert(this.processErrors(error) || this.errorMessage, this.errorTitle, () =>
+          this.handleError(error),
+        )
       } else {
         this.f7.dialog.alert(this.errorMessage, this.errorTitle, () => this.handleError(error))
       }
