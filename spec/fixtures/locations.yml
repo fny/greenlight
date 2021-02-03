@@ -23,3 +23,4 @@ springfield_nuclear:
   registration_code_downcase: bomb13
   student_registration_code: NotUsedBoom44
   student_registration_code_downcase: notusedboom44
+  daily_reminder_time: 7

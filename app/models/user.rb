@@ -307,6 +307,14 @@ class User < ApplicationRecord
     hack1 || hack2
   end
 
+  def daily_reminder_time
+    if settings && settings.override_location_reminders
+      settings.daily_reminder_time
+    else
+      locations.map(&:daily_reminder_time).min
+    end
+  end
+
   def parent?
     children.exists?
   end

@@ -2,6 +2,10 @@
 class ReminderWorker < ApplicationWorker
   sidekiq_options retry: 0
 
+  REMINDER_DAYS = %i[
+    remind_sun remind_mon remind_tue remind_wed remind_thu remind_fri remind_sat
+  ].freeze
+
   def html_template
     Erubi::Engine.new(<<~HTML
       <h2><%= I18n.t('emails.reminder.title') %></h2>
@@ -31,6 +35,18 @@ class ReminderWorker < ApplicationWorker
     ).src
   end
 
+  def current_time
+    @current_time ||= Time.now.in_time_zone('America/New_York')
+  end
+
+  def reminder_hour
+    current_time.hour
+  end
+
+  def reminder_day
+    REMINDER_DAYS[current_time.wday]
+  end
+
   def perform(user_id)
     user = User.find(user_id)
 
@@ -44,11 +60,26 @@ class ReminderWorker < ApplicationWorker
     # Don't send if ther user has reminders disabled
     return if user.daily_reminder_type == User::NONE
 
-    # Don't send if ther user has reminders disabled
-    return if user.settings&.daily_reminder_type == UserSettings::NONE
+    if user.settings&.override_location_reminders
 
-    # Don't send if the users locations have all disabled notifications
-    return if !user.affiliated_locations.pluck(:reminders_enabled).any?
+      # Don't send if ther user has reminders disabled
+      return if user.settings.daily_reminder_type == UserSettings::NONE
+
+      # Don't send if the reminder time doesn't match
+      return if user.settings.daily_reminder_time != reminder_hour
+
+      # Don't send if its disabled for that day at the location level
+      return if user.settings.send(reminder_day) == false
+    else
+      # Don't send if its disabled for that day at the location level
+      return if user.locations.all? { |l| l.send(reminder_day) == false }
+
+      # Don't send if reminder times don't match at the location level
+      return if user.locations.all? { |l| l.daily_reminder_time != reminder_hour }
+
+      # Don't send if the users locations have all disabled notifications
+      return if !user.affiliated_locations.pluck(:reminders_enabled).any?
+    end
 
     user.update_columns(daily_reminder_sent_at: Time.now)
 
