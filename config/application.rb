@@ -45,5 +45,6 @@ module Greenlight
 
     config.skylight.probes += %w[redis]
     config.filter_parameters += %w[password password_confirmation password_digest]
+    config.action_view.form_with_generates_remote_forms = false
   end
 end
