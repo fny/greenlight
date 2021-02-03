@@ -100,7 +100,7 @@ module UsersController
       )
 
       if user.save
-        render json:UserSerializer.new(user)
+        render json:UserSerializer.new(user,include: UserSerializer::COMMON_INCLUDES)
       else
         error_response(user)
       end
@@ -127,7 +127,7 @@ module UsersController
       user = User.find(user_id)
 
       if result
-        render json:UserSerializer.new(user)
+        render json:UserSerializer.new(user,include: UserSerializer::COMMON_INCLUDES)
       else
         error_response(user)
       end
@@ -148,7 +148,7 @@ module UsersController
       user = User.find(user_id)
 
       if result
-        render json:UserSerializer.new(user)
+        render json:UserSerializer.new(user,include: UserSerializer::COMMON_INCLUDES)
       else
         error_response(user)
       end

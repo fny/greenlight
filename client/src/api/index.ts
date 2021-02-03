@@ -259,16 +259,31 @@ export async function getPagedUsersForLocation(
   return getPagedResources<User>(path, page, { status, name, role })
 }
 
-export async function addChild(userId: string, child: RegisteringUser) {
-  return await v1.post(`/users/${userId}/child`, child)
+export async function addChild(userId: string, child: RegisteringUser): Promise<User> {
+  const response = await v1.post<RecordResponse<User>>(`/users/${userId}/child`, child)
+
+  recordStore.writeRecordResponse(response.data)
+  const entity = transformRecordResponse(response.data)
+  assertNotArray(entity)
+  return entity
 }
 
-export async function updateChild(userId: string, childId: string, child: RegisteringUser) {
-  return await v1.patch(`/users/${userId}/child/${childId}`, child)
+export async function updateChild(userId: string, childId: string, child: RegisteringUser): Promise<User> {
+  const response = await v1.patch<RecordResponse<User>>(`/users/${userId}/child/${childId}`, child)
+
+  recordStore.writeRecordResponse(response.data)
+  const entity = transformRecordResponse(response.data)
+  assertNotArray(entity)
+  return entity
 }
 
-export async function deleteChild(userId: string, childId: string) {
-  return await v1.delete(`/users/${userId}/child/${childId}`)
+export async function deleteChild(userId: string, childId: string): Promise<User> {
+  const response = await v1.delete<RecordResponse<User>>(`/users/${userId}/child/${childId}`)
+
+  recordStore.writeRecordResponse(response.data)
+  const entity = transformRecordResponse(response.data)
+  assertNotArray(entity)
+  return entity
 }
 
 //

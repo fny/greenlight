@@ -317,9 +317,11 @@ export class User extends Model {
   }
 
   isOwnerAtVoyager__HACK(): boolean {
-    return this.locationAccounts.filter((la) => {
-      return la.location?.permalink?.startsWith('voyager') && la.permissionLevel === PermissionLevels.OWNER
-    }).length > 0
+    return (
+      this.locationAccounts.filter((la) => {
+        return la.location?.permalink?.startsWith('voyager') && la.permissionLevel === PermissionLevels.OWNER
+      }).length > 0
+    )
   }
 
   toRegisteringUser(): RegisteringUser {
@@ -336,5 +338,5 @@ export class User extends Model {
       physicianPhoneNumber: this.physicianPhoneNumber || '',
       zipCode: this.zipCode || '',
     }
-    
+  }
 }

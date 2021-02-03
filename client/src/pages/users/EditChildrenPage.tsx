@@ -1,5 +1,5 @@
 import { Block, BlockTitle, Button, List, ListItem, Navbar, Page } from 'framework7-react'
-import { useGlobal } from 'reactn'
+import { useGlobal, useMemo, useEffect } from 'reactn'
 import { store } from 'src/api'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import Tr, { tr } from 'src/components/Tr'
@@ -12,8 +12,14 @@ export default function EditChildrenPage(props: F7Props): JSX.Element {
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
 
+  const [recordStoreUpdatedAt] = useGlobal('recordStoreUpdatedAt')
+
   const { userId } = props.f7route.params
-  const user = store.findEntity<User>(`user-${userId}`)
+  const user = useMemo(() => store.findEntity<User>(`user-${userId}`), [recordStoreUpdatedAt])
+
+  useEffect(() => {
+    console.log('use effect works')
+  }, [])
 
   if (!user) {
     props.f7router.navigate(paths.notFoundPath)

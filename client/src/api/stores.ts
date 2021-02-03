@@ -1,3 +1,4 @@
+import { setGlobal } from 'reactn'
 import { Dict, Record, RecordResponse, RecordRelationship, RecordPointer, EntityId } from 'src/types'
 import { Model } from 'src/models'
 import { deserializeJSONAPI } from 'src/lib/Model'
@@ -40,7 +41,6 @@ class RecordStore {
     if (!record) {
       return null
     }
-    // entity = deserializeJSONAPI<T>(record)
     entity = transformRecord<T>(record)
     this.data[id].entity = entity
     return entity as T
@@ -55,7 +55,7 @@ class RecordStore {
     return entities
   }
 
-  writeRecords(records: Record<any> | Record<any>[]) {
+  private writeRecords(records: Record<any> | Record<any>[]) {
     const recordsParsed = !Array.isArray(records) ? [records] : records
     recordsParsed.forEach((r) => {
       this.data[uuid(r)] = { record: r }
@@ -65,10 +65,19 @@ class RecordStore {
   writeRecordResponse(res: RecordResponse<any>) {
     if (res.included) this.writeRecords(res.included)
     if (res.data) this.writeRecords(res.data)
+    this.onStoreUpdated()
   }
 
   reset() {
     this.data = {}
+  }
+
+  private onStoreUpdated() {
+    logger.dev(`record store is updated at ${new Date().toString()}`)
+    setGlobal((globalStore) => ({
+      ...globalStore,
+      recordStoreUpdatedAt: new Date(),
+    }))
   }
 }
 

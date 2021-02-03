@@ -1,7 +1,5 @@
 import React from 'reactn'
-import {
-  Page, Navbar, Block, Button, Preloader,
-} from 'framework7-react'
+import { Page, Navbar, Block, Button, Preloader } from 'framework7-react'
 import './SurveyNewPage.css'
 import { paths } from 'src/config/routes'
 import { MedicalEventTypes } from 'src/models/MedicalEvent'
@@ -12,7 +10,7 @@ import { NoCurrentUserError } from 'src/helpers/errors'
 import { ReactNComponent } from 'reactn/build/components'
 import { DateTime } from 'luxon'
 import { t, Trans } from '@lingui/macro'
-import { assertNotNull } from 'src/helpers/util'
+import { assertNotNull, forceReRender } from 'src/helpers/util'
 import { reloadCurrentUser } from 'src/helpers/global'
 import logger from 'src/helpers/logger'
 
@@ -51,14 +49,9 @@ interface SymptomButtonProps {
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
-function SymptomButton({
-  title, image, selected, onClick,
-}: SymptomButtonProps) {
+function SymptomButton({ title, image, selected, onClick }: SymptomButtonProps) {
   return (
-    <div
-      className={`SymptomButton ${selected ? 'selected' : ''}`}
-      onClick={onClick}
-    >
+    <div className={`SymptomButton ${selected ? 'selected' : ''}`} onClick={onClick}>
       <img alt={title} src={buttonImages[image]} />
       <img alt={title} src={(buttonImages as any)[`${image}Bright`]} />
       <br />
@@ -89,12 +82,7 @@ interface SurveyState {
   targetUser: User | null
 }
 
-type Symptoms =
-  | 'hasFever'
-  | 'hasChills'
-  | 'hasNewCough'
-  | 'hasDifficultyBreathing'
-  | 'hasLossTasteSmell'
+type Symptoms = 'hasFever' | 'hasChills' | 'hasNewCough' | 'hasDifficultyBreathing' | 'hasLossTasteSmell'
 
 export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveyState> {
   isSequence = false
@@ -110,7 +98,9 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     this.currentUser = this.global.currentUser
 
     const { userId } = this.$f7route.params
-    if (!userId) { throw 'userId missing in url' }
+    if (!userId) {
+      throw 'userId missing in url'
+    }
 
     if (userId === 'seq') {
       this.isSequence = true
@@ -262,9 +252,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     }
     const medicalEvents = this.medicalEvents()
 
-    this.$f7.dialog.preloader(
-      t({ id: 'SurveyNewPage.submitting', message: 'Submitting...' }),
-    )
+    this.$f7.dialog.preloader(t({ id: 'SurveyNewPage.submitting', message: 'Submitting...' }))
     const redirect = this.redirect()
     try {
       // TODO: This should load the data
@@ -274,7 +262,9 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       if (!status) {
         throw 'This should never happen, but status was somehow nil.'
       }
-      const user = await reloadCurrentUser() // Reload data
+      const user = await getUser(target.id) // Reload data
+      forceReRender()
+
       this.$f7.dialog.close()
 
       if (redirect) {
@@ -301,7 +291,10 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       logger.error(error)
       // TODO: Make errors smarter
       this.$f7.dialog.alert(
-        t({ id: 'SurveyNewPage.submission_failed_message', message: 'Something went wrong. Maybe someone already submitted?' }),
+        t({
+          id: 'SurveyNewPage.submission_failed_message',
+          message: 'Something went wrong. Maybe someone already submitted?',
+        }),
         t({ id: 'SurveyNewPage.submission_failed_title', message: 'Submission Failed' }),
       )
     }
@@ -313,10 +306,8 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       this.state.hadContact === undefined,
       this.state.hadDiagnosis === null,
       this.state.hadDiagnosis === undefined,
-      this.state.hadContact === true
-      && !this.state.contactDate,
-      this.state.hadDiagnosis === true
-      && !this.state.diagnosisDate,
+      this.state.hadContact === true && !this.state.contactDate,
+      this.state.hadDiagnosis === true && !this.state.diagnosisDate,
     ]
     return !errors.includes(true)
   }
@@ -347,173 +338,134 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
 
     return (
       <Page>
-        <Navbar
-          title={t({ id: 'SurveyNewPage.title', message: t`Daily Check-ins: ${submittingFor.fullName()}` })}
-        />
+        <Navbar title={t({ id: 'SurveyNewPage.title', message: t`Daily Check-ins: ${submittingFor.fullName()}` })} />
 
-        {
-          this.state.isLoaded
-            ? (
-              <>
-                <Block>
-                  <div className="survey-title">
-                    {
-                      this.isSubmittingForSelf()
-                        ? (
-                          <Trans id="SurveyNewPage.any_symptoms">
-                            Do you have any of these symptoms?
-                          </Trans>
-                        )
-                        : (
-                          <Trans id="SurveyNewPage.any_symptoms_child">
-                            Does
-                            {submittingFor?.firstName}
-                            have any of these symptoms?
-                          </Trans>
-                        )
-                    }
-                  </div>
-                </Block>
-                <div className="SymptomButtons">
-                  <SymptomButton
-                    title={t({ id: 'SurveyNewPage.fever', message: 'Fever' })}
-                    image="fever"
-                    onClick={() => this.toggleSymptom('hasFever')}
-                    selected={this.state.hasFever}
-                  />
-                  <SymptomButton
-                    title={t({ id: 'SurveyNewPage.chills', message: 'Chills' })}
-                    image="chills"
-                    onClick={() => this.toggleSymptom('hasChills')}
-                    selected={this.state.hasChills}
-                  />
-                  <SymptomButton
-                    title={t({ id: 'SurveyNewPage.new_cough', message: 'New Cough' })}
-                    image="cough"
-                    onClick={() => this.toggleSymptom('hasNewCough')}
-                    selected={this.state.hasNewCough}
-                  />
-                  <SymptomButton
-                    title={t({ id: 'SurveyNewPage.difficulty_breathing', message: 'Difficulty<br />Breathing' })}
-                    image="difficultyBreathing"
-                    onClick={() => this.toggleSymptom('hasDifficultyBreathing')}
-                    selected={this.state.hasDifficultyBreathing}
-                  />
-                  <SymptomButton
-                    title={t({ id: 'SurveyNewPage.loss_of_smell', message: 'Loss of<br />Taste/Smell' })}
-                    image="tasteSmell"
-                    onClick={() => this.toggleSymptom('hasLossTasteSmell')}
-                    selected={this.state.hasLossTasteSmell}
-                  />
-                </div>
-                <Block style={{ marginTop: 0 }}>
-                  <div className="survey-title">
-                    <Trans id="SurveyNewPage.covid_contact_title">COVID Contact?</Trans>
-                  </div>
-                  {
-              this.isSubmittingForSelf()
-                ? (
-                  <Tr>
-                    <En>
-                      Have you had close contact—within 6 feet for at least 15
-                      minutes—with someone diagnosed with COVID-19 or someone with symptoms?
-                    </En>
-                    <Es>
-                       ¿Ha tenido contacto cercano, dentro de los 6 pies durante al menos 15 minutos,
-                       con alguien diagnosticado con COVID-19 o alguien con síntomas?
-                    </Es>
-                  </Tr>
-                )
-                : (
-                  <Tr>
-                    <En>
-                      Has {submittingFor?.firstName}
-                      had close contact—within 6 feet for at least 15
-                      minutes—with someone diagnosed with COVID-19 or someone with symptoms?
-                    </En>
-                    <Es>
-                      ¿{submittingFor?.firstName} ha tenido contacto cercano, dentro de los 6 pies durante al menos 15 minutos,
-                      con alguien diagnosticado con COVID-19 o alguien con síntomas?
-                    </Es>
-                  </Tr>
-                )
-            }
-                  <br />
-                  <DatedYesNoButton
-                    setYesNo={(yesNo: boolean) => this.setContacted(yesNo)}
-                    setDate={(date: Date) => this.setContactDate(date)}
-                    showErrors={this.state.submitClicked}
-                  />
-                  <div className="survey-title">
-                    <Trans id="SurveyNewPage.covid_diagnosis_title">COVID Diagnosis?</Trans>
-                  </div>
-                  {
-              this.isSubmittingForSelf()
-                ? (
-                  <Trans id="SurveyNewPage.covid_diagnosis">
-                    Have you been diagnosed with or tested positive for COVID-19?
+        {this.state.isLoaded ? (
+          <>
+            <Block>
+              <div className="survey-title">
+                {this.isSubmittingForSelf() ? (
+                  <Trans id="SurveyNewPage.any_symptoms">Do you have any of these symptoms?</Trans>
+                ) : (
+                  <Trans id="SurveyNewPage.any_symptoms_child">
+                    Does
+                    {submittingFor?.firstName}
+                    have any of these symptoms?
                   </Trans>
-                )
-                : (
-                  <Trans id="SurveyNewPage.covid_diagnosis_child">
+                )}
+              </div>
+            </Block>
+            <div className="SymptomButtons">
+              <SymptomButton
+                title={t({ id: 'SurveyNewPage.fever', message: 'Fever' })}
+                image="fever"
+                onClick={() => this.toggleSymptom('hasFever')}
+                selected={this.state.hasFever}
+              />
+              <SymptomButton
+                title={t({ id: 'SurveyNewPage.chills', message: 'Chills' })}
+                image="chills"
+                onClick={() => this.toggleSymptom('hasChills')}
+                selected={this.state.hasChills}
+              />
+              <SymptomButton
+                title={t({ id: 'SurveyNewPage.new_cough', message: 'New Cough' })}
+                image="cough"
+                onClick={() => this.toggleSymptom('hasNewCough')}
+                selected={this.state.hasNewCough}
+              />
+              <SymptomButton
+                title={t({ id: 'SurveyNewPage.difficulty_breathing', message: 'Difficulty<br />Breathing' })}
+                image="difficultyBreathing"
+                onClick={() => this.toggleSymptom('hasDifficultyBreathing')}
+                selected={this.state.hasDifficultyBreathing}
+              />
+              <SymptomButton
+                title={t({ id: 'SurveyNewPage.loss_of_smell', message: 'Loss of<br />Taste/Smell' })}
+                image="tasteSmell"
+                onClick={() => this.toggleSymptom('hasLossTasteSmell')}
+                selected={this.state.hasLossTasteSmell}
+              />
+            </div>
+            <Block style={{ marginTop: 0 }}>
+              <div className="survey-title">
+                <Trans id="SurveyNewPage.covid_contact_title">COVID Contact?</Trans>
+              </div>
+              {this.isSubmittingForSelf() ? (
+                <Tr>
+                  <En>
+                    Have you had close contact—within 6 feet for at least 15 minutes—with someone diagnosed with
+                    COVID-19 or someone with symptoms?
+                  </En>
+                  <Es>
+                    ¿Ha tenido contacto cercano, dentro de los 6 pies durante al menos 15 minutos, con alguien
+                    diagnosticado con COVID-19 o alguien con síntomas?
+                  </Es>
+                </Tr>
+              ) : (
+                <Tr>
+                  <En>
                     Has {submittingFor?.firstName}
-                    been diagnosed with or tested positive for
-                    COVID-19?
-                  </Trans>
-                )
-            }
-                  <DatedYesNoButton
-                    setYesNo={(yesNo: boolean) => this.setDiagnosed(yesNo)}
-                    setDate={(date: Date) => this.setDiagnosisDate(date)}
-                    showErrors={this.state.submitClicked}
-                  />
-
-                  <br />
-                  {!this.state.showConfirmation
-          && (
-          <Case test={this.hasNextUser()}>
-            <When value>
-              <Button
-                fill
-                onClick={
-                  () => this.submit1()
-                }
-              >
-                <Trans id="SurveyNewPage.continue">
-                  Continue to {this.nextUser()?.firstName}
+                    had close contact—within 6 feet for at least 15 minutes—with someone diagnosed with COVID-19 or
+                    someone with symptoms?
+                  </En>
+                  <Es>
+                    ¿{submittingFor?.firstName} ha tenido contacto cercano, dentro de los 6 pies durante al menos 15
+                    minutos, con alguien diagnosticado con COVID-19 o alguien con síntomas?
+                  </Es>
+                </Tr>
+              )}
+              <br />
+              <DatedYesNoButton
+                setYesNo={(yesNo: boolean) => this.setContacted(yesNo)}
+                setDate={(date: Date) => this.setContactDate(date)}
+                showErrors={this.state.submitClicked}
+              />
+              <div className="survey-title">
+                <Trans id="SurveyNewPage.covid_diagnosis_title">COVID Diagnosis?</Trans>
+              </div>
+              {this.isSubmittingForSelf() ? (
+                <Trans id="SurveyNewPage.covid_diagnosis">
+                  Have you been diagnosed with or tested positive for COVID-19?
                 </Trans>
-              </Button>
-            </When>
-            <When value={false}>
-              <Button
-                fill
-                onClick={
-                () => this.submit1()
-              }
-              >
-                <Trans id="SurveyNewPage.finish">Finish</Trans>
-              </Button>
-            </When>
-          </Case>
-          )}
-                  {this.state.showConfirmation
-            && (
-            <Button
-              fill
-              onClick={
-              () => this.submit2()
-            }
-            >
-              <Trans id="SurveyNewPage.confirmation">Are you sure?</Trans>
-            </Button>
-            )}
-                </Block>
-              </>
-            )
-            : <Preloader />
-        }
-      </Page>
+              ) : (
+                <Trans id="SurveyNewPage.covid_diagnosis_child">
+                  Has {submittingFor?.firstName}
+                  been diagnosed with or tested positive for COVID-19?
+                </Trans>
+              )}
+              <DatedYesNoButton
+                setYesNo={(yesNo: boolean) => this.setDiagnosed(yesNo)}
+                setDate={(date: Date) => this.setDiagnosisDate(date)}
+                showErrors={this.state.submitClicked}
+              />
 
+              <br />
+              {!this.state.showConfirmation && (
+                <Case test={this.hasNextUser()}>
+                  <When value>
+                    <Button fill onClick={() => this.submit1()}>
+                      <Trans id="SurveyNewPage.continue">Continue to {this.nextUser()?.firstName}</Trans>
+                    </Button>
+                  </When>
+                  <When value={false}>
+                    <Button fill onClick={() => this.submit1()}>
+                      <Trans id="SurveyNewPage.finish">Finish</Trans>
+                    </Button>
+                  </When>
+                </Case>
+              )}
+              {this.state.showConfirmation && (
+                <Button fill onClick={() => this.submit2()}>
+                  <Trans id="SurveyNewPage.confirmation">Are you sure?</Trans>
+                </Button>
+              )}
+            </Block>
+          </>
+        ) : (
+          <Preloader />
+        )}
+      </Page>
     )
   }
 }
