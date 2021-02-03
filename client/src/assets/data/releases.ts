@@ -17,6 +17,38 @@ function date(value: string) {
 
 const releaseData: ReleaseData[] = [
   {
+    version: '1.7.1',
+    date: date('2/2/2020'),
+    notesEn: 'New quarantine guidance, new admin features, bug fixes',
+    notesEs: 'Nueva guía de cuarentena, nuevas funciones de administración, corrección de errores',
+    whatsNewEn: [
+      'Staff and students now have their own lists.',
+      'You can filter by recovery and pending statuses',
+      'Page loads on rosters are much faster now',
+      'We added a new owner permission level',
+      'Owners can now make updates to statuses'
+    ],
+    whatsNewEs: [
+      'El personal y los estudiantes ahora tienen sus propias listas',
+      'Puede filtrar por recuperación y estados pendientes',
+      "La carga de páginas en las listas es mucho más rápida ahora",
+      'Agregamos un nuevo nivel de permiso de propietario',
+      "Los propietarios ahora pueden actualizar los estados"
+    ],
+    bugFixesEn: [
+      'Personal Greenlight pass pages were not rendering properly',
+      'We are looking into issues with repeat account lookups',
+      'We are looking into fixing the chart counts to make sure individuals with pending or recovery statuses are counted even when they do not submit',
+      'We are updating the status determination logic to the latest guidance, stay tuned!'
+    ],
+    bugFixesEs: [
+      "Las páginas de pases personales de Greenlight no se mostraban correctamente",
+      "Estamos investigando problemas con las búsquedas repetidas de cuentas",
+      'Estamos buscando corregir los recuentos de gráficos para asegurarnos de que las personas con estados pendientes o de recuperación se cuenten incluso cuando no se envíen',
+      "Estamos actualizando la lógica de determinación del estado a la última guía, ¡estad atentos!"
+    ],
+  },
+  {
     version: '1.6.0',
     date: date('1/20/2020'),
     notesEn: 'New look, admin features and more!',

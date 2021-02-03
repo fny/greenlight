@@ -319,7 +319,7 @@ export class User extends Model {
 
   isOwnerAtVoyager__HACK(): boolean {
     return this.locationAccounts.filter((la) => {
-      recordStore.findEntity<Location>(Location.uuid(la.locationId || 0))?.permalink?.startsWith('voyager') && la.permissionLevel === PermissionLevels.OWNER
+      return la.location?.permalink?.startsWith('voyager') && la.permissionLevel === PermissionLevels.OWNER
     }).length > 0
   }
 }
