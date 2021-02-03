@@ -29,6 +29,7 @@ import tasteSmellBright from 'src/assets/images/symptoms/taste-smell-bright.svg'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { Case, When } from 'src/components/Case'
 import DatedYesNoButton from 'src/components/DatedYesNoButton'
+import Tr, { En, Es } from 'src/components/Tr'
 
 const buttonImages = {
   cough,
@@ -412,17 +413,29 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                   {
               this.isSubmittingForSelf()
                 ? (
-                  <Trans id="SurveyNewPage.covid_contact">
-                    Have you had close contact—within 6 feet for at least 15
-                    minutes—with someone diagnosed with COVID-19?
-                  </Trans>
+                  <Tr>
+                    <En>
+                      Have you had close contact—within 6 feet for at least 15
+                      minutes—with someone diagnosed with COVID-19 or someone with symptoms?
+                    </En>
+                    <Es>
+                       ¿Ha tenido contacto cercano, dentro de los 6 pies durante al menos 15 minutos,
+                       con alguien diagnosticado con COVID-19 o alguien con síntomas?
+                    </Es>
+                  </Tr>
                 )
                 : (
-                  <Trans id="SurveyNewPage.covid_contact_child">
-                    Has {submittingFor?.firstName}
-                    had close contact—within 6 feet for at least 15
-                    minutes—with someone diagnosed with COVID-19?
-                  </Trans>
+                  <Tr>
+                    <En>
+                      Has {submittingFor?.firstName}
+                      had close contact—within 6 feet for at least 15
+                      minutes—with someone diagnosed with COVID-19 or someone with symptoms?
+                    </En>
+                    <Es>
+                      ¿{submittingFor?.firstName} ha tenido contacto cercano, dentro de los 6 pies durante al menos 15 minutos,
+                      con alguien diagnosticado con COVID-19 o alguien con síntomas?
+                    </Es>
+                  </Tr>
                 )
             }
                   <br />

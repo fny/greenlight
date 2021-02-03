@@ -7,7 +7,7 @@
   <%= f.input :website %>
   <%= f.input :employee_count %>
   <%= f.input :zip_code %>
-  <%= f.input :cohort_schema, as: :text %>
+  <%= f.input :cohort_schema, as: :text, input_html: { value: @location.cohort_schema&.to_json } %>
   <small>Example Cohort Schema
   <pre>
    {

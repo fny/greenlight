@@ -7,7 +7,9 @@ springfield_elementary:
   website: springfieldelementary.org
   zip_code: 97477
   registration_code: Staff14
+  registration_code_downcase: staff14
   student_registration_code: Student44
+  student_registration_code_downcase: student44
 
 springfield_nuclear:
   name: Springfield Nuclear Plant
@@ -18,4 +20,7 @@ springfield_nuclear:
   website: springfieldnuclear.com
   zip_code: 97477
   registration_code: Bomb14
+  registration_code_downcase: bomb13
   student_registration_code: NotUsedBoom44
+  student_registration_code_downcase: notusedboom44
+  daily_reminder_time: 7
