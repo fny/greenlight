@@ -131,7 +131,7 @@ Provide the first name to confirm.
   <%= form.submit "Join" %>
 <% end %>
 
-<h3>
+<h3 id="delete">
   Delete <%= @user.full_name %>
 </h3>
 <p>Enter "DELETE <%= @user.first_name %>" to delete <%= @user.first_name %>. All parents and children
@@ -142,7 +142,7 @@ will remain in tact.</p>
   <%= form.submit "Destroy" %>
 <% end %>
 
-<h3>
+<h3 id="nuke">
   Nuke <%= @user.full_name %>
 </h3>
 
