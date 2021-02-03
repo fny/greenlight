@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { getLocation, store } from 'src/api'
 import { Location } from 'src/models'
-import LoadingErrorContent from './LoadingErrorContent'
-import LoadingPageContent from './LoadingPageContent'
-import NotFoundContent from './NotFoundContent'
 import LoadingContent, { LoadingState } from './LoadingContent'
 
 interface Props {
-  locationId: string,
+  locationId: string
   content: (state: LoadingLocationState) => JSX.Element
 }
 

@@ -127,23 +127,6 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
   assertNotNull(currentUser)
   const [toggleForceUpdate] = useGlobal('toggleForceUpdate')
 
-  const location = store.findEntity<Location>(Location.uuid(locationId))
-  const [state, setState] = useState({
-    ...new State(),
-    location,
-  })
-
-  useEffect(() => {
-    if (state.location) return
-    getLocation(locationId)
-      .then((location) => {
-        setState({ ...state, location, isLoading: false })
-      })
-      .catch((error) => {
-        setState({ ...state, error, isLoading: false })
-      })
-  }, [locationId])
-
   const allowInfinite = useRef(true)
 
   function getKey(

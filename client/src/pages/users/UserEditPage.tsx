@@ -1,19 +1,15 @@
 import { t, Trans } from '@lingui/macro'
 import { FormikProvider, useFormik } from 'formik'
-import {
-  Block, Button, f7, List, ListInput, Navbar, Page,
-} from 'framework7-react'
+import { Block, Button, f7, List, ListInput, Navbar, Page } from 'framework7-react'
 import { DateTime } from 'luxon'
-import React, { useGlobal } from 'reactn'
+import React, { useGlobal, useMemo } from 'reactn'
 import { store, updateUser } from 'src/api'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { reloadCurrentUser } from 'src/helpers/global'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { User } from 'src/models'
 import { paths } from 'src/config/routes'
-import {
-  assertNotNull, formatPhone,
-} from 'src/helpers/util'
+import { assertNotNull, formatPhone } from 'src/helpers/util'
 import * as Yup from 'yup'
 import { F7Props, FunctionComponent } from '../../types'
 
@@ -42,10 +38,11 @@ const UserEditPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
   const submissionHandler = new SubmitHandler(f7)
+  const [recordStoreUpdatedAt] = useGlobal('recordStoreUpdatedAt')
 
   const { userId } = f7route.params
 
-  const user = store.findEntity<User>(`user-${userId}`)
+  const user = useMemo(() => store.findEntity<User>(`user-${userId}`), [recordStoreUpdatedAt])
 
   if (!user) {
     f7router.navigate(paths.notFoundPath)
