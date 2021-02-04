@@ -1,0 +1,26 @@
+<h1>Surveys</h1>
+
+<nav>
+  <%= link_to "New Survey", new_admin_survey_path %>
+</nav>
+
+<br />
+
+<table>
+  <thead>
+    <th>Question</th>
+    <th>Permalink</th>
+    <th>Last Sent At</th>
+    <th>Created At</th>
+  </thead>
+  <% @surveys.each do |survey| %>
+    <tr>
+      <td><%= link_to survey.question, admin_survey_path(survey) %></td>
+      <td><%= survey.permalink %></td>
+      <td><%= survey.last_sent_at %></td>
+      <td><%= survey.created_at %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%== pagy_nav(@pagy) %>

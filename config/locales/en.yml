@@ -24,6 +24,11 @@ en:
         Just reminding you to check in with Greenlight.
       action: Click Here to Sign In and Submit your Survey
       closing: Enjoy your day,
+    survey:
+      subject: ✨ Greenlight Survey
+      title: Participate in Greenlight Survey
+      salutation: Hello %{name},      
+      closing: Please reply with the number
   texts:
     password_reset: "Greenlight Password Reset: %{link}"
     magic_sign_in: "Greenlight Magic Sign In: %{link}"

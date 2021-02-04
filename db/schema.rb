@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_03_194101) do
+ActiveRecord::Schema.define(version: 2021_01_28_103252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -196,6 +196,32 @@ ActiveRecord::Schema.define(version: 2021_01_03_194101) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["created_by_id"], name: "index_roster_imports_on_created_by_id"
     t.index ["location_id"], name: "index_roster_imports_on_location_id"
+  end
+
+  create_table "survey_responses", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "survey_id", null: false
+    t.string "response"
+    t.string "medium"
+    t.datetime "responded_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["survey_id", "user_id"], name: "index_survey_responses_on_survey_id_and_user_id", unique: true
+    t.index ["survey_id"], name: "index_survey_responses_on_survey_id"
+    t.index ["user_id"], name: "index_survey_responses_on_user_id"
+  end
+
+  create_table "surveys", force: :cascade do |t|
+    t.string "question", null: false
+    t.string "question_es"
+    t.string "question_type", default: "choices", null: false
+    t.jsonb "choices", default: {}
+    t.jsonb "choices_es", default: {}
+    t.jsonb "location_ids", default: []
+    t.datetime "last_sent_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "permalink"
   end
 
   create_table "user_settings", force: :cascade do |t|

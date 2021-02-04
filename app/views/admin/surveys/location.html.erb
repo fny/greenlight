@@ -1,0 +1,11 @@
+<br>
+<%= link_to "Back to Survey", admin_survey_path(@survey) %>
+
+<h1>
+  Survey: <%= @survey.question %>
+</h1>
+<h2>
+  Result at Location: <%= @location.name %>
+</h2>
+
+<%= render 'admin/surveys/result', result: @result %>

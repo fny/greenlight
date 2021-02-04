@@ -43,6 +43,7 @@ class Location < ApplicationRecord
   has_many :location_accounts
   has_many :cohorts
   has_many :users, -> { distinct }, through: :location_accounts
+  has_many :surveys
 
   LocationAccount::ROLES.each do |role|
     has_many "#{role}_accounts".to_sym, -> { where(role: role) }, class_name: 'LocationAccount'

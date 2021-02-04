@@ -1,0 +1,16 @@
+<%= simple_form_for [:admin, @survey] do |f| %>
+  <%= f.input :question %>
+  <%= f.input :question_es %>
+  <%= f.input :choices_str %>
+  <%= f.input :choices_es_str %>
+  <small>Separate choices by comma
+  <pre>
+   Yes, Not Sure, No
+  </pre>
+  </small>
+  <%= f.button :submit %>
+<% end %>
+
+<% if @survey.errors.any? %>
+  <%= @survey.errors.to_json %>
+<% end %>

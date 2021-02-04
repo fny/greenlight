@@ -61,6 +61,9 @@ Configurator.new(Greenlight) do
   end
 
   set :PHONE_NUMBER, '19197285377'
+  set :SURVEY_EMAIL do
+    ENV['GREENLIGHT_SURVEY_EMAIL'] || 'lucy@greenlightready.com'
+  end
   set :SUPPORTED_LOCALES, %w[en es]
 end
 

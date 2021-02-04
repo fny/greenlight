@@ -36,6 +36,8 @@ class User < ApplicationRecord
     joins('INNER JOIN location_accounts ON location_accounts.user_id = users.id')
       .where.not(location_accounts: { role: LocationAccount::STUDENT })
   }
+  scope :joined, ->(location_ids) { joins(:locations).where(locations: { id: location_ids }) }
+  scope :with_contact_method, -> { where('users.email IS NOT NULL OR users.mobile_number IS NOT NULL') }
 
   # TODO: Fix casing so that its case insensitive
   scope :order_by_name, -> {
@@ -56,6 +58,7 @@ class User < ApplicationRecord
   has_many :locations, through: :location_accounts
   has_many :cohort_users
   has_many :cohorts, through: :cohort_users
+  has_many :survey_responses
 
   has_one :password_reset, inverse_of: :user
   has_one :settings, class_name: 'UserSettings', inverse_of: :user
