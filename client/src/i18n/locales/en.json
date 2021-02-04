@@ -167,6 +167,7 @@
   "MagicSignInPage.failed_setup": "We couldn't set up a magic sign for that info.",
   "MagicSignInPage.remember_me": "Remember Me",
   "MagicSignInPage.request_magic_link": "Request Magic Link",
+  "MagicSignInPage.requesting_magic_link": "Requesting Magic Link...",
   "MagicSignInPage.sign_in_failed": "Magic Sign In Failed",
   "MagicSignInPage.sign_in_sent": "Magic Sign In Sent",
   "MagicSignInPage.title": "Magic Sign In",
