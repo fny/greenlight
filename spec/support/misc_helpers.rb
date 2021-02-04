@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 module MiscHelpers
+  FIXTURES_PASSWORD = 'verysecure'
   def sign_in(user, remember_me: false)
     request_json(:post, '/v1/sessions', body: {
       emailOrMobile: user.email || user.mobile_number,
-      password: user.password,
+      password: user.password || FIXTURES_PASSWORD,
       rememberMe: remember_me
     })
   end

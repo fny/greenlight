@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 
 import { getGlobal, setGlobal } from 'reactn'
-import {
-  assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
-} from 'src/helpers/util'
+import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from 'src/helpers/util'
 
 // FIXME: This shouldn't be assigned here. It should go in a provider
 import Honeybadger from 'honeybadger-js'
@@ -278,6 +276,21 @@ export async function createSymptomSurvey(user: User, medicalEvents: Partial<Med
   assertNotUndefined(record.attributes)
 
   return record.attributes.status || null
+}
+
+export async function deleteLastGreenlightStatus(user: User): Promise<string | null> {
+  return await v1.delete(`/users/${user.id}/last_greenlight_status`)
+}
+
+export async function updateGreenlightStatus(
+  user: User,
+  status: string,
+  expirationDate: string,
+): Promise<string | null> {
+  return await v1.patch(`/users/${user.id}/last_greenlight_status`, {
+    status,
+    expirationDate,
+  })
 }
 
 //

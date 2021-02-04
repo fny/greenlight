@@ -20,17 +20,30 @@ import {
 
 import {
   getLocation,
-  getPagedResources, getPagedUsersForLocation, getUsersForLocation, Filter, PagedResource, Pagination, store,
+  getPagedResources,
+  getPagedUsersForLocation,
+  getUsersForLocation,
+  Filter,
+  PagedResource,
+  Pagination,
+  store,
+  deleteLastGreenlightStatus,
 } from 'src/api'
 import { User, Location, GreenlightStatus } from 'src/models'
 import { Dict, F7Props } from 'src/types'
 import UserJDenticon from 'src/components/UserJDenticon'
 import { dynamicPaths, paths } from 'src/config/routes'
 import {
-  assertNotNull, assertNotUndefined, sortBy, isBlank, stringify, isInViewport, countVisible,
+  assertNotNull,
+  assertNotUndefined,
+  sortBy,
+  isBlank,
+  stringify,
+  isInViewport,
+  countVisible,
 } from 'src/helpers/util'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, Fragment, useCallback, useMemo } from 'react'
 import _, { stubTrue } from 'lodash'
 import { useSWRInfinite } from 'swr'
 
@@ -40,11 +53,12 @@ import { Roles } from 'src/models/LocationAccount'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import { useGlobal, useLayoutEffect } from 'reactn'
 import { setIn } from 'formik'
-// import { UsersFilter } from 'src/components/UsersFilter'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 
 interface UserItemProps {
   user: User
   location: Location
+  onDeleteGreenlightStatus: () => void
 }
 function UserItem(props: UserItemProps & F7Props): JSX.Element {
   const { user, location, f7route } = props
@@ -58,34 +72,39 @@ function UserItem(props: UserItemProps & F7Props): JSX.Element {
       className="user-item"
       link="#"
       title={`${user.reversedName()}`}
-      after={user.greenlightStatus().title()}
+      after={user.lastUnexpiredGreenlightStatus().title()}
     >
       <div slot="media">
         <UserJDenticon user={user} alert={!user.completedWelcomeAt.isValid} size={29} key={user.id} />
       </div>
       <AccordionContent key={user.id}>
         <List>
-          {
-              user.hasNotSubmittedOwnSurvey() ? (
-                <ListItem
-                  link={dynamicPaths.userSurveysNewPath(user.id, { redirect: f7route.path })}
-                  title="Check-In"
-                />
-              ) : (
-                <ListItem
-                  link={dynamicPaths.userGreenlightPassPath(user.id)}
-                  title={t({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' })}
-                />
-              )
-            }
-          {
-              !locationAccount.isStudent() && (
+          {user.hasNotSubmittedOwnSurvey() ? (
+            <ListItem link={dynamicPaths.userSurveysNewPath(user.id, { redirect: f7route.path })} title="Check-In" />
+          ) : (
+            <Fragment>
               <ListItem
-                link={dynamicPaths.userLocationPermissionsPath({ userId: user.id, locationId: location.id })}
-                title={t({ id: 'AdminUsersPage.location_permissions', message: 'Permissions' })}
+                title={t({
+                  id: 'DashboardPage.delete_last_greenlight_status',
+                  message: 'Delete last Greenlight Status',
+                })}
+                onClick={(e) => {
+                  e.preventDefault()
+                  props.onDeleteGreenlightStatus()
+                }}
               />
-              )
-            }
+            </Fragment>
+          )}
+          <ListItem
+            link={dynamicPaths.userGreenlightPassPath(user.id)}
+            title={t({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' })}
+          />
+          {!locationAccount.isStudent() && (
+            <ListItem
+              link={dynamicPaths.userLocationPermissionsPath({ userId: user.id, locationId: location.id })}
+              title={t({ id: 'AdminUsersPage.location_permissions', message: 'Permissions' })}
+            />
+          )}
           {/* <ListItem
             link={dynamicPaths.adminUserPath({ userId: user.id, locationId: location.id })}
             title={t({ id: 'AdminUsersPage.user_more', message: 'More' })}
@@ -138,9 +157,30 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
       })
   }, [locationId])
 
+  const submitHandler = useMemo(
+    () =>
+      new SubmitHandler(f7, {
+        onSuccess: () => {
+          console.log('success')
+        },
+        errorTitle: 'Something went wrong',
+        errorMessage: 'Deleting the last greenlight status is failed.',
+      }),
+    [],
+  )
+
+  const handleDeleteGreenlightStatus = useCallback((user: User) => {
+    submitHandler.submit(async () => {
+      await deleteLastGreenlightStatus(user)
+    })
+  }, [])
+
   const allowInfinite = useRef(true)
 
-  function getKey(pageIndex: number, previousPageData: PagedResource<User> | null): [string, number, string?, GreenlightStatusTypes?, Roles?] | null {
+  function getKey(
+    pageIndex: number,
+    previousPageData: PagedResource<User> | null,
+  ): [string, number, string?, GreenlightStatusTypes?, Roles?] | null {
     if (previousPageData && !previousPageData.pagination.next) return null
     const nextPage = pageIndex + 1
     // locationId, page, name?, status?, role?
@@ -148,14 +188,15 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
     return [locationId, nextPage, undefined, status as GreenlightStatusTypes | undefined, role as Roles | undefined]
   }
 
-  const {
-    data, error, isValidating, mutate, size, setSize,
-  } = useSWRInfinite<PagedResource<User>>(getKey, async (locationId: string, page: number, name?: string, status?: GreenlightStatusTypes, role?: Roles) => getPagedUsersForLocation(locationId, page, name, status, role))
+  const { data, error, isValidating, mutate, size, setSize } = useSWRInfinite<PagedResource<User>>(
+    getKey,
+    async (locationId: string, page: number, name?: string, status?: GreenlightStatusTypes, role?: Roles) =>
+      getPagedUsersForLocation(locationId, page, name, status, role),
+  )
 
   const users = data ? data.map((d) => d.data).flat() : []
 
-  const groupedUsers = groupUsersByFirstLetter(users);
-  (window as any).users = users
+  const groupedUsers = groupUsersByFirstLetter(users)
 
   function loadMore() {
     if (!allowInfinite.current) return
@@ -212,23 +253,26 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
                 <ListItem key="blank" title="Nothing found" />
               </List>
               <List className="search-list searchbar-found" contactsList>
-
                 {/* <UsersFilter isSchool={location.isSchool()} /> */}
-                {
-                  groupedUsers.map(([letter, users]) => (
-                    <ListGroup key={letter}>
-                      <ListItem key={letter} title={letter} groupTitle />
-                      {
-                        users.map((user) => <UserItem key={user.id} user={user} location={location} f7route={props.f7route} f7router={props.f7router} />)
-                      }
-                    </ListGroup>
-                  ))
-                }
+                {groupedUsers.map(([letter, users]) => (
+                  <ListGroup key={letter}>
+                    <ListItem key={letter} title={letter} groupTitle />
+                    {users.map((user) => (
+                      <UserItem
+                        key={user.id}
+                        user={user}
+                        location={location}
+                        onDeleteGreenlightStatus={() => handleDeleteGreenlightStatus(user)}
+                        f7route={props.f7route}
+                        f7router={props.f7router}
+                      />
+                    ))}
+                  </ListGroup>
+                ))}
                 {
                   data && users.length < data[0].pagination.count
                   && <ListButton title="Click to Load More" onClick={() => loadMore()} />
                 }
-
               </List>
             </>
           )
