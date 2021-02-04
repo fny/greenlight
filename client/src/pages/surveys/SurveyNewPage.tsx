@@ -427,8 +427,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                 : (
                   <Tr>
                     <En>
-                      Has {submittingFor?.firstName}
-                      had close contact—within 6 feet for at least 15
+                      Has {submittingFor?.firstName} had close contact—within 6 feet for at least 15
                       minutes—with someone diagnosed with COVID-19 or someone with symptoms?
                     </En>
                     <Es>

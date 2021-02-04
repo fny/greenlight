@@ -163,6 +163,13 @@ export class User extends Model {
     return this.lastGreenlightStatus
   }
 
+  lastUnexpiredGreenlightStatus(): GreenlightStatus {
+    if (!this.lastGreenlightStatus || this.lastGreenlightStatus.isValidForToday()) {
+      return GreenlightStatus.newUnknown()
+    }
+    return this.lastGreenlightStatus
+  }
+
   /**
    * The user's greenlight status for tomorrow.
    */
