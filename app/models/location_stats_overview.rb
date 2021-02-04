@@ -60,6 +60,14 @@ class LocationStatsOverview
     #   end
     # end
 
+
+    result = {}
+    summary.each do |k, v|
+      date, state = k
+      result[date] ||= {}
+      result[date][state] = v
+    end
+
     result.each do |k, v|
       result[k]['unknown'] = total_users - v.values.sum
     end
