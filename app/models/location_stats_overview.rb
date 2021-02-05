@@ -34,14 +34,7 @@ class LocationStatsOverview
     status_breakdown(@date)
   end
 
-  #
-  # <Description>
-  #
-  # @param [Date] date the start date
-  #
-  # @return [Hash] { date => { status => count } }
-  #
-  def status_breakdown(date = nil)
+  def status_breakdown_v2(date = nil)
     start_date = (date - 6.days).to_date
     total_users = @location.users.count
     summary = GreenlightStatus.where(user: @location.users)
@@ -61,13 +54,33 @@ class LocationStatsOverview
     # end
 
 
+    result.each do |k, v|
+      result[k]['unknown'] = total_users - v.values.sum
+    end
+    result
+  end
+
+
+  #
+  # @param [Date] date the start date
+  #
+  # @return [Hash] { date => { status => count } }
+  #
+  def status_breakdown(date = nil)
+    start_date = (date - 6.days).to_date
+    total_users = @location.users.count
+    summary = GreenlightStatus.where(user: @location.users)
+      .where('submission_date >= ?', start_date)
+      .group(:submission_date, :status)
+      .count
+      # .pluck_to_hash(:submission_date, :status, 'count(1) as count', 'max(created_at) as created_at', 'max(updated_at) as updated_at')
+
     result = {}
     summary.each do |k, v|
       date, state = k
       result[date] ||= {}
       result[date][state] = v
     end
-
     result.each do |k, v|
       result[k]['unknown'] = total_users - v.values.sum
     end
