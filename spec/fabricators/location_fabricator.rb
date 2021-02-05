@@ -1,17 +1,27 @@
 # frozen_string_literal: true
 Fabricator(:location) do
-  name         "MyText"
+  name         { Faker::Company.name }
   permalink    { Faker::Internet.unique.domain_word }
-  phone_number {
-    number = ''
-    while !Phonelib.parse(number, 'US').valid?
-      number = Faker::PhoneNumber.cell_phone_in_e164[3, 10]
-    end
-    Phonelib.parse(number, 'US').full_e164
-  }
-  email        "help@school.edu"
-  category     "school"
-  website      "MyText"
-  zip_code     "MyText"
-  hidden       false
+  category     { Location::CATEGORIES.sample }
+  phone_number { PhoneNumber.random_number }
+  email        { |l| Faker::Internet.email(name: l[:name]) }
+  website      { Faker::Internet.url }
+  zip_code     { Faker::Address.zip }
 end
+
+Fabricator(:greenlight_academy, from: :location) {
+  name 'Greenlight Academy'
+  category 'school'
+  permalink 'greenlight-academy'
+  phone_number '302-316-0303'
+  website 'https://greenlighted.org'
+  zip_code '19703'
+  hidden false
+  cohort_schema do
+    {
+      'Team' => %w[Ed Business],
+      'Timezone' => %w[EST CST MST PST],
+      'Education' => %w[undergrad professional medstudent]
+    }
+  end
+}

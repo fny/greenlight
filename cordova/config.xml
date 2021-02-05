@@ -1,25 +1,33 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.greenlightready.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>GreenLightReady</name>
+<widget id="com.greenlightready.app" android-versionCode="10001" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Greenlight</name>
     <description>
-        GreenLightReady.
+        Greenlight
     </description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+    <author email="hello@greenlightready.com" href="https://greenlightready.com">
+        Greenlight Team
     </author>
+
     <content src="index.html" />
-    <access origin="*" />
+    <access origin="*"/>
+    <plugin name="cordova-plugin-whitelist" spec="1" />
+    <plugin name="cordova-plugin-cors" spec="1" />
+
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+
     <platform name="android">
         <allow-intent href="market:*" />
 
-        <preference name="CodePushDeploymentKey" value="96q-1na96bCWTbl8tTzLTukmelM9JHZJjfttN" />
+        <!-- Universal links configuration -->
+        <preference name="AndroidLaunchMode" value="singleTask" />
+
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
+        <!-- <preference name="OverrideUserAgent" value="Cordova" /> -->
 
         <icon src="res/android/mipmap-hdpi/ic_launcher.png" density="hdpi" />
         <icon src="res/android/mipmap-mdpi/ic_launcher.png" density="mdpi" />
@@ -28,13 +36,27 @@
         <icon src="res/android/mipmap-xxxhdpi/ic_launcher.png" density="xxxhdpi" />
 
     </platform>
+
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
 
-        <!--  -->
-        <preference name="CodePushDeploymentKey" value="9tJypW_IQTNQi9xRaVPkZ1wLwyFodeEs0xnmx" />
+        <!-- associtated domains -->
+        <config-file target="*-Debug.plist" parent="com.apple.developer.associated-domains">
+            <array>
+                <string>applinks:app.greenlightready.com</string>
+            </array>
+        </config-file>
+
+        <config-file target="*-Release.plist" parent="com.apple.developer.associated-domains">
+            <array>
+                <string>applinks:app.greenlightready.com</string>
+            </array>
+        </config-file>
+
         <!-- <preference name="CodePushPublicKey" value="YOUR-PUBLIC-KEY" /> -->
+
+        <!-- <preference name="OverrideUserAgent" value="Cordova" /> -->
 
         <icon src="res/ios/16.png" width="16" height="16" />
         <icon src="res/ios/20.png" width="20" height="20" />

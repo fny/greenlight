@@ -4,11 +4,23 @@ class Session
 
   COOKIE_NAME = '_gl_session'.freeze
 
-  attr_reader :user, :data, :cookies
+  attr_reader :user, :data, :cookies, :raw_cookie
+  alias :bearer_token :raw_cookie
 
-  def initialize(cookies, user: nil, remember_me: false)
+  def initialize(
+    cookies,
+    user: nil,
+    remember_me: false,
+    bearer_token: nil,
+    save_no_cookie: false
+  )
     @cookies = cookies
     @data = {}
+
+    if user.nil? && bearer_token.present?
+      # request from Cordova, manually set the cookie for the next block
+      cookies[COOKIE_NAME] = bearer_token
+    end
 
     if cookies.encrypted[COOKIE_NAME]
       @data = cookies.encrypted[COOKIE_NAME]
@@ -33,7 +45,11 @@ class Session
       cookies.encrypted[COOKIE_NAME] = cookie
     end
 
+    @raw_cookie = cookies[COOKIE_NAME]
     @user ||= User.new
+
+    # Cordova: make use of cookies encryption but purge them at the end
+    destroy_cookie if save_no_cookie
   end
 
   def signed_in?
@@ -50,6 +66,11 @@ class Session
 
   def time_zone
     user.time_zone
+  end
+
+  # no cookies for cordova
+  def destroy_cookie
+    cookies.delete(COOKIE_NAME)
   end
 
   def destroy

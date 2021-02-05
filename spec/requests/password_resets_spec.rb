@@ -12,7 +12,7 @@ RSpec.describe '/v1/password-resets', type: :request do
       expect_success_response
       expect(user.password_reset).to be_present
       expect(user.password_reset).to be_token_valid
-      
+
       expect_work(PasswordResetWorker)
 
       last_delivery = Mail::TestMailer.deliveries.last
@@ -27,7 +27,7 @@ RSpec.describe '/v1/password-resets', type: :request do
       expect_success_response
       expect(user.password_reset).to be_present
       expect(user.password_reset).to be_token_valid
-      
+
       expect_work(PasswordResetWorker)
 
       last_delivery = PlivoSMS.deliveries.last
@@ -50,7 +50,7 @@ RSpec.describe '/v1/password-resets', type: :request do
         password: new_password
       })
       expect_success_response
-      
+
       post_json('/v1/sessions', body: {
         emailOrMobile: user.email,
         password: new_password

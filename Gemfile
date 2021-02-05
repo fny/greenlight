@@ -11,7 +11,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
 gem 'puma', '~> 4.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.3', '>= 6.0.3.2'
+gem 'rails', '~> 6.1.0'
 # Simple, efficient background processing for Ruby
 gem 'sidekiq', '< 7'
 # Enables to set jobs to be run in specified time
@@ -49,6 +49,8 @@ gem 'xorcist'
 
 # What ActiveModel left out
 gem 'active_attr'
+# Adds additional postgres functionality to an ActiveRecord / Rails application
+gem 'active_record_extended'
 # Password encryption
 gem 'bcrypt', '~> 3.1.7'
 # Streaming Spreadsheets
@@ -61,22 +63,22 @@ gem 'exception_notification'
 gem 'faker'
 # Simple, but flexible HTTP client library
 gem 'faraday'
+# Ultra Fast Excel Writer for Ruby
+gem 'fast_excel'
 # A lightning fast JSON:API serializer for Ruby Objects.
-gem 'fast_jsonapi'
-# Implementation of Jaro-Winkler string similary
-gem 'jaro_winkler'
-# JSON web tokens
-gem 'jwt'
+gem 'jsonapi-serializer'
 # Tame Rails' default policy to log everything
 gem 'lograge'
 # ActiveSupport::Memoizable with a few enhancements
 gem 'memoist'
 # A minimal, fast, safe sql executor
 gem 'mini_sql'
+# Pagination
+gem 'pagy'
 # Phone validations
 gem 'phonelib'
 # SMS API and Voice API platform
-gem 'plivo'
+gem 'plivo', '>= 4.15.0'
 # The express way to send email
 gem 'pony'
 # Rails Locale Data Repository
@@ -87,16 +89,20 @@ gem 'seed-fu', '~> 2.3'
 gem 'self_control', path: 'vendor/gems/self_control'
 # Twilio Sendgrid Email API
 gem 'sendgrid-ruby'
-# Automatically strips all attributes of leading and trailing
-gem 'strip_attributes'
+# Rails forms made easy.
+gem 'simple_form'
 # Performance monitoring
 gem 'skylight'
+# Automatically strips all attributes of leading and trailing
+gem 'strip_attributes'
 # TablePrint shows objects in nicely formatted columns
 gem 'table_print', require: false
 # Email validations
 gem 'valid_email2'
 # AWS S3
 gem 'aws-sdk-s3'
+
+gem 'json', '~> 2.0'
 
 group :development, :test do
   # Annotate Rails classes with schema and routes info

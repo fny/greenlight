@@ -5,7 +5,9 @@ import qs from 'qs'
 import { getGlobal } from 'reactn'
 import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
-import logger from './logger'
+import logger from 'src/helpers/logger'
+import GLPhoneNumber from 'src/helpers/GLPhoneNumber'
+import { useCallback } from 'react'
 
 //
 // Date and Time Related
@@ -104,8 +106,8 @@ export function hasKey(obj: any, key: string): boolean {
   return obj[key] !== undefined
 }
 
-export function isCordova(): boolean {
-  return hasKey(window, 'cordova')
+export function getKeyName<T>(obj: { [i: string]: T }, value: T): string | undefined {
+  return Object.keys(obj).find((key) => obj[key] === value)
 }
 
 export function isInDurham(zipCode: string): boolean {
@@ -131,6 +133,27 @@ export function isInDurham(zipCode: string): boolean {
   ]
 
   return durhamZipCodes.includes(zipCode)
+}
+
+export function isInOnslow(zipCode: string): boolean {
+  const onslowZipCodes = [
+    '28541',
+    '28540',
+    '28543',
+    '28445',
+    '28544',
+    '28547',
+    '28546',
+    '28454',
+    '28555',
+    '28460',
+    '28574',
+    '28582',
+    '28584',
+    '28518',
+    '28539',
+  ]
+  return onslowZipCodes.includes(zipCode)
 }
 
 /**
@@ -166,7 +189,7 @@ export function resolvePath(path: string, substitutions?: any[] | Dict<any> | nu
   if (Array.isArray(substitutions)) {
     if (matches.length !== substitutions.length) {
       // Not enough substitutions were provided
-      throw new Error(`Dynamic path expected ${matches.length} substitutions, but only got ${substitutions.length}`)
+      throw new Error(`Dynamic path expected ${matches.length} substitutions, but got ${substitutions.length}`)
     }
 
     for (let i = 0; i < matches.length; i += 1) {
@@ -176,12 +199,13 @@ export function resolvePath(path: string, substitutions?: any[] | Dict<any> | nu
     const substitutionsKeys = Object.keys(substitutions)
     if (matches.length !== substitutionsKeys.length) {
       // Not enough substitutions were provided
-      throw new Error(`Dynamic path expected ${matches.length} substitutions, but only got ${substitutionsKeys.length}`)
+      throw new Error(`Dynamic path expected ${matches.length} substitutions, but got ${substitutionsKeys.length}`)
     }
 
     for (const match of matches) {
       const subtitutionKey = match.replace(':', '')
-      if (!substitutions[subtitutionKey]) {
+      const value = substitutions[subtitutionKey]
+      if (value === null || value === undefined) {
         throw new Error(`Missing key ${subtitutionKey} in substitutions: ${JSON.stringify(substitutions)}`)
       }
       path = path.replace(`${match}`, String(substitutions[subtitutionKey]))
@@ -356,11 +380,7 @@ export function formatPhone(number: string | null | undefined): string {
 }
 
 export function validPhone(phoneNumber: string): boolean {
-  const parsed = parsePhoneNumberFromString(phoneNumber, 'US')
-  if (!parsed) {
-    return false
-  }
-  return parsed.country === 'US' && parsed.isValid()
+  return new GLPhoneNumber(phoneNumber).isValid()
 }
 
 export function haveEqualAttrs(a: any, b: any): boolean {
@@ -389,9 +409,9 @@ export function haveEqualAttrs(a: any, b: any): boolean {
   return true
 }
 
-export function transformForAPI(data: any): any {
+export function transformForAPI(data: any, options: { removeBlanks: boolean } = { removeBlanks: false }): any {
   if (Array.isArray(data)) {
-    return data.map(transformForAPI)
+    return data.map((d) => transformForAPI(d, options))
   }
   if (isPrimitiveType(data)) {
     return data
@@ -401,7 +421,11 @@ export function transformForAPI(data: any): any {
   }
   const transformed: any = {}
   Object.keys(data).forEach((k) => {
-    transformed[k] = transformForAPI(data[k])
+    if (options.removeBlanks && isBlank(data[k])) {
+      delete transformed[k]
+    } else {
+      transformed[k] = transformForAPI(data[k], options)
+    }
   })
   return transformed
 }
@@ -419,4 +443,117 @@ export function upperCaseFirst(str: string): string {
 
 export function lowerCaseFirst(str: string): string {
   return str.charAt(0).toLowerCase() + str.slice(1)
+}
+
+export function stringify(
+  val: any,
+  depth: number,
+  replacer?: null | ((this: any, key: string, value: any) => any),
+  space?: string | number,
+  onGetObjID?: (val: object) => string,
+): string {
+  depth = isNaN(+depth) ? 1 : depth
+  const recursMap = new WeakMap()
+  function _build(val: any, depth: number, o?: any, a?: boolean, r?: boolean) {
+    return !val || typeof val !== 'object'
+      ? val
+      : ((r = recursMap.has(val)),
+      recursMap.set(val, true),
+      (a = Array.isArray(val)),
+      r
+        ? (o = (onGetObjID && onGetObjID(val)) || null)
+        : JSON.stringify(val, (k, v) => {
+          if (a || depth > 0) {
+            if (replacer) v = replacer(k, v)
+            if (!k) return (a = Array.isArray(v)), (val = v)
+            !o && (o = a ? [] : {})
+            o[k] = _build(v, a ? depth : depth - 1)
+          }
+        }),
+      o === void 0 ? (a ? [] : {}) : o)
+  }
+  return JSON.stringify(_build(val, depth), null, space)
+}
+
+export function titleCase(x: string): string {
+  let i
+  let j
+  let str = x.replace(/([^\W_]+[^\s-]*) */g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+
+  // Certain minor words should be left lowercase unless
+  // they are the first or last words in the string
+  const lowers = [
+    'A',
+    'An',
+    'The',
+    'And',
+    'But',
+    'Or',
+    'For',
+    'Nor',
+    'As',
+    'At',
+    'By',
+    'For',
+    'From',
+    'In',
+    'Into',
+    'Near',
+    'Of',
+    'On',
+    'Onto',
+    'To',
+    'With',
+  ]
+  for (i = 0, j = lowers.length; i < j; i += 1) {
+    str = str.replace(new RegExp(`\\s${lowers[i]}\\s`, 'g'), (txt) => txt.toLowerCase())
+  }
+
+  // Certain words such as initialisms or acronyms should be left uppercase
+  const uppers = ['Id', 'Tv']
+  for (i = 0, j = uppers.length; i < j; i += 1) {
+    str = str.replace(new RegExp(`\\b${uppers[i]}\\b`, 'g'), uppers[i].toUpperCase())
+  }
+
+  return str
+}
+
+export function debounce<F extends (...args: any[]) => any>(
+  func: F,
+  waitFor: number): (...args: Parameters<F>) => ReturnType<F> {
+  let timeout: ReturnType<typeof setTimeout> | null = null
+
+  const debounced = (...args: Parameters<F>) => {
+    if (timeout !== null) {
+      clearTimeout(timeout)
+      timeout = null
+    }
+    timeout = setTimeout(() => func(...args), waitFor)
+  }
+
+  return debounced as (...args: Parameters<F>) => ReturnType<F>
+}
+
+function useDebounce(callback: any, delay: number) {
+  const debouncedFn = useCallback(
+    debounce((...args) => callback(...args), delay),
+    [delay], // will recreate if delay changes
+  )
+  return debouncedFn
+}
+
+export function isInViewport(element: Element): boolean {
+  const rect = element.getBoundingClientRect()
+  return (
+    rect.top >= 0
+    && rect.left >= 0
+    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+    && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  )
+}
+
+export function countVisible(selector: string): number {
+  return Array.from(document.querySelectorAll(selector))
+    .map(isInViewport)
+    .reduce((acc, curr: boolean) => acc + (curr ? 1 : 0), 0)
 }

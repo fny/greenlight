@@ -22,7 +22,7 @@ N_STAFF = (N_TEACHERS / 4).round
 @parent_child_id_seq = ParentChild.id_seq
 @cohort_user_id_seq = CohortUser.id_seq
 @cohort_id_seq = Cohort.id_seq
-@greenlight_status_id_seq = MedicalEvent.id_seq
+@greenlight_status_id_seq = GreenlightStatus.id_seq
 @medical_event_id_seq = MedicalEvent.id_seq
 
 
@@ -35,18 +35,17 @@ ExternalId = Faker::UniqueGenerator.new(
 # Helpers
 #
 
-def set_name_and_email(user, last_name = nil, gender = nil)
+def set_name_and_email(user, gender = nil, last_name = nil)
   case gender
   when :m
     first_name = Faker::Name.male_first_name
-    last_name = last_name || Faker::Name.male_last_name
   when :f
     first_name = Faker::Name.female_first_name
-    last_name = last_name || Faker::Name.female_last_name
   else
     first_name = Faker::Name.first_name
-    last_name = last_name || Faker::Name.last_name
   end
+
+  last_name = last_name || Faker::Name.last_name
 
   user[:first_name] = first_name
   user[:last_name] = last_name
@@ -57,10 +56,24 @@ end
 def build_user
   user = {
     id: @user_id_seq.next(),
-    mobile_number: Faker::PhoneNumber.unique.cell_phone_in_e164
+    mobile_number: Faker::PhoneNumber.unique.cell_phone_in_e164,
+    completed_welcome_at: ((1..10).to_a.sample).days.ago
   }
   set_name_and_email(user)
 end
+
+def owner_user
+  @owner ||= {
+    id: @user_id_seq.next(),
+    first_name: 'Lucinda',
+    last_name: 'Verdella',
+    email: 'lucinda@greenwood.org',
+    mobile_number: Faker::PhoneNumber.unique.cell_phone_in_e164,
+    password: 'asdfasdf',
+    completed_welcome_at: ((1..10).to_a.sample).days.ago
+  }
+end
+
 
 def build_parent_child(parent, child)
   {
@@ -70,14 +83,24 @@ def build_parent_child(parent, child)
   }
 end
 
-def build_location_account(location, user, role, title = nil)
+def build_location_account(location, user, role)
   {
     id: @location_account_id_seq.next(),
     external_id: ExternalId.call,
     location_id: location.id,
     user_id: user[:id],
     role: role,
-    title: title
+  }
+end
+
+def build_owner_account(location, user, role)
+  {
+    id: @location_account_id_seq.next(),
+    external_id: ExternalId.call,
+    location_id: location.id,
+    user_id: user[:id],
+    role: role,
+    permission_level: 'owner'
   }
 end
 
@@ -241,16 +264,16 @@ teachers.sample((N_TEACHERS / 20).round).each do |t|
   parents_children << build_parent_child(t, s)
 end
 
-users = [teachers, staff, single_parents, husbands, wives, students].flatten
+users = [teachers, staff, single_parents, husbands, wives, students, owner_user].flatten
 
 puts "Building cohorts"
-soccer_team = build_cohort(location, 'Soccer Team', 'activities')
-football_team = build_cohort(location, 'Football Team', 'activities')
+soccer_team = location.cohorts.find_by!(category: 'Activities', name: 'Soccer Team')
+football_team = location.cohorts.find_by!(category: 'Activities', name: 'Football Team')
 
-freshman = build_cohort(location, 'Freshman', 'grade')
-sophomore = build_cohort(location, 'Sophomore', 'grade')
-junior = build_cohort(location, 'Junior', 'grade')
-senior = build_cohort(location, 'Senior', 'grade')
+freshman = location.cohorts.find_by!(category: 'Grade', name: 'Freshman')
+sophomore = location.cohorts.find_by!(category: 'Grade', name: 'Sophomore')
+junior = location.cohorts.find_by!(category: 'Grade', name: 'Junior')
+senior = location.cohorts.find_by!(category: 'Grade', name: 'Senior')
 
 cohorts_users = []
 freshmen, sophomores, juniors, seniors = build_cohorts_users(students.shuffle, [30, 25, 24, 21], [freshman, sophomore, junior, senior])
@@ -263,27 +286,28 @@ cohorts = [soccer_team, football_team, freshman, sophomore, junior, senior].flat
 puts "Building location accounts"
 
 location_accounts = []
-
+# [
+#   'History Teacher',
+#   'Spanish Teacher',
+#   'English Teacher',
+#   'ESL Teacher',
+#   'Math Teacher',
+#   'Science Teacher'
+# ].sample
 teachers.each { |t|
-  location_accounts << build_location_account(location, t, 'teacher', [
-    'History Teacher',
-    'Spanish Teacher',
-    'English Teacher',
-    'ESL Teacher',
-    'Math Teacher',
-    'Science Teacher'
-  ].sample)
+  location_accounts << build_location_account(location, t, 'teacher')
 }
+# [
+#   'Administrator',
+#   'Secretary',
+#   'Secretary',
+#   'Custodian',
+#   'Custodian',
+#   'Secretary'
+# ].sample
 
 staff.each { |s|
-  location_accounts << build_location_account(location, s, 'staff', [
-    'Administrator',
-    'Secretary',
-    'Secretary',
-    'Custodian',
-    'Custodian',
-    'Secretary'
-  ].sample)
+  location_accounts << build_location_account(location, s, 'staff')
 }
 
 {
@@ -294,9 +318,11 @@ staff.each { |s|
 }.each do |title, group|
   group.each do |s|
     # s is actual a cohorts_users record
-    location_accounts << build_location_account(location, { id: s[:user_id] } , 'student', title)
+    location_accounts << build_location_account(location, { id: s[:user_id] }, 'student')
   end
 end
+
+location_accounts << build_owner_account(location, owner_user, 'staff')
 
 puts "Building greenlight statuses"
 greenlight_statuses, medical_events = assign_gl_statuses([staff, teachers, students].flatten)
@@ -304,7 +330,6 @@ greenlight_statuses, medical_events = assign_gl_statuses([staff, teachers, stude
 puts "Seeding data"
 
 User.seed(:id, :email, :mobile_number, users)
-Cohort.seed(:id, cohorts)
 ParentChild.seed(:id, parents_children)
 LocationAccount.seed(:id, location_accounts)
 CohortUser.seed(:id, cohorts_users)

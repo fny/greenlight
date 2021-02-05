@@ -6,12 +6,7 @@ Fabricator(:user) do
   last_name { Faker::Name.last_name }
   time_zone { ActiveSupport::TimeZone.all.map { |x| x.tzinfo.name }.sample }
   email { Faker::Internet.unique.email }
-  mobile_number {
-    number = ''
-    number = Faker::PhoneNumber.cell_phone_in_e164[3, 10] until Phonelib.parse(number, 'US').valid?
-
-    Phonelib.parse(number, 'US').full_e164
-  }
+  mobile_number { PhoneNumber.random_number }
   password 'super_secret_password'
 end
 

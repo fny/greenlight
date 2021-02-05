@@ -1,0 +1,49 @@
+.stats-squares {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.stats-square-title {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.5em;
+}
+
+.stats-square {
+  display: inline-block;
+  border-radius: 5px;
+  /* width: 20%;
+  padding: 2%;
+  margin: 2%;
+  height: 60px; */
+  padding: 5px;
+  margin: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.stats-square-number {
+  margin-top: 5px;
+  font-size: 1em;
+}
+
+.stats-square.cleared {
+  background: var(--gl-green-grad);
+}
+
+.stats-square.pending {
+  background: var(--gl-gold-grad);
+}
+
+.stats-square.recovery {
+  background: var(--gl-pink-grad);
+}
+
+.stats-square.submitted {
+  background: var(--gl-blue-grad);
+}
+
+.compliance-chart {
+  height: 20vh;
+}

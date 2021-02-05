@@ -5,9 +5,13 @@ import { Location } from './Location'
 import { LocationAccount } from './LocationAccount'
 import { MedicalEvent } from './MedicalEvent'
 import { UserSettings } from './UserSettings'
+import { Cohort } from './Cohort'
+import CurrentUser from './CurrentUser'
 
-ModelRegistry.register(User, UserSettings, GreenlightStatus, Location, LocationAccount, MedicalEvent)
+ModelRegistry.register(
+  User, CurrentUser, UserSettings, GreenlightStatus, Location, LocationAccount, MedicalEvent, Cohort,
+)
 
 export {
-  Model, ModelRegistry, User, UserSettings, GreenlightStatus, Location, MedicalEvent,
+  Model, ModelRegistry, User, CurrentUser, UserSettings, GreenlightStatus, Location, LocationAccount, MedicalEvent, Cohort,
 }

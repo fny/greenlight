@@ -1,0 +1,45 @@
+<h1><%= @location.name %>'s Users</h1>
+
+<nav>
+  <%= link_to "New User", new_admin_user_path %>
+</nav>
+
+<br />
+
+<%= form_with url: admin_users_path, method: :get, class: 'inline' do |form| %>
+  <%= form.text_field :query, value: params[:query], placeholder: 'Search' %>
+  <%= form.text_field :location, value: params[:location], placeholder: 'Location' %>
+
+  <%= form.label :child %>
+  <%= form.check_box :child, checked: params[:child] == '1' %>
+  <%= form.label :parent %>
+  <%= form.check_box :parent, checked: params[:parent] == '1' %>
+  <%= form.label :staff %>
+  <%= form.check_box :staff, checked: params[:staff] == '1' %>
+
+  <%= form.submit "Search", data: { disable_with: false } %>
+<% end %>
+
+<br />
+<table>
+  <thead>
+    <th>ID</th>
+    <td>Name</td>
+    <th>Email</th>
+    <th>Mobile Number</th>
+    <th>Locale</th>
+    <th>Zip Code</th>
+  </thead>
+  <% @users.each do |u|%>
+    <tr>
+      <td><%= u.id %></td>
+      <td><%= link_to u.full_name, admin_user_path(u.id) %></td>
+      <td><%= u.email %></td>
+      <td><%= u.mobile_number %></td>
+      <td><%= u.locale %></td>
+      <td><%= u.zip_code %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%== pagy_nav(@pagy) %>

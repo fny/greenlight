@@ -1,19 +1,23 @@
 # frozen_string_literal: true
 class EmailOrPhone
   def initialize(value)
-    @value = value.strip.downcase
+    @value = value ? value.strip.downcase : ''
   end
 
   def value
     if phone?
-      Phonelib.parse(@value, 'US').full_e164
+      PhoneNumber.parse(@value)
     else
       @value
     end
   end
 
+  def valid?
+    email? || PhoneNumber.valid?(@value)
+  end
+
   def invalid?
-    !email? && !phone?
+    !valid?
   end
 
   def email?
@@ -21,6 +25,6 @@ class EmailOrPhone
   end
 
   def phone?
-    Phonelib.valid_for_country?(@value, 'US')
+    PhoneNumber.looks_like_number?(@value)
   end
 end

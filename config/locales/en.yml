@@ -4,18 +4,11 @@ en:
     magic_sign_in:
       subject: ✨ Greenlight Magic Sign In
       title: Use this link to access Greenlight
-      salutation:
+      salutation: Hello %{name},
       body: |
         You requested a magic link to sign in and here it is!
         Note that this link expires in 1 hour and can only be used once.
       action: Click Here to Sign In
-    reminder:
-      subject: ✨ Daily Greenlight Reminder
-      title: Check In with Greenlight
-      body: |
-        Just reminding you to check in with Greenlight.
-      action: Click Here to Sign In and Submit your Survey
-      closing: Enjoy your day,
     password_reset:
       subject: ✨ Greenlight Password Reset
       title: Use this link to reset your Greenlight account's password
@@ -30,7 +23,26 @@ en:
         "You requested a report for %{location} and here's the download link!"
         Note that this link expires in 1 hour and can only be used once.
       action: Click Here to Download Report
+    reminder:
+      subject: ✨ Daily Greenlight Reminder
+      title: Check In with Greenlight
+      salutation: Hello %{name},
+      body: |
+        Just reminding you to check in with Greenlight.
+      action: Click Here to Sign In and Submit your Survey
+      closing: Enjoy your day,
   texts:
+    password_reset: "Greenlight Password Reset: %{link}"
     magic_sign_in: "Greenlight Magic Sign In: %{link}"
     reminder: "Greenlight reminding you to send out your symptom surveys!"
-    password_reset: "Greenlight Password Reset: %{link}"
+  activemodel:
+    errors:
+      models:
+        authentication:
+          attributes:
+            base:
+              email_or_mobile_invalid: "Invalid email or mobile number."
+              email_not_found: "No account found for that email address."
+              phone_not_found: "No account found for that mobile number."
+              invalid_password: "Password is incorrect."
+              never_set_password: "You've never set your password. Check your email for an invite to sign in."

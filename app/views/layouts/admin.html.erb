@@ -5,9 +5,40 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.css">
+
     <%= csrf_meta_tags %>
+    <style>
+      form.inline input, form.inline select {
+        display: inline !important;
+      }
+      span.error {
+        color: red
+      }
+      .flash {
+        padding: 0.5em;
+        text-align: center;
+        margin-bottom: 1em;
+      }
+      .flash-notice {
+        background-color: #aaffaa;
+      }
+      .flash-alert {
+        background-color: #ffaaaa;
+      }
+    </style>
   </head>
   <body>
+    <% flash.each do |type, msg| %>
+      <div class="flash flash-<%= type %>">
+        <b><%= msg %></b>
+      </div>
+    <% end %>
+    Main:
+    <%= link_to 'Locations', admin_locations_path %> |
+    <%= link_to 'Reports', admin_reports_path %> |
+    <%= link_to 'Users', admin_users_path %>
    <%= yield %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ujs/1.2.2/rails.min.js"></script>
   </body>
 </html>

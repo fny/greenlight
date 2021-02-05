@@ -14,12 +14,16 @@ import {
 } from 'framework7-react'
 
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
-import './SignInPage.css'
+import './SessionsPage.css'
 import { createSession, getCurrentUser } from 'src/api'
 import { t, Trans } from '@lingui/macro'
 import { paths, dynamicPaths } from 'src/config/routes'
-import { F7Props } from 'src/types'
+import { F7Props, JSONAPIError } from 'src/types'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import logger from 'src/helpers/logger'
+import Tr, { En, Es } from 'src/components/Tr'
+
+import greenlightLogo from 'src/assets/images/logos/greenlight-banner-logo.svg'
 
 export default function SignInPage(props: F7Props) {
   const emailOrMobileRef = React.createRef<EmailOrPhoneListInput>()
@@ -55,11 +59,26 @@ export default function SignInPage(props: F7Props) {
       props.f7router.navigate(dynamicPaths.currentUserHomePath())
     } catch (error) {
       f7.dialog.close()
-
-      f7.dialog.alert(
-        t({ id: 'SignInPage.credentials_incorrect', message: 'The credentials your provided are incorrect.' }),
-        t({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' }),
-      )
+      if (error.response && error.response.status === 422) {
+        f7.dialog.alert(
+          error.response.data.errors.map((x: JSONAPIError) => x.detail).join(' '),
+          t({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' }),
+        )
+      } else if (error.response) {
+        f7.dialog.alert(
+          `${t({ id: 'SignInPage.something_went_wrong', message: 'Something went wrong' })} (${error.response.status})`,
+          t({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' }),
+        )
+        logger.notify(error, { name: 'SignInServerError' })
+        logger.error(error)
+      } else {
+        f7.dialog.alert(
+          t({ id: 'SignInPage.something_went_wrong', message: 'Something went wrong' }),
+          t({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' }),
+        )
+        logger.notify(error, { name: 'SignInError' })
+        logger.error(error)
+      }
     }
   }
 
@@ -74,9 +93,8 @@ export default function SignInPage(props: F7Props) {
         <NavbarHomeLink slot="left" />
       </Navbar>
 
-      <div style={{ marginTop: '20px' }} className="greenlight-logo">
-        Greenlight
-        <span>.</span>
+      <div className="greenlight-logo" style={{ marginTop: '50px' }}>
+        <img src={greenlightLogo} alt="Greenlight" />
       </div>
 
       <List form id="sign-in-form">
@@ -119,13 +137,22 @@ export default function SignInPage(props: F7Props) {
         </Block>
       </List>
       <BlockFooter>
-        <Link href={paths.magicSignInPath}>
-          <Trans id="SignInPage.forgot_password">
+        <Tr reviewTrans>
+          <En>
             Forgot your password?
-          </Trans>
-        </Link>
-        {/* <Link href="#">Request a password reset</Link> or use  magic sign in.  */}
-
+            {' '}
+            <Link href={paths.passwordResetRequestPath}>Request a reset</Link> or
+            {' '}
+            <Link href={paths.magicSignInPath}>a magic sign in link</Link>.
+          </En>
+          <Es>
+            ¿Olvidó su contraseña? Solicitar
+            {' '}
+            <Link href={paths.passwordResetRequestPath}>un restablecimiento de contraseña</Link> or
+            {' '}
+            <Link href={paths.magicSignInPath}>un enlace de inicio de sesión mágico</Link>.
+          </Es>
+        </Tr>
       </BlockFooter>
     </Page>
   )

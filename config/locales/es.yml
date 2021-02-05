@@ -4,19 +4,40 @@ es:
     magic_sign_in:
       subject: "✨ Greenlight Iniciar Sesión con Magia"
       title: Use este enlace para ingresar a Greenlight
+      salutation: Hola %{name},
       body: |
-        Solicitaste un enlace mágico para iniciar sesión y aquí está.
+        Solicitó un enlace mágico para iniciar sesión y aquí está.
         Este enlace caduca en 1 hora y solo se puede usar una vez.
       action: Clic Aquí para Ingresar
+    password_reset:
+      subject: ✨ Restablecimiento de contraseña de Greenlight
+      title: Utilice este enlace para restablecer la contraseña de su cuenta Greenlight
+      body: |
+        Solicitó restablecer su contraseña y aquí está el enlace.
+        Tenga en cuenta que este enlace caduca en 1 hora y solo se puede usarlo
+        una vez.
+      action: Haga Clic Aquí Para Restablecer Su Constraseña
     reminder:
       subject: ✨ Recordatorio Diario para Greenlight
       title: Enviar Encuesta a Greenlight
       body: |
         Recordándole que envíe encuestas de síntomas por Greenlight.
       action: Haga Clic Aquí para Iniciar Sesión y Enviar su Encuesta
-      closing: Disfruta tu día,
+      closing: ¡Tenga buen día!
   texts:
     # !!! WARNING !!! Do not use unicode characters! Otherwise, your
     # texts will be limited to 70 characters.
-    magic_sign_in: "Greenlight Iniciar Sesion con Magia: %{link}"
+    magic_sign_in: "Greenlight iniciar sesion con magia: %{link}"
+    password_reset: "Greenlight restablecimiento de contrasena: %{link}"
     reminder: "Greenlight le recuerda que envie su encuesta: %{link}"
+  activemodel:
+    errors:
+      models:
+        authentication:
+          attributes:
+            base:
+              email_or_mobile_invalid: "Correo electrónico o número de móvil no válido"
+              email_not_found: "No se encontró ninguna cuenta para ese correo electrónico"
+              phone_not_found: "No se encontró ninguna cuenta para ese número de móvil"
+              invalid_password: "Contraseña no válido"
+              never_set_password: "Nunca estableces tu contraseña. Busque una invitación en su correo electrónico."

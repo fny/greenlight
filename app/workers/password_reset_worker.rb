@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 class PasswordResetWorker < ApplicationWorker
-  def perform(user_id, email_or_phone)
-    user = User.find_by!(id: user_id)
+  def perform(user_id, email_or_phone, locale)
+    user = User.find(user_id)
 
-    I18n.with_locale(user.locale) do
+    I18n.with_locale(locale) do
       if email_or_phone.to_s == 'email'
         send_email(user)
       elsif email_or_phone.to_s == 'phone'

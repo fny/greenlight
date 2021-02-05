@@ -40,7 +40,7 @@ class GreenlightStatus < ApplicationRecord
   enumerize :status, in: STATUSES
   enumerize :reason, in: REASONS
   belongs_to :user
-  belongs_to :created_by, class_name: 'User'
+  belongs_to :created_by, class_name: 'User', optional: true
 
   scope :submitted_for_today, -> {
     where('submission_date <= ?', Time.zone.today).where('follow_up_date > ?', Time.zone.today)
@@ -68,9 +68,9 @@ class GreenlightStatus < ApplicationRecord
     status
   end
 
-  def self.submittable_for?(user_id)
-    GreenlightStatus
-      .where(user_id: user_id)
+  def self.submittable_for?(user)
+    !GreenlightStatus
+      .where(user: user)
       .where('follow_up_date > ?', DAILY_CUTOFF.round(Time.current))
       .exists?
   end
@@ -97,7 +97,7 @@ class GreenlightStatus < ApplicationRecord
 
   def not_already_submitted
     return if self.is_override
-    return unless GreenlightStatus.submittable_for?(user_id || user&.id)
+    return if GreenlightStatus.submittable_for?(user_id || user&.id)
 
     errors.add(:base, 'status_already_submitted')
   end
@@ -109,11 +109,11 @@ end
 #
 #  id              :bigint           not null, primary key
 #  user_id         :bigint           not null
-#  status          :text             not null
+#  status          :string           not null
 #  submission_date :date             not null
 #  expiration_date :date             not null
 #  follow_up_date  :date             not null
-#  reason          :text
+#  reason          :string
 #  logical_trace   :text
 #  is_override     :boolean          default(FALSE), not null
 #  created_by_id   :bigint

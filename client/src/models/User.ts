@@ -1,11 +1,12 @@
 import { DateTime } from 'luxon'
 import { isPresent, joinWords } from 'src/helpers/util'
-import { Location, MedicalEvent } from 'src/models'
+import { Cohort, Location, MedicalEvent } from 'src/models'
 import {
   Model, attribute as attr, initialize, STRING, DATETIME, DATE, BOOLEAN, hasMany, hasOne,
 } from 'src/lib/Model'
+import { recordStore } from 'src/api/stores'
 import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
-import { LocationAccount } from './LocationAccount'
+import { LocationAccount, PermissionLevels } from './LocationAccount'
 import { UserSettings } from './UserSettings'
 
 /**
@@ -70,6 +71,9 @@ export class User extends Model {
 
   @attr({ type: DATETIME })
   completedWelcomeAt: DateTime = DateTime.fromISO('')
+
+  @hasMany('Cohort')
+  cohorts: Cohort[] = []
 
   @hasMany('LocationAccount')
   locationAccounts: LocationAccount[] = []
@@ -155,6 +159,13 @@ export class User extends Model {
       // 'recovery_diagnosed_asymptomatic',
       // 'recovery_return_tomorrow'
       return status
+    }
+    return this.lastGreenlightStatus
+  }
+
+  lastUnexpiredGreenlightStatus(): GreenlightStatus {
+    if (!this.lastGreenlightStatus || this.lastGreenlightStatus.isValidForToday()) {
+      return GreenlightStatus.newUnknown()
     }
     return this.lastGreenlightStatus
   }
@@ -255,11 +266,11 @@ export class User extends Model {
   }
 
   yourself__HACK() {
-    return this.locale === 'en' ? 'yourself' : 'ti mismo'
+    return this.locale === 'en' ? 'yourself' : 'su mismo'
   }
 
   you__HACK() {
-    return this.locale === 'en' ? 'you' : 'tu'
+    return this.locale === 'en' ? 'you' : 'su'
   }
 
   hasLocationThatRequiresSurvey() {
@@ -303,5 +314,19 @@ export class User extends Model {
     return this.locationAccounts
       .filter((la) => la.isAdmin() && la.location !== null)
       .map((la) => la.location) as Location[]
+  }
+
+  isInBrevard__HACK() {
+    return this.locations__HACK().some((l) => l.permalink === 'brevard-academy')
+  }
+
+  isMemberOf(location: Location): boolean {
+    return this.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0
+  }
+
+  isOwnerAtVoyager__HACK(): boolean {
+    return this.locationAccounts.filter((la) => {
+      return la.location?.permalink?.startsWith('voyager') && la.permissionLevel === PermissionLevels.OWNER
+    }).length > 0
   }
 }

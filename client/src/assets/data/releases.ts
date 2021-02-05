@@ -17,6 +17,98 @@ function date(value: string) {
 
 const releaseData: ReleaseData[] = [
   {
+    version: '1.7.1',
+    date: date('2/2/2020'),
+    notesEn: 'New quarantine guidance, new admin features, bug fixes',
+    notesEs: 'Nueva guía de cuarentena, nuevas funciones de administración, corrección de errores',
+    whatsNewEn: [
+      'Staff and students now have their own lists.',
+      'You can filter by recovery and pending statuses',
+      'Page loads on rosters are much faster now',
+      'We added a new owner permission level',
+      'Owners can now make updates to statuses'
+    ],
+    whatsNewEs: [
+      'El personal y los estudiantes ahora tienen sus propias listas',
+      'Puede filtrar por recuperación y estados pendientes',
+      "La carga de páginas en las listas es mucho más rápida ahora",
+      'Agregamos un nuevo nivel de permiso de propietario',
+      "Los propietarios ahora pueden actualizar los estados"
+    ],
+    bugFixesEn: [
+      'Personal Greenlight pass pages were not rendering properly',
+      'We are looking into issues with repeat account lookups',
+      'We are looking into fixing the chart counts to make sure individuals with pending or recovery statuses are counted even when they do not submit',
+      'We are updating the status determination logic to the latest guidance, stay tuned!'
+    ],
+    bugFixesEs: [
+      "Las páginas de pases personales de Greenlight no se mostraban correctamente",
+      "Estamos investigando problemas con las búsquedas repetidas de cuentas",
+      'Estamos buscando corregir los recuentos de gráficos para asegurarnos de que las personas con estados pendientes o de recuperación se cuenten incluso cuando no se envíen',
+      "Estamos actualizando la lógica de determinación del estado a la última guía, ¡estad atentos!"
+    ],
+  },
+  {
+    version: '1.6.0',
+    date: date('1/20/2020'),
+    notesEn: 'New look, admin features and more!',
+    notesEs: '¡Nuevo diseño, funciones de administración y más!',
+    whatsNewEn: [
+      'Welcome to the new Greenlight! With a Great new design, we have tons of new features too!',
+      'Loading times on roster pages are 10x faster, note a few issues with search need to be fixed',
+      'A new registration flow has been added to allow organizations to sign up for Greenlight',
+    ],
+    whatsNewEs: [
+      '¡Bienvenido al nuevo Greenlight! ¡Tenemos un nuevo diseño y nuevas funciones también!',
+      'Los tiempos de carga en las páginas de la lista son 10x más rápidos, tenga en cuenta que es necesario solucionar algunos problemas con la búsqueda',
+      'Hay un nuevo flujo de registro para permitir que las organizaciones se registren en Greenlight',
+    ],
+    bugFixesEn: [
+      'Some organizations and individuals were receiving notifications incorrectly',
+    ],
+    bugFixesEs: [
+      'Algunas organizaciones e individuos estaban recibiendo notificaciones incorrectamente',
+    ],
+  },
+  {
+    version: '1.5.0',
+    date: date('1/12/2020'),
+    notesEn: "Happy Tuesday! We've added many new features and changes to Greenlight!",
+    notesEs: '¡Feliz martes! Hemos agregado muchas funciones nuevas y cambios a Greenlight.',
+    whatsNewEn: [
+      'Password reset is finally here!',
+      'Administrators now have a dashboard which presents all the details about their location',
+      'New features have been released to enable larger schools to use Greenlight',
+      'The school score card is now available for administrators',
+      "We've added a new page for getting more information on how to deal with a positive case",
+      "We've added more animated gifs for the year",
+      'Update links to terms of service and privacy policy',
+      'Add spanish translations to pages',
+    ],
+    whatsNewEs: [
+      '¡El restablecimiento de contraseña finalmente está aquí!',
+      'Los administradores ahora tienen un panel que presenta todos los detalles sobre su ubicación',
+      'Se han lanzado nuevas funciones para permitir que las escuelas más grandes utilicen Greenlight',
+      'La tarjeta de puntuación de la escuela ya está disponible para los administradores',
+      'Agregamos una nueva página para obtener más información sobre cómo lidiar con un caso positivo',
+      'Hemos agregado más gifs animados para el año',
+      'Actualizar enlaces a los términos de servicio y la política de privacidad',
+      'Agregar traducciones en español a las páginas',
+    ],
+    bugFixesEn: [
+      "We've fixed the back button issue on the administrative pages",
+      'We removed a few animated gifs that concerned some individuals',
+      "We've added more information about issues when registering using Microsoft based accounts",
+      'Improve loading times for resource pages',
+    ],
+    bugFixesEs: [
+      'Hemos solucionado el problema del botón Atrás en las páginas administrativas',
+      'Eliminamos algunos gifs animados que preocupaban a algunas personas',
+      'Hemos agregado más información sobre problemas al registrarse con cuentas basadas en Microsoft',
+      'Mejorar los tiempos de carga de las páginas de recursos',
+    ],
+  },
+  {
     version: '1.4.0',
     date: date('12/1/2020'),
     notesEn: 'Minor fixes and administrative updates.',
@@ -100,7 +192,7 @@ const releaseData: ReleaseData[] = [
     Happy Friday! We've added a lot a new changes to the app.
     `,
     notesEs: `
-    TODO:
+    ¡Feliz viernes! Hemos agregado muchos cambios nuevos a la aplicación.
     `,
     whatsNewEn: [
       'This releases page!',

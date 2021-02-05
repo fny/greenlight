@@ -3,15 +3,14 @@ import {
   Page, Navbar, List, ListItem, AccordionContent,
 } from 'framework7-react'
 
-import { toggleLocale, signOut } from 'src/initializers/providers'
+import { toggleLocale, signOut } from 'src/helpers/global'
 import { t } from '@lingui/macro'
 import { assertNotNull } from 'src/helpers/util'
 import { dynamicPaths, paths } from 'src/config/routes'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import { User } from 'src/models'
 
 export default function SettingsPage() {
-  const [currentUser] = useGlobal('currentUser') as [User, any]
+  const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
 
   return (
@@ -38,7 +37,7 @@ export default function SettingsPage() {
                 {currentUser.locations__HACK().map((location) => (
                   <ListItem
                     title={location.name || ''}
-                    link={dynamicPaths.userLocationPath({ userId: currentUser.id, locationId: location.id })}
+                    // link={dynamicPaths.userLocationPath({ userId: currentUser.id, locationId: location.id })}
                   />
                 ))}
               </List>
@@ -64,30 +63,6 @@ export default function SettingsPage() {
             </AccordionContent>
           </ListItem>
         )}
-        {
-          currentUser.isAdminSomewhere()
-
-        && (
-        <ListItem
-          accordionItem
-          title="Admin"
-        >
-          <AccordionContent>
-            <List>
-              {
-                currentUser.adminLocations().map((location) => (
-                  <ListItem
-                    key={location.id}
-                    link={dynamicPaths.adminUsersPath({ locationId: location.id })}
-                    title={location.name || ''}
-                  />
-                ))
-              }
-            </List>
-          </AccordionContent>
-        </ListItem>
-        )
-      }
 
         <ListItem
           link={paths.notificationsPath}
@@ -102,7 +77,7 @@ export default function SettingsPage() {
         />
 
         <ListItem
-          link="mailto:help@greenlightready.com"
+          link={paths.helpScoutPath}
           title={t({ id: 'SettingsPage.support', message: 'Support' })}
         />
 
@@ -112,7 +87,7 @@ export default function SettingsPage() {
         />
 
         <ListItem
-          link={paths.newUserPath}
+          link={paths.locationLookupPath}
           title={t({ id: 'SettingsPage.join_location', message: 'Join Location' })}
         />
 

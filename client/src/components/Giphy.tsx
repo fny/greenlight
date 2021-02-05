@@ -2,15 +2,15 @@ import React from 'react'
 import { DateTime } from 'luxon'
 import giphySchedule from 'src/assets/data/giphySchedule'
 
-export function giphyEmbedURL(id: string) {
+export function giphyEmbedURL(id: string): string {
   return `https://giphy.com/embed/${id}`
 }
 
-export function giphyVideoURL(id: string) {
+export function giphyVideoURL(id: string): string {
   return `https://media.giphy.com/media/${id}/giphy.mp4`
 }
 
-export function giphyGifURL(id: string) {
+export function giphyGifURL(id: string): string {
   return `https://media.giphy.com/media/${id}/giphy-downsized.gif`
 }
 
@@ -19,9 +19,8 @@ interface Props {
   mode?: 'embed' | 'gif' | 'video'
 }
 
-export default function Giphy({ id, mode }: Props) {
+export default function Giphy({ id, mode }: Props): JSX.Element {
   if (mode === 'gif') {
-    // TODO: Add a joke for screen readers
     return <img src={giphyGifURL(id)} alt="Something funny" style={{ width: '100%' }} />
   }
   if (mode === 'embed') {
@@ -30,7 +29,7 @@ export default function Giphy({ id, mode }: Props) {
         width: '100%', height: 0, paddingBottom: '100%', position: 'relative',
       }}
       >
-        <iframe src={giphyEmbedURL(id)} width="100%" height="100%" style={{ position: 'absolute' }} frameBorder="0" className="giphy-embed" allowFullScreen />
+        <iframe title="It's a Giphy!" src={giphyEmbedURL(id)} width="100%" style={{ position: 'absolute' }} frameBorder="0" className="giphy-embed" allowFullScreen />
       </div>
     )
   }
@@ -48,11 +47,9 @@ function randomGiphyId() {
   return ids[Math.floor(Math.random() * ids.length)]
 }
 
-export function GiphyForToday({ mode }: { mode?: 'embed' | 'gif' | 'video' }) {
+export function GiphyForToday({ mode }: { mode?: 'embed' | 'gif' | 'video' }): JSX.Element {
   const id = giphySchedule[DateTime.local().toLocaleString(DateTime.DATE_SHORT)] || randomGiphyId()
   return (
-    <div style={{ maxHeight: '400px', overflow: 'scroll' }}>
-      <Giphy id={id} mode={mode} />
-    </div>
+    <Giphy id={id} mode={mode} />
   )
 }

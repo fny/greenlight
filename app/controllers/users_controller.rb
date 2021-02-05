@@ -8,20 +8,16 @@ module UsersController
       user = User.includes(:locations, :location_accounts).find(params[:user_id])
       ensure_or_forbidden! { current_user.authorized_to_view?(user) }
 
-      render json: UserSerializer.new(user, include: %i[
-        location_accounts location_accounts.location
-      ])
+      render json: UserSerializer.new(user, include: UserSerializer::ADMIN_INCLUDES)
     end
 
     # Update a user
     patch '/v1/users/:user_id' do
-      user_id = params[:user_id]
-      user = User.includes(:location_accounts).find(user_id)
+      user = User.find(params[:user_id])
       ensure_or_forbidden! { current_user.authorized_to_view?(user) }
-      user.update(User.restrict_params(request_json))
 
-      if user.save
-        set_status_created
+      if user.update(User.restrict_params(request_json))
+        set_status_updated
         render json: UserSerializer.new(user)
       else
         error_response(user)
@@ -34,7 +30,7 @@ module UsersController
       if user.save
         set_status_created
         sign_in(user, request.ip)
-        render json: UserSerializer.new(user)
+        success_response_with_token
       else
         error_response(user)
       end
@@ -86,6 +82,32 @@ module UsersController
         render json: GreenlightStatusSerializer.new(survey.greenlight_status)
       else
         error_response(survey.greenlight_status)
+      end
+    end
+
+    patch '/v1/users/:user_id/last-greenlight-status' do
+      user = User.find(params[:user_id])
+      ensure_or_forbidden! {  current_user.authorized_to_edit?(user) }
+
+      status = user.last_greenlight_status
+      if !status
+        simple_error_response("no last status")
+      elsif status.update(expiration_date: params[:expiration_date], status: params[:status], is_override: true)
+        render json: GreenlightStatusSerializer.new(status)
+      else
+        error_response(status)
+      end
+    end
+
+    delete '/v1/users/:user_id/last-greenlight-status' do
+      user = User.find(params[:user_id])
+      ensure_or_forbidden! {  current_user.authorized_to_edit?(user) }
+
+      status = user.last_greenlight_status
+      if status && status.destroy
+        success_response
+      else
+        simple_error_response("failed to delete status")
       end
     end
   end

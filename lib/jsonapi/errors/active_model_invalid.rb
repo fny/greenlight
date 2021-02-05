@@ -14,12 +14,12 @@ module JSONAPI
       end
 
       def to_h
-        errors.reduce([]) do |r, (attr, msg)|
+        errors.reduce([]) do |r, error|
           r << {
             status: status,
             title: title,
-            detail: errors.full_message(attr, msg),
-            source: { pointer: "/data/attributes/#{attr}" }
+            detail: errors.full_message(error.attribute, error.message),
+            source: { pointer: "/data/attributes/#{error.attribute}" }
           }
         end
       end

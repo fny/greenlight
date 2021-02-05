@@ -1,17 +1,20 @@
-import React, { Fragment, useGlobal } from 'reactn'
+import React, { Fragment, getGlobal, useGlobal } from 'reactn'
 
 import './App.css'
 
-import { App, View } from 'framework7-react'
+import {
+  App, f7, Progressbar, View,
+} from 'framework7-react'
 
 import { Framework7Params } from 'framework7/components/app/app-class'
 
 import { I18nProvider, useLingui } from '@lingui/react'
 import routes from 'src/config/routes'
-import { i18n as globalI18n } from 'src/i18n'
+import { i18n as globalI18n, MyI18n } from 'src/i18n'
 import { ErrorBoundary } from 'src/ErrorBoundary'
 import OnlineStatus from 'src/components/OnlineStatus'
-import { isCordova } from './helpers/util'
+import env from './config/env'
+import StillRegisteringMessage from './components/FlashMessage'
 
 function I18nWatchLocale({ children }: { children: React.ReactNode }) {
   const { i18n } = useLingui()
@@ -30,25 +33,31 @@ const f7params: Framework7Params = {
   routes,
 }
 
-if (!isCordova()) {
+if (!env.isCordova()) {
   f7params.view = {
     pushState: true,
     pushStateSeparator: '',
   }
 }
 
-export default function Main() {
-  const [locale] = useGlobal('locale')
+export default function Main(): JSX.Element {
+  const [global] = useGlobal()
 
   return (
+
     <I18nProvider i18n={globalI18n}>
       <I18nWatchLocale>
-        <App key={locale} params={f7params} className="App">
-          <OnlineStatus />
-          <ErrorBoundary>
-            <View id="main-view" url="/" main className="safe-areas" />
-          </ErrorBoundary>
-        </App>
+        <MyI18n.Provider value={global.locale}>
+          <App key={global.locale} params={f7params} className="App">
+            <OnlineStatus />
+            <StillRegisteringMessage />
+            <ErrorBoundary>
+              { global.progress && <Progressbar color="green" progress={global.progress} /> }
+
+              <View id="main-view" url="/" main className="safe-areas" />
+            </ErrorBoundary>
+          </App>
+        </MyI18n.Provider>
       </I18nWatchLocale>
     </I18nProvider>
   )

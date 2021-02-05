@@ -1,19 +1,14 @@
 # frozen_string_literal: true
 
-# TODO: Incorporate these into this model.
-#
-# hasNotSubmittedOwnSurvey
-# hasNotSubmittedOwnSurveyForTomorrow
-# usersNotSubmitted
-# usersNotSubmittedForTomorrow
-# hasLocationThatRequiresSurvey
-# needsToSubmitSomeonesSurvey
-
 class User < ApplicationRecord
   self.permitted_params = %i[
-    first_name last_name email password mobile_number mobile_carrier locale
+    first_name last_name email mobile_number mobile_carrier locale
     zip_code time_zone birth_date physician_name physician_phone_number
     daily_reminder_type needs_physician
+  ]
+
+  self.queryable_columns = %i[
+    first_name last_name email mobile_number zip_code
   ]
 
   extend Enumerize
@@ -29,6 +24,7 @@ class User < ApplicationRecord
 
   enumerize :daily_reminder_type, in: DAILY_REMINDER_TYPES
   enumerize :time_zone, in: TIME_ZONES, default: 'America/New_York'
+  enumerize :locale, in: %w[en es], default: 'en'
 
   scope :affiliated_with, ->(location) {
     permalink = location.is_a?(Location) ? location.permalink : location
@@ -36,13 +32,20 @@ class User < ApplicationRecord
   }
   scope :children, -> { joins('INNER JOIN parents_children ON parents_children.child_id = users.id') }
   scope :parents, -> { joins('INNER JOIN parents_children ON parents_children.parent_id = users.id') }
-  scope :staff, -> {
+  scope :not_students, -> {
     joins('INNER JOIN location_accounts ON location_accounts.user_id = users.id')
       .where.not(location_accounts: { role: LocationAccount::STUDENT })
   }
-  # Users relationships as a child to other users
+
+  # TODO: Fix casing so that its case insensitive
+  scope :order_by_name, -> {
+    order(last_name: :asc, first_name: :asc, id: :asc)
+  }
+
+  # User's relationships as a child to other users
   has_many :child_relationships, foreign_key: :child_id, class_name: 'ParentChild', inverse_of: :child
-  # Users relationships as a parent to other users
+
+  # User's relationships as a parent to other users
   has_many :parent_relationships, foreign_key: :parent_id, class_name: 'ParentChild', inverse_of: :parent
   has_many :parents, through: :child_relationships, source: :parent
   has_many :children, through: :parent_relationships, source: :child
@@ -51,15 +54,23 @@ class User < ApplicationRecord
   has_many :medical_events, inverse_of: :user
   has_many :location_accounts, inverse_of: :user
   has_many :locations, through: :location_accounts
-  has_many :cohorts, through: :cohort_user
+  has_many :cohort_users
+  has_many :cohorts, through: :cohort_users
 
+  has_one :password_reset, inverse_of: :user
   has_one :settings, class_name: 'UserSettings', inverse_of: :user
 
   # Last Greenlight statuse submitted by the user
   has_one :last_greenlight_status,
-          -> { order('created_at DESC') },
-          class_name: 'GreenlightStatus',
-          inverse_of: :user
+    -> { order('created_at DESC') },
+    class_name: 'GreenlightStatus',
+    inverse_of: :user
+
+  has_many :greenlight_statuses_last_week,
+    -> { order('created_at DESC').where('submission_date >= ?', 7.days.ago) },
+    class_name: 'GreenlightStatus',
+    inverse_of: :user
+
 
   has_secure_password validations: false
   has_secure_token :auth_token
@@ -67,16 +78,45 @@ class User < ApplicationRecord
 
   validates :locale, inclusion: { in: Greenlight::SUPPORTED_LOCALES }
   validates :email, 'valid_email_2/email': true, uniqueness: true, allow_nil: true
-  validates :mobile_number, phone: { countries: :us }, allow_nil: true, uniqueness: true
+  validates :mobile_number, phone: { countries: PhoneNumber::SUPPORTED_COUNTRY_CODES }, allow_nil: true, uniqueness: true
 
   validates :password, length: { minimum: 8 }, allow_blank: true
 
   validates :first_name, presence: true
-  validates :first_name, presence: true
+  validates :last_name, presence: true
 
   before_save :timestamp_password
 
   before_save { self.email&.downcase! }
+
+  def self.email_or_mobile_taken?(email_or_mobile)
+    e_or_m = EmailOrPhone.new(email_or_mobile)
+    unless e_or_m.valid?
+      return false
+    end
+
+    if e_or_m.email?
+      User.exists?(email: e_or_m.value)
+    else
+      User.exists?(mobile_number: e_or_m.value)
+    end
+  end
+
+  def self.email_taken?(email)
+    unless email.include?('@')
+      return false
+    end
+
+    User.exists?(email: email.downcase.strip)
+  end
+
+  def self.mobile_taken?(phone_number)
+    unless PhoneNumber.valid?(phone_number)
+      return false
+    end
+
+    User.exists?(mobile_number: PhoneNumber.parse(phone_number))
+  end
 
   def self.create_account!(
     first_name:, last_name:, location:, role:,
@@ -105,8 +145,10 @@ class User < ApplicationRecord
     end
   end
 
+  # Convenience method for when Faraz needs to debug the app
+  # @return [User]
   def self.faraz
-    find_by(email: 'faraz.yashar@gmail.com')
+    find_by(email: 'faraz.yashar@gmail.com') || find_by(email: 'faraz@greenlightready.com')
   end
 
   # @param [EmailOrPhone, String] value
@@ -132,10 +174,12 @@ class User < ApplicationRecord
     User.joins(:location_accounts).where('location_accounts.external_id': external_id).first
   end
 
+  # @returns [String]
   def full_name
     "#{self.first_name} #{self.last_name}"
   end
 
+  # @returns [String]
   def name_with_email
     "\"#{full_name}\" <#{email}>"
   end
@@ -155,7 +199,7 @@ class User < ApplicationRecord
 
   # @returns [ActiveRecord::Relation]
   def child_locations
-    Location.joins(<<~SQL)
+    Location.joins(<<~SQL.squish)
       INNER JOIN location_accounts ON location_id = locations.id
       INNER JOIN parents_children ON parents_children.child_id = location_accounts.user_id
     SQL
@@ -172,7 +216,9 @@ class User < ApplicationRecord
   # Greenlight Status Related
   #
 
-  # Todays status
+  # Returns the last not expired status.
+  # For example, say you triggered a recovery status that puts you into
+  # quarantine, this is that status.
   def inferred_status
     return last_greenlight_status if last_greenlight_status && !last_greenlight_status.expired?
 
@@ -188,42 +234,24 @@ class User < ApplicationRecord
   end
 
   # @returns [Array<User>]
-  def needs_to_submit_survey_for
-    submits_surveys_for.filter { |u| !u.submitted_for_today? }
+  def needs_to_submit_surveys_for
+    submits_surveys_for.reject(&:submitted_for_today?)
   end
 
-  def needs_to_submit_survey_for_text
-    needs_to_submit_survey_for.map(&:first_name).to_sentence
+  def submits_surveys_for
+    User.where(id: children.pluck(:id) + [id]).joins(:location_accounts)
   end
 
-  # @returns [Array<Location>]
-  def needs_to_submit_survey_for_locations
-    needs_to_submit_survey_for.map(&:location)
-  end
-
-  def needs_to_submit_survey_for_location_text
-    needs_to_submit_survey_for.map(&:first_name).to_sentence
+  def submits_surveys_for_text
+    submits_surveys_for.map(&:first_name).to_sentence
   end
 
   def mobile_number=(value)
     return if value.blank?
 
-    parsed = Phonelib.parse(value, 'US').full_e164
+    parsed = PhoneNumber.parse(value)
     parsed = nil if parsed.blank?
     self[:mobile_number] = parsed
-  end
-
-  # PERF: N+1 query
-  def submits_surveys_for
-    people = []
-    people.push(self) if location_accounts.any?
-    children.each do |c|
-      people.push(self) if c.location_accounts.any?
-    end
-  end
-
-  def submits_surveys_for_text
-    submits_surveys_for.map(&:first_name).to_sentence
   end
 
   def destroy_all_associated_statuses
@@ -277,6 +305,14 @@ class User < ApplicationRecord
     hack1 = location_accounts.exists?(location_id: location.id, permission_level: LocationAccount::ADMIN)
     hack2 = location_accounts.exists?(location_id: location.id, permission_level: LocationAccount::OWNER)
     hack1 || hack2
+  end
+
+  def daily_reminder_time
+    if settings && settings.override_location_reminders
+      settings.daily_reminder_time
+    else
+      locations.map(&:daily_reminder_time).min
+    end
   end
 
   def parent?
@@ -352,6 +388,10 @@ class User < ApplicationRecord
     update_columns({completed_welcome_at: nil })
   end
 
+  def complete_welcome!
+    update_columns({completed_welcome_at: Time.zone.now })
+  end
+
   private
 
   def email_or_mobile_number_present
@@ -372,32 +412,32 @@ end
 # Table name: users
 #
 #  id                                 :bigint           not null, primary key
-#  first_name                         :text             default("Greenlight User"), not null
-#  last_name                          :text             default("Unknown"), not null
-#  password_digest                    :text
+#  first_name                         :string           default("Greenlight User"), not null
+#  last_name                          :string           default("Unknown"), not null
+#  password_digest                    :string
 #  password_set_at                    :datetime
-#  magic_sign_in_token                :text
+#  magic_sign_in_token                :string
 #  magic_sign_in_sent_at              :datetime
-#  auth_token                         :text
+#  auth_token                         :string
 #  auth_token_set_at                  :datetime
-#  email                              :text
-#  email_confirmation_token           :text
+#  email                              :string
+#  email_confirmation_token           :string
 #  email_confirmation_sent_at         :datetime
 #  email_confirmed_at                 :datetime
-#  email_unconfirmed                  :text
-#  mobile_number                      :text
-#  mobile_carrier                     :text
+#  email_unconfirmed                  :string
+#  mobile_number                      :string
+#  mobile_carrier                     :string
 #  is_sms_emailable                   :boolean
-#  mobile_number_confirmation_token   :text
+#  mobile_number_confirmation_token   :string
 #  mobile_number_confirmation_sent_at :datetime
 #  mobile_number_confirmed_at         :datetime
-#  mobile_number_unconfirmed          :text
-#  locale                             :text             default("en"), not null
-#  zip_code                           :text
-#  time_zone                          :text             default("America/New_York")
+#  mobile_number_unconfirmed          :string
+#  locale                             :string           default("en"), not null
+#  zip_code                           :string
+#  time_zone                          :string           default("America/New_York")
 #  birth_date                         :date
-#  physician_name                     :text
-#  physician_phone_number             :text
+#  physician_name                     :string
+#  physician_phone_number             :string
 #  daily_reminder_type                :text             default("text"), not null
 #  needs_physician                    :boolean          default(FALSE), not null
 #  invited_at                         :datetime

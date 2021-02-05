@@ -20,16 +20,16 @@ import { once } from 'src/helpers/util'
 
 export interface NavigateProps {
   to: string
-  router: Router.Router
+  f7router: Router.Router
   options?: Router.RouteOptions
 }
 
 export default function Navigate(props: NavigateProps): JSX.Element {
   useEffect(() => {
     once(
-      () => props.router.allowPageChange,
+      () => props.f7router.allowPageChange,
       () => {
-        props.router.navigate(props.to, {
+        props.f7router.navigate(props.to, {
           ...props.options,
         })
       }, 10,

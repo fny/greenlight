@@ -5,9 +5,9 @@ class ScheduledReminderWorker < ApplicationWorker
     remind_sun remind_mon remind_tue remind_wed remind_thu remind_fri remind_sat
   ].freeze
 
-  sidekiq_options retry: 3
+  sidekiq_options retry: 2
 
-  def perform
+  def users_ids
     current_time = Time.now.in_time_zone('America/New_York')
 
     reminder_query = {
@@ -29,7 +29,11 @@ class ScheduledReminderWorker < ApplicationWorker
     ).all.flat_map { |x| x.users_to_notify.to_a }.map(&:id)
 
     user_ids = user_ids.merge(user_ids_from_location)
+  end
 
-    user_ids.each { |user_id| ReminderWorker.perform_async(user_id) }
+  def perform
+    User.where.not(completed_welcome_at: nil).find_each do |user|
+      ReminderWorker.perform_async(user.id)
+    end
   end
 end

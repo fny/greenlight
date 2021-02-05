@@ -1,20 +1,30 @@
 import axios, { AxiosResponse } from 'axios'
 
 import { getGlobal, setGlobal } from 'reactn'
-import {
-  assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
-} from 'src/helpers/util'
+import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from 'src/helpers/util'
+
+// FIXME: This shouldn't be assigned here. It should go in a provider
 import Honeybadger from 'honeybadger-js'
 
 import logger from 'src/helpers/logger'
-import { LocationAccount } from 'src/models/LocationAccount'
-import { assignIn } from 'lodash'
-import env from '../config/env'
-import { transformRecordResponse, recordStore } from './stores'
-import { RecordResponse } from '../types'
+import env from 'src/config/env'
 import {
-  User, Location, Model, MedicalEvent, GreenlightStatus, UserSettings,
-} from '../models'
+  User,
+  Location,
+  LocationAccount,
+  Model,
+  MedicalEvent,
+  GreenlightStatus,
+  UserSettings,
+  CurrentUser,
+} from 'src/models'
+import { Dict, RecordResponse } from 'src/types'
+import useSWR, { responseInterface } from 'swr'
+import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
+import qs from 'qs'
+import { Roles } from 'src/models/LocationAccount'
+import { RegisteringUser } from 'src/models/RegisteringUser'
+import { transformRecordResponse, recordStore } from './stores'
 
 const BASE_URL = `${env.API_URL}/v1`
 
@@ -22,13 +32,25 @@ logger.dev(BASE_URL)
 
 export const v1 = axios.create({
   baseURL: BASE_URL,
-  timeout: 3000,
+  timeout: 10000,
   withCredentials: true,
+  headers: {
+    'X-Client-Env': env.isCordova() ? 'cordova' : 'standard',
+  },
+  paramsSerializer: (params) => qs.stringify(params),
 })
 
 v1.interceptors.request.use((request) => {
-  logger.dev(`[Request] ${request.method} ${request.url}`)
+  logger.dev(`[Request] ${request.method} ${request.url} ${request.params ? JSON.stringify(request.params) : ''}`)
   request.headers['X-GL-Locale'] = getGlobal().locale
+
+  if (env.isCordova()) {
+    const token = localStorage.getItem('token')
+    if (token) {
+      request.headers.Authorization = `Bearer ${token}`
+    }
+  }
+
   return request
 })
 
@@ -65,28 +87,51 @@ export const store = recordStore
 // Authentication
 //
 
-export async function createSession(emailOrMobile: string, password: string, rememberMe: boolean) {
-  await v1.post('sessions', {
+export async function createSession(emailOrMobile: string, password: string, rememberMe: boolean): Promise<void> {
+  const response = await v1.post('sessions', {
     emailOrMobile,
     password,
     rememberMe,
   })
+  if (env.isCordova()) {
+    localStorage.setItem('token', response.data.token)
+    localStorage.setItem('rememberMe', rememberMe.toString())
+  }
 }
 
-export async function deleteSession() {
+export async function deleteSession(): Promise<void> {
   await v1.delete('/sessions')
 }
 
-export async function createMagicSignIn(emailOrMobile: string, rememberMe: boolean) {
+export async function createMagicSignIn(emailOrMobile: string, rememberMe: boolean): Promise<void> {
   await v1.post<any>('/magic-sign-in', {
     emailOrMobile,
     rememberMe,
   })
 }
-
-export async function magicSignIn(token: string, rememberMe: boolean) {
-  await v1.post(`/magic-sign-in/${token}`, {
+export async function magicSignIn(token: string, rememberMe: boolean): Promise<void> {
+  const response = await v1.post(`/magic-sign-in/${token}`, {
     rememberMe,
+  })
+  if (env.isCordova()) {
+    localStorage.setItem('token', response.data.token)
+    localStorage.setItem('rememberMe', rememberMe.toString())
+  }
+}
+
+export async function passwordResetRequest(emailOrMobile: string): Promise<void> {
+  await v1.post('/password-resets', {
+    emailOrMobile,
+  })
+}
+
+export async function checkPasswordResetToken(token: string): Promise<void> {
+  await v1.get(`/password-resets/${token}/valid`)
+}
+
+export async function passwordReset(token: string, password: string): Promise<void> {
+  await v1.post(`/password-resets/${token}`, {
+    password,
   })
 }
 
@@ -99,8 +144,7 @@ export async function getLocation(id: string): Promise<Location> {
 }
 
 export async function createLocation(attrs: Partial<Location>): Promise<Location> {
-  const response = await v1.post<RecordResponse<Location>>('/locations',
-    transformForAPI(attrs))
+  const response = await v1.post<RecordResponse<Location>>('/locations', transformForAPI(attrs))
 
   const entity = transformRecordResponse<Location>(response.data)
   assertNotArray(entity)
@@ -115,9 +159,14 @@ export async function joinLocation(location: Location): Promise<LocationAccount>
   return entity
 }
 
-export async function updateLocationAccount(locationAccount: LocationAccount, updates: Partial<LocationAccount>): Promise<LocationAccount> {
-  const response = await v1.patch<RecordResponse<LocationAccount>>(`/location-accounts/${locationAccount.id}`,
-    transformForAPI(updates))
+export async function updateLocationAccount(
+  locationAccount: LocationAccount,
+  updates: Partial<LocationAccount>,
+): Promise<LocationAccount> {
+  const response = await v1.patch<RecordResponse<LocationAccount>>(
+    `/location-accounts/${locationAccount.id}`,
+    transformForAPI(updates),
+  )
 
   const entity = transformRecordResponse<LocationAccount>(response.data)
   assertNotArray(entity)
@@ -128,14 +177,38 @@ export async function requestPeopleReport(location: Location) {
   await v1.post(`/locations/${location.id}/people-report`)
 }
 
+export async function checkLocationRegistrationCode(locationId: string, registrationCode: string): Promise<any> {
+  const result = await v1.post(`/locations/${locationId}/check-registration-code`, {
+    registrationCode,
+  })
+  return result.data.result
+}
+
+export async function registerUser(locationId: string, user: RegisteringUser & { password: string}) {
+  const userWithoutBlanks = transformForAPI(user, { removeBlanks: true })
+  await v1.post(`/locations/${locationId}/register`, userWithoutBlanks)
+  const currentUser = await getCurrentUser()
+  setGlobal({ currentUser })
+}
+
 //
 // Users
 //
 
-export async function getCurrentUser(): Promise<User> {
-  const user = await getResource<User>('/current-user')
-  Honeybadger.setContext({ userId: user.id })
-  return user
+export async function getCurrentUser(): Promise<CurrentUser> {
+  const currentUser = await getResource<CurrentUser>('/current-user')
+  Honeybadger.setContext({ userId: currentUser.id })
+  // Now load the standard user entity so it gets cached too
+  await getResource<User>(`/users/${currentUser.id}`)
+  return currentUser
+}
+
+export async function updateCurrentUser(updates: Partial<CurrentUser>): Promise<CurrentUser> {
+  const response = await v1.patch<RecordResponse<User>>('/current-user', transformForAPI(updates))
+
+  const entity = transformRecordResponse<CurrentUser>(response.data)
+  assertNotArray(entity)
+  return entity
 }
 
 export async function getUser(id: string): Promise<User> {
@@ -143,8 +216,7 @@ export async function getUser(id: string): Promise<User> {
 }
 
 export async function updateUser(user: User, updates: Partial<User>): Promise<User> {
-  const response = await v1.patch<RecordResponse<User>>(`/users/${user.id}`,
-    transformForAPI(updates))
+  const response = await v1.patch<RecordResponse<User>>(`/users/${user.id}`, transformForAPI(updates))
 
   const entity = transformRecordResponse<User>(response.data)
   assertNotArray(entity)
@@ -158,25 +230,36 @@ export async function completeWelcomeUser(user: User): Promise<User> {
   return entity
 }
 
-export async function createUserAndSignIn(user: Partial<User>) {
-  const response = await v1.post<RecordResponse<User>>('/users/create-and-sign-in', user)
-  const entity = transformRecordResponse<User>(response.data)
-  assertNotArray(entity)
-  return entity
+export async function createUserAndSignIn(user: Partial<RegisteringUser> & { password: string}): Promise<void> {
+  const signInResponse = await v1.post('/users/create-and-sign-in', user)
+  if (env.isCordova()) {
+    localStorage.setItem('token', signInResponse.data.token)
+  }
 }
 
-export async function updateUserSettings(user: User, updates: Partial<UserSettings>) {
-  const response = await v1.patch<RecordResponse<UserSettings>>(`/users/${user.id}/settings`,
-    transformForAPI(updates))
+export async function updateUserSettings(user: User, updates: Partial<UserSettings>): Promise<UserSettings> {
+  const response = await v1.patch<RecordResponse<UserSettings>>(`/users/${user.id}/settings`, transformForAPI(updates))
   const entity = transformRecordResponse<UserSettings>(response.data)
   assertNotArray(entity)
   return entity
 }
 
-export async function getUsersForLocation(location: number | string | Location) {
+export async function getUsersForLocation(location: number | string | Location): Promise<User[]> {
   const locationId = location instanceof Location ? location.id : location
   const path = `/locations/${locationId}/users`
-  return getResources<User>(path) as Promise<User[]>
+  return getResources<User>(path)
+}
+
+export async function getPagedUsersForLocation(
+  location: number | string | Location,
+  page: number = 1,
+  name?: string,
+  status?: GreenlightStatusTypes,
+  role?: Roles,
+): Promise<PagedResource<User>> {
+  const locationId = location instanceof Location ? location.id : location
+  const path = `/locations/${locationId}/users`
+  return getPagedResources<User>(path, page, { status, name, role })
 }
 
 //
@@ -199,13 +282,29 @@ export async function createSymptomSurvey(user: User, medicalEvents: Partial<Med
   return record.attributes.status || null
 }
 
+export async function deleteLastGreenlightStatus(user: User): Promise<string | null> {
+  return await v1.delete(`/users/${user.id}/last_greenlight_status`)
+}
+
+export async function updateGreenlightStatus(
+  user: User,
+  status: string,
+  expirationDate: string,
+): Promise<string | null> {
+  return await v1.patch(`/users/${user.id}/last_greenlight_status`, {
+    status,
+    expirationDate,
+  })
+}
+
 //
 // Mailman
 //
 
-export function mailHelloAtGreenlight(from: string, subject: string, body: string): Promise<AxiosResponse<any>> {
+export function mailHelloAtGreenlight(subject: string, body: string): Promise<AxiosResponse<any>> {
   return v1.post('mail/hello-at-greenlight', {
-    from, subject, body,
+    subject,
+    body,
   })
 }
 
@@ -213,6 +312,25 @@ export function mailInvite(emailOrMobile: string): Promise<AxiosResponse<any>> {
   return v1.post('mail/invite', {
     emailOrMobile,
   })
+}
+
+//
+// Util
+//
+
+export async function getEmailTaken(email: string): Promise<boolean> {
+  const res = await v1.get<{ taken: boolean }>('/util/email-taken', { params: { email } })
+  return res.data.taken
+}
+
+export async function getMobileTaken(mobile: string): Promise<boolean> {
+  const res = await v1.get<{ taken: boolean }>('/util/mobile-taken', { params: { mobile } })
+  return res.data.taken
+}
+
+export async function getEmailOrMobileTaken(value: string): Promise<boolean> {
+  const res = await v1.get<{ taken: boolean }>('/util/email-or-mobile-taken', { params: { value } })
+  return res.data.taken
 }
 
 //
@@ -228,11 +346,58 @@ export async function getResource<T extends Model>(path: string): Promise<T> {
   return entity
 }
 
-export async function getResources<T extends Model>(path: string): Promise<T | T[]> {
+export async function getResources<T extends Model>(path: string): Promise<T[]> {
   const response = await v1.get(path)
   if (!response.data.data) return []
   recordStore.writeRecordResponse(response.data)
   const entities = transformRecordResponse<T>(response.data)
   assertArray(entities)
   return entities
+}
+
+//
+// Pagination and Filtering
+//
+
+export interface PagedResource<T> {
+  data: T[]
+  filter: Filter
+  pagination: Pagination
+}
+
+export interface Pagination {
+  /** The number of the next page */
+  next: number
+  /** The number of the last page */
+  last: number
+  /** The total number of elements across all pages */
+  count: number
+}
+
+export async function getPagedResources<T extends Model>(
+  path: string,
+  page?: number,
+  filter: Filter = {},
+): Promise<PagedResource<T>> {
+  const response = await v1.get(path, { params: { page, filter } })
+  recordStore.writeRecordResponse(response.data)
+  const entities = transformRecordResponse<T>(response.data)
+  assertArray(entities)
+
+  const pagination = response.data.meta.pagination as Pagination
+  return {
+    data: entities,
+    filter,
+    pagination,
+  }
+}
+
+export type Filter = Dict<string | number | string[] | number[] | undefined | null>
+
+export function usePagedResources<T extends Model>(
+  path: string,
+  page?: number,
+  filter?: Filter,
+): responseInterface<PagedResource<T>, any> {
+  return useSWR([path, page, filter], (path, page, filter) => getPagedResources<T>(path, page, filter))
 }

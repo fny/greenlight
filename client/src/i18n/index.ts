@@ -1,6 +1,7 @@
 import { i18n } from '@lingui/core'
 
 import * as plurals from 'make-plural/plurals'
+import React from 'react'
 import en from './locales/en'
 import es from './locales/es'
 
@@ -13,3 +14,5 @@ i18n.load('en', en.messages)
 i18n.load('es', es.messages)
 
 export type GLLocales = 'en' | 'es'
+
+export const MyI18n = React.createContext('en')

@@ -6,7 +6,8 @@
 .title-badge {
   text-transform: capitalize;
   margin-left: 10px;
-  padding: 0 10px;
+  padding: 10px 10px !important;
+  background-color: var(--gl-green-dark) !important;
 }
 
 .map-image {

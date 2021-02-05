@@ -1,0 +1,85 @@
+# To release a new version of the app via CodePush, run `bundle exec fastlane codepush_ios`
+# or `bundle exec fastlane codepush_android` from the proper branch. For example:
+# If you want to CodePush to the production (release) version, make sure and run this from the release branch.
+# If you want to CodePush to the beta version, make sure to run this from the beta branch.
+#
+# Generally speaking, you should use the Staging track to validate a production Codepush before it is released / promoted.
+#
+# To mark an update as manditory, which will immediately download, apply the update, and restart the users app,
+# pass manditory:true. `bundle exec fastlane codepush_ios manditory:true`
+
+project_name = 'Greenlight'
+project_name_prefix = 'Greenlight-Ready/GreenLightReady'
+project_name_android = "#{project_name_prefix}-android"
+project_name_ios = "#{project_name_prefix}-ios"
+
+desc 'Codepush release to iOS'
+lane :codepush_ios do |options|
+  do_codepush(app_name: project_name_ios, manditory: options[:manditory])
+end
+
+desc 'Codepush release to Android'
+lane :codepush_android do |options|
+  do_codepush(app_name: project_name_android, manditory: options[:manditory])
+end
+
+private_lane :select_codepush_environment do |options|
+  available_environments = fetch_codepush_environments(app_name: options[:app_name])
+  environment_labels = available_environments.map { |e| e.first }
+  UI.select('What environment do you want to target?', environment_labels)
+end
+
+# fetch codepush environments. assumes the user has logged in to appcenter cli
+# via `appcenter login`
+private_lane :fetch_codepush_environments do |options|
+  FETCH_ENV_COMMAND = 'appcenter codepush deployment list -a APPNAME --output json'.freeze
+  UI.message "Fetching Codepush environments for #{options[:app_name]}"
+
+  sh FETCH_ENV_COMMAND.sub(/APPNAME/, options[:app_name]) do |status, result, command|
+    unless status.success?
+      UI.error "Command #{command} failed with status #{status.exitstatus}. Are you logged in via `appcenter login`?"
+    end
+
+    JSON.parse(result)
+  end
+end
+
+private_lane :select_app_version do |options|
+  # Assumes symver (x.x.x) or 💥
+  current_version = get_version_number(xcodeproj: "./platforms/ios/#{project_name}.xcodeproj", target: options[:project_name])
+  current_major = [current_version.split('.').first, 'x', 'x'].join('.')
+  current_minor = current_version.split('.').slice(0, 2).push('x').join('.')
+
+  target_version_label = UI.select('What version do you want to target?', [
+                                     'All users',
+                                     "Most recent major (#{current_major})",
+                                     "Most recent minor (#{current_minor})",
+                                     "Current (#{current_version})"
+                                   ])
+
+  next '"*"' if target_version_label.match?(/All/)
+  next current_major if target_version_label.match?(/major/)
+  next current_minor if target_version_label.match?(/minor/)
+
+  current_version
+end
+
+private_lane :do_codepush do |options|
+  ensure_git_status_clean
+  environment = select_codepush_environment(app_name: options[:app_name])
+  version = select_app_version(project_name: project_name)
+  manditory = !!options[:manditory]
+  manditory_string = manditory ? ' -m' : ''
+
+  if UI.confirm("About to CODEPUSH your local branch *#{git_branch}* to the *#{environment}* environment for users running version #{version}. Proceed?")
+    Dir.chdir('..') do
+      sh "appcenter codepush release-cordova -a #{options[:app_name]} -d #{environment} -t #{version}#{manditory_string}" do |status, _result, command|
+        UI.error "Command #{command} failed with status #{status.exitstatus}" unless status.success?
+
+        UI.success '🚀 All done! Check out the rollout & install stats in the Codepush section of the dashboard on App Center.'
+      end
+    end
+  else
+    UI.error '😅 that was close!'
+  end
+end

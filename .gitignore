@@ -1,6 +1,9 @@
 .env
 .env.local
 
+# Ignore personal scratch spaces
+/scratch/scratch_me*
+
 # Ignore bundler config.
 /.bundle
 
@@ -36,6 +39,9 @@
 
 # Used by dotenv library to load environment variables.
 # .env
+
+# VSCode configuration
+.vscode
 
 # Ignore Byebug command history file.
 .byebug_history

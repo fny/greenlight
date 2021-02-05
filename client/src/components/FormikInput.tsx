@@ -15,9 +15,9 @@ function processError(
   return error.toString()
 }
 
-export default function FormikInput(props: ListInput.Props & { children?: ReactNode }) {
+export default function FormikInput<T = string>(props: ListInput.Props & { children?: ReactNode }): JSX.Element {
   assertNotUndefined(props.name)
-  const [field, meta] = useField(props.name)
+  const [field, meta] = useField<T>(props.name)
   const errorMessage = processError(meta.error)
 
   const newProps = {

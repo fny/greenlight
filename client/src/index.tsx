@@ -1,29 +1,24 @@
-import './initializers'
-
 import React, { setGlobal } from 'reactn'
 import ReactDOM from 'react-dom'
 
-import Framework7 from 'framework7/framework7.esm.bundle'
-import Framework7React from 'framework7-react'
-import App from './App'
+// Initialize dependencies
+import './initializers'
 import * as serviceWorker from './initializers/serviceWorker'
+import cordovaApp from './initializers/cordova'
 
+// Assets
 import 'framework7/css/framework7.bundle.css'
 import 'framework7-icons'
-
-import 'src/assets/fonts/Poppins/index.css'
+import 'src/assets/fonts/Aeonik/index.css'
+import 'src/assets/fonts/Rubik/index.css'
 import 'src/assets/styles/index.css'
 
+import App from './App'
 import { getCurrentUser } from './api'
-import logger from './helpers/logger'
-
-// Init Framework7-React plugin
-Framework7.use(Framework7React)
+import env from './config/env'
 
 function render() {
-  // window.onload = () => {
   ReactDOM.render(<App />, document.getElementById('root'))
-  // }
 }
 
 function startApp() {
@@ -33,7 +28,7 @@ function startApp() {
     })
     .catch((err) => {
       if (err.response && err.response.status === 401) {
-        logger.error(err)
+        // Not signed in
       } else {
         throw err
       }
@@ -43,10 +38,9 @@ function startApp() {
     })
 }
 
-if ((window as any).cordova) {
-  document.addEventListener('deviceready', startApp, false)
-  document.addEventListener('resume', () => {
-    (window as any).codePush.sync()
+if (env.isCordova()) {
+  cordovaApp.initialize({
+    startApp,
   })
 } else {
   startApp()

@@ -3,7 +3,7 @@ import {
   Page, Navbar, Block, List, ListInput, Button, Toggle, ListItem,
 } from 'framework7-react'
 import { SyntheticEvent } from 'react'
-import { updateUser } from 'src/api'
+import { updateCurrentUser } from 'src/api'
 import { dynamicPaths } from 'src/config/routes'
 import { User } from 'src/models'
 import { ReactNComponent } from 'reactn/build/components'
@@ -11,7 +11,7 @@ import { NoCurrentUserError } from 'src/helpers/errors'
 
 import { t, Trans } from '@lingui/macro'
 import logger from 'src/helpers/logger'
-import passwordImage from 'src/assets/images/welcome-secure.svg'
+import passwordImage from 'src/assets/images/illustrations/password.png'
 import { When, Case } from 'src/components/Case'
 
 interface State {
@@ -57,7 +57,7 @@ export default class extends ReactNComponent<any, State> {
 
     this.$f7.dialog.preloader(t({ id: 'WelcomePasswordPage.submitting_changes', message: 'Submitting changes...' }))
     try {
-      const user = await updateUser(this.state.currentUser, { password: this.state.password } as Partial<User>)
+      const user = await updateCurrentUser({ password: this.state.password })
       this.setGlobal({ currentUser: user })
       this.$f7.dialog.close()
       this.$f7router.navigate(dynamicPaths.afterWelcomePasswordPath())
@@ -110,6 +110,7 @@ export default class extends ReactNComponent<any, State> {
               t({ id: 'WelcomePasswordPage.security_alt_text', message: 'Greenlight gives security the highest importance.' })
             }
             src={passwordImage}
+            width="100%"
           />
 
           <Case test={this.state.currentUser.children.length > 0}>

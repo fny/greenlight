@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/cypress-io/cypress/develop/cli/schema/cypress.schema.json",
   "video": false,
-  "baseUrl": "http://app-dev.greenlightready.com:9991/",
+  "baseUrl": "http://app.greenlightready.net:9991/",
   "watchForFileChanges": true,
   "viewportWidth": 1920,
   "viewportHeight": 1080,
