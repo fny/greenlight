@@ -1,6 +1,6 @@
 import {
-  AccordionContent,
-  Block, Icon, List, ListItem, Navbar, Page,
+  AccordionContent, f7,
+  Block, Icon, List, ListItem, Navbar, Page, Button,
 } from 'framework7-react'
 import React from 'react'
 import { useEffect, useGlobal, useState } from 'reactn'
@@ -13,11 +13,13 @@ import { dynamicPaths, paths } from 'src/config/routes'
 import { UsersFilter } from 'src/components/UsersFilter'
 import { assertNotNull, assertNotUndefined } from 'src/helpers/util'
 import { F7Props } from 'src/types'
-import { getLocation, store, v1 } from 'src/api'
+import { getLocation, store, v1, requestPeopleReport } from 'src/api'
 import { GreenlightStatus, Location } from 'src/models'
 import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
 import logger from 'src/helpers/logger'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 import FakeF7ListItem from 'src/components/FakeF7ListItem'
+import Tr, { tr } from 'src/components/Tr'
 
 interface StatsSquareProps {
   title: string
@@ -153,6 +155,20 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
         ],
       },
     }
+
+    const reportHandler = new SubmitHandler(f7, {
+      onSubmit: async () => {
+        assertNotNull(state.location)
+        await requestPeopleReport(state.location)
+      },
+      errorTitle: tr({ es: 'Solicitud fallida', en: 'Request failed.' }),
+      submittingMessage: tr({ es: 'Solicitando Informe ...', en: 'Requesting Report...' }),
+      successMessage: tr({
+        es: 'El informe generado se enviará a su correo electrónico.',
+        en: 'The generated report will be sent to your email.',
+      }),
+    })
+  
     content = (
       <>
         <Navbar title={`${state.location.name} Overview`}>
@@ -254,6 +270,12 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
             </FakeF7ListItem>
             )
             }
+
+            <p>
+              <Button fill onClick={() => reportHandler.submit()}>
+                <Tr en="Request Report" es="Solicitar informe" />
+              </Button>
+            </p>
           </List>
         </Block>
       </>

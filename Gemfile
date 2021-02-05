@@ -99,6 +99,8 @@ gem 'strip_attributes'
 gem 'table_print', require: false
 # Email validations
 gem 'valid_email2'
+# AWS S3
+gem 'aws-sdk-s3'
 
 gem 'json', '~> 2.0'
 

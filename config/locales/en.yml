@@ -16,6 +16,13 @@ en:
         You requested to reset your password and here's the link!
         Note that this link expires in 1 hour and can only be used once.
       action: Click Here to Reset Password
+    people_report:
+      subject: ✨ Greenlight Report
+      title: Download the Report
+      body: |
+        "You requested a report for %{location} and here's the download link!"
+        Note that this link expires in 1 hour and can only be used once.
+      action: Click Here to Download Report
     reminder:
       subject: ✨ Daily Greenlight Reminder
       title: Check In with Greenlight

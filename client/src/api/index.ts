@@ -173,6 +173,10 @@ export async function updateLocationAccount(
   return entity
 }
 
+export async function requestPeopleReport(location: Location) {
+  await v1.post(`/locations/${location.id}/people-report`)
+}
+
 export async function checkLocationRegistrationCode(locationId: string, registrationCode: string): Promise<any> {
   const result = await v1.post(`/locations/${locationId}/check-registration-code`, {
     registrationCode,

@@ -81,6 +81,22 @@ GEM
     ar_outer_joins (0.2.0)
       activerecord (>= 3.2)
     ast (2.4.1)
+    aws-eventstream (1.1.0)
+    aws-partitions (1.412.0)
+    aws-sdk-core (3.110.0)
+      aws-eventstream (~> 1, >= 1.0.2)
+      aws-partitions (~> 1, >= 1.239.0)
+      aws-sigv4 (~> 1.1)
+      jmespath (~> 1.0)
+    aws-sdk-kms (1.40.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-s3 (1.87.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.1)
+    aws-sigv4 (1.2.2)
+      aws-eventstream (~> 1, >= 1.0.2)
     backport (1.1.2)
     bcrypt (3.1.16)
     benchmark (0.1.1)
@@ -142,6 +158,7 @@ GEM
       concurrent-ruby (~> 1.0)
     interception (0.5)
     jaro_winkler (1.5.4)
+    jmespath (1.4.0)
     json (2.5.1)
     json-schema (2.8.1)
       addressable (>= 2.4)
@@ -387,6 +404,7 @@ DEPENDENCIES
   active_attr
   active_record_extended
   annotate
+  aws-sdk-s3
   bcrypt (~> 3.1.7)
   better_errors
   binding_of_caller
