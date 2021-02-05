@@ -11,7 +11,7 @@ import { assertNotNull, assertNotUndefined, formatPhone } from 'src/helpers/util
 
 import { Location, User } from 'src/models'
 import {
-  getLocation, getUser, store, updateLocationAccount, requestPeopleReport,
+  getLocation, getUser, store, updateLocationAccount,
 } from 'src/api'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { LocationAccount, PermissionLevels } from 'src/models/LocationAccount'
@@ -63,15 +63,7 @@ export default function UserLocationPage(props: F7Props) {
   assertNotUndefined(state.user)
   const la = state.locationAccount
   const l = state.location
-
-  const reportHandler = new SubmitHandler(f7, {
-    onSubmit: async () => {
-      await requestPeopleReport(l)
-    },
-    errorTitle: t({ id: 'Common.failed', message: 'Action Failed' }),
-    submittingMessage: t({ id: 'Location.requesting_report', message: 'Requesting Report...' }),
-    successMessage: t({ id: 'Location.request_report_success', message: 'The generated report will be sent to your email.' }),
-  })
+  const handler = new SubmitHandler(f7)
 
   content = (
     <>
@@ -84,17 +76,6 @@ export default function UserLocationPage(props: F7Props) {
           <p>
             You are linked to {l.name}. To request removal, please contact <EmailSupportLink />.
           </p>
-
-          {la.isAdmin()
-          && (
-            <p>
-              <Button fill onClick={() => reportHandler.submit()}>
-                <Trans id="Location.request_report">
-                  Request Report
-                </Trans>
-              </Button>
-            </p>
-          )}
         </List>
       </Block>
     </>
