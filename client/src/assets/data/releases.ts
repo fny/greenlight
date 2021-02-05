@@ -17,6 +17,16 @@ function date(value: string) {
 
 const releaseData: ReleaseData[] = [
   {
+    version: '1.7.2',
+    date: date('2/5/2020'),
+    notesEn: 'Status display fixes',
+    notesEs: 'Correcciones para los estados',
+    whatsNewEn: [],
+    whatsNewEs: [],
+    bugFixesEn: ['We corrected a major issue with prevent statuses from displaying properly'],
+    bugFixesEs: ['Corregimos un problema importante al evitar que se mostraran los estados'],
+  },
+  {
     version: '1.7.1',
     date: date('2/2/2020'),
     notesEn: 'New quarantine guidance, new admin features, bug fixes',

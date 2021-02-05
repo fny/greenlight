@@ -324,6 +324,12 @@ export class User extends Model {
     return this.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0
   }
 
+  isOwnerOf(user: User) {
+    const ownerAccounts = this.locationAccounts.filter(la => la.permissionLevel === PermissionLevels.OWNER)
+    const otherAccountLocationIds = user.locationAccounts.map(la => la.locationId)
+    return ownerAccounts.some(la => otherAccountLocationIds.includes(la.locationId))
+  }
+
   isOwnerAtVoyager__HACK(): boolean {
     return this.locationAccounts.filter((la) => {
       return la.location?.permalink?.startsWith('voyager') && la.permissionLevel === PermissionLevels.OWNER

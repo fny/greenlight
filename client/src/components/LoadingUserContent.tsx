@@ -18,13 +18,11 @@ export class LoadingUserState extends LoadingState {
 
 export default function LoadingUserContent({ userId, content }: Props): JSX.Element {
   const [currentUser] = useGlobal('currentUser')
-
+  const user = (currentUser?.id === userId) ? currentUser : store.findEntity<User>(User.uuid(userId))
   const [state, setState] = useState({
     ...new LoadingUserState(),
-    user: (currentUser?.id === userId)
-      ? currentUser
-      : store.findEntity<User>(User.uuid(userId)),
-    isLoading: !location,
+    user,
+    isLoading: !user,
   })
 
   useEffect(() => {

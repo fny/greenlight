@@ -58,7 +58,6 @@ import SubmitHandler from 'src/helpers/SubmitHandler'
 interface UserItemProps {
   user: User
   location: Location
-  onDeleteGreenlightStatus: () => void
 }
 function UserItem(props: UserItemProps & F7Props): JSX.Element {
   const { user, location, f7route } = props
@@ -72,29 +71,13 @@ function UserItem(props: UserItemProps & F7Props): JSX.Element {
       className="user-item"
       link="#"
       title={`${user.reversedName()}`}
-      after={user.lastUnexpiredGreenlightStatus().title()}
+      after={user.greenlightStatus().title()}
     >
       <div slot="media">
         <UserJDenticon user={user} alert={!user.completedWelcomeAt.isValid} size={29} key={user.id} />
       </div>
       <AccordionContent key={user.id}>
         <List>
-          {user.hasNotSubmittedOwnSurvey() ? (
-            <ListItem link={dynamicPaths.userSurveysNewPath(user.id, { redirect: f7route.path })} title="Check-In" />
-          ) : (
-            <Fragment>
-              <ListItem
-                title={t({
-                  id: 'DashboardPage.delete_last_greenlight_status',
-                  message: 'Delete last Greenlight Status',
-                })}
-                onClick={(e) => {
-                  e.preventDefault()
-                  props.onDeleteGreenlightStatus()
-                }}
-              />
-            </Fragment>
-          )}
           <ListItem
             link={dynamicPaths.userGreenlightPassPath(user.id)}
             title={t({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' })}
@@ -168,12 +151,6 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
       }),
     [],
   )
-
-  const handleDeleteGreenlightStatus = useCallback((user: User) => {
-    submitHandler.submit(async () => {
-      await deleteLastGreenlightStatus(user)
-    })
-  }, [])
 
   const allowInfinite = useRef(true)
 
@@ -262,7 +239,6 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
                         key={user.id}
                         user={user}
                         location={location}
-                        onDeleteGreenlightStatus={() => handleDeleteGreenlightStatus(user)}
                         f7route={props.f7route}
                         f7router={props.f7router}
                       />

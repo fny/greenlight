@@ -38,7 +38,8 @@ class RecordStore {
 
     const record = this.findRecord(id)
     if (!record) { return null }
-    entity = deserializeJSONAPI<T>(record)
+    // entity = deserializeJSONAPI<T>(record)
+    entity = transformRecord<T>(record)
     this.data[id].entity = entity
     return entity as T
   }

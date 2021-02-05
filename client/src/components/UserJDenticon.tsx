@@ -73,7 +73,7 @@ type Props = {
 }
 
 const UserJDenticon = ({ user, size, alert }: Props) => {
-  jdenticon.configure(configs[user.lastUnexpiredGreenlightStatus().status])
+  jdenticon.configure(configs[user.greenlightStatus().status])
   return (
     <div
       // dangerouslySetInnerHTML={{ __html: jdenticon.toSvg(user.id, size) }}

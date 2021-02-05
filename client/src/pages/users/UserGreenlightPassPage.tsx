@@ -20,6 +20,7 @@ import LoadingUserContent from 'src/components/LoadingUserContent'
 
 export default function UserGreenlightPassPage(props: F7Props) {
   const userId = props.f7route.params.userId
+  const [currentUser] = useGlobal('currentUser')
   assertNotUndefined(userId)
   return (
     <Page className="UserGreenlightPassPage">
@@ -31,48 +32,54 @@ export default function UserGreenlightPassPage(props: F7Props) {
         content={(state) => {
           const user = state.user
           assertNotNull(user)
-          const status = user.lastUnexpiredGreenlightStatus()
+          const status = user.greenlightStatus()
 
           return (
             <Block className="text-center">
-        <h1>
-          {user.fullName()} <Chip text={status.title().toUpperCase()} />
-        </h1>
-        <div id="status-icon">
-          <StatusJDenticon date={DateTime.local()} status={status.status} size={250} />
-        </div>
-        <div>
-          <Case test={status.createdAt.isValid}>
-            <When value>
-              <Trans id="UserGreenlightPassPage.submitted">
-                Submitted at {status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}
-              </Trans>
+              <h1>
+                {user.fullName()} {!status.isUnknown() && <Chip text={status.title().toUpperCase()} />}
+              </h1>
+              <div id="status-icon">
+                <StatusJDenticon date={DateTime.local()} status={status.status} size={250} />
+              </div>
+              <br />
+              <div>
+                <Case test={status.createdAt.isValid}>
+                  <When value>
+                    <Trans id="UserGreenlightPassPage.submitted">
+                      Submitted at {status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}
+                    </Trans>
 
-              {!status.isCleared() && (
-                <>
-                  <br />
-                  <Tr>
-                    <En>
-                      Anticipated return date
-                      <br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
-                    </En>
-                    <Es>
-                      Fecha de regreso anticipada
-                      <br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
-                    </Es>
-                  </Tr>
-                </>
-              )}
-            </When>
-            <When value={false}>
-              <Trans id="UserGreenlightPassPage.not_submitted">Status has not been submitted for today.</Trans>
-            </When>
-          </Case>
-        </div>
-      </Block>
+                    {!status.isCleared() && (
+                      <>
+                        <br />
+                        <Tr>
+                          <En>
+                            Anticipated return date
+                            <br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
+                          </En>
+                          <Es>
+                            Fecha de regreso anticipada
+                            <br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
+                          </Es>
+                        </Tr>
+                      </>
+                    )}
+                  </When>
+                  <When value={false}>
+                    <Trans id="UserGreenlightPassPage.not_submitted">Status has not been submitted for today.</Trans>
+                  </When>
+                </Case>
+
+                {/* {currentUser?.isOwnerOf(user) &&
+
+
+
+                } */}
+              </div>
+            </Block>
           )
         }}
-
       />
 
     </Page>
