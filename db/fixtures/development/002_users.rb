@@ -150,9 +150,9 @@ end
 def event_for_status(status)
   case status
   when 'pending'
-    ['fever', 'new_cough', 'difficulty_breathing', 'fever', 'chills', 'taste_smell'].sample
+    MedicalEvent::SYMPTOMS.sample
   when 'recovery'
-    ['covid_test_positive', 'covid_diagnosis'].sample
+    MedicalEvent::HAS_COVID.sample
   else
     'none'
   end
@@ -163,12 +163,13 @@ def build_medical_event(user, status, status_color)
     id: @medical_event_id_seq.next(),
     greenlight_status_id: status[:id],
     user_id: user[:id],
-    occurred_at: status[:started_at],
+    occurred_at: status[:submission_date],
     event_type: event_for_status(status_color)
   }
 end
 
 def build_greenlight_statuses(user, status)
+  raise "What is #{status} status?" if %w[recovery pending absent unknown cleared].exclude?(status)
   dates = (0...10).map { |d|
     DateTime.now.prev_day(d)
   }
@@ -197,15 +198,15 @@ def build_greenlight_statuses(user, status)
     statuses[-1][:status] = 'unknown'
   end
 
-  statuses = statuses.filter { |s| s[:status] != 'unknown' }
+  statuses = statuses.filter { |s| s[:status] != 'unknown' && s[:event_type] != 'none' }
 
   [statuses, events]
 end
 
 def assign_gl_statuses(users)
   n = users.size
-  colors = %w[red  pending absent unknown]
-  counts =   [0.5, 3,     4,     7].map { |x| x * 0.01 * users.size }
+  colors = %w[recovery  pending absent unknown]
+  counts =   [10, 10,     0,     7].map { |x| x * 0.01 * users.size }
 
   statuses = []
   events = []

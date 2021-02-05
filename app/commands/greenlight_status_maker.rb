@@ -19,7 +19,7 @@ class GreenlightStatusMaker < ApplicationCommand
   end
 
   def self.create_status!(user, date, status)
-    GreenlightStatus.create!(
+    GreenlightStatus.create(
       user: user,
       submission_date: date,
       expiration_date: date + 1.day,
