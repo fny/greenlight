@@ -11,27 +11,17 @@ class UploadToS3 < ApplicationCommand
 
   def work
     s3 = Aws::S3::Resource.new(
-      region: 'us-east-1',
+      region: ENV['AWS_REGION'],
       access_key_id: ENV['AWS_ACCESS_KEY_ID'],
       secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
     )
 
-    bucket = s3.bucket(s3_bucket)
+    bucket = s3.bucket(ENV['AWS_BUCKET'])
     obj = bucket.object(self.path)
     obj.put(body: self.content, content_disposition: "attachment; filename=#{self.filename}")
 
     obj.presigned_url(:get, expires_in: self.expires_in)
   rescue => e
     puts e.inspect
-  end
-
-  private
-
-  def s3_bucket
-    if Rails.env == 'development'
-      'glit-dev'
-    else
-      'glit-prod'
-    end
   end
 end
