@@ -11,6 +11,13 @@ module UsersController
       render json: UserSerializer.new(user, include: UserSerializer::ADMIN_INCLUDES)
     end
 
+    get '/v1/users/:user_id/parents' do
+      user = User.find(params[:user_id])
+      ensure_or_forbidden! { current_user.authorized_to_view?(user) }
+
+      render json: UserSerializer.new(user.parents)
+    end
+
     # Update a user
     patch '/v1/users/:user_id' do
       user = User.find(params[:user_id])
