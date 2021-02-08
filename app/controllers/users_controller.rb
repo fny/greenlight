@@ -94,12 +94,12 @@ module UsersController
 
     patch '/v1/users/:user_id/last-greenlight-status' do
       user = User.find(params[:user_id])
-      ensure_or_forbidden! {  current_user.authorized_to_edit?(user) }
+      ensure_or_forbidden! { current_user.authorized_to_edit?(user) }
 
       status = user.last_greenlight_status
       if !status
         simple_error_response("no last status")
-      elsif status.update(expiration_date: params[:expiration_date], status: params[:status], is_override: true)
+      elsif status.update(expiration_date: params[:expirationDate], status: params[:status], is_override: true)
         render json: GreenlightStatusSerializer.new(status)
       else
         error_response(status)
@@ -108,10 +108,10 @@ module UsersController
 
     delete '/v1/users/:user_id/last-greenlight-status' do
       user = User.find(params[:user_id])
-      ensure_or_forbidden! {  current_user.authorized_to_edit?(user) }
+      ensure_or_forbidden! { current_user.authorized_to_edit?(user) }
 
       status = user.last_greenlight_status
-      if status && status.destroy
+      if status&.destroy
         success_response
       else
         simple_error_response("failed to delete status")
