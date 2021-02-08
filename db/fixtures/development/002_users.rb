@@ -143,7 +143,7 @@ def build_greenlight_status(user, submitted_at, expiration_date, status = nil)
     submission_date: submitted_at.to_date,
     follow_up_date: submitted_at.to_date + 1.day,
     expiration_date: expiration_date,
-    status: status || ['cleared', 'cleared', 'cleared', 'cleared', 'cleared', 'cleared', 'cleared', 'absent', 'unknown'].sample
+    status: status || ['cleared', 'cleared', 'cleared', 'cleared', 'recovery', 'recovery', 'pending', 'pending', 'unknown'].sample
   }
 end
 
