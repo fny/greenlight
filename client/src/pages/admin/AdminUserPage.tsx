@@ -1,138 +1,165 @@
-import React, {
-  useState, useEffect,
-} from 'reactn'
+import React from 'react'
 import {
-  Page, Block, Button, Navbar, f7, ListInput, List, ListItem,
+  Page, Block, Navbar, List, ListItem, BlockTitle,
 } from 'framework7-react'
-import { Trans, t } from '@lingui/macro'
 
 import { F7Props } from 'src/types'
-import { assertNotNull, assertNotUndefined, formatPhone } from 'src/helpers/util'
-
-import { Location, User } from 'src/models'
 import {
-  getLocation, getUser, store, updateLocationAccount,
-} from 'src/api'
-import SubmitHandler from 'src/helpers/SubmitHandler'
-import { LocationAccount, PermissionLevels } from 'src/models/LocationAccount'
+  assertNotNull, assertNotUndefined, copyTextToClipboard, formatPhone,
+} from 'src/helpers/util'
+
+import { User } from 'src/models'
+import { getUserParents } from 'src/api'
 import { dynamicPaths } from 'src/config/routes'
-import LoadingPage from 'src/pages/util/LoadingPage'
+import LoadingUserContent from 'src/components/LoadingUserContent'
+import LoadingLocationContent from 'src/components/LoadingLocationContent'
+import LoadingBundleContent from 'src/components/LoadingBundleContent'
+import FakeF7ListItem from 'src/components/FakeF7ListItem'
 
-interface State {
-  user?: User | null
-  location?: Location | null
-  locationAccount?: LocationAccount | null
-  permissionLevel: PermissionLevels
-}
-
-export default function AdminUserPage(props: F7Props) {
+export default function AdminUserPage(props: F7Props): JSX.Element {
   const { locationId, userId } = props.f7route.params
   assertNotUndefined(locationId)
   assertNotUndefined(userId)
 
-  const [state, setState] = useState<State>({
-    permissionLevel: PermissionLevels.NONE,
-  })
-
-  useEffect(() => {
-    (async () => {
-      const [user, location] = await Promise.all([getUser(userId), getLocation(locationId)])
-      const locationAccount = user?.accountFor(location)
-      setState({
-        user,
-        locationAccount,
-        location,
-        permissionLevel: locationAccount?.permissionLevel || PermissionLevels.NONE,
-      })
-    })()
-  }, [])
-
-  assertNotNull(state.location)
-  assertNotNull(state.locationAccount)
-  assertNotNull(state.user)
-  assertNotUndefined(state.location)
-  assertNotUndefined(state.locationAccount)
-  assertNotUndefined(state.user)
-  const { user, locationAccount, location } = state
-  const handler = new SubmitHandler(f7)
-
-  let content
-  if (!state.user || !state.location) {
-    content = <LoadingPage />
-  } else {
-    content = (
-      <>
-        <Navbar title={`${state.user.firstName} ${state.user.lastName}`} />
-        <Block>
-          <p>
-            {state.user.firstName} {state.user.lastName} is a {locationAccount.role} at {location.name}
-          </p>
-
-          <List>
-            {state.user.mobileNumber && (
-            <ListItem
-              external
-              link={`tel:${state.user.mobileNumber}`}
-              title={`Call ${state.user.firstName}: ${state.user.mobileNumber}`}
-            />
-            )}
-            {
-          state.user.email && (
-          <ListItem
-            external
-            link={`mailto:${state.user.email}`}
-            title={`Email ${state.user.firstName}: ${state.user.email}`}
-          />
-          )
-          }
-            {locationAccount.isStudent()
-            && user.parents.map((parent) => (
-              <ListItem
-                external
-                link={`mailto:${parent.email}`}
-                title={`Email Parent ${parent.firstName}`}
-                footer={`${parent.email}`}
-              />
-            ),
-
-              // { parent.mobileNumber && (
-              //   <ListItem
-              //     external
-              //     link={`tel:${parent.mobileNumber}`}
-              //     title={`Call Parent ${parent.firstName}: ${parent.mobileNumber}`}
-              //   />
-              // ) }
-            )}
-            {
-              user.hasNotSubmittedOwnSurvey() ? (
-                <ListItem
-                  link={dynamicPaths.userSurveysNewPath(user.id, { redirect: props.f7route.path })}
-                  title="Check-In"
-                />
-              ) : (
-                <ListItem
-                  link={dynamicPaths.userGreenlightPassPath(user.id)}
-                  title={t({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' })}
-                />
-              )
-            }
-            {
-              !locationAccount.isStudent() && (
-              <ListItem
-                link={dynamicPaths.userLocationPermissionsPath({ userId: user.id, locationId: location.id })}
-                title={t({ id: 'AdminUsersPage.location_permissions', message: 'Permissions' })}
-              />
-              )
-            }
-          </List>
-        </Block>
-      </>
-    )
-  }
-
   return (
     <Page>
-      {content}
+      <LoadingLocationContent
+        showNavbar
+        showAsPage
+        locationId={locationId}
+        content={(state) => {
+          const { location } = state
+          assertNotNull(location)
+          return (
+            <LoadingUserContent
+              showAsPage
+              userId={userId}
+              content={(state) => {
+                const { user } = state
+                assertNotNull(user)
+                const locationAccount = user.accountFor(location)
+                assertNotNull(locationAccount)
+                return (
+                  <>
+                    <Navbar title={`${user.firstName} ${user.lastName}`} />
+                    <Block>
+                      <p>
+                        {user.firstName} {user.lastName} is a {locationAccount.role} at {location.name}.
+                      </p>
+                    </Block>
+                    <Block>
+                      <BlockTitle>
+                        Actions
+                      </BlockTitle>
+                      <List>
+                        {
+                          user.hasNotSubmittedOwnSurvey() ? (
+                            <ListItem
+                              link={dynamicPaths.userSurveysNewPath(user.id, { redirect: props.f7route.path })}
+                              title="Check-In"
+                            />
+                          ) : (
+                            <FakeF7ListItem>
+                              <ListItem
+                                link={dynamicPaths.userGreenlightPassPath(user.id)}
+                                title="Greenlight Pass"
+                              />
+                              {/* <ListItem
+                                link="#"
+                                title="Submit Updated Symptoms"
+                                footer="Submit an updated survey"
+                              /> */}
+                            </FakeF7ListItem>
+                          )
+                        }
+                        {/* <ListItem
+                          link="#"
+                          title="Submit Medical Data"
+                          footer="Submit a test or vaccine result"
+                        /> */}
+                        {/* <ListItem
+                          link="#"
+                          title={`Edit ${user.firstName}`}
+                          footer="Change name and contact info"
+                        /> */}
+                        {/* <ListItem
+                          link="#"
+                          title="Unlink"
+                          footer={`Unlink ${user.firstName} from ${location.name}`}
+                        /> */}
+                        {
+                          !locationAccount.isStudent() && (
+                          <ListItem
+                            link={dynamicPaths.userLocationPermissionsPath({ userId: user.id, locationId: location.id })}
+                            title="Permissions"
+                          />
+                          )
+                        }
+                      </List>
+                    </Block>
+                    <Block>
+                      <BlockTitle>
+                        Contact
+                      </BlockTitle>
+
+                      <List>
+                        {user.mobileNumber && (
+                          <ListItem
+                            external
+                            link={`tel:${user.mobileNumber}`}
+                            title={`Call ${user.firstName}`}
+                            footer={formatPhone(user.mobileNumber)}
+                          />
+                        )}
+                        {user.email && (
+                          <ListItem
+                            external
+                            link={`mailto:${user.email}`}
+                            title={`Email ${user.firstName}`}
+                            footer={user.email}
+                          />
+                        )}
+                        {locationAccount.isStudent() && (
+                        <FakeF7ListItem>
+                          <LoadingBundleContent<User[]>
+                            showAsPage
+                            action={() => getUserParents(userId)}
+
+                            content={(state) => {
+                              const parents = state.bundle || []
+                              return parents.map((parent) => (
+                                <>
+                                  {parent.mobileNumber && (
+                                  <ListItem
+                                    external
+                                    link={`tel:${parent.mobileNumber}`}
+                                    title={`Call Parent: ${parent.firstName} ${parent.lastName}`}
+                                    footer={formatPhone(parent.mobileNumber)}
+                                  />
+                                  )}
+                                  {parent.email && (
+                                  <ListItem
+                                    external
+                                    link={`mailto:${parent.email}`}
+                                    title={`Email Parent: ${parent.firstName} ${parent.lastName}`}
+                                    footer={parent.email}
+                                  />
+                                  )}
+                                </>
+                              ))
+                            }}
+                          />
+                        </FakeF7ListItem>
+                        )}
+                      </List>
+                    </Block>
+                  </>
+                )
+              }}
+            />
+          )
+        }}
+      />
     </Page>
   )
 }

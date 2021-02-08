@@ -11,13 +11,14 @@ import { Line } from 'react-chartjs-2'
 import './AdminDashboardPage.css'
 import { dynamicPaths, paths } from 'src/config/routes'
 import { UsersFilter } from 'src/components/UsersFilter'
-import { assertNotNull, assertNotUndefined } from 'src/helpers/util'
+import { assertNotUndefined } from 'src/helpers/util'
 import { F7Props } from 'src/types'
 import { getLocation, store, v1 } from 'src/api'
-import { GreenlightStatus, Location } from 'src/models'
+import { Location } from 'src/models'
 import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
 import logger from 'src/helpers/logger'
 import FakeF7ListItem from 'src/components/FakeF7ListItem'
+import { requireCurrentUser } from 'src/helpers/global'
 
 interface StatsSquareProps {
   title: string
@@ -88,12 +89,12 @@ function chartColor(view: GreenlightStatusTypes | 'submitted'): string {
 }
 
 export default function AdminDashboardPage(props: F7Props): JSX.Element {
+  const currentUser = requireCurrentUser()
+
   const { locationId } = props.f7route.params
   assertNotUndefined(locationId)
   const [state, setState] = useState({ ...new State(), location: store.findEntity<Location>(Location.uuid(locationId)) })
 
-  const [currentUser] = useGlobal('currentUser')
-  assertNotNull(currentUser)
   useEffect(() => {
     if (state.location === null) {
       getLocation(locationId).then((loc) => setState({ ...state, location: loc }))
@@ -106,7 +107,7 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
 
   let content
   if (!state.location || !state.weeklySummary) {
-    content = <LoadingPageContent />
+    content = <LoadingPageContent showNavbar />
   } else {
     const weekdays = ['Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa']
 
@@ -226,8 +227,7 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
             )
             }
             {
-              (!state.location.permalink?.startsWith('voyager') || currentUser.isOwnerAtVoyager__HACK())
-
+              (currentUser.hasStaffAccessAt(state.location))
             && (
             <ListItem title="Staff Roster" accordionItem>
               <AccordionContent>
@@ -247,7 +247,7 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
             )
             }
             {
-              state.location.category === 'school'
+              state.location.isSchool()
             && (
             <FakeF7ListItem>
               <ListItem title="Score Card" link={paths.schoolScoreCardPath} />

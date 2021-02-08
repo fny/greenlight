@@ -15,8 +15,8 @@ import { Roles } from 'src/models/LocationAccount'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import { F7Props } from 'src/types'
 import { paths } from 'src/config/routes'
-import AddChildForm from './AddChildForm'
 import Tr, { tr } from 'src/components/Tr'
+import AddChildForm from './AddChildForm'
 
 export default function RegisterChildrenPage(props: F7Props): JSX.Element {
   const { locationId } = props.f7route.params
@@ -77,6 +77,8 @@ export default function RegisterChildrenPage(props: F7Props): JSX.Element {
   return (
     <Page>
       <LoadingLocationContent
+        showNavbar
+        showAsPage
         locationId={locationId}
         content={(state) => {
           const { location } = state
@@ -123,14 +125,14 @@ function ChildrenList({
 }): JSX.Element {
   return (
     <Fragment>
-      <Navbar title={tr({ en: 'Add Your Children', es: 'Registrar sus hijos'  })}>
+      <Navbar title={tr({ en: 'Add Your Children', es: 'Registrar sus hijos' })}>
         <NavbarHomeLink slot="left" />
       </Navbar>
       <Block>
         <p>
           <Tr
-            en={`If you have any children that attend {location.name} add them here.`}
-            es={`Si tiene algunos hijos quien asistir {location.name} registrarlos aquí.`}
+            en="If you have any children that attend {location.name} add them here."
+            es="Si tiene algunos hijos quien asistir {location.name} registrarlos aquí."
           />
 
         </p>
@@ -154,7 +156,7 @@ function ChildrenList({
           ))}
           <ListItem
             link="#"
-            title={registeringUser.children.length > 0 ? tr({en: 'Add another child', es: 'Registrar otro hijo'}) : tr({en: 'Add a child', es: 'Registrar un hijo' })}
+            title={registeringUser.children.length > 0 ? tr({ en: 'Add another child', es: 'Registrar otro hijo' }) : tr({ en: 'Add a child', es: 'Registrar un hijo' })}
             onClick={(e) => {
               e.preventDefault()
               setPage('child')
@@ -169,9 +171,8 @@ function ChildrenList({
           onClick={onRegister}
           disabled={registeringUser.role === Roles.Parent && registeringUser.children.length === 0}
         >
-          {registeringUser.children.length > 0 ?
-              tr({ en: 'Done adding children', es: 'Terminado'}) : tr({ en: 'Skip adding children', es: 'Seguir' })
-            }
+          {registeringUser.children.length > 0
+            ? tr({ en: 'Done adding children', es: 'Terminado' }) : tr({ en: 'Skip adding children', es: 'Seguir' })}
         </Button>
       </Block>
     </Fragment>

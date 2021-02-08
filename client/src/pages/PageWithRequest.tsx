@@ -1,3 +1,4 @@
+// THIS IS A PAGE FOR TESTING PURPOSES
 import { Page } from 'framework7-react'
 import React, { useState, useEffect } from 'react'
 import { getLocation } from 'src/api'

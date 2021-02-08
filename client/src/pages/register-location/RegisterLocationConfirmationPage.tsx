@@ -43,6 +43,8 @@ export default function RegisterLocationConfirmationPage(props: F7Props): JSX.El
   return (
     <Page className="RegisterLocationWelcomePage">
       <LoadingContent
+        showNavbar
+        showAsPage
         state={state}
         content={(state) => {
           const { location } = state
