@@ -94,7 +94,7 @@ export default function PositiveResourcesPage(): JSX.Element {
         <Tr>
           <En>
             <p style={{ fontWeight: 'bold' }}>
-              Has the suspected or confirmed individual been present 48 hours
+              Has the suspected or confirmed individual been present 48 hours 
               before symptom onset or positive test result?
             </p>
 
@@ -102,7 +102,7 @@ export default function PositiveResourcesPage(): JSX.Element {
             <ul>
               <li>Individual should undergo testing and isolate at home.</li>
               <li>No additional testing or quarantine required for other individuals.</li>
-              <li>Spaces used by the individual should be <a href="https://www.cdc.gov/coronavirus/2019-ncov/community/organizations/cleaning-disinfection.html" rel="noreferrer" target="_blank">disinfected per CDC guidance.</a></li>
+              <li>Spaces used by the individual should be disinfected <a href="https://www.cdc.gov/coronavirus/2019-ncov/community/organizations/cleaning-disinfection.html" rel="noreferrer" target="_blank">per CDC guidance.</a></li>
             </ul>
 
             <span>Yes →</span><br />
@@ -113,19 +113,19 @@ export default function PositiveResourcesPage(): JSX.Element {
               </li>
             </ul>
 
-            <p style={{ fontWeight: 'bold' }}>Quarantine Protocol</p>
             <p>
-              Depending on whether the the individual has symptoms or has had a test,
-              the quarantine protocol differs. Use the table below to determine the proper
-              course of action.
-            </p>
-            <p>
+              <span style={{ fontWeight: 'bold' }}>Table for individuals with symptoms, positive test, or close contact</span>
               <img src={quarantineTableImageEn} alt="Protocols" width="100%" />
+            </p>
+            <p className="caution">
+              *Some counties may be implementing the CDC’s <a href="https://www.cdc.gov/coronavirus/2019-ncov/more/scientific-brief-options-to-reduce-quarantine.html" rel="noreferrer" target="_blank">new guidelines</a> for reducing quarantine. 
+              However, because those guidelines vary county-by-county, Greenlight will be implementing the full 14-day quarantine policy to ensure that our communities remain as safe as possible.
+              If guidelines from your organization differ from ours, please follow your organization’s guidelines.
             </p>
           </En>
           <Es>
             <p style={{ fontWeight: 'bold' }}>
-              ¿El individuo sospechoso o confirmado ha estado presente durante 48 horas
+              ¿El individuo sospechoso o confirmado ha estado presente durante 48 horas 
               antes del inicio de síntomas o resultado positivo de la prueba?
             </p>
 
@@ -133,7 +133,7 @@ export default function PositiveResourcesPage(): JSX.Element {
             <ul>
               <li> La persona debe ser probado y aislarse en casa. </li>
               <li> No se requieren pruebas adicionales ni cuarentena para otras personas. </li>
-              <li> Los espacios utilizados por la persona deben <a href="https://espanol.cdc.gov/coronavirus/2019-ncov/community/disinfecting-building-facility.html" target="_blank"> desinfectarse según los CDC orientación. </a> </li>
+              <li> Los espacios utilizados por la persona deben <a href="https://espanol.cdc.gov/coronavirus/2019-ncov/community/disinfecting-building-facility.html" rel="noreferrer" target="_blank">desinfectarse según los CDC orientación.</a> </li>
             </ul>
 
             <span> Sí → </span> <br />
@@ -144,14 +144,17 @@ export default function PositiveResourcesPage(): JSX.Element {
               </li>
             </ul>
 
-            <p style={{ fontWeight: 'bold' }}> Protocolo de cuarentena </p>
             <p>
-              Dependiendo de si el individuo tiene síntomas o ha tenido una prueba,
-              el protocolo de cuarentena es diferente. Utilice la tabla a continuación para determinar el
-              Curso de acción.
-            </p>
-            <p>
+              <span style={{ fontWeight: 'bold' }}>Mesa para personas con síntomas, prueba positiva, o contacto cercano con una persona COVID positiva</span>
               <img src={quarantineTableImageEs} alt="Protocolos" width="100%" />
+            </p>
+            <p className="caution">
+              *Algunos condados pueden estar implementando <a href="https://www.cdc.gov/coronavirus/2019-ncov/more/scientific-brief-options-to-reduce-quarantine.html" rel="noreferrer" target="_blank">las nuevas pautas</a> de 
+              la CDC para reducir la cuarentena. Sin embargo, debido a que esas pautas 
+              varían de un condado a otro, Greenlight implementará la política de cuarentena 
+              completa de 14 días para garantizar que nuestras comunidades permanezcan 
+              lo más seguras posible. Si las directrices de su organización difieren de las 
+              nuestras, siga las directrices de su organización.
             </p>
           </Es>
         </Tr>
