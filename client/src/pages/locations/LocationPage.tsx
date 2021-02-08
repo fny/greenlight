@@ -26,6 +26,8 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
   return (
     <Page>
       <LoadingLocationContent
+        showNavbar
+        showAsPage
         locationId={locationId}
         content={(state) => {
           const { location } = state

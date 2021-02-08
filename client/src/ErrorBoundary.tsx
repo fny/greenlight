@@ -4,24 +4,32 @@ import { Trans } from '@lingui/macro'
 import logger from './helpers/logger'
 import EmailSupportLink from './components/EmailSupportLink'
 
+interface DerivedState {
+  hasError: boolean
+  message: string
+}
+
 export class ErrorBoundary extends React.Component<any, any> {
   state = {
     hasError: false,
     message: '',
   }
 
-  static getDerivedStateFromError(error: any) {
+  static getDerivedStateFromError(error: any): DerivedState {
     const message = typeof error === 'string' ? error : error.message
 
     // Update state so the next render will show the fallback UI.
     return { hasError: true, message }
   }
 
-  componentDidCatch(error: any, errorInfo: any) {
+  componentDidCatch(error: any, errorInfo: any): void {
+    if (error.isNoCurrentUserError) {
+      (window as any).location = '/'
+    }
     logger.error(error, errorInfo)
   }
 
-  render() {
+  render(): React.ReactNode {
     if (this.state.hasError) {
       return (
         <Page>

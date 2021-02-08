@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import {
-  Model, attribute as attr, initialize, STRING, BOOLEAN, NUMBER, DATETIME,
+  Model, attribute as attr, initialize, STRING, DATETIME,
 } from 'src/lib/Model'
 
 export class Cohort extends Model {
@@ -12,7 +12,7 @@ export class Cohort extends Model {
   }
 
   @attr({ type: STRING })
-  location_id: string = ''
+  locationIdd: string = ''
 
   @attr({ type: STRING })
   category: string = ''

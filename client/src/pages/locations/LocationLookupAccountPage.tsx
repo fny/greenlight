@@ -1,4 +1,6 @@
-import { Badge, Block, BlockTitle, Button, f7, List, ListInput, Page } from 'framework7-react'
+import {
+  Badge, Block, BlockTitle, Button, f7, List, ListInput, Page,
+} from 'framework7-react'
 import React, { useMemo, useState } from 'react'
 import { mailInvite } from 'src/api'
 import EmailSupportLink from 'src/components/EmailSupportLink'
@@ -16,6 +18,8 @@ export default function LocationLookupAccountPage({ f7route, f7router }: F7Props
   return (
     <Page>
       <LoadingLocationContent
+        showNavbar
+        showAsPage
         locationId={locationId}
         content={(state) => {
           const { location } = state
@@ -28,7 +32,7 @@ export default function LocationLookupAccountPage({ f7route, f7router }: F7Props
                 <b>{location.name}</b>
                 <Badge className="title-badge">
                   {lcTrans(location.category)}
-                  </Badge>
+                </Badge>
               </BlockTitle>
               <p>
                 <Tr>
@@ -47,39 +51,35 @@ export default function LocationLookupAccountPage({ f7route, f7router }: F7Props
               <LookupAccount />
             </Block>
           )
-        }
-      }
+        }}
       />
-  </Page>
+    </Page>
   )
 }
-
-
 
 function LookupAccount(): JSX.Element {
   const [emailOrMobile, setEmailOrMobile] = useState<string>('')
 
   const submitHandler = useMemo(
-    () =>
-      new SubmitHandler(f7, {
-        onSuccess: () => {
-          f7.dialog.alert(
-            tr({
-              en: 'You should receive a text or email with instructions from Greenlight soon. Please check spam too!',
-              es: 'Pronto recibirá un mensaje de texto o correo electrónico con instrucciones. ¡Por favor revise el spam también!'
-            }),
-            tr({ en: 'Success', es: 'Éxito'}),
-          )
-        },
-        errorTitle: tr({en: 'Not Found', es: 'No Encontrado'  }),
-        errorMessage: tr({
-          en: 'No matching email or phone number was found. Maybe you already finished registration?',
-          es: 'No se encontró ningún correo electrónico o número de teléfono que coincida. ¿Quizás ya terminó de registrarse?'
-        }),
-        onSubmit: async () => {
-          await mailInvite(emailOrMobile)
-        },
+    () => new SubmitHandler(f7, {
+      onSuccess: () => {
+        f7.dialog.alert(
+          tr({
+            en: 'You should receive a text or email with instructions from Greenlight soon. Please check spam too!',
+            es: 'Pronto recibirá un mensaje de texto o correo electrónico con instrucciones. ¡Por favor revise el spam también!',
+          }),
+          tr({ en: 'Success', es: 'Éxito' }),
+        )
+      },
+      errorTitle: tr({ en: 'Not Found', es: 'No Encontrado' }),
+      errorMessage: tr({
+        en: 'No matching email or phone number was found. Maybe you already finished registration?',
+        es: 'No se encontró ningún correo electrónico o número de teléfono que coincida. ¿Quizás ya terminó de registrarse?',
       }),
+      onSubmit: async () => {
+        await mailInvite(emailOrMobile)
+      },
+    }),
     [emailOrMobile],
   )
 

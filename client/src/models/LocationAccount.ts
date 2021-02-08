@@ -1,10 +1,21 @@
+import {
+  Model, attribute as attr, initialize, STRING, hasOne,
+} from 'src/lib/Model'
 import { User } from './User'
 import { Location } from './Location'
-import { Model, attribute as attr, initialize, STRING, hasOne } from 'src/lib/Model'
 
 export enum PermissionLevels {
+  // Has access to everything including student data
+  MEDICAL_STAFF = 'medical_staff',
+  // Has access to everything except health data data
   OWNER = 'owner',
+  // DEPRECATED: Alias for student manager
   ADMIN = 'admin',
+  // Has access and can make changes to staff, including permissions, and student data
+  STAFF_MANAGER = 'staff_manager',
+  // Has access and can make changes to student data
+  STUDENT_MANAGER = 'student_manager',
+  // No permissions
   NONE = 'none',
 }
 
@@ -28,13 +39,9 @@ export class LocationAccount extends Model {
 
   @attr({ type: STRING }) externalId: string | null = null
 
-  @attr({ type: STRING }) role: string | null = null
-
-  @attr({ type: STRING }) title: string | null = null
+  @attr({ type: STRING }) role: Roles | null = null
 
   @attr({ type: STRING }) permissionLevel: PermissionLevels | null = null
-
-  @attr({ type: STRING }) attendanceStatus: string | null = null
 
   @hasOne('Location')
   location: Location | null = null
@@ -42,15 +49,48 @@ export class LocationAccount extends Model {
   @hasOne('User')
   user: User | null = null
 
-  isAdmin(): boolean {
-    return this.permissionLevel === PermissionLevels.ADMIN || this.permissionLevel === PermissionLevels.OWNER
+  /**
+   * @returns whether account can administer staff data
+   */
+  hasStaffAccess(): boolean {
+    return [
+      PermissionLevels.MEDICAL_STAFF,
+      PermissionLevels.OWNER,
+      PermissionLevels.STAFF_MANAGER,
+    ].includes(this.permissionLevel || PermissionLevels.NONE)
+  }
+
+  /**
+   * @returns whether account can administer student data
+   */
+  hasStudentAccess(): boolean {
+    return [
+      PermissionLevels.MEDICAL_STAFF,
+      PermissionLevels.OWNER,
+      PermissionLevels.STAFF_MANAGER,
+      PermissionLevels.STUDENT_MANAGER,
+    ].includes(this.permissionLevel || PermissionLevels.NONE)
+  }
+
+  /**
+   * @returns whether account can administer medical data
+   */
+  hasMedicalAccess(): boolean {
+    return this.permissionLevel === PermissionLevels.MEDICAL_STAFF
+  }
+
+  isStudent(): boolean {
+    return this.role === Roles.Student
   }
 
   isOwner(): boolean {
     return this.permissionLevel === PermissionLevels.OWNER
   }
 
-  isStudent(): boolean {
-    return this.role === Roles.Student
+  /**
+   * @returns Whether account has any administrative privileges whatsoever
+   */
+  isAdmin(): boolean {
+    return this.permissionLevel !== PermissionLevels.NONE
   }
 }

@@ -22,7 +22,7 @@ RSpec.describe 'Users Endpoint', type: :request do
       status = GreenlightStatus::RECOVERY
       GreenlightStatusMaker.create_status!(user, date, status)
       patch_json("/v1/users/#{user.id}/last-greenlight-status", body: {
-        expiration_date: 100.days.from_now.to_date,
+        expirationDate: 100.days.from_now.to_date,
         status: GreenlightStatus::CLEARED
       })
       status = user.last_greenlight_status

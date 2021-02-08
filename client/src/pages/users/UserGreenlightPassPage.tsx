@@ -1,8 +1,7 @@
-
-import { useMemo, useCallback, useState, useGlobal, PureComponentClass } from 'reactn'
-import { Page, Navbar, Block, Chip, List, ListInput, Button, f7 } from 'framework7-react'
-import { store, updateGreenlightStatus } from 'src/api'
-import { CurrentUser, User } from 'src/models'
+import React from 'react'
+import {
+  Page, Navbar, Block, Chip, List, ListInput, Button, f7,
+} from 'framework7-react'
 
 import './UserGreenlightPassPage.css'
 import StatusJDenticon from 'src/components/StatusJDenticon'
@@ -11,26 +10,27 @@ import { Case, When } from 'src/components/Case'
 import { t, Trans } from '@lingui/macro'
 import { DateTime } from 'luxon'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import Tr, { En, Es } from 'src/components/Tr'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 import { F7Props } from 'src/types'
 import { assertNotNull, assertNotUndefined } from 'src/helpers/util'
-import SubmitHandler from 'src/helpers/SubmitHandler'
-import LoadingContent, { LoadingState } from 'src/components/LoadingContent'
 import LoadingUserContent from 'src/components/LoadingUserContent'
+import { requireCurrentUser } from 'src/helpers/global'
+import { dynamicPaths } from 'src/config/routes'
 
-export default function UserGreenlightPassPage(props: F7Props) {
-  const userId = props.f7route.params.userId
-  const [currentUser] = useGlobal('currentUser')
+export default function UserGreenlightPassPage(props: F7Props): JSX.Element {
+  const { userId } = props.f7route.params
   assertNotUndefined(userId)
+
+  const currentUser = requireCurrentUser()
   return (
     <Page className="UserGreenlightPassPage">
-      <Navbar title={t({ id: 'UserGreenlightPassPage.pass_title', message: 'Greenlight Pass' })}>
+      <Navbar title={tr({ en: 'Greenlight Pass', es: 'Pase Greenlight' })}>
         <NavbarHomeLink slot="left" />
       </Navbar>
       <LoadingUserContent
         userId={userId}
         content={(state) => {
-          const user = state.user
+          const { user } = state
           assertNotNull(user)
           const status = user.greenlightStatus()
 
@@ -46,9 +46,10 @@ export default function UserGreenlightPassPage(props: F7Props) {
               <div>
                 <Case test={status.createdAt.isValid}>
                   <When value>
-                    <Trans id="UserGreenlightPassPage.submitted">
-                      Submitted at {status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}
-                    </Trans>
+                    <Tr
+                      en={`Submitted at ${status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}`}
+                      es={`Enviado en ${status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}`}
+                    />
 
                     {!status.isCleared() && (
                       <>
@@ -65,17 +66,27 @@ export default function UserGreenlightPassPage(props: F7Props) {
                         </Tr>
                       </>
                     )}
+
+                    {
+                      currentUser.canAdministrate(user)
+                      && (
+                        <Block>
+                          <Button fill href={dynamicPaths.adminEditGreenlightPassPath({ userId: user.id })}>
+                            <Tr en="Edit" es="Editar" />
+                          </Button>
+                        </Block>
+                      )
+                  }
                   </When>
                   <When value={false}>
-                    <Trans id="UserGreenlightPassPage.not_submitted">Status has not been submitted for today.</Trans>
+
+                    <Tr
+                      en="Status has not been submitted for today."
+                      es="No se ha enviado la encuesta para hoy."
+                    />
                   </When>
                 </Case>
 
-                {/* {currentUser?.isOwnerOf(user) &&
-
-
-
-                } */}
               </div>
             </Block>
           )
