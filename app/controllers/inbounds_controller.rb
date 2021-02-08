@@ -6,14 +6,14 @@ module InboundsController
     post '/v1/inbounds/email', auth: false do
       survey_permalink = SurveyParser.permalink_from_email(params[:to])
       content = params[:text]
-      from_mail = params[:from]
+      from_mail = JSON.parse(params[:envelope])['from']
 
       if survey_permalink.present? && SurveyParser.content_valid?(content)
         SurveyResponseRegister.new(
           medium: :email,
           response: SurveyParser.clean_content(content),
           from: from_mail,
-          permalink: permalink,
+          permalink: survey_permalink,
         ).run
       end
 

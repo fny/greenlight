@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module SurveyParser
-  SURVEY_REPLY_TO_PATTERN = /survey\+(.+)@reply-to.greenlightready.com/i
-  SURVEY_REPLY_TO_EMAIL_ORIGIN = 'survey@reply-to.greenlightready.com'.freeze
+  SURVEY_REPLY_TO_PATTERN = /survey\+(.+)@mailbox.greenlightready.com/i
+  SURVEY_REPLY_TO_EMAIL_ORIGIN = 'survey@mailbox.greenlightready.com'.freeze
 
   def self.clean_content(content)
     content.strip
