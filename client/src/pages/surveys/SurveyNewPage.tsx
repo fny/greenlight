@@ -268,7 +268,6 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
         tr({
           en: 'Please complete all survey questions. If you do not have symptoms, please click "No Symptoms".',
           es: 'Complete todas las preguntas de la encuesta. Si no tiene síntomas, haga clic en "Sin síntomas".',
-          reviewTrans: true,
         }),
       )
     } else {
