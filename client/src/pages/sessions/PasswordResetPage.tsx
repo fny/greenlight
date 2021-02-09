@@ -29,7 +29,7 @@ export default function PasswordResetPage({ f7route, f7router }: F7Props): JSX.E
 
   const formik = useFormik<PasswordInput>({
     validationSchema: Yup.object<PasswordInput>().shape({
-      password: Yup.string().required(cantBeBlankMessage),
+      password: Yup.string().required(cantBeBlankMessage).min(8, tr({ en: 'must have at least 8 characters',  es: 'debe tener al menos 8 caracteres'})),
       confirmPassword: Yup.string()
         .required(cantBeBlankMessage)
         .test(
