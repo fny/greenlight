@@ -17,6 +17,30 @@ function date(value: string) {
 
 const releaseData: ReleaseData[] = [
   {
+    version: '1.7.3',
+    date: date('2/9/2020'),
+    notesEn: 'Updates to our COVID-19 resources and more',
+    notesEs: 'Cambios en nuestros recursos COVID-19 y más',
+    whatsNewEn: [
+      'Our isolation guidelines now reflect our current set of best practices',
+      'We added a no symptoms button clarify some confusion that users were having',
+      'We added additional mental health resources for everyone through our partner Alliance Health'
+    ],
+    whatsNewEs: [
+      'Nuestra guía de aislamiento ahora tiene nuestro conjunto actualizado de mejores prácticas',
+      'Ponemos un botón sin síntomas para aclarar cierta confusión',
+      'Ahora tenemos recursos de salud mental adicionales para todos a través de nuestro socio Alliance Health'
+    ],
+    bugFixesEn: [
+      'We added a check to ensure new passwords are at least 8 characters long',
+      'We fixed a bug that would occur when updating school information'
+    ],
+    bugFixesEs: [
+      'Ahora hay una verificación para garantizar que las nuevas contraseñas tengan al menos 8 caracteres',
+      'Arreglamos un error que ocurría al actualizar la información de la escuela'
+    ],
+  },
+  {
     version: '1.7.2',
     date: date('2/5/2020'),
     notesEn: 'Status display fixes',
