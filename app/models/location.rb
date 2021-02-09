@@ -287,6 +287,8 @@ class Location < ApplicationRecord
 
   def coded_cohort_schema
     parsed = cohort_schema.is_a?(String) ? JSON.parse(cohort_schema) : cohort_schema
+    # HACK: For some reason cohort_schema comes in doubly encoded some times
+    parsed = parsed.is_a?(String) ? JSON.parse(parsed) : parsed
     codes = {}
     parsed.each do |category, names|
       names.each do |name|
