@@ -212,6 +212,10 @@ export async function getUser(id: string): Promise<User> {
   return await getResource<User>(`/users/${id}`)
 }
 
+export async function getUserParents(userId: string): Promise<User[]> {
+  return getResources<User>(`/users/${userId}/parents`)
+}
+
 export async function updateUser(user: User, updates: Partial<User>): Promise<User> {
   const response = await v1.patch<RecordResponse<User>>(`/users/${user.id}`, transformForAPI(updates))
 
@@ -306,6 +310,23 @@ export async function createSymptomSurvey(user: User, medicalEvents: Partial<Med
   return record.attributes.status || null
 }
 
+export async function deleteLastGreenlightStatus(user: User): Promise<string | null> {
+  return v1.delete(`/users/${user.id}/last-greenlight-status`)
+}
+
+export async function updateGreenlightStatus(
+  user: User,
+  status: string,
+  expirationDate: string,
+): Promise<GreenlightStatus> {
+  const response = await v1.patch<GreenlightStatus>(`/users/${user.id}/last-greenlight-status`, {
+    status,
+    expirationDate,
+  })
+
+  return cacheResource<GreenlightStatus>(response)
+}
+
 //
 // Mailman
 //
@@ -345,6 +366,14 @@ export async function getEmailOrMobileTaken(value: string): Promise<boolean> {
 //
 // Helpers
 //
+
+export function cacheResource<T extends Model>(response: AxiosResponse): T {
+  assertNotNull(response.data.data)
+  recordStore.writeRecordResponse(response.data)
+  const entity = transformRecordResponse<T>(response.data)
+  assertNotArray(entity)
+  return entity
+}
 
 export async function getResource<T extends Model>(path: string): Promise<T> {
   const response = await v1.get(path)

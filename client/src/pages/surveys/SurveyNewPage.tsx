@@ -405,6 +405,82 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
               ) : (
                 <Tr>
                   <En>
+                    Has {submittingFor?.firstName} had close contact—within 6 feet for at least 15 minutes—with someone
+                    diagnosed with COVID-19 or someone with symptoms?
+                  </En>
+                  <Es>
+                    ¿{submittingFor?.firstName} ha tenido contacto cercano, dentro de los 6 pies durante al menos 15
+                    minutos, con alguien diagnosticado con COVID-19 o alguien con síntomas?
+                  </Es>
+                </Tr>
+              )}
+              <br />
+              <DatedYesNoButton
+                setYesNo={(yesNo: boolean) => this.setContacted(yesNo)}
+                setDate={(date: Date) => this.setContactDate(date)}
+                showErrors={this.state.submitClicked}
+              />
+              <div className="survey-title">
+                <Trans id="SurveyNewPage.covid_diagnosis_title">COVID Diagnosis?</Trans>
+              </div>
+              {this.isSubmittingForSelf() ? (
+                <Trans id="SurveyNewPage.covid_diagnosis">
+                  Have you been diagnosed with or tested positive for COVID-19?
+                </Trans>
+              ) : (
+                <div></div>
+              )}
+            </Block>
+            <div className="SymptomButtons">
+              <SymptomButton
+                title={t({ id: 'SurveyNewPage.fever', message: 'Fever' })}
+                image="fever"
+                onClick={() => this.toggleSymptom('hasFever')}
+                selected={this.state.hasFever}
+              />
+              <SymptomButton
+                title={t({ id: 'SurveyNewPage.chills', message: 'Chills' })}
+                image="chills"
+                onClick={() => this.toggleSymptom('hasChills')}
+                selected={this.state.hasChills}
+              />
+              <SymptomButton
+                title={t({ id: 'SurveyNewPage.new_cough', message: 'New Cough' })}
+                image="cough"
+                onClick={() => this.toggleSymptom('hasNewCough')}
+                selected={this.state.hasNewCough}
+              />
+              <SymptomButton
+                title={t({ id: 'SurveyNewPage.difficulty_breathing', message: 'Difficulty<br />Breathing' })}
+                image="difficultyBreathing"
+                onClick={() => this.toggleSymptom('hasDifficultyBreathing')}
+                selected={this.state.hasDifficultyBreathing}
+              />
+              <SymptomButton
+                title={t({ id: 'SurveyNewPage.loss_of_smell', message: 'Loss of<br />Taste/Smell' })}
+                image="tasteSmell"
+                onClick={() => this.toggleSymptom('hasLossTasteSmell')}
+                selected={this.state.hasLossTasteSmell}
+              />
+            </div>
+            <Block style={{ marginTop: 0 }}>
+              <div className="survey-title">
+                <Trans id="SurveyNewPage.covid_contact_title">COVID Contact?</Trans>
+              </div>
+              {this.isSubmittingForSelf() ? (
+                <Tr>
+                  <En>
+                    Have you had close contact—within 6 feet for at least 15 minutes—with someone diagnosed with
+                    COVID-19 or someone with symptoms?
+                  </En>
+                  <Es>
+                    ¿Ha tenido contacto cercano, dentro de los 6 pies durante al menos 15 minutos, con alguien
+                    diagnosticado con COVID-19 o alguien con síntomas?
+                  </Es>
+                </Tr>
+              ) : (
+                <Tr>
+                  <En>
                     Has {submittingFor?.firstName}
                     had close contact—within 6 feet for at least 15 minutes—with someone diagnosed with COVID-19 or
                     someone with symptoms?

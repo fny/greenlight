@@ -74,6 +74,8 @@ export default function RegisterChildrenPage(props: F7Props): JSX.Element {
   return (
     <Page>
       <LoadingLocationContent
+        showNavbar
+        showAsPage
         locationId={locationId}
         content={(state) => {
           const { location } = state
@@ -126,8 +128,8 @@ function ChildrenList({
       <Block>
         <p>
           <Tr
-            en={`If you have any children that attend {location.name} add them here.`}
-            es={`Si tiene algunos hijos quien asistir {location.name} registrarlos aquí.`}
+            en="If you have any children that attend {location.name} add them here."
+            es="Si tiene algunos hijos quien asistir {location.name} registrarlos aquí."
           />
         </p>
 

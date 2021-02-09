@@ -11,6 +11,13 @@ module UsersController
       render json: UserSerializer.new(user, include: UserSerializer::COMMON_INCLUDES)
     end
 
+    get '/v1/users/:user_id/parents' do
+      user = User.find(params[:user_id])
+      ensure_or_forbidden! { current_user.authorized_to_view?(user) }
+
+      render json: UserSerializer.new(user.parents)
+    end
+
     # Update a user
     patch '/v1/users/:user_id' do
       user = User.find(params[:user_id])
@@ -82,6 +89,34 @@ module UsersController
         render json: GreenlightStatusSerializer.new(survey.greenlight_status)
       else
         error_response(survey.greenlight_status)
+      end
+    end
+
+    # Update last greenlight status
+    patch '/v1/users/:user_id/last-greenlight-status' do
+      user = User.find(params[:user_id])
+      ensure_or_forbidden! { current_user.authorized_to_edit?(user) }
+
+      status = user.last_greenlight_status
+      if !status
+        simple_error_response("no last status")
+      elsif status.update(expiration_date: params[:expirationDate], status: params[:status], is_override: true)
+        render json: GreenlightStatusSerializer.new(status)
+      else
+        error_response(status)
+      end
+    end
+
+    # Delete last greenlight status
+    delete '/v1/users/:user_id/last-greenlight-status' do
+      user = User.find(params[:user_id])
+      ensure_or_forbidden! { current_user.authorized_to_edit?(user) }
+
+      status = user.last_greenlight_status
+      if status&.destroy
+        success_response
+      else
+        simple_error_response("failed to delete status")
       end
     end
 

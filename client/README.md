@@ -66,11 +66,12 @@ In general, follow the order below:
 
 ### I18n
 
-We translate the app for our Spanish speakers. I've tried to keep things as uniform as possible to make it easier on the people doing the translation work. At some point, we should migrate to a service like weglot or weblate. For now we use lingui. For now, here are the guidelines.
+We translate the app for our Spanish speakers. We used to use lingui to do this, but since the workflows became rather complex and a lot of translations were forgotten, I migrated to inline translations.
 
- - Use a component macro like this `<Trans id="SomePage.hello_world">Hello World</Trans>` whenever you can. These are by far the most flexible, allowing you to easily nest components. Do not use ternary expressions inside of translations. You can use interpolation.
- - Use the `t` macro like this `t({ id: "SomePage.hello_world", message: "Hello World"})` when you need an expression. In the message, you can perform one level of interpolations. Do not use ternary expressions inside of translations.
- - You'll be forced to use the `t` macro in certain cases (i.e. options) since `Trans` returns an object.
- - Make sure you import from `@lingui/macro` and not `@lingui/react`
- - Provide an id for all translations namespaced by the component name as shown above. If the message is used in many places across the app (e.g. "Sign Out") use the "Common" namespace.
- - Place all API translations in the APITranslationsPage component.
+ - Use a component macro like this `<Tr en="Hello World" es="Hola Mundo" />` whenever you can.
+ - If you need to nest components, use the following: `<Tr><En>Hello World</En><Es>Hola Mundo</Es></Tr>`
+ - Use the `tr` function like this `tr({ en: "Hello World", es: "Hello World"})` when you need an expression.
+
+If you're unsure of a translation. Add the `reviewTrans` flag.
+
+See `src/components/Tr.tsx` for more details.

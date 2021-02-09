@@ -23,6 +23,10 @@ module RequestHelpers
     request_json(:post, path, body: body, headers: headers, user: user)
   end
 
+  def patch_json(path, body: nil, headers: {}, user: nil)
+    request_json(:patch, path, body: body, headers: headers, user: user)
+  end
+
   def delete_json(path, body: nil, headers: {}, user: nil)
     request_json(:delete, path, body: body, headers: headers, user: user)
   end

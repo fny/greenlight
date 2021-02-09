@@ -18,12 +18,28 @@ class GreenlightStatusMaker < ApplicationCommand
     }
   end
 
+  def self.create_status!(user, date, status)
+    GreenlightStatus.create(
+      user: user,
+      submission_date: date,
+      expiration_date: date + 1.day,
+      follow_up_date: date + 1.day,
+      status: status,
+      medical_events: [
+        MedicalEvent.new(
+          occurred_at: date,
+          event_type: self.event_for_status(status)
+        )
+      ].reject { |e| e.event_type.nil? }
+    )
+  end
+
   def generate_status
     normalized = WEIGHTED_STATUSES.transform_values { |v| v.to_f / WEIGHTED_STATUSES.values.sum }
     normalized.max_by { |_, weight| rand ** (1.0 / weight) }.first
   end
 
-  def event_for_status(status)
+  def self.event_for_status(status)
     case status
     when 'pending'
       MedicalEvent::SYMPTOMS.sample
@@ -39,19 +55,7 @@ class GreenlightStatusMaker < ApplicationCommand
         status = generate_status
         next if status == GreenlightStatus::UNKNOWN
 
-        GreenlightStatus.create!(
-          user: user,
-          submission_date: date,
-          expiration_date: date + 1.day,
-          follow_up_date: date + 1.day,
-          status: generate_status,
-          medical_events: [
-            MedicalEvent.new(
-              occurred_at: date,
-              event_type: event_for_status(status)
-            )
-          ].reject { |e| e.event_type.nil? }
-        )
+        GreenlightStatusMaker.create_status!(user, date, status)
       end
     end
   end

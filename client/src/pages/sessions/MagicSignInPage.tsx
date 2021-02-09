@@ -25,6 +25,7 @@ interface State {
   emailOrMobile: string
   rememberMe: boolean
   submitted: boolean
+  isSubmitting: boolean
 }
 
 export default class MagicSignInPage extends React.Component<Dict<any>, State> {
@@ -34,15 +35,20 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
     emailOrMobile: '',
     rememberMe: false,
     submitted: false,
+    isSubmitting: false,
   }
 
   async submit() {
+    if (this.state.isSubmitting) return
+  
     const input = this.emailOrMobileRef?.current
 
     assertNotNull(input)
 
     const isValid = input.validate(input.state.value || '')
     if (!isValid) return
+
+    this.setState({ isSubmitting: true })
     try {
       await createMagicSignIn(this.state.emailOrMobile, this.state.rememberMe)
       const alertTitle = t({ id: 'MagicSignInPage.sign_in_sent', message: 'Magic Sign In Sent' })
@@ -63,6 +69,8 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
         t({ id: 'MagicSignInPage.failed_setup', message: "We couldn't set up a magic sign for that info." }),
         t({ id: 'MagicSignInPage.sign_in_failed', message: 'Magic Sign In Failed' }),
       )
+    } finally {
+      this.setState({ isSubmitting: false })
     }
   }
 
@@ -98,10 +106,16 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
             }}
           />
           <Block>
-            <Button outline fill onClick={() => { this.submit() }}>
-              <Trans id="MagicSignInPage.request_magic_link">
-                Request Magic Link
-              </Trans>
+            <Button outline fill disabled={this.state.isSubmitting} onClick={() => { this.submit() }}>
+              {this.state.isSubmitting ? (
+                <Trans id="MagicSignInPage.requesting_magic_link">
+                  Requesting Magic Link...
+                </Trans>
+              ) : (
+                <Trans id="MagicSignInPage.request_magic_link">
+                  Request Magic Link
+                </Trans>
+              )}
             </Button>
           </Block>
         </List>

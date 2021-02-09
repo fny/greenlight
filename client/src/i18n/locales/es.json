@@ -167,6 +167,7 @@
   "MagicSignInPage.failed_setup": "No pudimos enviar un enlace mágico para esa información.",
   "MagicSignInPage.remember_me": "Recuérdame",
   "MagicSignInPage.request_magic_link": "Solicitar enlace mágico",
+  "MagicSignInPage.requesting_magic_link": "Solicitando enlace mágico ...",
   "MagicSignInPage.sign_in_failed": "Error en el inicio con mágico",
   "MagicSignInPage.sign_in_sent": "Enlace mágico enviado",
   "MagicSignInPage.title": "Iniciar con Mágia",

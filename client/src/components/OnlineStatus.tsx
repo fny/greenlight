@@ -1,8 +1,8 @@
-import { Trans } from '@lingui/macro'
 import React, { useEffect, useGlobal } from 'reactn'
 import { v1 } from 'src/api'
 import { ping, setIntervalSafely } from 'src/helpers/util'
 import './OnlineStatus.css'
+import Tr from './Tr'
 
 const ONLINE_TEST_URL = 'http://neverssl.com/'
 /** How long to wait for a response in milisecconds */
@@ -49,9 +49,9 @@ export default function OnlineStatus(): JSX.Element {
   if (isInternetOnline === false) {
     return (
       <div className="OnlineStatus">
-        <Trans id="OnlineStatus.internet_offline">You're internet is disconnected.</Trans>
+        <Tr en="Your internet is disconnected." es="Tu internet está desconectado." />
         <button type="button" className="retry" onClick={() => checkConnection(true)}>
-          Retry
+          <Tr en="Retry" es="Vuelve a intentarlo" />
         </button>
       </div>
     )
@@ -61,12 +61,10 @@ export default function OnlineStatus(): JSX.Element {
   if (isAPIOnline === false) {
     return (
       <div className="OnlineStatus">
-        <Trans id="OnlineStatus.api_offline">
-          Can't connect to Greenlight.
-          <button type="button" className="retry" onClick={() => checkConnection(true)}>
-            Retry
-          </button>
-        </Trans>
+        <Tr en="Can't connect to Greenlight." es="No se puede conectar a Greenlight." />
+        <button type="button" className="retry" onClick={() => checkConnection(true)}>
+          <Tr en="Retry" es="Vuelve a intentarlo" />
+        </button>
       </div>
     )
   }

@@ -70,6 +70,8 @@ export default function RegisterUserPage(props: F7Props) {
   return (
     <Page>
       <LoadingLocationContent
+        showNavbar
+        showAsPage
         locationId={locationId}
         content={(state) => {
           const { location } = state

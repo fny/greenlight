@@ -9,13 +9,13 @@ import Tr, { En, Es, tr } from './Tr'
 
 interface Props {
   title?: string
-  hideNavbar?: boolean
+  showNavbar?: boolean
 }
 
-export default function LoadingPageContent({ title, hideNavbar }: Props): JSX.Element {
+export default function LoadingPageContent({ title, showNavbar }: Props): JSX.Element {
   return (
     <>
-      {!hideNavbar && (
+      {showNavbar && (
       <Navbar title={title
         || tr({ en: 'Loading...', es: 'Cargando...' })}
       >

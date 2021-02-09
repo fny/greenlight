@@ -6,13 +6,23 @@ import LoadingContent, { LoadingState } from './LoadingContent'
 interface Props {
   locationId: string
   content: (state: LoadingLocationState) => JSX.Element
+  /** Whether to render errors and loading statuses with full page content */
+  showAsPage?: boolean
+  /** Whether to show a navbar */
+  showNavbar?: boolean
+  /** Override to show when loading */
+  loading?: (state?: LoadingLocationState) => JSX.Element
+  /** Override to show when errored */
+  errored?: (state?: LoadingLocationState) => JSX.Element
 }
 
 export class LoadingLocationState extends LoadingState {
   location: Location | null = null
 }
 
-export default function LoadingLocationContent({ locationId, content }: Props): JSX.Element {
+export default function LoadingLocationContent({
+  locationId, content, showNavbar, showAsPage, loading, errored,
+}: Props): JSX.Element {
   const location = store.findEntity<Location>(Location.uuid(locationId))
   const [state, setState] = useState({
     ...new LoadingLocationState(),
@@ -31,5 +41,5 @@ export default function LoadingLocationContent({ locationId, content }: Props): 
       })
   }, [locationId])
 
-  return <LoadingContent state={state} content={content} />
+  return <LoadingContent state={state} content={content} showNavbar={showNavbar} showAsPage={showAsPage} loading={loading} errored={errored} />
 }
