@@ -26,7 +26,9 @@ clean_up() {
 }
 
 mask_local_config() {
-  mv .env.local .env.local.bak
+  if test -f .env.local; then
+    mv .env.local .env.local.bak
+  fi
 }
 
 unmask_local_config() {

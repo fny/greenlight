@@ -1,0 +1,123 @@
+<br />Locations:
+<%= link_to "All", admin_locations_path %> |
+<%= link_to "New", new_admin_location_path %>
+
+<h1>
+  Location: <%= @location.name %>
+</h1>
+<nav>
+<%= link_to "Edit", edit_admin_location_path(@location) %> |
+<a href="#import-staff">
+  Import Staff
+</a> |
+<a href="#import-students">
+  Import Students
+</a> |
+<a href="#delete">
+  Delete
+</a> |
+<a href="#nuke">
+  Nuke
+</a> |
+<%= link_to "Users (#{@location.users.count})", admin_location_users_path(@location) %>
+</a> |
+<%= link_to "Accounts", admin_location_accounts_path(@location) %> |
+<%= link_to "Roster Imports", admin_location_roster_imports_path(@location) %> |
+<%= link_to "staff.xlsx", admin_location_staff_sheet_path(@location) %> |
+<%= link_to "students.xlsx", admin_location_students_sheet_path(@location) %>
+</nav>
+
+<ul>
+  <li>
+    Name: <%= @location.name %>
+  </li>
+  <li>
+    Handle: <%= @location.permalink %>
+  </li>
+  <li>
+    Staff/Teacher Registraion Code: <%= @location.registration_code %>
+  </li>
+  <li>
+    Parent/Student Registraion Code: <%= @location.student_registration_code %>
+  </li>
+  <li>
+    Cohorts: <%= @location.cohort_schema %>
+  </li>
+  <li>
+  Greenlight Welcome Link:
+  <a href="<%= @location.greenlight_welcome_url %>">
+    <%= @location.greenlight_welcome_url %>
+  </a>
+  </li>
+  <li>
+    Google Drive Staff:
+    <a href="<%= @location.gdrive_staff_roster_url %>">
+      <%= @location.gdrive_staff_roster_id || 'None' %>
+    </a>
+  </li>
+  <li>
+    Google Drive Students:
+    <a href="<%= @location.gdrive_student_roster_url %>">
+      <%= @location.gdrive_student_roster_id || 'None' %>
+    </a>
+  </li>
+</ul>
+
+<h2 id="import-students">Import Students</h2>
+<p>
+  Enter "IMPORT STUDENTS" to import the
+  <a target="_blank" href="<%= @location.gdrive_student_roster_url %>">
+    student roster.
+  </a>
+  You'll receive an email with the results once the import finishes.
+</p>
+
+<%= form_with url: admin_location_import_students_path(@location), method: :post do |form| %>
+  <%= form.text_field :confirmation, autocomplete: 'off' %>
+  <%= form.label :do_it %>
+  <%= form.check_box :do_it %>
+  <%= form.label :overwrite %>
+  <%= form.check_box :overwrite %>
+  <%= form.submit "Import Students" %>
+<% end %>
+
+<h2 id="import-staff">Import Staff</h2>
+
+<p>
+  Enter "IMPORT STAFF" to import the
+  <a target="_blank" href="<%= @location.gdrive_staff_roster_url %>">
+    staff roster.
+  </a>
+  You'll receive an email with the results once the import finishes.
+</p>
+<%= form_with url: admin_location_import_staff_path(@location), method: :post do |form| %>
+  <%= form.text_field :confirmation, autocomplete: 'off' %>
+  <%= form.label :do_it %>
+  <%= form.check_box :do_it %>
+  <%= form.label :overwrite %>
+  <%= form.check_box :overwrite %>
+  <%= form.submit "Import Staff" %>
+<% end %>
+
+<h2 id="delete">
+  Delete <%= @location.name %>
+</h2>
+<p>Enter "DELETE <%= @location.permalink %>" to delete <%= @location.name %>. All users will remain in tact.</p>
+
+<%= form_with url: admin_location_path(@location), method: :delete do |form| %>
+  <%= form.text_field :confirmation, autocomplete: 'off' %>
+  <%= form.submit "Delete" %>
+<% end %>
+
+<h2 id="nuke">
+  Nuke <%= @location.name %>
+</h2>
+
+<p>Enter "NUKE <%= @location.permalink %>" to delete <%= @location.name %> and all assocated users.</p>
+
+<%= form_with url: admin_location_path(@location, nuke: true), method: :delete do |form| %>
+  <%= form.text_field :confirmation, autocomplete: 'off' %>
+    <%= form.label :only_users %>
+  <%= form.check_box :only_users %>
+  <%= form.submit "Nuke" %>
+<% end %>

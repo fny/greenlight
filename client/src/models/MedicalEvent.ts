@@ -45,11 +45,11 @@ export class MedicalEvent extends Model {
   createdAt: DateTime = DateTime.fromISO('')
 }
 
-export function hasEvent(medicalEvents: MedicalEvent[], eventType: MedicalEventTypes | MedicalEventTypes[], lookbackDays: number) {
+export function hasEvent(medicalEvents: MedicalEvent[], eventType: MedicalEventTypes | MedicalEventTypes[], lookbackDays: number): boolean {
   return findEvents(medicalEvents, eventType, lookbackDays).length > 0
 }
 
-export function findEvents(medicalEvents: MedicalEvent[], eventType: MedicalEventTypes | MedicalEventTypes[], lookbackDays: number) {
+export function findEvents(medicalEvents: MedicalEvent[], eventType: MedicalEventTypes | MedicalEventTypes[], lookbackDays: number): MedicalEvent[] {
   const start = DateTime.local().minus({ days: lookbackDays })
   const eventTypes = Array.isArray(eventType) ? eventType : [eventType]
   return medicalEvents
@@ -57,7 +57,7 @@ export function findEvents(medicalEvents: MedicalEvent[], eventType: MedicalEven
     .filter((event) => eventTypes.includes(event.eventType))
 }
 
-export function findLastEvent(medicalEvents: MedicalEvent[], eventType: MedicalEventTypes | MedicalEventTypes[], lookbackDays: number) {
+export function findLastEvent(medicalEvents: MedicalEvent[], eventType: MedicalEventTypes | MedicalEventTypes[], lookbackDays: number): MedicalEvent | null {
   const events = findEvents(medicalEvents, eventType, lookbackDays)
   return events.length > 0 ? events[-1] : null
 }

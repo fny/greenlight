@@ -1,4 +1,3 @@
-import React from 'reactn'
 import {
   Page, Navbar, Block, List, ListItem, ListInput, Button,
 } from 'framework7-react'
@@ -26,7 +25,6 @@ interface State {
 export default class extends ReactNComponent<any, State> {
   constructor(props: any) {
     super(props)
-
     if (!this.global.currentUser) {
       throw new NoCurrentUserError()
     }
@@ -56,7 +54,7 @@ export default class extends ReactNComponent<any, State> {
     if (!this.hasNextChild()) {
       return null
     }
-    return this.state.currentUser.children[this.childIndex()]
+    return this.state.currentUser.children[this.childIndex() + 1]
   }
 
   childCount() {
@@ -69,7 +67,7 @@ export default class extends ReactNComponent<any, State> {
     for (let i = 0; i < children.length; i += 1) {
       names += children[i].firstName
       if (i === children.length - 2) {
-        names += ', and '
+        names += this.global.locale === 'en' ? ', and ' : ' y '
       }
       if (i < children.length - 2) {
         names += ', '
@@ -91,7 +89,6 @@ export default class extends ReactNComponent<any, State> {
     )
     try {
       const user = await updateUser(this.child(), attrs as Partial<User>)
-      this.setGlobal({ currentUser: user })
       this.$f7.dialog.close()
 
       if (this.hasNextChild()) {
@@ -118,7 +115,6 @@ export default class extends ReactNComponent<any, State> {
         <Navbar
           title={t({ id: 'WelcomeChildPage.review_child_title', message: t`Review ${child.firstName}'s Info` })}
         />
-
         <Case test>
           {/* First Child */}
           <When value={user.sortedChildren()[0] === child}>

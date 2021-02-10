@@ -21,7 +21,7 @@ import { F7Props } from 'src/types'
 import { assertNotNull } from 'src/helpers/util'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { updateUserSettings } from 'src/api'
-import { reloadCurrentUser } from 'src/initializers/providers'
+import { reloadCurrentUser } from 'src/helpers/global'
 import { DailyReminderType } from 'src/models/UserSettings'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
@@ -88,9 +88,7 @@ export default function NotificationsPage(props: F7Props) {
 
   return (
     <Page>
-      <Navbar title={t({ id: 'NotificationsPage.title', message: 'Notifications' })}>
-        <NavbarHomeLink slot="left" />
-      </Navbar>
+      <Navbar title={t({ id: 'NotificationsPage.title', message: 'Notifications' })} backLink />
       <Block>
         <BlockTitle>
           <Trans id="NotificationsPage.daily_reminders_title">Daily Reminders</Trans>
@@ -102,9 +100,11 @@ export default function NotificationsPage(props: F7Props) {
               label={t({ id: 'NotificationsPage.how_to_remind', message: 'How should we send you reminders?' })}
               type="select"
             >
+              {user.mobileNumber && (
               <option value={DailyReminderType.TEXT}>
                 {t({ id: 'DailyReminder.send_via_text', message: 'Send Reminders via Text' })}
               </option>
+              )}
               {user.email && (
                 <option value={DailyReminderType.EMAIL}>
                   {t({ id: 'DailyReminder.send_via_email', message: 'Send Reminders via Email' })}

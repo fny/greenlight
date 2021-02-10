@@ -52,15 +52,87 @@ RSpec.describe User, type: :model do
 
   describe '.restrict_params' do
     it 'restricts the attributes to those that are permitted for symbols'  do
-      permitted = User.restrict_params({ email: 'a', password: 'b', created_at: 'c' })
-      expect(permitted).to eq({ 'email' => 'a', 'password' => 'b' })
+      permitted = User.restrict_params({ email: 'a', 'password' => 'b', created_at: 'c' })
+      expect(permitted).to eq({ 'email' => 'a' })
     end
 
     it 'restricts the attributes to those that are permitted for strings' do
-      permitted = User.restrict_params({ 'email' => 'a', 'password' => 'b', 'created_at' => 'c' })
+      permitted = User.restrict_params({ 'email' => 'a', 'created_at' => 'c' })
+      expect(permitted).to eq({ 'email' => 'a' })
+    end
+
+    it 'allows additional params' do
+      permitted = User.restrict_params({ email: 'a', password: 'b' }, [:password])
       expect(permitted).to eq({ 'email' => 'a', 'password' => 'b' })
     end
   end
+
+  describe '.email_taken?' do
+    it 'returns true when the email is in use' do
+      user = Fabricate(:user)
+      expect(User.email_taken?(user.email)).to eq(true)
+    end
+
+    it 'returns false when the email is not in use' do
+      user = Fabricate(:user)
+      user.destroy
+      expect(User.email_taken?(user.email)).to eq(false)
+    end
+
+    it 'returns false when the email is invalid' do
+      expect(User.email_taken?('notinuse')).to eq(false)
+    end
+  end
+
+  describe '.mobile_taken?' do
+    it 'returns true when the mobile number is in use' do
+      user = Fabricate(:user)
+      expect(User.mobile_taken?(user.mobile_number)).to eq(true)
+    end
+
+    it 'returns false when the mobile number is not in use' do
+      user = Fabricate(:user)
+      user.destroy
+      expect(User.mobile_taken?(user.mobile_number)).to eq(false)
+    end
+
+    it 'returns false when the mobile number is invalid' do
+      expect(User.mobile_taken?('5553334444')).to eq(false)
+    end
+  end
+
+  describe '.email_or_mobile_taken?' do
+    it 'returns true when the mobile number is in use' do
+      user = Fabricate(:user)
+      expect(User.email_or_mobile_taken?(user.mobile_number)).to eq(true)
+    end
+
+    it 'returns true when the mobile number is in use' do
+      user = Fabricate(:user)
+      user.destroy
+      expect(User.email_or_mobile_taken?(user.mobile_number)).to eq(false)
+    end
+
+    it 'returns true when the email is in use' do
+      user = Fabricate(:user)
+      expect(User.email_or_mobile_taken?(user.email)).to eq(true)
+    end
+
+    it 'returns false when the email is not in use' do
+      user = Fabricate(:user)
+      user.destroy
+      expect(User.email_or_mobile_taken?(user.email)).to eq(false)
+    end
+
+    it 'returns false when the mobile number is invalid' do
+      expect(User.email_or_mobile_taken?('5553334444')).to eq(false)
+    end
+
+    it 'returns false when the email is invalid' do
+      expect(User.email_or_mobile_taken?('5553334444')).to eq(false)
+    end
+  end
+
 
   describe '#inferred_status' do
     it 'returns an unpersisted unknown status if there is no last status' do
@@ -125,6 +197,75 @@ RSpec.describe User, type: :model do
         u = location_status.include?('same') ? user2 : user
         expect(admin.admin_of?(u)).to eq(result)
       end
+    end
+  end
+
+  describe '#destroy' do
+    it 'works when the user created a location' do
+      user = Fabricate(:user)
+      location = Fabricate(:location, created_by: user)
+      user.destroy
+      expect(User.find_by(id: user.id)).to eq(nil)
+      expect(location.reload.created_by).to eq(nil)
+    end
+  end
+
+  describe '#submits_surveys_for' do
+    it 'includes the user when they have a location account' do
+      user = Fabricate(:user)
+      location = Fabricate(:location)
+      Fabricate(:location_account, user: user, location: location)
+
+      expect(user.submits_surveys_for.map(&:id)).to contain_exactly(user.id)
+    end
+
+    it 'includes and self the children when they have location accounts' do
+      user = Fabricate(:user)
+      location = Fabricate(:location)
+      Fabricate(:location_account, user: user, location: location)
+      child1 = Fabricate(:user)
+      Fabricate(:location_account, user: child1, location: location)
+      child2 = Fabricate(:user)
+      Fabricate(:location_account, user: child2, location: location)
+      user.children << [child1, child2]
+      expect(user.submits_surveys_for.map(&:id)).to contain_exactly(user.id, child1.id, child2.id)
+    end
+
+    it "includes the children only when they only have location accounts" do
+      user = Fabricate(:user)
+      location = Fabricate(:location)
+      child1 = Fabricate(:user)
+      Fabricate(:location_account, user: child1, location: location)
+      child2 = Fabricate(:user)
+      Fabricate(:location_account, user: child2, location: location)
+      user.children << [child1, child2]
+      expect(user.submits_surveys_for.map(&:id)).to contain_exactly(child1.id, child2.id)
+    end
+  end
+
+  describe '#needs_to_submit_surveys_for'  do
+    it "includes the users who haven't submitted surveys for today" do
+      user = Fabricate(:user)
+      location = Fabricate(:location)
+      Fabricate(:location_account, user: user, location: location)
+      child1 = Fabricate(:user)
+      Fabricate(:location_account, user: child1, location: location)
+      child2 = Fabricate(:user)
+      Fabricate(:location_account, user: child2, location: location)
+      user.children << [child1, child2]
+      expect(user.needs_to_submit_surveys_for.map(&:id)).to contain_exactly(user.id, child1.id, child2.id)
+
+      status = GreenlightStrategyNorthCarolina.new([], []).status
+      status.user = user
+      status.save!
+
+      expect(user.needs_to_submit_surveys_for.map(&:id)).to contain_exactly(child1.id, child2.id)
+
+      status = GreenlightStrategyNorthCarolina.new([], []).status
+      status.user = child2
+      status.save!
+
+      expect(user.needs_to_submit_surveys_for.map(&:id)).to contain_exactly(child1.id)
     end
   end
 end

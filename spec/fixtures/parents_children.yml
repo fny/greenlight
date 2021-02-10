@@ -1,0 +1,19 @@
+<% %w[marge homer].each do |p| %>
+<% %w[lisa bart maggie].each do |c| %>
+<%= "#{p}_#{c}" %>:
+  parent_id: <%= ::ActiveRecord::FixtureSet.identify(p) %>
+  child_id: <%= ::ActiveRecord::FixtureSet.identify(c) %>
+  created_at: <%= Time.now %>
+  updated_at: <%= Time.now %>
+<% end %>
+<% end %>
+
+<% %w[flanders].each do |p| %>
+<% %w[rodd todd].each do |c| %>
+<%= "#{p}_#{c}" %>:
+  parent_id: <%= ::ActiveRecord::FixtureSet.identify(p) %>
+  child_id: <%= ::ActiveRecord::FixtureSet.identify(c) %>
+  created_at: <%= Time.now %>
+  updated_at: <%= Time.now %>
+<% end %>
+<% end %>

@@ -13,13 +13,16 @@ class UserSerializer < ApplicationSerializer
     # For the Children
     :'children.location_accounts',
     :'children.location_accounts.location',
-    :'children.last_greenlight_status'
+    :'children.last_greenlight_status',
+    :parents,
+    :cohorts
   ].freeze
 
   ADMIN_INCLUDES = [
     # This is all we need for admins right now
     :location_accounts,
-    :last_greenlight_status
+    :last_greenlight_status,
+    :cohorts
   ].freeze
 
   # Includes required for the
@@ -48,7 +51,7 @@ class UserSerializer < ApplicationSerializer
   # attribute :email_unconfirmed
 
   attribute :mobile_number
-  attribute :mobile_carrier
+  # attribute :mobile_carrier
   # attribute :mobile_number_unconfirmed
   # attribute :mobile_number_confirmation_sent_at
   # attribute :mobile_number_confirmed_at
@@ -64,24 +67,20 @@ class UserSerializer < ApplicationSerializer
 
   has_one :last_greenlight_status, serializer: GreenlightStatusSerializer, record_type: 'greenlightStatus'
 
-  has_one :settings, serializer: UserSettingsSerializer, record_type: 'userSettings'
-
-  has_many :children, serializer: UserSerializer, record_type: 'user'
-
+  has_many :cohorts
   has_many :location_accounts
 
   SWAGGER_SCHEMA = SwaggerSchemaBuilder.build do
     data {
       id :string
-      type :string
+      type :string, enum: [:user]
       attributes {
         firstName :string
         lastName :string
         email :string, nullable: true
         mobileNumber :string, nullable: true
-        mobileCarrier :string, nullable: true
         acceptedTermsAt :string
-        completedWelcomeAt :string
+        completedWelcomeAt :string, nullable: true
         locale :string
         zipCode :string, nullable: true
         birthDate :string, nullable: true
@@ -90,16 +89,16 @@ class UserSerializer < ApplicationSerializer
         createdAt :string
         updatedAt :string
       }
-      relationships {
-        # TODO: Ref is broken
-        # TODO: The spec doesn't really test these correctly... invalid open api
-        # pass schemas
-        # TODO: Fix swagger schema file
-        lastGreenlightStatus({ '$ref' => '/components/schemas/relationshipToOne' })
-        children({ '$ref' => '/components/schemas/relationshipToMany' })
-        locationAccounts({ '$ref' => '/components/schemas/relationshipToMany' })
-      }
     }
-  end
 
+    # has_one :lastGreenlightStatus, :greenlightStatus
+    # has_one :settings, :userSettings
+    # has_many :children, :user
+    # has_many :locationAccounts, :locationAccount
+
+    # included GreenlightStatusSerializer::SWAGGER_SCHEMA
+    # included UserSettingsSerializer::SWAGGER_SCHEMA
+    # included UserSerializer::SWAGGER_SCHEMA
+    # included LocationAccountSerializer::SWAGGER_SCHEMA
+  end
 end

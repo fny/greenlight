@@ -2,6 +2,10 @@
 class ReminderWorker < ApplicationWorker
   sidekiq_options retry: 0
 
+  REMINDER_DAYS = %i[
+    remind_sun remind_mon remind_tue remind_wed remind_thu remind_fri remind_sat
+  ].freeze
+
   def html_template
     Erubi::Engine.new(<<~HTML
       <h2><%= I18n.t('emails.reminder.title') %></h2>
@@ -31,26 +35,59 @@ class ReminderWorker < ApplicationWorker
     ).src
   end
 
+  def current_time
+    @current_time ||= Time.now.in_time_zone('America/New_York')
+  end
+
+  def reminder_hour
+    current_time.hour
+  end
+
+  def reminder_day
+    REMINDER_DAYS[current_time.wday]
+  end
+
   def perform(user_id)
     user = User.find(user_id)
-    if user.daily_reminder_sent_at&.today?
-      return
-    end
 
-    if user.inferred_status.status != GreenlightStatus::UNKNOWN
-      return
+    # Don't send reminders unless the person has completed the registration
+    # process
+    return if !user.completed_welcome_at
+
+    # Don't send reminders twice in the same day
+    return if user.daily_reminder_sent_at&.today?
+
+    # Don't send if ther user has reminders disabled
+    return if user.daily_reminder_type == User::NONE
+
+    if user.settings&.override_location_reminders
+
+      # Don't send if ther user has reminders disabled
+      return if user.settings.daily_reminder_type == UserSettings::NONE
+
+      # Don't send if the reminder time doesn't match
+      return if user.settings.daily_reminder_time != reminder_hour
+
+      # Don't send if its disabled for that day at the location level
+      return if user.settings.send(reminder_day) == false
+    else
+      # Don't send if its disabled for that day at the location level
+      return if user.locations.all? { |l| l.send(reminder_day) == false }
+
+      # Don't send if reminder times don't match at the location level
+      return if user.locations.all? { |l| l.daily_reminder_time != reminder_hour }
+
+      # Don't send if the users locations have all disabled notifications
+      return if !user.affiliated_locations.pluck(:reminders_enabled).any?
     end
 
     user.update_columns(daily_reminder_sent_at: Time.now)
 
-    # if user.needs_to_submit_survey_for.empty?
-    #   return
-    # end
     I18n.with_locale(user.locale) do
       if user.daily_reminder_type.email?
         SendGridEmail.new(
           to: user.name_with_email,
-          subject: I18n.t('emails.reminders.subject'),
+          subject: I18n.t('emails.reminder.subject'),
           html: eval(html_template),
           text: eval(sms_template),
         ).run

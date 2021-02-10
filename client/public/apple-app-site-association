@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "DKSAH86564.com.greenlightready.app",
+        "paths": [
+          "/pwdrst/*",
+          "/mgk/*",
+          "/go/*",
+          "/d/*",
+        ]
+      }
+    ]
+  }
+}

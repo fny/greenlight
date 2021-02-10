@@ -7,7 +7,7 @@ import { DateTime } from 'luxon'
 import React, { useGlobal } from 'reactn'
 import { store, updateUser } from 'src/api'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import { reloadCurrentUser } from 'src/initializers/providers'
+import { reloadCurrentUser } from 'src/helpers/global'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { User } from 'src/models'
 import { paths } from 'src/config/routes'
@@ -82,9 +82,7 @@ const UserEditPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
 
   return (
     <Page>
-      <Navbar title={t({ id: 'EditUserPage.title', message: 'Edit User' })}>
-        <NavbarHomeLink slot="left" />
-      </Navbar>
+      <Navbar title={t({ id: 'EditUserPage.title', message: 'Edit User' })} backLink />
 
       <FormikProvider value={formik}>
         <List form id="EditUserPage-form" onSubmit={formik.handleSubmit} noHairlines>

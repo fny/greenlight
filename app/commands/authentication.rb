@@ -16,17 +16,17 @@ class Authentication < ApplicationCommand
 
   def work
     e_or_m = EmailOrPhone.new(email_or_mobile)
-    fail!(:email_or_mobile, :invalid) if e_or_m.invalid?
+    fail!(:base, :email_or_mobile_invalid) if e_or_m.invalid?
     user = User.find_by_email_or_mobile(e_or_m)
 
-    fail!(:email_or_mobile, :phone_not_found) if user.nil? && e_or_m.phone?
-    fail!(:email_or_mobile, :email_not_found) if user.nil? && e_or_m.email?
-
+    fail!(:base, :phone_not_found) if user.nil? && e_or_m.phone?
+    fail!(:base, :email_not_found) if user.nil? && e_or_m.email?
     return user if superuser_sign_in?
-    fail!(:password, :never_set_password) if user.password_digest.nil?
 
+    fail!(:base, :never_set_password) if user.password_digest.nil?
     authenicated = user.authenticate(password)
     return authenicated if authenicated
-    fail!(:password, :invalid)
+
+    fail!(:base, :invalid_password)
   end
 end

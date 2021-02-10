@@ -1,9 +1,7 @@
-import React from 'reactn'
+import React from 'react'
 import {
-  Page, Navbar, Block, Chip,
+  Page, Navbar, Block, Chip, List, ListInput, Button, f7,
 } from 'framework7-react'
-import { store } from 'src/api'
-import { User } from 'src/models'
 
 import './UserGreenlightPassPage.css'
 import StatusJDenticon from 'src/components/StatusJDenticon'
@@ -12,54 +10,89 @@ import { Case, When } from 'src/components/Case'
 import { t, Trans } from '@lingui/macro'
 import { DateTime } from 'luxon'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import Tr, { En, Es, tr } from 'src/components/Tr'
+import { F7Props } from 'src/types'
+import { assertNotNull, assertNotUndefined } from 'src/helpers/util'
+import LoadingUserContent from 'src/components/LoadingUserContent'
+import { requireCurrentUser } from 'src/helpers/global'
+import { dynamicPaths } from 'src/config/routes'
 
-export default class UserGreenlightPassPage extends React.Component<any, any> {
-  user() {
-    const { userId } = this.$f7route.params
+export default function UserGreenlightPassPage(props: F7Props): JSX.Element {
+  const { userId } = props.f7route.params
+  assertNotUndefined(userId)
 
-    if (!userId) throw new Error('Missing user id')
-    const user = store.findEntity<User>(`user-${userId}`)
-    if (!user) throw new Error(`Could not finder user for id ${userId}`)
-    return user
-  }
+  const currentUser = requireCurrentUser()
+  return (
+    <Page className="UserGreenlightPassPage">
+      <Navbar title={tr({ en: 'Greenlight Pass', es: 'Pase Greenlight' })}>
+        <NavbarHomeLink slot="left" />
+      </Navbar>
+      <LoadingUserContent
+        userId={userId}
+        content={(state) => {
+          const { user } = state
+          assertNotNull(user)
+          const status = user.greenlightStatus()
 
-  render() {
-    const user = this.user()
-    const status = user.greenlightStatus()
+          return (
+            <Block className="text-center">
+              <h1>
+                {user.fullName()} {!status.isUnknown() && <Chip text={status.title().toUpperCase()} />}
+              </h1>
+              <div id="status-icon">
+                <StatusJDenticon date={DateTime.local()} status={status.status} size={250} />
+              </div>
+              <br />
+              <div>
+                <Case test={status.createdAt.isValid}>
+                  <When value>
+                    <Tr
+                      en={`Submitted at ${status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}`}
+                      es={`Enviado en ${status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}`}
+                    />
 
-    return (
-      <Page className="UserGreenlightPassPage">
-        <Navbar
-          title={t({ id: 'UserGreenlightPassPage.pass_title', message: 'Greenlight Pass' })}
-        >
-          <NavbarHomeLink slot="left" />
-        </Navbar>
+                    {!status.isCleared() && (
+                      <>
+                        <br />
+                        <Tr>
+                          <En>
+                            Anticipated return date
+                            <br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
+                          </En>
+                          <Es>
+                            Fecha de regreso anticipada
+                            <br /> {status.expirationDate.toLocaleString(DateTime.DATE_SHORT)}
+                          </Es>
+                        </Tr>
+                      </>
+                    )}
 
-        <Block className="text-center">
-          <h1>
-            {user.fullName()}
-            {' '}
-            <Chip text={status.title().toUpperCase()} />
-          </h1>
-          <div id="status-icon">
-            <StatusJDenticon date={DateTime.local()} status={status.status} size={250} />
-          </div>
-          <p>
-            <Case test={status.createdAt.isValid}>
-              <When value>
-                <Trans id="UserGreenlightPassPage.submitted">
-                  Submitted at {status.createdAt.toLocaleString(DateTime.DATETIME_SHORT)}
-                </Trans>
-              </When>
-              <When value={false}>
-                <Trans id="UserGreenlightPassPage.not_submitted">
-                  Status has not been submitted for today.
-                </Trans>
-              </When>
-            </Case>
-          </p>
-        </Block>
-      </Page>
-    )
-  }
+                    {
+                      currentUser.canAdministrate(user)
+                      && (
+                        <Block>
+                          <Button fill href={dynamicPaths.adminEditGreenlightPassPath({ userId: user.id })}>
+                            <Tr en="Edit" es="Editar" />
+                          </Button>
+                        </Block>
+                      )
+                  }
+                  </When>
+                  <When value={false}>
+
+                    <Tr
+                      en="Status has not been submitted for today."
+                      es="No se ha enviado la encuesta para hoy."
+                    />
+                  </When>
+                </Case>
+
+              </div>
+            </Block>
+          )
+        }}
+      />
+
+    </Page>
+  )
 }

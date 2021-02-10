@@ -32,9 +32,9 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
       this.setState({
         inputType: 'blank',
         errorMessage: t({
-            id: 'EmailOrPhoneListInput.email_or_phone_missing',
-            message: 'Please enter your email or mobile number.',
-          }),
+          id: 'EmailOrPhoneListInput.email_or_phone_missing',
+          message: 'Please enter your email or mobile number.',
+        }),
       })
       this.setState({ errorMessageForce: true })
       return false
@@ -51,9 +51,9 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
       this.setState({
         inputType: 'unknown',
         errorMessage: t({
-            id: 'EmailOrPhoneListInput.email_or_phone_invalid',
-            message: 'Invalid email or mobile number.',
-          }),
+          id: 'EmailOrPhoneListInput.email_or_phone_invalid',
+          message: 'Invalid email or mobile number.',
+        }),
       })
       this.setState({ errorMessageForce: true })
       return false
@@ -83,6 +83,10 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
         validateOnBlur
         onBlur={this.onBlur.bind(this)}
         onChange={this.onChange.bind(this)}
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="off"
+        autocorrect="off"
         errorMessage={this.state.errorMessage}
         errorMessageForce={this.state.errorMessageForce}
         placeholder={

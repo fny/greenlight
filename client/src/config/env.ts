@@ -11,6 +11,9 @@ function required(key: string, backup?: string): string {
 }
 
 const env = {
+  isCordova(): boolean {
+    return !!process.env.REACT_APP_CORDOVA
+  },
   isDevelopment(): boolean {
     return process.env.NODE_ENV !== 'production'
   },
@@ -24,6 +27,22 @@ const env = {
     }
     return required('REACT_APP_API_URL')
   })(),
-}
+  codePushDeploymentKey(): string {
+    const platform = (window as any).device?.platform
+    switch (platform) {
+      case 'iOS':
+        return required('REACT_APP_CODEPUSH_IOS')
+      case 'Android':
+        return required('REACT_APP_CODEPUSH_ANDROID')
+      case null:
+      case undefined:
+        throw new Error('No code push device platform detected')
+      default:
+        throw new Error(`Unsure where to find code push deployment key for given platform ${platform}`)
+        break
+    }
+  },
+};
+(window as any).env = env
 
 export default env

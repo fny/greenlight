@@ -21,4 +21,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'JSON'
   inflect.acronym 'JSONAPI'
   inflect.acronym 'SMS'
+  inflect.irregular 'staff', 'staff'
 end

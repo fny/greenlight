@@ -22,10 +22,10 @@ RSpec.configure do |config|
         version: 'v1'
       },
       paths: {},
-      components: {
-        # TODO: Fix swagger schema file
-        schemas: Greenlight::Data.load_yaml('swagger_schemas.yml')
-      },
+      # components: {
+      #   # TODO: Fix swagger schema file
+      #   schemas: Greenlight::Data.load_yaml('swagger_schemas.yml')
+      # },
       servers: [
         {
           url: 'https://{defaultHost}',

@@ -53,7 +53,6 @@ const giphySchedule: Dict<string> = {
   '10/14/2020': '10A0XQ5AOSrJao',
   '10/13/2020': 'i34oXbluCO0G4',
   '10/12/2020': 'tSaApE2vVQKE8',
-  '10/11/2020': '22YOkQog92fpS',
 }
 
 export default giphySchedule

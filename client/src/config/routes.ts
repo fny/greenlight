@@ -1,52 +1,64 @@
-import NotFoundPage from 'src/pages/util/NotFoundPage'
-import DashboardPage from 'src/pages/DashboardPage'
-
-import SplashPage from 'src/pages/SplashPage'
-import SignInPage from 'src/pages/sessions/SignInPage'
-import MagicSignInPage from 'src/pages/sessions/MagicSignInPage'
-
-import WelcomePage from 'src/pages/welcome/WelcomePage'
-import WelcomeChildPage from 'src/pages/welcome/WelcomeChildPage'
-import WelcomeReviewPage from 'src/pages/welcome/WelcomeReviewPage'
-import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage'
-
-import SurveyNewPage from 'src/pages/surveys/SurveyNewPage'
-import SurveyThankYouPage from 'src/pages/surveys/SurveyThankYouPage'
-
 import { getGlobal } from 'reactn'
-import { User } from 'src/models'
-import { Router } from 'framework7/modules/router/router'
-import MagicSignInAuthPage from 'src/pages/sessions/MagicSignInAuthPage'
+import { isRegisteringLocation, isSignedIn } from 'src/helpers/global'
 import { resolvePath } from 'src/helpers/util'
-import GiphySchedulePage from 'src/pages/util/GiphySchedulePage'
-import UserGreenlightPassPage from 'src/pages/users/UserGreenlightPassPage'
-import DebugPage from 'src/pages/util/DebugPage'
-import AdminUsersPage from 'src/pages/admin/AdminUsersPage'
-import WelcomeSurveyPage from 'src/pages/welcome/WelcomeSurveyPage'
-import { isSignedIn } from 'src/initializers/providers'
-import ReleaseNotesPage from 'src/pages/ReleaseNotesPage'
-import SettingsPage from 'src/pages/users/SettingsPage'
-import CovidCountyMapPage from 'src/pages/resources/CovidCountyMapPage'
+import { Router } from 'framework7/modules/router/router'
+import { User } from 'src/models'
 import AboutPage from 'src/pages/AboutPage'
-import UserEditPage from 'src/pages/users/UserEditPage'
+import AdminUserPermissionsPage from 'src/pages/admin/AdminUserPermissionsPage'
+import AdminUsersPage from 'src/pages/admin/AdminUsersPage'
+import CHWRequestPage from 'src/pages/resources/CHWRequestPage'
+import CovidCountyMapPage from 'src/pages/resources/CovidCountyMapPage'
+import DashboardPage from 'src/pages/DashboardPage'
+import DebugPage from 'src/pages/util/DebugPage'
 import DukeScheduleTestPage from 'src/pages/resources/DukeScheduleTestPage'
-import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
-import NotificationsPage from 'src/pages/users/NotificationsPage'
+import GiphySchedulePage from 'src/pages/util/GiphySchedulePage'
 import LocationPage from 'src/pages/locations/LocationPage'
-import NCTestLocationsPage from 'src/pages/resources/NCTestLocationsPage'
+import MagicSignInAuthPage from 'src/pages/sessions/MagicSignInAuthPage'
+import MagicSignInPage from 'src/pages/sessions/MagicSignInPage'
 import MobileVerificationPage from 'src/pages/MobileVerificationPage'
 import NCStatewideStatsPage from 'src/pages/resources/NCStatewideStatsPage'
-import LocationsNewPage from 'src/pages/registration/RegisterBusinessPage'
-import UsersNewPage from 'src/pages/registration/RegisterUserPage'
-import CHWRequestPage from 'src/pages/resources/CHWRequestPage'
-import AdminUserPermissionsPage from 'src/pages/admin/AdminUserPermissionsPage'
-import RegisterLocationWelcomePage from 'src/pages/registration/RegisterLocationWelcomePage'
-import RegisterLocationOwnerPage from 'src/pages/registration/RegisterLocationOwnerPage'
-import RegisterLocationDetailsPage from 'src/pages/registration/RegisterLocationDetailsPage'
-import RegisterLocationConfirmationPage from 'src/pages/registration/RegisterLocationConfirmationPage'
-import RegisterLocationMessagePage from 'src/pages/registration/RegisterLocationMessagePage'
+import CastlightTestSearchPage from 'src/pages/resources/CastlightTestSearchPage'
+import NotFoundPage from 'src/pages/util/NotFoundPage'
+import NotificationsPage from 'src/pages/users/NotificationsPage'
+import OpenSourceLicensesPage from 'src/pages/OpenSourceLicensesPage'
+import PasswordResetPage from 'src/pages/sessions/PasswordResetPage'
+import PasswordResetRequestPage from 'src/pages/sessions/PasswordResetRequestPage'
+import RegisterLocationConfirmationPage from 'src/pages/register-location/RegisterLocationConfirmationPage'
+import RegisterLocationDetailsPage from 'src/pages/register-location/RegisterLocationDetailsPage'
+import RegisterLocationMessagePage from 'src/pages/register-location/RegisterLocationMessagePage'
+import RegisterLocationOwnerPage from 'src/pages/register-location/RegisterLocationOwnerPage'
+import RegisterLocationWelcomePage from 'src/pages/register-location/RegisterLocationWelcomePage'
+import ReleaseNotesPage from 'src/pages/ReleaseNotesPage'
+import SettingsPage from 'src/pages/users/SettingsPage'
+import SignInPage from 'src/pages/sessions/SignInPage'
+import SplashPage from 'src/pages/SplashPage'
+import SurveyNewPage from 'src/pages/surveys/SurveyNewPage'
+import SurveyThankYouPage from 'src/pages/surveys/SurveyThankYouPage'
+import UserEditPage from 'src/pages/users/UserEditPage'
+import UserGreenlightPassPage from 'src/pages/users/UserGreenlightPassPage'
 import UserLocationPage from 'src/pages/user-locations/UserLocationPage'
 // import CohortsPage from 'src/pages/CohortsPage'
+import RegisterUserPage from 'src/pages/register-user/RegisterUserPage'
+import WelcomeChildPage from 'src/pages/welcome/WelcomeChildPage'
+import WelcomePage from 'src/pages/welcome/WelcomePage'
+import WelcomePasswordPage from 'src/pages/welcome/WelcomePasswordPage'
+import WelcomeReviewPage from 'src/pages/welcome/WelcomeReviewPage'
+import WelcomeSurveyPage from 'src/pages/welcome/WelcomeSurveyPage'
+import BrevardResourcesPage from 'src/pages/resources/BrevardResourcesPage'
+import AdminUserPage from 'src/pages/admin/AdminUserPage'
+import HelpScoutPage from 'src/pages/resources/HelpScoutPage'
+import PositiveResourcesPage from 'src/pages/resources/PositiveResourcesPage'
+import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
+import SchoolScoreCardPage from 'src/pages/resources/SchoolScoreCardPage'
+import LocationLookupPage from 'src/pages/locations/LocationLookupPage'
+
+import RegisterLocationIntroductionPage from 'src/pages/register-location/RegisterLocationIntroductionPage'
+import PageWithRequest from 'src/pages/util/PageWithRequest'
+import RegisterChildrenPage from 'src/pages/register-user/RegisterChildrenPage'
+import LocationLookupAccountPage from 'src/pages/locations/LocationLookupAccountPage'
+import LocationLookupRegistrationCodePage from 'src/pages/locations/LocationLookupRegistrationCodePage'
+import LocationCheckRegistrationCodePage from 'src/pages/locations/LocationCheckRegistrationCodePage'
+import AdminEditGreenlightPassPage from 'src/pages/admin/AdminEditGreenlightPassPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -74,7 +86,9 @@ const beforeEnter = {
     resolve: Function,
     reject: Function,
   ) {
-    if (isSignedIn()) {
+    if (isRegisteringLocation()) {
+      resolve()
+    } else if (isSignedIn()) {
       reject()
       this.navigate(dynamicPaths.currentUserHomePath())
     } else {
@@ -88,7 +102,13 @@ const beforeEnter = {
    */
   ifSignedInRedirectTo(path: string) {
     // eslint-disable-next-line func-names
-    return function (this: Router.Router, routeTo: Router.Route, routeFrom: Router.Route, resolve: Function, reject: Function) {
+    return function (
+      this: Router.Router,
+      routeTo: Router.Route,
+      routeFrom: Router.Route,
+      resolve: Function,
+      reject: Function,
+    ) {
       if (isSignedIn()) {
         reject()
         this.navigate(path)
@@ -112,8 +132,12 @@ const registrationRoutes = {
     path: '/register/location/welcome',
     component: RegisterLocationWelcomePage,
   },
+  registerLocationIntroductionPath: {
+    path: '/register/location/introduction',
+    component: RegisterLocationIntroductionPage,
+  },
   registerLocationMessagePath: {
-    path: '/register/location/message/:messageId',
+    path: '/register/location/message',
     component: RegisterLocationMessagePage,
   },
   registerLocationOwnerPath: {
@@ -125,12 +149,12 @@ const registrationRoutes = {
     component: RegisterLocationDetailsPage,
   },
   registerLocationConfirmationPath: {
-    path: '/register/location/confirmation',
+    path: '/register/location/:locationId/confirmation',
     component: RegisterLocationConfirmationPage,
   },
   durhamRegistationPath: {
     path: '/durham',
-    component: LocationsNewPage,
+    component: RegisterLocationWelcomePage,
   },
 }
 
@@ -168,6 +192,14 @@ const sessionRoutes = {
     component: SignInPage,
     beforeEnter: beforeEnter.redirectHomeIfSignedIn,
   },
+  passwordResetRequestPath: {
+    path: '/forgot-password',
+    component: PasswordResetRequestPage,
+  },
+  passwordResetPath: {
+    path: '/pwdrst/:token',
+    component: PasswordResetPage,
+  },
   magicSignInPath: {
     path: '/magic-sign-in',
     component: MagicSignInPage,
@@ -182,8 +214,13 @@ const sessionRoutes = {
 
 const resourcesRoutes = {
   dukeScheduleTestPath: {
-    path: '/schedule-test-at-duke',
+    path: '/resources/duke-testing',
     component: DukeScheduleTestPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  brevardPath: {
+    path: '/resources/brevard',
+    component: BrevardResourcesPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   ncStatewideStatsPath: {
@@ -191,19 +228,131 @@ const resourcesRoutes = {
     component: NCStatewideStatsPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
-  ncTestingLocationsPath: {
-    path: '/nc-test-locations',
-    component: NCTestLocationsPage,
-    // beforeEnter: beforeEnter.requireSignIn,
+  testSearchPath: {
+    path: '/resources/test-search',
+    component: CastlightTestSearchPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  helpScoutPath: {
+    path: '/support',
+    component: HelpScoutPage,
+    beforeEnter: beforeEnter.requireSignIn,
   },
   chwRequestPath: {
-    path: '/chw-request',
+    path: '/resources/chw-request',
     component: CHWRequestPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   mapPath: {
     path: '/covid-county-map',
     component: CovidCountyMapPage,
+  },
+  positiveResourcesPath: {
+    path: '/resources/positive-help',
+    component: PositiveResourcesPage,
+  },
+  schoolScoreCardPath: {
+    path: '/resources/score-card',
+    component: SchoolScoreCardPage,
+  },
+}
+
+const adminRoutes = {
+  adminUsersPath: {
+    path: '/admin/locations/:locationId/users',
+    component: AdminUsersPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  adminUserPath: {
+    path: '/admin/locations/:locationId/users/:userId',
+    component: AdminUserPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  adminDashboardPath: {
+    path: '/admin/locations/:locationId/dashboard',
+    component: AdminDashboardPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  adminEditGreenlightPassPath: {
+    path: '/admin/users/:userId/greenlight-pass/edit',
+    component: AdminEditGreenlightPassPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+}
+
+const locationRoutes = {
+  locationPath: {
+    path: '/go/:locationId',
+    component: LocationPage,
+  },
+  oldLocationPath: {
+    path: '/l/:locationId',
+    component: LocationPage,
+  },
+  locationLookupPath: {
+    path: '/location/lookup',
+    component: LocationLookupPage,
+  },
+  locationLookupAccountPath: {
+    path: '/go/:locationId/lookup-account',
+    component: LocationLookupAccountPage,
+  },
+  locationLookupRegistrationCodePath: {
+    path: '/go/:locationId/registration-code',
+    component: LocationLookupRegistrationCodePage,
+  },
+  // !TODO: need to make this link to go to another page where we check registration code and redirect to RegisterUserPage if it's valid.
+  locationCheckRegistrationCodePath: {
+    path: '/go/:locationId/code/:registrationCode',
+    component: LocationCheckRegistrationCodePage,
+  },
+  registerUserPath: {
+    path: '/go/:locationId/register/user',
+    component: RegisterUserPage,
+  },
+  registerChildrenPath: {
+    path: '/go/:locationId/register/children',
+    component: RegisterChildrenPage,
+  },
+}
+
+const surveyRoutes = {
+  userSurveysNewPath: {
+    path: '/users/:userId/surveys/new',
+    component: SurveyNewPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  userSeqSurveysNewPath: {
+    path: '/users/seq/surveys/new',
+    component: SurveyNewPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  surveysThankYouPath: {
+    path: '/surveys/thank-you',
+    component: SurveyThankYouPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+}
+
+const userRoutes = {
+  userGreenlightPassPath: {
+    path: '/users/:userId/greenlight-pass',
+    component: UserGreenlightPassPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  userLocationPath: {
+    path: '/users/:userId/locations/:locationId',
+    component: UserLocationPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+
+  editUserPath: {
+    path: '/users/:userId/edit',
+    component: UserEditPage,
+  },
+  editChildrenPath: {
+    path: '/users/:userId/children/:childId',
+    component: UserEditPage,
   },
 }
 
@@ -217,6 +366,10 @@ const routeMap = {
   ...welcomeRoutes,
   ...resourcesRoutes,
   ...registrationRoutes,
+  ...adminRoutes,
+  ...locationRoutes,
+  ...surveyRoutes,
+  ...userRoutes,
   dashboardPath: {
     path: '/dashboard',
     component: DashboardPage,
@@ -241,40 +394,9 @@ const routeMap = {
     path: '/splash',
     component: SplashPage,
   },
-
-  userSurveysNewPath: {
-    path: '/users/:userId/surveys/new',
-    component: SurveyNewPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  userSeqSurveysNewPath: {
-    path: '/users/seq/surveys/new',
-    component: SurveyNewPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  surveysThankYouPath: {
-    path: '/surveys/thank-you',
-    component: SurveyThankYouPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  userGreenlightPassPath: {
-    path: '/users/:userId/greenlight-pass',
-    component: UserGreenlightPassPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  userLocationPath: {
-    path: '/users/:userId/locations/:locationId',
-    component: UserLocationPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
   mobileVerificationPath: {
     path: '/mobile-verifications',
     component: MobileVerificationPage,
-  },
-  adminUsersPath: {
-    path: '/admin/locations/:locationId/users',
-    component: AdminUsersPage,
-    beforeEnter: beforeEnter.requireSignIn,
   },
   debugPath: {
     path: '/debug',
@@ -292,38 +414,14 @@ const routeMap = {
     path: '/open-source',
     component: OpenSourceLicensesPage,
   },
-  newUserPath: {
-    path: '/users/new',
-    component: UsersNewPage,
-  },
-  locationPath: {
-    path: '/go/:locationId',
-    component: LocationPage,
-  },
-  oldLocationPath: {
-    path: '/l/:locationId',
-    component: LocationPage,
-  },
-  newLocationUserPath: {
-    path: '/go/:permalink/code/:registrationCode',
-    component: UsersNewPage,
-  },
-  oldNewLocationUserPath: {
-    path: '/l/:permalink/code/:registrationCode',
-    component: UsersNewPage,
-  },
   userLocationPermissionsPath: {
     path: '/admin/locations/:locationId/users/:userId/permissions',
     component: AdminUserPermissionsPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
-  editUserPath: {
-    path: '/users/:userId/edit',
-    component: UserEditPage,
-  },
-  editChildrenPath: {
-    path: '/users/:userId/children/:childId',
-    component: UserEditPage,
+  testPath: {
+    path: '/test',
+    component: PageWithRequest,
   },
   notFoundPath: {
     path: '/not-found',
@@ -358,7 +456,7 @@ Object.keys(routeMap).forEach((key) => {
 })
 
 export const dynamicPaths = {
-  currentUserHomePath: () => {
+  currentUserHomePath: (): string => {
     const user: User | null | undefined = getGlobal().currentUser
     if (!user) return paths.rootPath
     if (user.hasCompletedWelcome()) {
@@ -366,7 +464,7 @@ export const dynamicPaths = {
     }
     return paths.welcomePath
   },
-  afterWelcomePasswordPath: () => {
+  afterWelcomePasswordPath: (): string => {
     const user: User | null | undefined = getGlobal().currentUser
     if (!user) return paths.rootPath
     if (user.hasChildren()) {
@@ -383,7 +481,7 @@ export const dynamicPaths = {
     }
     return dynamicPaths.welcomeChildIndexPath(0)
   },
-  userSurveysNewIndexPath: (index: number) => {
+  userSurveysNewIndexPath: (index: number): string => {
     const user: User | null | undefined = getGlobal().currentUser
     if (!user) return paths.rootPath
     const people = [user, ...user.sortedChildren()]

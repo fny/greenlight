@@ -3,7 +3,7 @@ module PasswordResetable
   extend ActiveSupport::Concern
 
   included do
-    has_one :password_reset
+    has_one :password_reset, dependent: :destroy
   end
 
   def generate_password_token!
@@ -14,7 +14,7 @@ module PasswordResetable
     "#{Greenlight::SHORT_URL}/pwdrst/#{password_reset&.token}"
   end
 
-  def reset_password!(password)  
+  def reset_password!(password)
     self.password = password
     save!
 

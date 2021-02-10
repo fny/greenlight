@@ -69,9 +69,10 @@ const configs: { [k in GreenlightStatusTypes]: jdenticon.JdenticonConfig } = {
 type Props = {
   user: User
   size: number
+  alert?: boolean
 }
 
-const UserJDenticon = ({ user, size }: Props) => {
+const UserJDenticon = ({ user, size, alert }: Props) => {
   jdenticon.configure(configs[user.greenlightStatus().status])
   return (
     <div
@@ -79,7 +80,7 @@ const UserJDenticon = ({ user, size }: Props) => {
       style={{
         // border: '1px solid #00000022',
         borderRadius: `${size}px`,
-        background: `url(data:image/svg+xml;base64,${btoa(
+        background: alert ? '' : `url(data:image/svg+xml;base64,${btoa(
           jdenticon.toSvg(user.id, size),
         )})`,
         backgroundPosition: 'center',

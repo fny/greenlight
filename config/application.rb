@@ -6,7 +6,7 @@ require 'rails'
 require 'active_model/railtie'
 # require 'active_job/railtie'
 require 'active_record/railtie'
-# require 'active_storage/engine'
+require 'active_storage/engine'
 require 'action_controller/railtie'
 require 'action_mailer/railtie'
 # require 'action_mailbox/engine'
@@ -35,7 +35,7 @@ module Greenlight
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
-    config.api_only = true
+    # config.api_only = true
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.middleware.use ActionDispatch::Cookies
 
@@ -45,5 +45,6 @@ module Greenlight
 
     config.skylight.probes += %w[redis]
     config.filter_parameters += %w[password password_confirmation password_digest]
+    config.action_view.form_with_generates_remote_forms = false
   end
 end

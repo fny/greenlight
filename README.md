@@ -9,7 +9,7 @@ This is the README for the overall project.
 - Postgres v12
 - Redis v6
 - See `/client` for frontend specific requirements
-- See `/cordova` for iOs and Android specific requirements
+- See `/cordova` for iOS and Android specific requirements
 
 ## Backend Set Up
 
@@ -17,7 +17,7 @@ This is the README for the overall project.
 
 For Ruby and Node, we recommend using a manager like `rvm`, `rbenv`, `nvm`. I prefer to
 use [asdf](https://asdf-vm.com) since it covers both and will respond to version changes
-in `.tool-versions`=. If 
+in `.tool-versions`=. If
 
 For Postgres and Redis, we recommend you install them using Homebrew on macOS or a Linux
 package manager of your choice.
@@ -50,23 +50,23 @@ To access emails, install [mailcatcher](https://github.com/sj26/mailcatcher) and
 visit [http://localhost:1080](http://localhost:1080). If you're on a Mac, you
 may have installation issues. Use the following line to install it:
 
-  gem install mailcatcher -- --with-cflags="-Wno-error=implicit-function-declaration"
+gem install mailcatcher -- --with-cflags="-Wno-error=implicit-function-declaration"
 
 ## Development URLs
 
 TODO: We should consider migrating everything to HTTPS to keep production and development more similar.
 
-This is ***extremely important***. Due to a number of CORS issues, you'll need to access the app
+This is **_extremely important_**. Due to a number of CORS issues, you'll need to access the app
 through a subdomain rather than through localhost.
 
- - http://app.greenlightready.net is a loopback address that points to 127.0.0.1
- - http://api.greenlightready.net is another loopback address that points to 127.0.0.1
- - http://dev.glit.me/* redirects to http://app.greenlightready.com:9991/*
+- http://app.greenlightready.net is a loopback address that points to 127.0.0.1
+- http://api.greenlightready.net is another loopback address that points to 127.0.0.1
+- http://dev.glit.me/_ redirects to http://app.greenlightready.com:9991/_
 
 The configurations are set up so that you can:
 
-  - access the frontend at http://app.greenlightready.net:9991
-  - access the backend at http://api.greenlightready.net:9990
+- access the frontend at http://app.greenlightready.net:9991
+- access the backend at http://api.greenlightready.net:9990
 
 I highly recommend that you use these addresses. You can alternatively modify your `/etc/hosts` file
 to pick your own URL and set the appropriate environment variable your `.env.local` file.
@@ -81,9 +81,9 @@ Speaking of `.env` files...
 We use `.env` files across both the backend and frontend for configuration during development and test.
 The production environments use Heroku's built in environment configuration.
 
- - `.env.local`: This is where you can put your own overrides, these should not be committed. This overrides everything.
- - `.env.development`: This is where configuration for development goes.
- - `.env.test`: This is where configuration for test goes.
+- `.env.local`: This is where you can put your own overrides, these should not be committed. This overrides everything.
+- `.env.development`: This is where configuration for development goes.
+- `.env.test`: This is where configuration for test goes.
 
 TODO: We should consider migrating to Rails secrets management so that we can share configurations for testing
 production-like endpoints that use all our third-party services.
@@ -137,7 +137,6 @@ Visual Studio Code is recommended with the following plugins:
 - [Rewrap](https://marketplace.visualstudio.com/items?itemName=stkb.rewrap)
 - [Ruby](https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby)
 - [Ruby Solargraph](https://marketplace.visualstudio.com/items?itemName=castwide.solargraph)
-- [Sync Scroll](https://marketplace.visualstudio.com/items?itemName=dqisme.sync-scroll) for language files
 - [YARD Documentor](https://marketplace.visualstudio.com/items?itemName=pavlitsky.yard) press Ctrl+Alt+Enter (Option+Command+Enter on macOS) or invoke Document with YARD from the command palette.
 
 If you're coming from Sublime, [this extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.sublime-keybindings) might come in handy.
@@ -149,30 +148,30 @@ provided in this repo.
 
 Prefix your comments with the following when an action item needs to be taken.
 
- - TODO: There's something that needs to get done
- - FIXME: There's something broken here.
- - HACK: This is a temporary hack to get something working that needs improvement.
- - PERF: There's something here that needs to be sped up.
- - I18N: There's something that needs to be translated
- - REFACTOR: The code is ugly.
- - UGLY: The presentation to the user is ugly.
+- TODO: There's something that needs to get done
+- FIXME: There's something broken here.
+- HACK: This is a temporary hack to get something working that needs improvement.
+- PERF: There's something here that needs to be sped up.
+- I18N: There's something that needs to be translated
+- REFACTOR: The code is ugly.
+- UGLY: The presentation to the user is ugly.
 
 ## Commit Messages
 
 Prefix your commits with the following so we know what's happening. We aim to follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
- - feat: new feature, corresponds to a MINOR version update
- - fix: a bug fix corresponds to a PATCH version update
- - docs: changes to the documentation
- - style: formatting, missing semi colons, etc
- - refactor: refactoring production code
- - test: adding missing tests, refactoring tests;
- - chore: updating tasks
- - BREAKING CHANGE: when you shake things up
+- feat: new feature, corresponds to a MINOR version update
+- fix: a bug fix corresponds to a PATCH version update
+- docs: changes to the documentation
+- style: formatting, missing semi colons, etc
+- refactor: refactoring production code
+- test: adding missing tests, refactoring tests;
+- chore: updating tasks
+- BREAKING CHANGE: when you shake things up
 
 For commits associated with releases (e.g. the CHANGELOG update) use the following format:
 
- - release: vMAJOR.MINOR.PATCH 🎊
+- release: vMAJOR.MINOR.PATCH 🎊
 
 Feel free to change the emoji.
 
@@ -212,14 +211,14 @@ For each action, you should add helpers to generate routes which map to pages as
 
 Note this is very similar to how Rails does routing, however, we deliberately but the action after the resource for sorting.
 
-All components corresponsing to pages should be in the `./pages/` directory or nested by resource (e.g. `./pages/posts/`)
+All components corresponding to pages should be in the `./pages/` directory or nested by resource (e.g. `./pages/posts/`)
 
 Nested resources follow the same convention above:
 
 - `userPostsPath => 'users/:userId/posts' => UsersPostsPage(userId)`: View all posts for this user
 - `userPostPath => 'users/:userId/posts/:id' => UserPostsPage(userId, id)`: View a post by this user
 
-Again components corresponsing to pages should be in the `./pages` directory. If you want to create a separate folder, follow the same pattern as before but do not nest (e.g. `./pages/usersPosts/`).
+Again components corresponding to pages should be in the `./pages` directory. If you want to create a separate folder, follow the same pattern as before but do not nest (e.g. `./pages/usersPosts/`).
 
 #### Shared Components
 
@@ -410,26 +409,24 @@ It should be well known if an endpoint retuns a single value or not
 
 ### Extensions
 
-
 ### Wishlist
 
- - Override current status
- - Fix the spanish
- - Be able to submit a test result
- - Fix greenlightdurham.com to link to app
- - Pass page for all children
- - Be able to idenify owners
- - Easy approval form
- - Owners are admins
- - Be able to add, remove, and list locations
- - Forgot password views
- - Ask for number of employees if > 70, show contact us message
- - Add form for requests
- - Change COVID relief payments to financial assistance
- - Add TOS for business customers
- - Simplify TOS
- - Add privacy policy page
-
+- Override current status
+- Fix the spanish
+- Be able to submit a test result
+- Fix greenlightdurham.com to link to app
+- Pass page for all children
+- Be able to idenify owners
+- Easy approval form
+- Owners are admins
+- Be able to add, remove, and list locations
+- Forgot password views
+- Ask for number of employees if > 70, show contact us message
+- Add form for requests
+- Change COVID relief payments to financial assistance
+- Add TOS for business customers
+- Simplify TOS
+- Add privacy policy page
 
 ### Heroku
 

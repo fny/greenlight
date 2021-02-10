@@ -15,8 +15,9 @@ class GreenlightStrategyNorthCarolina
   # @param cleared_override_date [Date, nil]
   def initialize(medical_events, previous_medical_events, cleared_override_date = nil)
     @medical_events = (medical_events + previous_medical_events).sort_by(&:occurred_at)
+
     if cleared_override_date
-      @medical_events = medical_events.filter { |e| e.occurred_at > cleared_override_date}
+      @medical_events = medical_events.filter { |e| e.occurred_at > cleared_override_date }
     end
   end
 
@@ -33,7 +34,7 @@ class GreenlightStrategyNorthCarolina
   end
 
   def exposure_within_last_14_days
-    events_last_14_days.filter { |e| e.event_type == MedicalEvent::COVID_EXPOSURE }.max { |e| e.occurred_at }
+    events_last_14_days.filter { |e| e.event_type == MedicalEvent::COVID_EXPOSURE }.max_by(&:occurred_at)
   end
 
   def asymptomatic_last_14_days?

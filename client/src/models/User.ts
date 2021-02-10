@@ -1,11 +1,12 @@
 import { DateTime } from 'luxon'
 import { isPresent, joinWords } from 'src/helpers/util'
-import { Location, MedicalEvent } from 'src/models'
+import { Cohort, Location, MedicalEvent } from 'src/models'
 import {
   Model, attribute as attr, initialize, STRING, DATETIME, DATE, BOOLEAN, hasMany, hasOne,
 } from 'src/lib/Model'
+import { tr } from 'src/components/Tr'
 import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
-import { LocationAccount } from './LocationAccount'
+import { LocationAccount, PermissionLevels } from './LocationAccount'
 import { UserSettings } from './UserSettings'
 
 /**
@@ -71,6 +72,9 @@ export class User extends Model {
   @attr({ type: DATETIME })
   completedWelcomeAt: DateTime = DateTime.fromISO('')
 
+  @hasMany('Cohort')
+  cohorts: Cohort[] = []
+
   @hasMany('LocationAccount')
   locationAccounts: LocationAccount[] = []
 
@@ -119,24 +123,12 @@ export class User extends Model {
     return this.hasChildren()
   }
 
-  isAdminAt(location: Location): boolean {
-    const la = this.accountFor(location)
-    if (!la) return false
-    return la.isAdmin()
-  }
-
-  isOwnerAt(location: Location): boolean {
-    const la = this.accountFor(location)
-    if (!la) return false
-    return la.isOwner()
-  }
-
   accountFor(location: Location): LocationAccount | null {
     return this.locationAccounts.find((la) => (la.locationId || '').toString() === location.id.toString()) || null
   }
 
   /** Has the user completed the welcome sequence? */
-  hasCompletedWelcome() {
+  hasCompletedWelcome(): boolean {
     return this.completedWelcomeAt !== null && this.completedWelcomeAt.isValid
   }
 
@@ -155,6 +147,13 @@ export class User extends Model {
       // 'recovery_diagnosed_asymptomatic',
       // 'recovery_return_tomorrow'
       return status
+    }
+    return this.lastGreenlightStatus
+  }
+
+  lastUnexpiredGreenlightStatus(): GreenlightStatus {
+    if (!this.lastGreenlightStatus || this.lastGreenlightStatus.isValidForToday()) {
+      return GreenlightStatus.newUnknown()
     }
     return this.lastGreenlightStatus
   }
@@ -241,14 +240,14 @@ export class User extends Model {
    * The names of all the users needing to submit surveys
    */
   usersNotSubmittedText(): string {
-    return joinWords(this.usersNotSubmitted().map((u) => (u === this ? this.yourself__HACK() : u.firstName)))
+    return joinWords(this.usersNotSubmitted().map((u) => (u === this ? tr({ en: 'yourself', es: 'su mismo' }) : u.firstName)))
   }
 
   /**
    * The names of all the users needing to submit surveys
    */
   usersNotSubmittedForTomorrowText(): string {
-    return joinWords(this.usersNotSubmittedForTomorrow().map((u) => (u === this ? this.yourself__HACK() : u.firstName)))
+    return joinWords(this.usersNotSubmittedForTomorrow().map((u) => (u === this ? tr({ en: 'yourself', es: 'su mismo' }) : u.firstName)))
   }
 
   showSubmissionPanelForToday(): boolean {
@@ -259,15 +258,7 @@ export class User extends Model {
     return this.usersNotSubmittedForTomorrow().length > 0 && CUTOFF_TIME.isBefore(DateTime.local())
   }
 
-  yourself__HACK() {
-    return this.locale === 'en' ? 'yourself' : 'ti mismo'
-  }
-
-  you__HACK() {
-    return this.locale === 'en' ? 'you' : 'tu'
-  }
-
-  hasLocationThatRequiresSurvey() {
+  hasLocationThatRequiresSurvey(): boolean {
     return this.locationAccounts.length > 0
   }
 
@@ -275,7 +266,7 @@ export class User extends Model {
     return this.usersNotSubmitted().length > 0
   }
 
-  usersExpectedToSubmit() {
+  usersExpectedToSubmit(): User[] {
     const users: User[] = []
 
     if (this.hasLocationThatRequiresSurvey()) {
@@ -308,5 +299,52 @@ export class User extends Model {
     return this.locationAccounts
       .filter((la) => la.isAdmin() && la.location !== null)
       .map((la) => la.location) as Location[]
+  }
+
+  isInBrevard__HACK() {
+    return this.locations__HACK().some((l) => l.permalink === 'brevard-academy')
+  }
+
+  isMemberOf(location: Location): boolean {
+    return this.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0
+  }
+
+  isOwnerOf(user: User) {
+    const ownerAccounts = this.locationAccounts.filter((la) => la.permissionLevel === PermissionLevels.OWNER)
+    const otherAccountLocationIds = user.locationAccounts.map((la) => la.locationId)
+    return ownerAccounts.some((la) => otherAccountLocationIds.includes(la.locationId))
+  }
+
+  /**
+   * @returns whether user can administer staff data at given location
+   */
+  hasStaffAccessAt(location: Location): boolean {
+    return this.locationAccounts.some((la) => la.locationId === location.id && la.hasStaffAccess())
+  }
+
+  /**
+   * @returns whether user can administer student data at given location
+   */
+  hasStudentAccessAt(location: Location): boolean {
+    return this.locationAccounts.some((la) => la.locationId === location.id && la.hasStudentAccess())
+  }
+
+  /**
+   * @returns whether user can administer medical data at given location
+   */
+  hasMedicalAccessAt(location: Location): boolean {
+    return this.locationAccounts.some((la) => la.locationId === location.id && la.hasMedicalAccess())
+  }
+
+  canAdministrate(user: User): boolean {
+    return this.locationAccounts.some((myAccount) => {
+      const otherUserAccounts = user.locationAccounts
+      return otherUserAccounts.some((otherAccount) => {
+        // Accounts must be from the same location the same location
+        if (myAccount.locationId !== otherAccount.locationId) return false
+        if (otherAccount.isStudent()) return myAccount.hasStudentAccess()
+        return myAccount.hasStaffAccess()
+      })
+    })
   }
 }

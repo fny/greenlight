@@ -1,8 +1,8 @@
-import { Trans } from '@lingui/macro'
 import React, { useEffect, useGlobal } from 'reactn'
 import { v1 } from 'src/api'
 import { ping, setIntervalSafely } from 'src/helpers/util'
 import './OnlineStatus.css'
+import Tr from './Tr'
 
 const ONLINE_TEST_URL = 'http://neverssl.com/'
 /** How long to wait for a response in milisecconds */
@@ -26,8 +26,11 @@ export default function OnlineStatus(): JSX.Element {
   function checkConnection(checkApi: boolean = false) {
     testInternet().then((internetStatus) => {
       setIsInternetOnline(internetStatus)
+
       if (internetStatus && checkApi) {
-        v1.get('ping').then(() => setIsAPIOnline(true)).catch(() => setIsAPIOnline(false))
+        v1.get('ping')
+          .then(() => setIsAPIOnline(true))
+          .catch(() => setIsAPIOnline(false))
       }
     })
   }
@@ -37,21 +40,18 @@ export default function OnlineStatus(): JSX.Element {
       checkConnection()
     }, CHECK_AFTER_SECS * 1000)
 
-    return () => { window.clearTimeout(timerId) }
+    return () => {
+      window.clearTimeout(timerId)
+    }
   }, [])
 
   // We need explicit false checks because it is undefined by default
   if (isInternetOnline === false) {
     return (
       <div className="OnlineStatus">
-        <Trans id="OnlineStatus.internet_offline">
-          You're internet is disconnected.
-        </Trans>
-        <button
-          type="button"
-          className="retry"
-          onClick={() => checkConnection(true)}
-        >Retry
+        <Tr en="Your internet is disconnected." es="Tu internet está desconectado." />
+        <button type="button" className="retry" onClick={() => checkConnection(true)}>
+          <Tr en="Retry" es="Vuelve a intentarlo" />
         </button>
       </div>
     )
@@ -61,15 +61,10 @@ export default function OnlineStatus(): JSX.Element {
   if (isAPIOnline === false) {
     return (
       <div className="OnlineStatus">
-        <Trans id="OnlineStatus.api_offline">
-          Can't connect to Greenlight.
-          <button
-            type="button"
-            className="retry"
-            onClick={() => checkConnection(true)}
-          >Retry
-          </button>
-        </Trans>
+        <Tr en="Can't connect to Greenlight." es="No se puede conectar a Greenlight." />
+        <button type="button" className="retry" onClick={() => checkConnection(true)}>
+          <Tr en="Retry" es="Vuelve a intentarlo" />
+        </button>
       </div>
     )
   }

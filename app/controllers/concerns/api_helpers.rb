@@ -13,13 +13,12 @@ module APIHelpers
     'Coder, eh? Email us: hello [at] greenlightready'
   end
 
-
   def camelize_hash(data)
     case data
     when Array
       data.map { |x| camelize_hash(x) }
-    when Hash
-      obj = {}
+    when Hash, ActionController::Parameters
+      obj = HashWithIndifferentAccess.new
       data.each { |k, v| obj[k.underscore] = camelize_hash(v) }
       obj
     else
@@ -39,6 +38,10 @@ module APIHelpers
     response.status = 202 # Accepted
   end
 
+  def set_status_ok
+    response.status = 200
+  end
+
   def error_response(command)
     response.status = 422
     errors = JSONAPI::Errors.serialize(
@@ -50,8 +53,26 @@ module APIHelpers
     render json: errors
   end
 
+  def simple_error_response(error)
+    response.status = 422
+    render json: {
+      "errors": [
+        error
+      ]
+    }
+  end
+
   def success_response
     response.status = 204 # No content
     render plain: nil
+  end
+
+  def success_response_with_token
+    return success_response unless cordova?
+
+    response.status = 200
+    render json: {
+      token: @session.bearer_token,
+    }
   end
 end

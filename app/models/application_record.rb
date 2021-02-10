@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 class ApplicationRecord < ActiveRecord::Base
+  include PluckToHash
+
   class << self
     # @return [Array<Symbol>]
     attr_accessor :permitted_params
+    # @return [Array<Symbol>]
+    attr_accessor :queryable_columns
   end
 
   # From strip_attributes gem. Automatically strips all attributes of leading
@@ -29,7 +33,50 @@ class ApplicationRecord < ActiveRecord::Base
   #
   # @param [Hash] attrs
   # @return [HashWithIndifferentAccess]
-  def self.restrict_params(attrs)
-    HashWithIndifferentAccess.new(attrs).slice(*self.permitted_params)
+  def self.restrict_params(attrs, additional = [])
+    hash = HashWithIndifferentAccess.new(attrs).slice(*self.permitted_params)
+    additional.each do |key|
+      hash[key] = attrs[key]
+    end
+    hash
+  end
+
+  # @param [Array<String>] columns
+  # @param [String] query
+  # @return [ActiveRecord::Relation]
+  def self.search(columns, query)
+    return all if query.blank?
+
+    where(
+      columns.map { |col| "lower(#{col}) LIKE :query"}.join(' OR '),
+      query: "%#{query.downcase}%"
+    )
+  end
+
+  # @param [String] query
+  # @return [ActiveRecord::Relation]
+  def self.q(query)
+    return all if query.blank?
+
+    self.search(queryable_columns || [], query)
+  end
+
+  # @param [String] query
+  # @return [ActiveRecord::Base, nil]
+  def self.qf(query)
+    return all if query.blank?
+
+    self.search(queryable_columns || [], query).first
+  end
+
+  def self.dedupe(columns)
+    duplicate_row_values = select("#{columns.join(', ')}, count(*)")
+      .group(columns.join(', '))
+      .having('count(*) > 1')
+      .pluck_to_hash(*columns)
+
+    duplicate_row_values.each do |query|
+      where(query).order(id: :desc)[1..].map(&:destroy)
+    end
   end
 end

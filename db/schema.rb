@@ -2,22 +2,50 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_08_135505) do
+ActiveRecord::Schema.define(version: 2021_01_03_194101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
   create_table "cohorts", force: :cascade do |t|
-    t.text "name", null: false
-    t.text "category", null: false
+    t.string "name", null: false
+    t.string "category", null: false
     t.bigint "location_id", null: false
     t.bigint "created_by_id"
     t.bigint "updated_by_id"
@@ -25,8 +53,11 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "code", null: false
     t.index ["created_by_id"], name: "index_cohorts_on_created_by_id"
     t.index ["deleted_by_id"], name: "index_cohorts_on_deleted_by_id"
+    t.index ["location_id", "category", "name"], name: "index_cohorts_on_location_id_and_category_and_name", unique: true
+    t.index ["location_id", "code"], name: "index_cohorts_on_location_id_and_code", unique: true
     t.index ["location_id"], name: "index_cohorts_on_location_id"
     t.index ["updated_by_id"], name: "index_cohorts_on_updated_by_id"
   end
@@ -36,17 +67,18 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
     t.bigint "cohort_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["cohort_id", "user_id"], name: "index_cohorts_users_on_cohort_id_and_user_id", unique: true
     t.index ["cohort_id"], name: "index_cohorts_users_on_cohort_id"
     t.index ["user_id"], name: "index_cohorts_users_on_user_id"
   end
 
   create_table "greenlight_statuses", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.text "status", null: false
+    t.string "status", null: false
     t.date "submission_date", null: false
     t.date "expiration_date", null: false
     t.date "follow_up_date", null: false
-    t.text "reason"
+    t.string "reason"
     t.text "logical_trace"
     t.boolean "is_override", default: false, null: false
     t.bigint "created_by_id"
@@ -63,11 +95,9 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
   create_table "location_accounts", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "location_id", null: false
-    t.text "external_id"
-    t.text "role", null: false
-    t.text "permission_level"
-    t.text "title"
-    t.text "attendance_status"
+    t.string "external_id"
+    t.string "role", null: false
+    t.string "permission_level"
     t.datetime "approved_by_user_at"
     t.datetime "approved_by_location_at"
     t.bigint "created_by_id"
@@ -86,13 +116,13 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
   end
 
   create_table "locations", force: :cascade do |t|
-    t.text "name", null: false
-    t.text "category", null: false
-    t.text "permalink", null: false
-    t.text "phone_number"
-    t.text "email"
-    t.text "website"
-    t.text "zip_code"
+    t.string "name", null: false
+    t.string "category", null: false
+    t.string "permalink", null: false
+    t.string "phone_number"
+    t.string "email"
+    t.string "website"
+    t.string "zip_code"
     t.boolean "hidden", default: true, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -113,6 +143,8 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
     t.string "student_registration_code_downcase"
     t.string "gdrive_staff_roster_id"
     t.string "gdrive_student_roster_id"
+    t.jsonb "cohort_schema", default: {}, null: false
+    t.boolean "reminders_enabled", default: true, null: false
     t.index ["created_by_id"], name: "index_locations_on_created_by_id"
     t.index ["permalink"], name: "index_locations_on_permalink", unique: true
   end
@@ -120,7 +152,7 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
   create_table "medical_events", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "greenlight_status_id", null: false
-    t.text "event_type", null: false
+    t.string "event_type", null: false
     t.datetime "occurred_at", null: false
     t.bigint "created_by_id"
     t.bigint "updated_by_id"
@@ -142,21 +174,34 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["child_id"], name: "index_parents_children_on_child_id"
+    t.index ["parent_id", "child_id"], name: "index_parents_children_on_parent_id_and_child_id", unique: true
     t.index ["parent_id"], name: "index_parents_children_on_parent_id"
   end
 
   create_table "password_resets", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.text "token"
+    t.string "token"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_password_resets_on_user_id"
   end
 
+  create_table "roster_imports", force: :cascade do |t|
+    t.bigint "location_id", null: false
+    t.string "category"
+    t.bigint "created_by_id"
+    t.string "status", default: "received"
+    t.text "message", default: ""
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["created_by_id"], name: "index_roster_imports_on_created_by_id"
+    t.index ["location_id"], name: "index_roster_imports_on_location_id"
+  end
+
   create_table "user_settings", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.boolean "override_location_reminders", default: false, null: false
-    t.text "daily_reminder_type", default: "text", null: false
+    t.string "daily_reminder_type", default: "text", null: false
     t.integer "daily_reminder_time", default: 7, null: false
     t.boolean "remind_mon", default: true, null: false
     t.boolean "remind_tue", default: true, null: false
@@ -171,32 +216,32 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.text "first_name", default: "Greenlight User", null: false
-    t.text "last_name", default: "Unknown", null: false
-    t.text "password_digest"
+    t.string "first_name", default: "Greenlight User", null: false
+    t.string "last_name", default: "Unknown", null: false
+    t.string "password_digest"
     t.datetime "password_set_at"
-    t.text "magic_sign_in_token"
+    t.string "magic_sign_in_token"
     t.datetime "magic_sign_in_sent_at"
-    t.text "auth_token"
+    t.string "auth_token"
     t.datetime "auth_token_set_at"
-    t.text "email"
-    t.text "email_confirmation_token"
+    t.string "email"
+    t.string "email_confirmation_token"
     t.datetime "email_confirmation_sent_at"
     t.datetime "email_confirmed_at"
-    t.text "email_unconfirmed"
-    t.text "mobile_number"
-    t.text "mobile_carrier"
+    t.string "email_unconfirmed"
+    t.string "mobile_number"
+    t.string "mobile_carrier"
     t.boolean "is_sms_emailable"
-    t.text "mobile_number_confirmation_token"
+    t.string "mobile_number_confirmation_token"
     t.datetime "mobile_number_confirmation_sent_at"
     t.datetime "mobile_number_confirmed_at"
-    t.text "mobile_number_unconfirmed"
-    t.text "locale", default: "en", null: false
-    t.text "zip_code"
-    t.text "time_zone", default: "America/New_York"
+    t.string "mobile_number_unconfirmed"
+    t.string "locale", default: "en", null: false
+    t.string "zip_code"
+    t.string "time_zone", default: "America/New_York"
     t.date "birth_date"
-    t.text "physician_name"
-    t.text "physician_phone_number"
+    t.string "physician_name"
+    t.string "physician_phone_number"
     t.text "daily_reminder_type", default: "text", null: false
     t.boolean "needs_physician", default: false, null: false
     t.datetime "invited_at"
@@ -224,6 +269,8 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
     t.index ["updated_by_id"], name: "index_users_on_updated_by_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cohorts", "locations", on_delete: :cascade
   add_foreign_key "cohorts", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "cohorts", "users", column: "deleted_by_id", on_delete: :nullify
@@ -238,7 +285,7 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
   add_foreign_key "location_accounts", "users", column: "deleted_by_id", on_delete: :nullify
   add_foreign_key "location_accounts", "users", column: "updated_by_id", on_delete: :nullify
   add_foreign_key "location_accounts", "users", on_delete: :cascade
-  add_foreign_key "locations", "users", column: "created_by_id"
+  add_foreign_key "locations", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "medical_events", "greenlight_statuses", on_delete: :cascade
   add_foreign_key "medical_events", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "medical_events", "users", column: "deleted_by_id", on_delete: :nullify
@@ -247,6 +294,8 @@ ActiveRecord::Schema.define(version: 2020_12_08_135505) do
   add_foreign_key "parents_children", "users", column: "child_id", on_delete: :cascade
   add_foreign_key "parents_children", "users", column: "parent_id", on_delete: :cascade
   add_foreign_key "password_resets", "users", on_delete: :cascade
+  add_foreign_key "roster_imports", "locations", on_delete: :cascade
+  add_foreign_key "roster_imports", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "user_settings", "users", on_delete: :cascade
   add_foreign_key "users", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "users", "users", column: "deleted_by_id", on_delete: :nullify

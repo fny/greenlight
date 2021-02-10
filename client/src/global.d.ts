@@ -1,18 +1,22 @@
 import 'reactn'
 import { I18n } from '@lingui/core'
-import { User } from 'src/lib/models'
-import { GRegisteringLocation, GRegisteringUser } from './initializers/providers'
+import { CurrentUser } from 'src/models'
+import { RegisteringUser } from 'src/models/RegisteringUser'
+import { RegisteringLocation } from 'src/models/RegisteringLocation'
+import { Router } from 'framework7/modules/router/router'
 
 declare module 'reactn/default' {
   export interface State {
     locale: 'en' | 'es'
-    currentUser: User | null
-    currentUserX: User | null
+    currentUser: CurrentUser | null
+    currentRoute?: Router.Route
     i18n: I18n
     isAPIOnline?: boolean
     isInternetOnline?: boolean
-    registeringUser: GRegisteringUser
-    registeringLocation: GRegisteringLocation
+    registeringUser: RegisteringUser
+    registeringUserDetail: string
+    registeringLocation: RegisteringLocation
     test: string | null
+    progress: number | null
   }
 }

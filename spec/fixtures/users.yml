@@ -1,6 +1,57 @@
+# A parent who has two kids in a school
 marge:
-  id: 1
   first_name: Marge
   last_name: Simpson
   email: marge@springfield.com
-  password_digest: BCrypt::Password.create('super_secret_password', cost: 5)
+  password_digest: <%= BCrypt::Password.create('verysecure', cost: 4) %>
+  auth_token: <%= SecureRandom.hex %>
+  completed_welcome_at: <%= 20.days.ago %>
+
+# A parent who has two kids in a school and uses Greenlight for work
+homer:
+  first_name: Homer
+  last_name: Simpson
+  email: homer@springfield.com
+  password_digest: <%= BCrypt::Password.create('verysecure', cost: 4) %>
+  auth_token: <%= SecureRandom.hex %>
+  completed_welcome_at: <%= 1.day.ago %>
+
+# A student at a school
+lisa:
+  first_name: Lisa
+  last_name: Simpson
+
+# A student at a school
+bart:
+  first_name: Bart
+  last_name: Simpson
+
+# A student at a day care
+maggie:
+  first_name: Maggie
+  last_name: Simpson
+
+# A school principal
+skinner:
+  first_name: Seymour
+  last_name: Skinner
+
+# School teacher
+krabappel:
+  first_name: Edna
+  last_name: Krabappel
+
+# A school teacher who has kids in the school too
+flanders:
+  first_name: Ned
+  last_name: Flanders
+
+# A student in a school with a parent who's a teacher
+rodd:
+  first_name: Rodd
+  last_name: Flanders
+
+# A student in a school with a parent who's a teacher
+todd:
+  first_name: Todd
+  last_name: Flanders

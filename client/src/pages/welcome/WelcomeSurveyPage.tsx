@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-// TODO: Translate
 import React from 'reactn'
 
 import {
@@ -9,7 +8,6 @@ import {
   Navbar, BlockTitle, f7,
 } from 'framework7-react'
 
-import { joinWords } from 'src/helpers/util'
 import { User } from 'src/models/User'
 import { paths } from 'src/config/routes'
 import { ReactNComponent } from 'reactn/build/components'
@@ -18,9 +16,9 @@ import { NoCurrentUserError } from 'src/helpers/errors'
 import { t, Trans } from '@lingui/macro'
 import { completeWelcomeUser } from 'src/api'
 
-import onlineCheckupImage from 'src/assets/images/online-checkup.svg'
+import welcomeSurveyImage from 'src/assets/images/illustrations/survey.png'
 import SubmitHandler from 'src/helpers/SubmitHandler'
-import { reloadCurrentUser } from 'src/initializers/providers'
+import { reloadCurrentUser } from 'src/helpers/global'
 
 interface State {
   termsOpened: boolean
@@ -68,7 +66,7 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
           }
           </p>
           <br />
-          <img src={onlineCheckupImage} alt="Daily Check-In" />
+          <img src={welcomeSurveyImage} alt="Daily Check-In" width="100%" />
 
           <br />
           <br />

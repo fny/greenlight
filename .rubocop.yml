@@ -25,7 +25,16 @@ Cop/AvoidKeywordArgumentsInSidekiqWorkers:
   Include:
     - 'app/workers/**/*'
 
+Layout/ArgumentAlignment:
+  Enabled: false
+
+Layout/FirstArrayElementIndentation:
+  Enabled: false
+
 Layout/FirstHashElementIndentation:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
   Enabled: false
 
 Metrics/AbcSize:
@@ -49,6 +58,9 @@ Metrics/ModuleLength:
 Metrics/ParameterLists:
   Enabled: false
 
+Metrics/PerceivedComplexity:
+  Enabled: false
+
 Rails/DynamicFindBy:
   Enabled: false
 
@@ -61,6 +73,10 @@ RSpec/EmptyExampleGroup:
 RSpec/ExampleLength:
   Enabled: false
 
+# You should really be using anywhere near 10
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
+
 # We use database ON DELETEs instead
 Rails/HasManyOrHasOneDependent:
   Enabled: false
@@ -72,6 +88,9 @@ RSpec/ImplicitExpect:
   Enabled: false
 
 Style/Documentation:
+  Enabled: false
+
+Style/IfUnlessModifier:
   Enabled: false
 
 # Frozen String Literal

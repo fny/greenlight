@@ -70,9 +70,8 @@ export default function ReleaseNotesPage() {
       <Navbar
         title={t({ id: 'ReleaseNotesPage.title', message: 'Greenlight Release Notes' })}
         sliding
-      >
-        <NavbarHomeLink slot="left" />
-      </Navbar>
+        backLink
+      />
       <Block>
         {releases
           .map((releaseData: ReleaseData) => new Release(releaseData))

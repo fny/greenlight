@@ -1,0 +1,16 @@
+<h1>Roster Import</h1>
+
+Imported at <%= @import.created_at %> by <%= @import.created_by&.full_name || 'Unknown' %>
+
+<p>
+  Type: <%= @import.category %><br />
+  Status: <%= @import.status %>
+</p>
+
+<h3>Messages</h3>
+<pre>
+  <%= @import.message %>
+</pre>
+
+
+<%= link_to @import.location.name, admin_location_path(@import.location) %>

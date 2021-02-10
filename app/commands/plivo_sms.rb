@@ -33,11 +33,11 @@ class PlivoSMS < ApplicationCommand
 
   def work
     ensure_message_in_range!
-
+    return if PhoneNumber.fivefivefive?(to)
     if Rails.env.production?
       PlivoSMS.client.messages.create(
-        Phonelib.parse(from, 'US').full_e164,
-        [Phonelib.parse(to, 'US').full_e164],
+        PhoneNumber.parse(from),
+        [PhoneNumber.parse(to)],
         message
       )
     else
@@ -58,7 +58,7 @@ class PlivoSMS < ApplicationCommand
 
     if message.length > message_limit
       raise TextTooLongError.new(
-        "Text is #{message.length} characters maximum is #{message_limit}"
+        "Text is #{message.length} characters maximum is #{message_limit}: #{message}"
       )
     end
   end
