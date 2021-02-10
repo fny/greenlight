@@ -113,5 +113,14 @@ module Admin
         filename: File.basename(download.file_path),
         type: 'application/vnd.ms-excel'
     end
+
+    def locations_sheet
+      download = LocationsSummaryDownload.new
+      download.run
+
+      send_data File.read(download.file_path).force_encoding('binary'),
+        filename: File.basename(download.file_path),
+        type: 'application/vnd.ms-excel'
+    end
   end
 end

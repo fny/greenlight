@@ -37,6 +37,7 @@ Rails.application.routes.draw do
       post :import_students
       get :staff_sheet
       get :students_sheet
+      get :locations_sheet, on: :collection
     end
     resources :reports
   end
