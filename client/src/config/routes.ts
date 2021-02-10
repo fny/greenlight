@@ -57,11 +57,8 @@ import RegisterChildrenPage from 'src/pages/register-user/RegisterChildrenPage'
 import LocationLookupAccountPage from 'src/pages/locations/LocationLookupAccountPage'
 import LocationLookupRegistrationCodePage from 'src/pages/locations/LocationLookupRegistrationCodePage'
 import LocationCheckRegistrationCodePage from 'src/pages/locations/LocationCheckRegistrationCodePage'
-<<<<<<< HEAD
 import MentalHealthResourcesPage from 'src/pages/resources/MentalHealthResourcesPage'
-=======
 import AdminEditGreenlightPassPage from 'src/pages/admin/AdminEditGreenlightPassPage'
->>>>>>> master
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars

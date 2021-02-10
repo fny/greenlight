@@ -1,4 +1,15 @@
 # frozen_string_literal: true
+
+#
+# Use this worker to send reminders to users at any time of the day. Note this
+# worker will only ignore users who who have reminders disabled.
+#
+# This will send reminders to users who have not completed the registration
+# process.
+#
+# This should generally not be called directly but instead through a scheduling
+# mechanism.
+#
 class ReminderWorker < ApplicationWorker
   sidekiq_options retry: 0
 
@@ -35,68 +46,30 @@ class ReminderWorker < ApplicationWorker
     ).src
   end
 
-  def current_time
-    @current_time ||= Time.now.in_time_zone('America/New_York')
-  end
-
-  def reminder_hour
-    current_time.hour
-  end
-
-  def reminder_day
-    REMINDER_DAYS[current_time.wday]
-  end
-
   def perform(user_id)
     user = User.find(user_id)
 
-    # Don't send reminders unless the person has completed the registration
-    # process
-    return if !user.completed_welcome_at
-
     # Don't send reminders twice in the same day
-    return if user.daily_reminder_sent_at&.today?
+    return if user.reminder_send_today?
 
     # Don't send if ther user has reminders disabled
-    return if user.daily_reminder_type == User::NONE
-
-    if user.settings&.override_location_reminders
-
-      # Don't send if ther user has reminders disabled
-      return if user.settings.daily_reminder_type == UserSettings::NONE
-
-      # Don't send if the reminder time doesn't match
-      return if user.settings.daily_reminder_time != reminder_hour
-
-      # Don't send if its disabled for that day at the location level
-      return if user.settings.send(reminder_day) == false
-    else
-      # Don't send if its disabled for that day at the location level
-      return if user.locations.all? { |l| l.send(reminder_day) == false }
-
-      # Don't send if reminder times don't match at the location level
-      return if user.locations.all? { |l| l.daily_reminder_time != reminder_hour }
-
-      # Don't send if the users locations have all disabled notifications
-      return if !user.affiliated_locations.pluck(:reminders_enabled).any?
-    end
+    return unless user.remind?
 
     user.update_columns(daily_reminder_sent_at: Time.now)
 
     I18n.with_locale(user.locale) do
-      if user.daily_reminder_type.email?
+      if user.remind_by_text?
+        PlivoSMS.new(
+          to: user.mobile_number,
+          from: Greenlight::PHONE_NUMBER,
+          message: eval(sms_template)
+        ).run
+      elsif user.remind_by_email?
         SendGridEmail.new(
           to: user.name_with_email,
           subject: I18n.t('emails.reminder.subject'),
           html: eval(html_template),
           text: eval(sms_template),
-        ).run
-      end
-      if user.daily_reminder_type.text?
-        PlivoSMS.new(
-          to: user.mobile_number,
-          from: Greenlight::PHONE_NUMBER,
-          message: eval(sms_template)
         ).run
       end
     end

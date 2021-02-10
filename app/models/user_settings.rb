@@ -12,6 +12,18 @@ class UserSettings < ApplicationRecord
   enumerize :daily_reminder_type, in: DAILY_REMINDER_TYPES
 
   belongs_to :user
+
+  before_create :match_reminder_type_to_user_contact
+
+  def match_reminder_type_to_user_contact
+    if user.mobile_number?
+      TEXT
+    elsif user.email?
+      EMAIL
+    else
+      NONE
+    end
+  end
 end
 
 # == Schema Information
