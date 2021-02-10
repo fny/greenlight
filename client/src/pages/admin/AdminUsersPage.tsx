@@ -149,6 +149,9 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
   } = useSWRInfinite<PagedResource<User>>(
     getKey,
     async (locationId: string, page: number, name?: string, status?: GreenlightStatusTypes, role?: Roles) => getPagedUsersForLocation(locationId, page, name, status, role),
+    {
+      revalidateOnMount: false
+    }
   )
 
   const users = data ? data.map((d) => d.data).flat() : []

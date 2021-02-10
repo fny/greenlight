@@ -8,6 +8,7 @@ import { tr } from 'src/components/Tr'
 import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
 import { LocationAccount, PermissionLevels } from './LocationAccount'
 import { UserSettings } from './UserSettings'
+import { RegisteringUser } from './RegisteringUser'
 
 /**
  * Represent a user in the application, be it an employee, owner, parent,
@@ -341,5 +342,21 @@ export class User extends Model {
         return myAccount.hasStaffAccess()
       })
     })
+  }
+
+  toRegisteringUser(): RegisteringUser {
+    return {
+      ...new RegisteringUser(),
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email || '',
+      mobileNumber: this.mobileNumber || '',
+      locale: this.locale || 'en',
+      children: this.children.map((child) => child.toRegisteringUser()),
+      needsPhysician: this.needsPhysician || false,
+      physicianName: this.physicianName || '',
+      physicianPhoneNumber: this.physicianPhoneNumber || '',
+      zipCode: this.zipCode || '',
+    }
   }
 }
