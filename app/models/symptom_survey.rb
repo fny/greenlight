@@ -3,6 +3,7 @@ class SymptomSurvey
   include ActiveModel::Model
 
   attr_accessor :user, :medical_events, :created_by
+
   attr_reader :greenlight_status
 
   validates :user, presence: true

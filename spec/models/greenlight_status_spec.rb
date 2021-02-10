@@ -22,6 +22,24 @@ RSpec.describe GreenlightStatus, type: :model do
       expect(user.greenlight_statuses.count).to eq(2)
       travel_back
     end
+
+    it 'allows re-submissions within the same cutoff window' do
+      travel_to Time.zone.parse('8:00 AM')
+      new_cleared_status.save!
+      travel_to Time.zone.parse('5:55 PM')
+      new_cleared_status.save!
+      expect(user.greenlight_statuses.count).to eq(2)
+      travel_back
+    end
+
+    it 'allows re-submissions within the same cutoff window part 2' do
+      travel_to Time.zone.parse('6:05 PM')
+      new_cleared_status.save!
+      travel_to Time.zone.parse('5:55 PM')
+      new_cleared_status.save!
+      expect(user.greenlight_statuses.count).to eq(2)
+      travel_back
+    end
   end
 
   describe 'callbacks' do
