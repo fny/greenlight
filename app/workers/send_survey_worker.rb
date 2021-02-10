@@ -50,7 +50,7 @@ class SendSurveyWorker < ApplicationWorker
     if user.mobile_number?
       PlivoSMS.new(
         to: user.mobile_number,
-        from: Greenlight::PHONE_NUMBER,
+        from: Greenlight::SURVEY_PHONE_NUMBER,
         message: eval(sms_template) # rubocop:disable Security/Eval
       ).run
     end
