@@ -19,6 +19,8 @@ export default function LocationLookupRegistrationCodePage({ f7route, f7router }
   return (
     <Page>
       <LoadingLocationContent
+        showNavbar
+        showAsPage
         locationId={locationId}
         content={(state) => {
           const { location } = state

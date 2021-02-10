@@ -1,8 +1,17 @@
 # frozen_string_literal: true
 class LocationAccount < ApplicationRecord
   PERMISSION_LEVELS = [
+    # Has access to everything including student data
+    MEDICAL_STAFF = 'medical_staff',
+    # Has access to everything except student data
     OWNER = 'owner',
+    # DEPRECATED: Alias for student manager
     ADMIN = 'admin',
+    # Has access and can make changes to staff and student data
+    STAFF_MANAGER = 'staff_manager',
+    # Has access and can make changes to student data
+    STUDENT_MANAGER = 'student_manager',
+    # No permissions
     NONE = 'none'
   ].freeze
 

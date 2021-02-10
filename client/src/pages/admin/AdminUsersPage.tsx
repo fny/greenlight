@@ -43,7 +43,9 @@ import {
   countVisible,
 } from 'src/helpers/util'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import React, { useEffect, useState, useRef, Fragment, useCallback, useMemo } from 'react'
+import React, {
+  useEffect, useState, useRef, Fragment, useCallback, useMemo,
+} from 'react'
 import _, { stubTrue } from 'lodash'
 import { useSWRInfinite } from 'swr'
 
@@ -54,6 +56,7 @@ import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import { useGlobal, useLayoutEffect } from 'reactn'
 import { setIn } from 'formik'
 import SubmitHandler from 'src/helpers/SubmitHandler'
+import { tr } from 'src/components/Tr'
 
 interface UserItemProps {
   user: User
@@ -78,20 +81,25 @@ function UserItem(props: UserItemProps & F7Props): JSX.Element {
       </div>
       <AccordionContent key={user.id}>
         <List>
-          <ListItem
-            link={dynamicPaths.userGreenlightPassPath(user.id)}
-            title={t({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' })}
-          />
+          {user.hasNotSubmittedOwnSurvey()
+            ? <ListItem link={dynamicPaths.userSurveysNewPath(user.id, { redirect: f7route.path })} title="Check-In" />
+            : (
+              <ListItem
+                link={dynamicPaths.userGreenlightPassPath(user.id)}
+                title={tr({ en: 'Greenlight Pass', es: 'Pase Greenlight' })}
+              />
+            )}
+
           {!locationAccount.isStudent() && (
             <ListItem
               link={dynamicPaths.userLocationPermissionsPath({ userId: user.id, locationId: location.id })}
-              title={t({ id: 'AdminUsersPage.location_permissions', message: 'Permissions' })}
+              title={tr({ en: 'Permissions', es: 'Permisos' })}
             />
           )}
-          {/* <ListItem
+          <ListItem
             link={dynamicPaths.adminUserPath({ userId: user.id, locationId: location.id })}
-            title={t({ id: 'AdminUsersPage.user_more', message: 'More' })}
-          /> */}
+            title={tr({ en: 'More', es: 'Mas' })}
+          />
         </List>
       </AccordionContent>
     </ListItem>
@@ -140,18 +148,6 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
       })
   }, [locationId])
 
-  const submitHandler = useMemo(
-    () =>
-      new SubmitHandler(f7, {
-        onSuccess: () => {
-          console.log('success')
-        },
-        errorTitle: 'Something went wrong',
-        errorMessage: 'Deleting the last greenlight status is failed.',
-      }),
-    [],
-  )
-
   const allowInfinite = useRef(true)
 
   function getKey(
@@ -165,10 +161,11 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
     return [locationId, nextPage, undefined, status as GreenlightStatusTypes | undefined, role as Roles | undefined]
   }
 
-  const { data, error, isValidating, mutate, size, setSize } = useSWRInfinite<PagedResource<User>>(
+  const {
+    data, error, isValidating, mutate, size, setSize,
+  } = useSWRInfinite<PagedResource<User>>(
     getKey,
-    async (locationId: string, page: number, name?: string, status?: GreenlightStatusTypes, role?: Roles) =>
-      getPagedUsersForLocation(locationId, page, name, status, role),
+    async (locationId: string, page: number, name?: string, status?: GreenlightStatusTypes, role?: Roles) => getPagedUsersForLocation(locationId, page, name, status, role),
   )
 
   const users = data ? data.map((d) => d.data).flat() : []
@@ -220,6 +217,8 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
         </NavRight>
       </Navbar>
       <LoadingLocationContent
+        showNavbar
+        showAsPage
         locationId={locationId}
         content={(state) => {
           const { location } = state

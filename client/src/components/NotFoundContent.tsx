@@ -8,13 +8,13 @@ import Tr, { tr } from './Tr'
 
 interface Props {
   title?: string,
-  hideNavbar?: boolean
+  showNavbar?: boolean
 }
 
-export default function NotFoundContent({ title, hideNavbar }: Props): JSX.Element {
+export default function NotFoundContent({ title, showNavbar }: Props): JSX.Element {
   return (
     <>
-      {!hideNavbar
+      {showNavbar
       && (
       <Navbar title={title
         || tr({ en: 'Not Found', es: 'No Encontrado' })}

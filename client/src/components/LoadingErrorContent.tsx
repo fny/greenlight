@@ -21,13 +21,13 @@ function errorMessage(error: any): string {
 interface Props {
   title?: string
   error?: any
-  hideNavbar?: boolean
+  showNavbar?: boolean
 }
 
-export default function LoadingErrorContent({ title, error, hideNavbar }: Props): JSX.Element {
+export default function LoadingErrorContent({ title, error, showNavbar }: Props): JSX.Element {
   return (
     <>
-      {!hideNavbar && (
+      {showNavbar && (
       <Navbar title={title
         || tr({ en: 'Loading failed!', es: 'Carga falló!' })}
       >

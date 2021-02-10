@@ -1,26 +1,27 @@
 import { Router } from 'framework7/modules/router/router'
 import { getGlobal, setGlobal } from 'reactn'
 import { deleteSession, getCurrentUser, updateUser } from 'src/api'
-import { User } from 'src/models'
-import { i18n, GLLocales } from 'src/i18n'
+import { CurrentUser } from 'src/models'
+import { GLLocales } from 'src/i18n'
 import CookieJar, { Cookie } from 'src/helpers/CookieJar'
 
 import { paths } from 'src/config/routes'
 import Honeybadger from 'src/initializers/honeybadger'
 import { hasFinishedStepOne, RegisteringLocation } from 'src/models/RegisteringLocation'
 import { RegisteringUser } from 'src/models/RegisteringUser'
-import LocalStorage from './LocalStorage'
+import LocalStorage from 'src/helpers/LocalStorage'
+import { NoCurrentUserError } from 'src/helpers/errors'
 
 export function isSignedIn(): boolean {
   const user = currentUser()
   return user !== null && user !== undefined
 }
 
-export function currentUser(): User | null {
+export function currentUser(): CurrentUser | null {
   return getGlobal().currentUser
 }
 
-export async function reloadCurrentUser(): Promise<User> {
+export async function reloadCurrentUser(): Promise<CurrentUser> {
   const user = await getCurrentUser()
   setGlobal({ currentUser: user })
   return user
@@ -69,4 +70,12 @@ export function resetRegistration(): void {
 
 export function isRegisteringLocation(): boolean {
   return hasFinishedStepOne(getGlobal().registeringLocation)
+}
+
+export function requireCurrentUser(): CurrentUser {
+  const user = currentUser()
+  if (!user) {
+    throw new NoCurrentUserError()
+  }
+  return user
 }

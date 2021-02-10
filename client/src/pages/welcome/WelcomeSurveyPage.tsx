@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-// TODO: Translate
 import React from 'reactn'
 
 import {
@@ -9,7 +8,6 @@ import {
   Navbar, BlockTitle, f7,
 } from 'framework7-react'
 
-import { joinWords } from 'src/helpers/util'
 import { User } from 'src/models/User'
 import { paths } from 'src/config/routes'
 import { ReactNComponent } from 'reactn/build/components'

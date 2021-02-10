@@ -25,7 +25,7 @@ import Tr, { En, Es } from 'src/components/Tr'
 
 import greenlightLogo from 'src/assets/images/logos/greenlight-banner-logo.svg'
 
-export default function SignInPage(props: F7Props) {
+export default function SignInPage(props: F7Props): JSX.Element {
   const emailOrMobileRef = React.createRef<EmailOrPhoneListInput>()
   const passwordRef = React.createRef<ListInput>()
 
@@ -97,7 +97,7 @@ export default function SignInPage(props: F7Props) {
         <img src={greenlightLogo} alt="Greenlight" />
       </div>
 
-      <List form id="sign-in-form">
+      <List form id="sign-in-form" onSubmit={() => submit()}>
         <EmailOrPhoneListInput
           ref={emailOrMobileRef}
           value={state.emailOrMobile}
@@ -129,7 +129,7 @@ export default function SignInPage(props: F7Props) {
           }}
         />
         <Block>
-          <Button outline fill onClick={() => submit()}>
+          <Button type="submit" outline fill>
             <Trans id="SignInPage.sign_in">
               Sign In
             </Trans>
