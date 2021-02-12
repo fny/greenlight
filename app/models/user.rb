@@ -353,7 +353,7 @@ class User < ApplicationRecord
           location_accounts
         where
           user_id = :admin_id
-          and (permission_level = 'admin' or permission_level = 'owner')
+          and (permission_level = 'admin' or permission_level = 'owner' or permission_level = 'medical_staff' or permission_level = 'staff_manager' or permission_level = 'student_manager')
         intersect
         select
           location_id
