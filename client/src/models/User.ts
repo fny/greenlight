@@ -296,7 +296,7 @@ export class User extends Model {
       .map((la) => la.location) as Location[]
   }
 
-  isInBrevard__HACK() {
+  isInBrevard__HACK(): boolean {
     return this.locations__HACK().some((l) => l.permalink === 'brevard-academy')
   }
 
@@ -304,31 +304,31 @@ export class User extends Model {
     return this.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0
   }
 
-  isOwnerOf(user: User) {
+  isOwnerOf(user: User): boolean {
     const ownerAccounts = this.locationAccounts.filter((la) => la.permissionLevel === PermissionLevels.OWNER)
-    const otherAccountLocationIds = user.locationAccounts.map((la) => la.locationId)
-    return ownerAccounts.some((la) => otherAccountLocationIds.includes(la.locationId))
+    const otherAccountLocationIds = user.locationAccounts.map((la) => la.locationId?.toString())
+    return ownerAccounts.some((la) => otherAccountLocationIds.includes(la.locationId?.toString()))
   }
 
   /**
    * @returns whether user can administer staff data at given location
    */
   hasStaffAccessAt(location: Location): boolean {
-    return this.locationAccounts.some((la) => la.locationId === location.id && la.hasStaffAccess())
+    return this.locationAccounts.some((la) => la.locationId?.toString() === location.id.toString() && la.hasStaffAccess())
   }
 
   /**
    * @returns whether user can administer student data at given location
    */
   hasStudentAccessAt(location: Location): boolean {
-    return this.locationAccounts.some((la) => la.locationId === location.id && la.hasStudentAccess())
+    return this.locationAccounts.some((la) => la.locationId?.toString() === location.id.toString() && la.hasStudentAccess())
   }
 
   /**
    * @returns whether user can administer medical data at given location
    */
   hasMedicalAccessAt(location: Location): boolean {
-    return this.locationAccounts.some((la) => la.locationId === location.id && la.hasMedicalAccess())
+    return this.locationAccounts.some((la) => la.locationId?.toString() === location.id.toString() && la.hasMedicalAccess())
   }
 
   canAdministrate(user: User): boolean {

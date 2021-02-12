@@ -416,7 +416,7 @@ class User < ApplicationRecord
   end
 
   def reminder_send_today?
-    daily_reminder_sent_at&.today? || false
+    daily_reminder_sent_at&.in_time_zone('America/New_York')&.today? || false
   end
 
   private

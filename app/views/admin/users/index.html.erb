@@ -30,6 +30,7 @@
     <th>Mobile Number</th>
     <th>Locale</th>
     <th>Zip Code</th>
+    <th>Registered At</th>
     <th>Last Reminder</th>
   </thead>
   <% @users.each do |u|%>
@@ -40,6 +41,7 @@
       <td><%= u.mobile_number %></td>
       <td><%= u.locale %></td>
       <td><%= u.zip_code %></td>
+      <td><%= u.completed_welcome_at %></td>
       <td><%= u.daily_reminder_sent_at %></td>
     </tr>
   <% end %>
