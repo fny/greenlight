@@ -19,8 +19,8 @@ class ScheduledReminderWorker < ApplicationWorker
     REMINDER_DAYS[current_time.wday]
   end
 
-  def user_ids
-    @user_ids ||= DB.query(<<~SQL).map(&:user_id)
+  def sql
+    <<~SQL
       -- Users where the location's reminder time is for the current day and hour and does not have an override
       select u.id as user_id
       from location_accounts la, (select * from locations where daily_reminder_time = #{reminder_hour} and #{reminder_day} = true and reminders_enabled = true) as l, users u
@@ -35,7 +35,7 @@ class ScheduledReminderWorker < ApplicationWorker
       -- has contact info
       and (u.email is not null or u.mobile_number is not null)
       -- have not sent it already
-      and (u.daily_reminder_sent_at is null or date(u.daily_reminder_sent_at) != date(now()))
+      and (u.daily_reminder_sent_at is null or date(timezone('America/New_York', u.daily_reminder_sent_at)) != date(timezone('America/New_York', now())))
       union
       -- users with overrides
       select u.id as user_id
@@ -48,14 +48,18 @@ class ScheduledReminderWorker < ApplicationWorker
       -- send it today
       and us.#{reminder_day} = true
       -- have not sent it already
-      and (u.daily_reminder_sent_at is null or date(u.daily_reminder_sent_at) != date(now()))
+      and (u.daily_reminder_sent_at is null or date(timezone('America/New_York', u.daily_reminder_sent_at)) != date(timezone('America/New_York', now())))
       -- has completed registration
       and u.completed_welcome_at is not null
     SQL
   end
 
+  def user_ids
+    @user_ids ||= DB.query(sql).map(&:user_id)
+  end
+
   def perform
-    Parallel.map(user_ids, in_threads: 4) do |id|
+    user_ids.each do |id|
       ReminderWorker.perform_async(id)
     end
   end
