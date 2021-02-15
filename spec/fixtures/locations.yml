@@ -10,6 +10,7 @@ springfield_elementary:
   registration_code_downcase: staff14
   student_registration_code: Student44
   student_registration_code_downcase: student44
+  daily_reminder_time: 8
 
 springfield_nuclear:
   name: Springfield Nuclear Plant

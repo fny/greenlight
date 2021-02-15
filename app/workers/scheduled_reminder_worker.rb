@@ -37,7 +37,26 @@ class ScheduledReminderWorker < ApplicationWorker
       -- have not sent it already
       and (u.daily_reminder_sent_at is null or date(timezone('America/New_York', u.daily_reminder_sent_at)) != date(timezone('America/New_York', now())))
       union
-      -- users with overrides
+      -- Parents without overrides
+      select distinct parent_id as user_id from (
+	      select * from parents_children pc, location_accounts la, users u, locations l
+	      where u.id = pc.parent_id and la.user_id = pc.child_id and la.location_id = l.id
+        -- has completed registration
+	      and u.completed_welcome_at is not null
+	      -- has contact info
+	      and (u.email is not null or u.mobile_number is not null)
+	      -- have not sent it already
+	      and (u.daily_reminder_sent_at is null or date(timezone('America/New_York', u.daily_reminder_sent_at)) != date(timezone('America/New_York', now())))
+      ) as x
+      left outer join user_settings us on x.parent_id = us.user_id
+      -- doesn't have an override
+      where (us.override_location_reminders = false or us.override_location_reminders is null)
+      -- location has reminders enabled for the current day and time
+      and x.daily_reminder_time = #{reminder_hour}
+      and x.#{reminder_day} = true
+      and x.reminders_enabled = true
+      union
+      -- Users with overrides
       select u.id as user_id
       from users u, user_settings us
       where u.id = us.user_id

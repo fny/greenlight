@@ -38,7 +38,7 @@ RSpec.describe ScheduledReminderWorker do
       end
     end
 
-    it 'does not return the id when all the locations ahve reminders disabled' do
+    it 'does not return the id when all the locations have reminders disabled' do
       user.locations.update_all(reminders_enabled: false)
       travel_to Time.find_zone('America/New_York').local(2021, 1, 1, user.daily_reminder_time) do
         expect(ScheduledReminderWorker.new.user_ids).not_to include(user.id)
@@ -67,6 +67,27 @@ RSpec.describe ScheduledReminderWorker do
 
       travel_to Time.find_zone('America/New_York').local(2021, 1, 1, 8) do
         expect(ScheduledReminderWorker.new.user_ids).to include(user.id)
+      end
+    end
+
+    it 'reminds parents' do
+      parent = users(:marge)
+      travel_to Time.find_zone('America/New_York').local(2021, 1, 1, 7) do
+        expect(ScheduledReminderWorker.new.user_ids).not_to include(parent.id)
+      end
+      travel_to Time.find_zone('America/New_York').local(2021, 1, 1, 8) do
+        expect(ScheduledReminderWorker.new.user_ids).to include(parent.id)
+      end
+    end
+
+    it 'reminds parents who have set an override' do
+      parent = users(:marge)
+      UserSettings.create!(user: parent, override_location_reminders: true, daily_reminder_time: 9)
+      travel_to Time.find_zone('America/New_York').local(2021, 1, 1, 8) do
+        expect(ScheduledReminderWorker.new.user_ids).not_to include(parent.id)
+      end
+      travel_to Time.find_zone('America/New_York').local(2021, 1, 1, 9) do
+        expect(ScheduledReminderWorker.new.user_ids).to include(parent.id)
       end
     end
   end
