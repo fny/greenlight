@@ -5,19 +5,23 @@ import { checkLocationRegistrationCode } from 'src/api'
 import { tr } from 'src/components/Tr'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { assertNotUndefined } from 'src/helpers/util'
+import LocalStorage from 'src/helpers/LocalStorage'
 import { Roles } from 'src/models/LocationAccount'
+import { RegisteringUser } from 'src/models/RegisteringUser'
 import { F7Props } from 'src/types'
 import LoadingPage from '../util/LoadingPage'
 
 export default function LocationCheckRegistrationCodePage(props: F7Props): JSX.Element {
   const { locationId, registrationCode } = useMemo(() => props.f7route.params, [props.f7route.params])
-  const [registeringUser, setRegisteringUser] = useGlobal('registeringUser')
+  const [_registeringUser, setRegisteringUser] = useGlobal('registeringUser')
 
   assertNotUndefined(locationId)
   assertNotUndefined(registrationCode)
 
   const submitHandler = new SubmitHandler(f7, {
     onSuccess: (result) => {
+      const registeringUser: RegisteringUser = new RegisteringUser()
+
       registeringUser.registrationCode = registrationCode
       if (result === 'teacher_staff') {
         registeringUser.availableRoles = [Roles.Teacher, Roles.Staff]
@@ -28,6 +32,7 @@ export default function LocationCheckRegistrationCodePage(props: F7Props): JSX.E
         registeringUser.availableRoles = []
       }
       setRegisteringUser(registeringUser)
+      LocalStorage.setRegisteringUser(registeringUser)
 
       // !HACK: the page does not change if we don't wait for a reasonable time.
       setTimeout(() => {

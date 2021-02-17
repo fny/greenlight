@@ -110,6 +110,91 @@ RSpec.describe 'Locations Endpoint', type: :request do
     end
   end
 
+  describe 'POST /v1/locations/:location_id/join-with-children' do
+    let(:user) { Fabricate(:user) }
+    
+    it "returns 401 if a user is not signed in" do
+      post_json("/v1/locations/#{location.id}/join-with-children", body: {
+        role: 'parent',
+        registration_code: location.student_registration_code,
+        locale: 'en',
+        children: [{
+          first_name: 'Martin Jr',
+          last_name: 'Prince'
+        }]
+      })
+      expect(response.status).to eq(401)
+      expect(response_json).to have_key(:errors)
+    end
+
+    it 'creates and adds children to the location' do
+      post_json("/v1/locations/#{location.id}/join-with-children", body: {
+        role: RegisterAccount::PARENT,
+        registration_code: location.student_registration_code,
+        locale: 'en',
+        children: [{
+          first_name: 'Martin Jr',
+          last_name: 'Prince'
+        }]
+      }, user: user)
+      expect(user.children.first.first_name).to eq('Martin Jr')
+      expect(user.children.first.last_name).to eq('Prince')
+      expect(user.children.first.location_accounts.first.role).to eq(RegisterAccount::STUDENT)
+      expect(user.children.first.location_accounts.first.location).to eq(location)
+
+      expect(response_json.fetch(:data).fetch(:id)).to eq(user.id.to_s)
+    end
+
+    it 'adds the user as a teacher, creates and adds children to the location' do
+      post_json("/v1/locations/#{location.id}/join-with-children", body: {
+        role: RegisterAccount::TEACHER,
+        registration_code: location.registration_code,
+        locale: 'en',
+        children: [{
+          first_name: 'Martin Jr',
+          last_name: 'Prince'
+        }]
+      }, user: user)
+      expect(user.location_accounts.first.role).to eq(RegisterAccount::TEACHER)
+      expect(user.location_accounts.first.location).to eq(location)
+      expect(user.children.first.first_name).to eq('Martin Jr')
+      expect(user.children.first.last_name).to eq('Prince')
+      expect(user.children.first.location_accounts.first.role).to eq(RegisterAccount::STUDENT)
+      expect(user.children.first.location_accounts.first.location).to eq(location)
+
+      expect(response_json.fetch(:data).fetch(:id)).to eq(user.id.to_s)
+    end
+
+    it 'adds the user to the location even when no child is given' do
+      post_json("/v1/locations/#{location.id}/join-with-children", body: {
+        role: RegisterAccount::TEACHER,
+        registration_code: location.registration_code,
+        locale: 'en'
+      }, user: user)
+      expect(user.location_accounts.first.role).to eq(RegisterAccount::TEACHER)
+      expect(user.location_accounts.first.location).to eq(location)
+      expect(response_json.fetch(:data).fetch(:id)).to eq(user.id.to_s)
+    end
+
+    it 'fails when an incorrect registration code is used' do
+      post_json("/v1/locations/#{location.id}/join-with-children", body: {
+        role: RegisterAccount::TEACHER,
+        registration_code: 'blah',
+        locale: 'en'
+      }, user: user)
+      expect(response_json.fetch(:errors)[0].fetch(:title)).to eq('Invalid request')
+    end
+
+    it 'fails when a student registration code is used to join as a teacher' do
+      post_json("/v1/locations/#{location.id}/join-with-children", body: {
+        role: RegisterAccount::TEACHER,
+        registration_code: location.student_registration_code,
+        locale: 'en'
+      }, user: user)
+      expect(response_json.fetch(:errors)[0].fetch(:title)).to eq('Invalid request')
+    end
+  end
+
   describe 'swagger specs' do
     path '/v1/locations/:location_id' do
       get 'return the specified location' do

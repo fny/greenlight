@@ -4,13 +4,13 @@ import {
 import React, {
   Fragment, useGlobal, useCallback, useState, useMemo,
 } from 'reactn'
-import { registerUser } from 'src/api'
+import { registerUser, joinLocationWithChildren } from 'src/api'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import LocalStorage from 'src/helpers/LocalStorage'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { assertNotNull, assertNotUndefined } from 'src/helpers/util'
-import { Location } from 'src/models'
+import { User, Location } from 'src/models'
 import { Roles } from 'src/models/LocationAccount'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import { F7Props } from 'src/types'
@@ -22,18 +22,30 @@ export default function RegisterChildrenPage(props: F7Props): JSX.Element {
   const { locationId } = props.f7route.params
   const [page, setPage] = useState('') // '' for children page, 'child' for add child page
   const [registeringUser, setRegisteringUser] = useGlobal('registeringUser')
+  const [currentUser] = useGlobal('currentUser') as [User, any] // FIXME
   const [selectedUser, setSelectedUser] = useState<number | null>(null)
   const [registeringUserDetail] = useGlobal('registeringUserDetail')
   assertNotUndefined(locationId)
 
   const submitHandler = useMemo(
     () => new SubmitHandler(f7, {
-      onSuccess: () => {
-        props.f7router.navigate(paths.welcomeSurveyPath)
+      onSuccess: (joinedLocation: boolean = false) => {
+        if (joinedLocation) {
+          props.f7router.navigate(paths.settingsPath)
+        } else {
+          props.f7router.navigate(paths.welcomeSurveyPath)
+        }
       },
       errorTitle: 'Something went wrong',
       errorMessage: 'User registration is failed',
       onSubmit: async () => {
+        // joining a location for the existing user
+        if (currentUser) {
+          await joinLocationWithChildren(locationId, registeringUser)
+          return true
+        }
+
+        // creating a new user
         await registerUser(locationId, { ...registeringUser, password: registeringUserDetail })
       },
     }),
@@ -131,8 +143,8 @@ function ChildrenList({
       <Block>
         <p>
           <Tr
-            en="If you have any children that attend {location.name} add them here."
-            es="Si tiene algunos hijos quien asistir {location.name} registrarlos aquí."
+            en={`If you have any children that attend ${location.name} add them here.`}
+            es={`Si tiene algunos hijos quien asistir ${location.name} registrarlos aquí.`}
           />
 
         </p>

@@ -153,8 +153,10 @@ export async function createLocation(attrs: Partial<Location>): Promise<Location
   return entity
 }
 
-export async function joinLocation(location: Location): Promise<LocationAccount> {
-  const response = await v1.post<RecordResponse<LocationAccount>>(`/locations/${location.id}/join`)
+export async function joinLocation(location: Location, role: Roles = Roles.Unknown): Promise<LocationAccount> {
+  const response = await v1.post<RecordResponse<LocationAccount>>(`/locations/${location.id}/join`, {
+    role,
+  })
 
   const entity = transformRecordResponse<LocationAccount>(response.data)
   assertNotArray(entity)
@@ -180,6 +182,13 @@ export async function checkLocationRegistrationCode(locationId: string, registra
     registrationCode,
   })
   return result.data.result
+}
+
+export async function joinLocationWithChildren(locationId: string, user: RegisteringUser) {
+  const userWithoutBlanks = transformForAPI(user, { removeBlanks: true })
+  await v1.post(`/locations/${locationId}/join-with-children`, user)
+  const currentUser = await getCurrentUser()
+  setGlobal({ currentUser })
 }
 
 export async function registerUser(locationId: string, user: RegisteringUser & { password: string}) {
