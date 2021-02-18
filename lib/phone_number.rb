@@ -40,7 +40,7 @@ class PhoneNumber
   end
 
   def self.random_number
-    number = Faker::PhoneNumber.cell_phone_in_e164[2, 10] until PhoneNumber.valid?(number)
+    number = Faker::PhoneNumber.cell_phone_in_e164[2, 10] until Phonelib.valid_for_country?(number, 'US')
     PhoneNumber.parse(number)
   end
 end
