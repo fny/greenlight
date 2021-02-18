@@ -59,11 +59,9 @@ import LocationLookupRegistrationCodePage from 'src/pages/locations/LocationLook
 import LocationCheckRegistrationCodePage from 'src/pages/locations/LocationCheckRegistrationCodePage'
 import MentalHealthResourcesPage from 'src/pages/resources/MentalHealthResourcesPage'
 import AdminEditGreenlightPassPage from 'src/pages/admin/AdminEditGreenlightPassPage'
-import { before } from 'lodash'
-import ParentsPage from 'src/pages/admin/ParentsPage'
-import EditParentPage from 'src/pages/admin/EditParentPage'
-import OtherParentsPage from 'src/pages/users/OtherParentsPage'
-import EditOtherParentPage from 'src/pages/users/EditOtherParentPage'
+import ParentEditPage from 'src/pages/admin/ParentEditPage'
+import ParentNewPage from 'src/pages/admin/ParentNewPage'
+import InviteOtherParentPage from 'src/pages/users/InviteOtherParentPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -366,27 +364,21 @@ const userRoutes = {
 }
 
 const parentRoutes = {
-  // edit other parents for a parent
-  otherParents: {
-    path: '/users/:userId/other-parents',
-    component: OtherParentsPage,
-    beforeEnter: beforeEnter.requireSignIn,
-  },
-  editOtherParent: {
-    path: '/users/:userId/other-parents/:parentId',
-    component: EditOtherParentPage,
+  inviteOtherParent: {
+    path: '/users/:userId/invite-parent',
+    component: InviteOtherParentPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
 
   // edit Parent
-  parents: {
-    path: '/users/:userId/parents',
-    component: ParentsPage,
+  newParentPath: {
+    path: '/users/:userId/parents/new',
+    component: ParentNewPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
-  editParent: {
+  editParentPath: {
     path: '/users/:userId/parents/:parentId',
-    component: EditParentPage,
+    component: ParentEditPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
 }

@@ -56,15 +56,10 @@ export default function SettingsPage() {
 
         {currentUser.isParent() && (
           <ListItem
-            link={dynamicPaths.otherParents({ userId: currentUser.id })}
+            link={dynamicPaths.inviteOtherParent({ userId: currentUser.id })}
             title={tr({
-              en: 'Other Parents',
-              es: 'Otras padres',
-              reviewTrans: true,
-            })}
-            footer={tr({
-              en: 'Update who can access to your children',
-              es: 'Actualizar quién puede acceder a sus hijos',
+              en: 'Invite Another Parent',
+              es: 'Invitar a otra madre',
               reviewTrans: true,
             })}
           />
