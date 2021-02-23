@@ -54,17 +54,6 @@ export default function SettingsPage() {
           </ListItem>
         )}
 
-        {currentUser.isParent() && (
-          <ListItem
-            link={dynamicPaths.inviteOtherParent({ userId: currentUser.id })}
-            title={tr({
-              en: 'Invite Another Parent',
-              es: 'Invitar a otra madre',
-              reviewTrans: true,
-            })}
-          />
-        )}
-
         <ListItem
           link={paths.notificationsPath}
           title={t({ id: 'SettingsPage.notifications', message: 'Notifications' })}

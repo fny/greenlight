@@ -1,9 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 
 import { getGlobal, setGlobal } from 'reactn'
-import {
-  assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
-} from 'src/helpers/util'
+import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from 'src/helpers/util'
 
 // FIXME: This shouldn't be assigned here. It should go in a provider
 import Honeybadger from 'honeybadger-js'
@@ -182,7 +180,7 @@ export async function checkLocationRegistrationCode(locationId: string, registra
   return result.data.result
 }
 
-export async function registerUser(locationId: string, user: RegisteringUser & { password: string}) {
+export async function registerUser(locationId: string, user: RegisteringUser & { password: string }) {
   const userWithoutBlanks = transformForAPI(user, { removeBlanks: true })
   await v1.post(`/locations/${locationId}/register`, userWithoutBlanks)
   const currentUser = await getCurrentUser()
@@ -232,7 +230,7 @@ export async function completeWelcomeUser(user: User): Promise<User> {
   return entity
 }
 
-export async function createUserAndSignIn(user: Partial<RegisteringUser> & { password: string}): Promise<void> {
+export async function createUserAndSignIn(user: Partial<RegisteringUser> & { password: string }): Promise<void> {
   const signInResponse = await v1.post('/users/create-and-sign-in', user)
   if (env.isCordova()) {
     localStorage.setItem('token', signInResponse.data.token)
@@ -412,4 +410,16 @@ export function usePagedResources<T extends Model>(
   filter?: Filter,
 ): responseInterface<PagedResource<T>, any> {
   return useSWR([path, page, filter], (path, page, filter) => getPagedResources<T>(path, page, filter))
+}
+
+export async function inviteAnotherParent(params: {
+  firstName: string
+  lastName: string
+  emailOrMobile: string
+  children: Array<string>
+}): Promise<User> {
+  const response = await v1.post<RecordResponse<User>>(`/parent/invite`, transformForAPI(params))
+  const entity = transformRecordResponse<User>(response.data)
+  assertNotArray(entity)
+  return entity
 }
