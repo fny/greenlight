@@ -31,7 +31,7 @@ class LocationStatsOverview
   end
 
   def weekly_status_summary
-    status_breakdown(@date)
+    status_breakdown_stateful(@date)
   end
 
   def status_breakdown_v2(date = nil)
@@ -85,5 +85,35 @@ class LocationStatsOverview
       result[k]['unknown'] = total_users - v.values.sum
     end
     result
+  end
+
+  def status_breakdown_stateful(date = nil)
+    result = {}
+    @location.users.each do |u|
+      user_result = status_breakdown_user(u, date)
+
+      user_result.each do |d, status|
+        result[d] ||= {}
+        result[d][status] ||= 0
+
+        result[d][status] += 1
+      end
+    end
+
+    result
+  end
+
+  private
+
+  # Returns [Hash] { date => status }
+  def status_breakdown_user(user, date = nil)
+    previous_day_status = nil
+    date_status = {}
+    Array((date - 6.days)..date).each do |d|
+      previous_day_status = user.greenlight_status_at(d, previous_day_status)
+      date_status[d] = previous_day_status.status
+    end
+
+    date_status
   end
 end
