@@ -16,6 +16,9 @@ import { assertNotNull, assertNotUndefined } from 'src/helpers/util'
 import LoadingUserContent from 'src/components/LoadingUserContent'
 import { requireCurrentUser } from 'src/helpers/global'
 import { dynamicPaths } from 'src/config/routes'
+import SubmitHandler from 'src/helpers/SubmitHandler'
+import { deleteLastGreenlightStatus } from 'src/api'
+import { User } from 'src/models'
 
 export default function UserGreenlightPassPage(props: F7Props): JSX.Element {
   const { userId } = props.f7route.params
@@ -33,6 +36,30 @@ export default function UserGreenlightPassPage(props: F7Props): JSX.Element {
           const { user } = state
           assertNotNull(user)
           const status = user.greenlightStatus()
+
+          const handleDeleteGreenlightStatus = (user: User) => {
+            f7.dialog.confirm(
+              tr({
+                en: 'Do you really want to delete the status?',
+                es: '¿Está seguro de que quiere borrar el estado?',
+              }),
+              () => {
+                submitHandler.submit(async () => {
+                  await deleteLastGreenlightStatus(user)
+                })
+              },
+            )
+          }
+
+          const submitHandler = new SubmitHandler(f7, {
+            onSuccess: () => {
+              props.f7router.refreshPage()
+            },
+            successMessage: tr({ en: 'Greenlight status has been reset successfully. Refresh the page to see changes.', es: 'El estado se ha cambiado con éxito. Recargar la página para ver los cambios.' }),
+            errorTitle: tr({ en: 'Something went wrong', es: 'Algo salió mal' }),
+            errorMessage: tr({ en: 'Updating the last greenlight status is failed.', es: 'No se pudo cambiar el último estado.' }),
+          })
+
 
           return (
             <Block className="text-center">
@@ -71,9 +98,12 @@ export default function UserGreenlightPassPage(props: F7Props): JSX.Element {
                       currentUser.canAdministrate(user)
                       && (
                         <Block>
-                          <Button fill href={dynamicPaths.adminEditGreenlightPassPath({ userId: user.id })}>
-                            <Tr en="Edit" es="Editar" />
+                          <Button outline onClick={() => handleDeleteGreenlightStatus(user)}>
+                            <Tr en="Reset Status" es="Borrar Estado" />
                           </Button>
+                          {/* <Button fill href={dynamicPaths.adminEditGreenlightPassPath({ userId: user.id })}>
+                            <Tr en="Edit" es="Editar" />
+                          </Button> */}
                         </Block>
                       )
                   }

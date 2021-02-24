@@ -11,6 +11,7 @@ marge:
 homer:
   first_name: Homer
   last_name: Simpson
+  mobile_number: 7173334444
   email: homer@springfield.com
   password_digest: <%= BCrypt::Password.create('verysecure', cost: 4) %>
   auth_token: <%= SecureRandom.hex %>

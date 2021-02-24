@@ -4,60 +4,42 @@ require 'rails_helper'
 RSpec.describe ReminderWorker do
   fixtures :all
 
-  let (:user) {
-    homer = users(:homer)
-    homer.update(daily_reminder_type: 'email')
-    homer
-  }
-  describe '#perform' do
-    it 'sends a reminder to a user' do
-      travel_to Time.find_zone('America/New_York').local(Time.current.year, Time.current.month, Time.current.day, user.daily_reminder_time) do
-        ReminderWorker.new.perform(user.id)
-        expect(ActionMailer::Base.deliveries.size).to eq(1)
-      end
-    end
+  let (:user) { users(:homer) }
 
-    it 'sends a reminder if a user has at least one site with them enabled' do
-      user.locations.first.update!(reminders_enabled: :false)
-      travel_to Time.find_zone('America/New_York').local(Time.current.year, Time.current.month, Time.current.day, user.daily_reminder_time) do
-        ReminderWorker.new.perform(user.id)
-        expect(ActionMailer::Base.deliveries.size).to eq(1)
-      end
+  describe '#perform' do
+    it 'sends a reminder to a user via email' do
+      user.update(mobile_number: nil)
+      expect(user.remind?).to eq(true)
+      expect(user.remind_by_text?).to eq(false)
+      expect(user.remind_by_email?).to eq(true)
+      ReminderWorker.new.perform(user.id)
+      expect(ActionMailer::Base.deliveries.size).to eq(1)
     end
 
     it "doesn't send a reminder twice" do
-      travel_to Time.find_zone('America/New_York').local(Time.current.year, Time.current.month, Time.current.day, user.daily_reminder_time) do
-        ReminderWorker.new.perform(user.id)
-        ReminderWorker.new.perform(user.id)
-        expect(ActionMailer::Base.deliveries.size).to eq(1)
-      end
+      expect(user.remind?).to eq(true)
+      expect(user.remind_by_text?).to eq(true)
+      expect(user.reminder_send_today?).to eq(false)
+      start_size = PlivoSMS.deliveries.size
+      ReminderWorker.new.perform(user.id)
+      expect(PlivoSMS.deliveries.size - start_size).to eq(1)
+      user.reload
+      expect(user.reminder_send_today?).to eq(true)
+      ReminderWorker.new.perform(user.id)
+      expect(PlivoSMS.deliveries.size - start_size).to eq(1)
     end
 
     it "doesn't send a reminder if the user has disabled them": true do
       UserSettings.create!(user: user, override_location_reminders: true, daily_reminder_type: UserSettings::NONE)
-      user.update!(daily_reminder_type: User::NONE)
-      travel_to Time.find_zone('America/New_York').local(Time.current.year, Time.current.month, Time.current.day, user.daily_reminder_time) do
-        ReminderWorker.new.perform(user.id)
-        expect(ActionMailer::Base.deliveries.size).to eq(0)
-      end
-    end
-
-    it "doesn't send a reminder if all of a users locations and affiliated locations have disabled then" do
-      user.affiliated_locations.each do |l|
-        l.update!(reminders_enabled: :false)
-      end
-      travel_to Time.find_zone('America/New_York').local(Time.current.year, Time.current.month, Time.current.day, user.daily_reminder_time) do
-        ReminderWorker.new.perform(user.id)
-        expect(ActionMailer::Base.deliveries.size).to eq(0)
-      end
+      ReminderWorker.new.perform(user.id)
+      expect(ActionMailer::Base.deliveries.size).to eq(0)
     end
 
     it "doesn't send a reminder if the user hasn't finished registration yet" do
       user.update(completed_welcome_at: nil)
-      travel_to Time.find_zone('America/New_York').local(Time.current.year, Time.current.month, Time.current.day, user.daily_reminder_time) do
-        ReminderWorker.new.perform(user.id)
-        expect(ActionMailer::Base.deliveries.size).to eq(0)
-      end
+
+      ReminderWorker.new.perform(user.id)
+      expect(ActionMailer::Base.deliveries.size).to eq(0)
     end
   end
 end

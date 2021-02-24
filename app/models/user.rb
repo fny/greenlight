@@ -4,7 +4,7 @@ class User < ApplicationRecord
   self.permitted_params = %i[
     first_name last_name email mobile_number mobile_carrier locale
     zip_code time_zone birth_date physician_name physician_phone_number
-    daily_reminder_type needs_physician
+    needs_physician
   ]
 
   self.queryable_columns = %i[
@@ -16,13 +16,7 @@ class User < ApplicationRecord
   include PasswordResetable
 
   TIME_ZONES = ActiveSupport::TimeZone.all.map { |x| x.tzinfo.name }
-  DAILY_REMINDER_TYPES = [
-    TEXT = 'text',
-    EMAIL = 'email',
-    NONE = 'none'
-  ].freeze
 
-  enumerize :daily_reminder_type, in: DAILY_REMINDER_TYPES
   enumerize :time_zone, in: TIME_ZONES, default: 'America/New_York'
   enumerize :locale, in: %w[en es], default: 'en'
 
@@ -247,11 +241,13 @@ class User < ApplicationRecord
   end
 
   def mobile_number=(value)
-    return if value.blank?
-
-    parsed = PhoneNumber.parse(value)
-    parsed = nil if parsed.blank?
-    self[:mobile_number] = parsed
+    if value.blank?
+      self[:mobile_number] = value
+    else
+      parsed = PhoneNumber.parse(value)
+      parsed = nil if parsed.blank?
+      self[:mobile_number] = parsed
+    end
   end
 
   def destroy_all_associated_statuses
@@ -357,7 +353,7 @@ class User < ApplicationRecord
           location_accounts
         where
           user_id = :admin_id
-          and (permission_level = 'admin' or permission_level = 'owner')
+          and (permission_level = 'admin' or permission_level = 'owner' or permission_level = 'medical_staff' or permission_level = 'staff_manager' or permission_level = 'student_manager')
         intersect
         select
           location_id
@@ -389,7 +385,38 @@ class User < ApplicationRecord
   end
 
   def complete_welcome!
-    update_columns({completed_welcome_at: Time.zone.now })
+    update_colu mns({completed_welcome_at: Time.zone.now })
+  end
+
+  def daily_reminder_type
+    if settings
+      settings.daily_reminder_type
+    else
+      mobile_number.present? ? UserSettings::TEXT : UserSettings::EMAIL
+    end
+  end
+  def remind?
+    remind_by_text? || remind_by_email?
+  end
+
+  def remind_by_email?
+    if settings
+      email.present? && settings.daily_reminder_type.email?
+    else
+      email.present? && !remind_by_text?
+    end
+  end
+
+  def remind_by_text?
+    if settings
+      mobile_number.present? && settings.daily_reminder_type.text?
+    else
+      mobile_number.present?
+    end
+  end
+
+  def reminder_send_today?
+    daily_reminder_sent_at&.in_time_zone('America/New_York')&.today? || false
   end
 
   private
@@ -438,7 +465,6 @@ end
 #  birth_date                         :date
 #  physician_name                     :string
 #  physician_phone_number             :string
-#  daily_reminder_type                :text             default("text"), not null
 #  needs_physician                    :boolean          default(FALSE), not null
 #  invited_at                         :datetime
 #  completed_welcome_at               :datetime

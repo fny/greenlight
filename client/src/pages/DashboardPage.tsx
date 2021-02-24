@@ -216,6 +216,16 @@ export default function DashboardPage(props: F7Props): JSX.Element {
           <Icon slot="media" f7="heart" />
         </ListItem>
         <ListItem
+          link={paths.mentalHealthPath}
+          title={tr({ en: 'Mental Health Support', es: 'Salud Mental' })}
+          footer={tr({
+            en: 'Connect with Hope4NC for free and confidential help with any issues you have',
+            es: 'Conéctese con Hope4NC para obtener ayuda gratuita y confidencial con cualquier problema que tenga',
+          })}
+        >
+          <Icon slot="media" f7="sun_haze" />
+        </ListItem>
+        <ListItem
           title={
             tr({ en: 'All Resources', es: 'Todos los recursos' })
           }

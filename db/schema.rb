@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_03_194101) do
+ActiveRecord::Schema.define(version: 2021_02_05_113939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -242,7 +242,6 @@ ActiveRecord::Schema.define(version: 2021_01_03_194101) do
     t.date "birth_date"
     t.string "physician_name"
     t.string "physician_phone_number"
-    t.text "daily_reminder_type", default: "text", null: false
     t.boolean "needs_physician", default: false, null: false
     t.datetime "invited_at"
     t.datetime "completed_welcome_at"

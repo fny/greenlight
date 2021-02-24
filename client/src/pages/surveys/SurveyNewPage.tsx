@@ -14,6 +14,8 @@ import { assertNotNull, forceReRender } from 'src/helpers/util'
 import { reloadCurrentUser } from 'src/helpers/global'
 import logger from 'src/helpers/logger'
 
+import noSymptoms from 'src/assets/images/symptoms/no-symptoms.svg'
+import noSymptomsBright from 'src/assets/images/symptoms/no-symptoms-bright.svg'
 import fever from 'src/assets/images/symptoms/fever.svg'
 import feverBright from 'src/assets/images/symptoms/fever-bright.svg'
 import cough from 'src/assets/images/symptoms/cough.svg'
@@ -27,7 +29,7 @@ import tasteSmellBright from 'src/assets/images/symptoms/taste-smell-bright.svg'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { Case, When } from 'src/components/Case'
 import DatedYesNoButton from 'src/components/DatedYesNoButton'
-import Tr, { En, Es } from 'src/components/Tr'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 
 const buttonImages = {
   cough,
@@ -40,6 +42,8 @@ const buttonImages = {
   difficultyBreathingBright,
   tasteSmell,
   tasteSmellBright,
+  noSymptoms,
+  noSymptomsBright,
 }
 
 interface SymptomButtonProps {
@@ -80,6 +84,7 @@ interface SurveyState {
   submitClicked?: boolean
   showConfirmation: boolean
   targetUser: User | null
+  noSymptoms: boolean
 }
 
 type Symptoms = 'hasFever' | 'hasChills' | 'hasNewCough' | 'hasDifficultyBreathing' | 'hasLossTasteSmell'
@@ -123,6 +128,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       hadContact: null,
       showConfirmation: false,
       targetUser: null,
+      noSymptoms: false,
     }
   }
 
@@ -233,15 +239,44 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     this.setState({
       ...this.state,
       [symptom]: !this.state[symptom],
+      noSymptoms: false,
+    })
+  }
+
+  noSymptoms() {
+    this.setState({
+      ...this.state,
+      noSymptoms: true,
+      hasFever: false,
+      hasChills: false,
+      hasNewCough: false,
+      hasDifficultyBreathing: false,
+      hasLossTasteSmell: false,
     })
   }
 
   submit1() {
-    this.setState({
-      submitClicked: true,
-    })
-    if (this.validate()) {
-      this.setState({ showConfirmation: true })
+    if (
+      !this.state.noSymptoms &&
+      !this.state.hasFever &&
+      !this.state.hasChills &&
+      !this.state.hasNewCough &&
+      !this.state.hasDifficultyBreathing &&
+      !this.state.hasLossTasteSmell
+    ) {
+      this.$f7.dialog.alert(
+        tr({
+          en: 'Please complete all survey questions. If you do not have symptoms, please click "No Symptoms".',
+          es: 'Complete todas las preguntas de la encuesta. Si no tiene síntomas, haga clic en "Sin síntomas".',
+        }),
+      )
+    } else {
+      this.setState({
+        submitClicked: true,
+      })
+      if (this.validate()) {
+        this.setState({ showConfirmation: true })
+      }
     }
   }
 
@@ -308,6 +343,12 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       this.state.hadDiagnosis === undefined,
       this.state.hadContact === true && !this.state.contactDate,
       this.state.hadDiagnosis === true && !this.state.diagnosisDate,
+      !this.state.noSymptoms &&
+        !this.state.hasFever &&
+        !this.state.hasChills &&
+        !this.state.hasNewCough &&
+        !this.state.hasDifficultyBreathing &&
+        !this.state.hasLossTasteSmell,
     ]
     return !errors.includes(true)
   }
@@ -357,6 +398,12 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
             </Block>
             <div className="SymptomButtons">
               <SymptomButton
+                title={tr({ en: 'No Symptoms', es: 'Sin síntomas', reviewTrans: true })}
+                image="noSymptoms"
+                onClick={() => this.noSymptoms()}
+                selected={this.state.noSymptoms}
+              />
+              <SymptomButton
                 title={t({ id: 'SurveyNewPage.fever', message: 'Fever' })}
                 image="fever"
                 onClick={() => this.toggleSymptom('hasFever')}
@@ -381,7 +428,11 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                 selected={this.state.hasDifficultyBreathing}
               />
               <SymptomButton
-                title={t({ id: 'SurveyNewPage.loss_of_smell', message: 'Loss of<br />Taste/Smell' })}
+                title={tr({
+                  en: 'New Loss of<br />Taste/Smell',
+                  es: 'Nueva pérdida de<br/> gusto / olfato',
+                  reviewTrans: true,
+                })}
                 image="tasteSmell"
                 onClick={() => this.toggleSymptom('hasLossTasteSmell')}
                 selected={this.state.hasLossTasteSmell}

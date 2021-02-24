@@ -2,6 +2,22 @@
 
 This is a first attempt to [keep a changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+## [1.7.3] - 2020-02-09
+
+ - Note this changelog includes updates from after v1.5.0
+ - Add location statistics for superusers
+ - Add mental health resources
+ - Fixed password reset length error
+ - Added no symptoms button
+ - Merge greenlight status editing feature
+ - Fix UJS issues in the backend
+ - Fix multiple clicks in app
+ - Update quarantine guidance
+ - Phone number issue resolutions
+ - Add new registration flow
+ - Update design to new branding
+
 ## [1.5.0] - 2020-01-11
 
 - Password resets have been fully integrated

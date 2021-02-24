@@ -59,6 +59,7 @@ import LocationLookupRegistrationCodePage from 'src/pages/locations/LocationLook
 import LocationCheckRegistrationCodePage from 'src/pages/locations/LocationCheckRegistrationCodePage'
 import EditChildrenPage from 'src/pages/users/EditChildrenPage'
 import EditChildPage from 'src/pages/users/EditChildPage'
+import MentalHealthResourcesPage from 'src/pages/resources/MentalHealthResourcesPage'
 import AdminEditGreenlightPassPage from 'src/pages/admin/AdminEditGreenlightPassPage'
 
 const beforeEnter = {
@@ -255,6 +256,10 @@ const resourcesRoutes = {
   schoolScoreCardPath: {
     path: '/resources/score-card',
     component: SchoolScoreCardPage,
+  },
+  mentalHealthPath: {
+    path: '/resources/mental-health',
+    component: MentalHealthResourcesPage,
   },
 }
 
