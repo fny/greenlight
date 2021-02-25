@@ -99,9 +99,6 @@ class LocationStatsOverview
                                         .select('user_id, status, submission_date, expiration_date')
                                         .group_by { |status| [status.user_id, status.submission_date] }
 
-    user_dates = all_user_statuses.keys
-    user_ids = user_dates.map { |user_id, date| user_id }.uniq
-
     date_range = Array(start_date..date)
     result = date_range.reduce({}) do |result_hash, d|
       result_hash.merge({
@@ -109,7 +106,18 @@ class LocationStatsOverview
       })
     end
 
-    user_ids.each do |user_id|
+    user_dates = {}
+    picked_past_date_for_user = {}
+    all_user_statuses.keys.each do |user_id, submission_date|
+      user_dates[user_id] ||= []
+
+      next if picked_past_date_for_user[user_id]
+
+      user_dates[user_id] << submission_date
+      picked_past_date_for_user[user_id] = true if submission_date < start_date
+    end
+
+    user_dates.keys.each do |user_id|
       date_range.each do |d|
         if all_user_statuses[[user_id, d]].present?
           status = all_user_statuses[[user_id, d]].last.status
@@ -119,13 +127,11 @@ class LocationStatsOverview
           next
         end
 
-        closest_submission_user_date = user_dates.find do |prev_user_id, prev_date|
-          prev_user_id == user_id && prev_date < d
-        end
+        closest_submission_date = user_dates[user_id].find { |prev_date| prev_date < d }
 
-        if closest_submission_user_date.present? &&
-          all_user_statuses[closest_submission_user_date].last.status == 'recovery' &&
-          all_user_statuses[closest_submission_user_date].last.expiration_date >= d
+        if closest_submission_date.present? &&
+          all_user_statuses[[user_id, closest_submission_date]].last.status == 'recovery' &&
+          all_user_statuses[[user_id, closest_submission_date]].last.expiration_date >= d
           result[d]['recovery'] ||= 0
           result[d]['recovery'] += 1
         end
