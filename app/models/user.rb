@@ -222,25 +222,6 @@ class User < ApplicationRecord
     )
   end
 
-  # Returns the status at the given date
-  def greenlight_status_at(date = nil, status_at_previous_day = nil)
-    submitted_status = greenlight_statuses.where(submission_date: date)&.last
-    return submitted_status if submitted_status.present?
-
-    prolonged_status = nil
-    if status_at_previous_day.nil?
-      prolonged_status = greenlight_statuses.where('submission_date < ? AND expiration_date > ?', date, date)
-                                            .order(:submission_date)&.last
-    elsif status_at_previous_day.status == GreenlightStatus::UNKNOWN || status_at_previous_day.expiration_date > date
-      prolonged_status = status_at_previous_day
-    end
-
-    prolonged_status || GreenlightStatus.new(
-                          user: self,
-                          status: GreenlightStatus::UNKNOWN
-                        )
-  end
-
   # Is there a recent status that's an override?
   def recent_cleared_override
     greenlight_statuses.order('created_at DESC').where(is_override: true).where('submission_date >= ?', 14.days.ago).first

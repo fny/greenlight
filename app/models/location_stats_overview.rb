@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 class LocationStatsOverview
+  MAX_QUARANTINE_DAYS = 14
+
   #
   # Returns interesting statistics for a location
   #
@@ -88,32 +90,51 @@ class LocationStatsOverview
   end
 
   def status_breakdown_stateful(date = nil)
-    result = {}
-    @location.users.each do |u|
-      user_result = status_breakdown_user(u, date)
+    start_date = (date - 6.days).to_date
+    querying_start_date = start_date - MAX_QUARANTINE_DAYS.days
+    total_users = @location.users.count
+    all_user_statuses = GreenlightStatus.where(user: @location.users)
+                                        .where(submission_date: querying_start_date..date)
+                                        .order(:user_id, submission_date: :desc, created_at: :asc, id: :asc)
+                                        .select('user_id, status, submission_date, expiration_date')
+                                        .group_by { |status| [status.user_id, status.submission_date] }
 
-      user_result.each do |d, status|
-        result[d] ||= {}
-        result[d][status] ||= 0
+    user_dates = all_user_statuses.keys
+    user_ids = user_dates.map { |user_id, date| user_id }.uniq
 
-        result[d][status] += 1
+    date_range = Array(start_date..date)
+    result = date_range.reduce({}) do |result_hash, d|
+      result_hash.merge({
+        d => {},
+      })
+    end
+
+    user_ids.each do |user_id|
+      date_range.each do |d|
+        if all_user_statuses[[user_id, d]].present?
+          status = all_user_statuses[[user_id, d]].last.status
+          result[d][status] ||= 0
+          result[d][status] += 1
+          
+          next
+        end
+
+        closest_submission_user_date = user_dates.find do |prev_user_id, prev_date|
+          prev_user_id == user_id && prev_date < d
+        end
+
+        if closest_submission_user_date.present? &&
+          all_user_statuses[closest_submission_user_date].last.status == 'recovery' &&
+          all_user_statuses[closest_submission_user_date].last.expiration_date >= d
+          result[d]['recovery'] ||= 0
+          result[d]['recovery'] += 1
+        end
       end
     end
 
-    result
-  end
-
-  private
-
-  # Returns [Hash] { date => status }
-  def status_breakdown_user(user, date = nil)
-    previous_day_status = nil
-    date_status = {}
-    Array((date - 6.days)..date).each do |d|
-      previous_day_status = user.greenlight_status_at(d, previous_day_status)
-      date_status[d] = previous_day_status.status
+    result.each do |k, v|
+      result[k]['unknown'] = total_users - v.values.sum
     end
-
-    date_status
+    result
   end
 end
