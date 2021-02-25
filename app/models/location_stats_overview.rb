@@ -93,6 +93,8 @@ class LocationStatsOverview
     start_date = (date - 6.days).to_date
     querying_start_date = start_date - MAX_QUARANTINE_DAYS.days
     total_users = @location.users.count
+
+    # {[user_id, submission_date] => [{ status, expiration_date, ... }](last elem is the last submission of the day) }
     all_user_statuses = GreenlightStatus.where(user: @location.users)
                                         .where(submission_date: querying_start_date..date)
                                         .order(:user_id, submission_date: :desc, created_at: :asc, id: :asc)
@@ -106,6 +108,9 @@ class LocationStatsOverview
       })
     end
 
+    # {user_id => [submission_dates](dates ordered in desc)}
+    # rids of the unnecessary submission dates on user basis
+    # i.e. for Jan 1 ~ Jan 7 range, if Dec 31 has a submission, then older submissions are not needed in calculation
     user_dates = {}
     picked_past_date_for_user = {}
     all_user_statuses.keys.each do |user_id, submission_date|
