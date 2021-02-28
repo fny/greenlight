@@ -1,17 +1,6 @@
 import React, { setGlobal, useState } from 'reactn'
 
-import {
-  Page,
-  List,
-  ListInput,
-  Navbar,
-  Link,
-  Block,
-  Button,
-  BlockFooter,
-  ListItem,
-  f7,
-} from 'framework7-react'
+import { Page, List, ListInput, Navbar, Link, Block, Button, BlockFooter, ListItem, f7 } from 'framework7-react'
 
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
 import './SessionsPage.css'
@@ -43,13 +32,15 @@ export default function SignInPage(props: F7Props): JSX.Element {
     return passwordValid && emailOrMobileValid
   }
 
-  async function submit() {
+  async function submit(event: any) {
+    if (event) {
+      event.preventDefault()
+    }
+
     if (!validate()) {
       return
     }
-    f7.dialog.preloader(
-      t({ id: 'SignInPage.signing_you_in', message: 'Signing you in...' }),
-    )
+    f7.dialog.preloader(t({ id: 'SignInPage.signing_you_in', message: 'Signing you in...' }))
     try {
       await createSession(state.emailOrMobile, state.password, state.rememberMe)
 
@@ -84,9 +75,7 @@ export default function SignInPage(props: F7Props): JSX.Element {
 
   return (
     <Page className="SignInPage" noToolbar>
-      <Navbar
-        title={t({ id: 'SignInPage.title', message: 'Sign In' })}
-      >
+      <Navbar title={t({ id: 'SignInPage.title', message: 'Sign In' })}>
         <Link href={paths.magicSignInPath} slot="right">
           <Trans id="SignInPage.with_magic">with Magic ✨</Trans>
         </Link>
@@ -97,7 +86,7 @@ export default function SignInPage(props: F7Props): JSX.Element {
         <img src={greenlightLogo} alt="Greenlight" />
       </div>
 
-      <List form id="sign-in-form" onSubmit={() => submit()}>
+      <List form id="sign-in-form" onSubmit={submit}>
         <EmailOrPhoneListInput
           ref={emailOrMobileRef}
           value={state.emailOrMobile}
@@ -108,9 +97,7 @@ export default function SignInPage(props: F7Props): JSX.Element {
         <ListInput
           type="password"
           ref={passwordRef}
-          placeholder={
-              t({ id: 'SignInPage.password_placeholder', message: 'Password' })
-            }
+          placeholder={t({ id: 'SignInPage.password_placeholder', message: 'Password' })}
           validateOnBlur
           value={state.password}
           required
@@ -121,35 +108,26 @@ export default function SignInPage(props: F7Props): JSX.Element {
         />
         <ListItem
           checkbox
-          title={
-              t({ id: 'SignInPage.remember_me', message: 'Remember me' })
-            }
+          title={t({ id: 'SignInPage.remember_me', message: 'Remember me' })}
           onChange={(e) => {
             setState({ ...state, rememberMe: e.target.checked as boolean })
           }}
         />
         <Block>
           <Button type="submit" outline fill>
-            <Trans id="SignInPage.sign_in">
-              Sign In
-            </Trans>
+            <Trans id="SignInPage.sign_in">Sign In</Trans>
           </Button>
         </Block>
       </List>
       <BlockFooter>
         <Tr reviewTrans>
           <En>
-            Forgot your password?
-            {' '}
-            <Link href={paths.passwordResetRequestPath}>Request a reset</Link> or
-            {' '}
+            Forgot your password? <Link href={paths.passwordResetRequestPath}>Request a reset</Link> or{' '}
             <Link href={paths.magicSignInPath}>a magic sign in link</Link>.
           </En>
           <Es>
-            ¿Olvidó su contraseña? Solicitar
-            {' '}
-            <Link href={paths.passwordResetRequestPath}>un restablecimiento de contraseña</Link> or
-            {' '}
+            ¿Olvidó su contraseña? Solicitar{' '}
+            <Link href={paths.passwordResetRequestPath}>un restablecimiento de contraseña</Link> or{' '}
             <Link href={paths.magicSignInPath}>un enlace de inicio de sesión mágico</Link>.
           </Es>
         </Tr>

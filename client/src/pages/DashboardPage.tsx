@@ -10,6 +10,7 @@ import {
   NavTitle,
   NavRight,
   Icon,
+  Block,
 } from 'framework7-react'
 import { esExclaim, greeting } from 'src/helpers/util'
 import If from 'src/components/If'
@@ -22,7 +23,7 @@ import { User } from 'src/models'
 import ReleaseCard from 'src/components/ReleaseCard'
 import { F7Props } from 'src/types'
 import Redirect from 'src/components/Redirect'
-import { tr } from 'src/components/Tr'
+import Tr, { tr } from 'src/components/Tr'
 import UserJDenticon from '../components/UserJDenticon'
 
 function UserList({ users }: { users: User[] }) {
@@ -85,7 +86,8 @@ export default function DashboardPage(props: F7Props): JSX.Element {
 
       <BlockTitle>
         <b>
-          {esExclaim()}{greeting()}, {currentUser.firstName}!
+          {esExclaim()}
+          {greeting()}, {currentUser.firstName}!
         </b>
       </BlockTitle>
 
@@ -160,47 +162,62 @@ export default function DashboardPage(props: F7Props): JSX.Element {
       <If test={currentUser.hasChildren()}>
         <BlockTitle>
           {/* User is a worker and has children */}
-          {currentUser.hasLocationThatRequiresSurvey() && currentUser.isParent()
-              && <Trans id="DashboardPage.your_family">Your Family</Trans>}
+          {currentUser.hasLocationThatRequiresSurvey() && currentUser.isParent() && (
+            <Trans id="DashboardPage.your_family">Your Family</Trans>
+          )}
           {/* User is only a parent */}
-          {!currentUser.hasLocationThatRequiresSurvey() && currentUser.isParent() && <Trans id="DashboardPage.your_children">Your Children</Trans>}
+          {!currentUser.hasLocationThatRequiresSurvey() && currentUser.isParent() && (
+            <Trans id="DashboardPage.your_children">Your Children</Trans>
+          )}
           {/* User is not a parent */}
           {!currentUser.isParent() && <Trans id="DashboardPage.your_status">Your Status</Trans>}
         </BlockTitle>
         <UserList users={currentUser.usersExpectedToSubmit()} />
       </If>
+
+      <BlockTitle>
+        <Tr en="Actions" es="Comportamiento" reviewTrans />
+      </BlockTitle>
+
+      <List>
+        {currentUser.isParent() && (
+          <ListItem
+            link={dynamicPaths.inviteOtherParent({ userId: currentUser.id })}
+            title={tr({
+              en: 'Invite Another Parent',
+              es: 'Invitar a otra madre',
+              reviewTrans: true,
+            })}
+          />
+        )}
+      </List>
       <BlockTitle>
         <Trans id="DashboardPage.resources_title">Resources For You</Trans>
       </BlockTitle>
       <List>
-        {
-            currentUser.isAdminSomewhere()
-            && (
-            <ListItem
-              accordionItem
-              title="Admin"
-            >
-              <Icon slot="media" f7="helm" />
-              <AccordionContent>
-                <List>
-                  {
-                    currentUser.adminLocations().map((location) => (
-                      <ListItem
-                        key={location.id}
-                        link={dynamicPaths.adminDashboardPath({ locationId: location.id })}
-                        title={location.name || ''}
-                      />
-                    ))
-                  }
-                </List>
-              </AccordionContent>
-            </ListItem>
-            )
-          }
+        {currentUser.isAdminSomewhere() && (
+          <ListItem accordionItem title="Admin">
+            <Icon slot="media" f7="helm" />
+            <AccordionContent>
+              <List>
+                {currentUser.adminLocations().map((location) => (
+                  <ListItem
+                    key={location.id}
+                    link={dynamicPaths.adminDashboardPath({ locationId: location.id })}
+                    title={location.name || ''}
+                  />
+                ))}
+              </List>
+            </AccordionContent>
+          </ListItem>
+        )}
 
         <ListItem
           title={tr({ en: "Help! I'm Symptomatic or Positive", es: '¡Ayuda! Estoy Sintomático o Positivo' })}
-          footer={tr({ en: 'Resources for when someone has symptoms or COVID', es: 'Recursos para cuando alguien tiene síntomas o COVID' })}
+          footer={tr({
+            en: 'Resources for when someone has symptoms or COVID',
+            es: 'Recursos para cuando alguien tiene síntomas o COVID',
+          })}
           link={paths.positiveResourcesPath}
         >
           <Icon slot="media" f7="exclamationmark_triangle" />
@@ -209,8 +226,10 @@ export default function DashboardPage(props: F7Props): JSX.Element {
           link={paths.chwRequestPath}
           title={tr({ en: 'Connect to Services', es: 'Conectarse a los servicios' })}
           footer={tr({
-            en: 'Send a request to a community health worker for help with healthcare, housing, legal services, COVID-19 supplies and more.',
-            es: 'Envíe una solicitud a un trabajador de salud de la comunidad para que le ayude con la atención médica, la vivienda, los servicios legales, los suministros de COVID-19 y más.',
+            en:
+              'Send a request to a community health worker for help with healthcare, housing, legal services, COVID-19 supplies and more.',
+            es:
+              'Envíe una solicitud a un trabajador de salud de la comunidad para que le ayude con la atención médica, la vivienda, los servicios legales, los suministros de COVID-19 y más.',
           })}
         >
           <Icon slot="media" f7="heart" />
@@ -226,15 +245,11 @@ export default function DashboardPage(props: F7Props): JSX.Element {
           <Icon slot="media" f7="sun_haze" />
         </ListItem>
         <ListItem
-          title={
-            tr({ en: 'All Resources', es: 'Todos los recursos' })
-          }
-          footer={
-            tr({
-              en: 'More information, search for testing',
-              es: 'Más información, buscar pruebas',
-            })
-          }
+          title={tr({ en: 'All Resources', es: 'Todos los recursos' })}
+          footer={tr({
+            en: 'More information, search for testing',
+            es: 'Más información, buscar pruebas',
+          })}
           accordionItem
         >
           <Icon slot="media" f7="compass" />
@@ -250,23 +265,24 @@ export default function DashboardPage(props: F7Props): JSX.Element {
               {!currentUser.isInBrevard__HACK() && (
                 <ListItem
                   title={t({ id: 'DashboardPage.duke_testing_title', message: 'Testing at Duke' })}
-                  footer={t({ id: 'DashboardPage.duke_testing_footer', message: 'Connect to streamlined testing 8am to 5pm any day' })}
+                  footer={t({
+                    id: 'DashboardPage.duke_testing_footer',
+                    message: 'Connect to streamlined testing 8am to 5pm any day',
+                  })}
                   link={paths.dukeScheduleTestPath}
                 >
                   <Icon slot="media" f7="thermometer" />
                 </ListItem>
               )}
-              {
-            currentUser.isInBrevard__HACK() && (
-              <ListItem
-                title="Brevard Resources"
-                footer="Find testing sites in Brevard and Connect to the School Nurse"
-                link={paths.brevardPath}
-              >
-                <Icon slot="media" f7="heart" />
-              </ListItem>
-            )
-          }
+              {currentUser.isInBrevard__HACK() && (
+                <ListItem
+                  title="Brevard Resources"
+                  footer="Find testing sites in Brevard and Connect to the School Nurse"
+                  link={paths.brevardPath}
+                >
+                  <Icon slot="media" f7="heart" />
+                </ListItem>
+              )}
               {/* https://ncchildcare.ncdhhs.gov/Portals/0/documents/pdf/P/Parent_and_Families_School_Age_Child_Care.pdf?ver=2020-08-26-122445-963 */}
               <ListItem
                 external
@@ -295,7 +311,10 @@ export default function DashboardPage(props: F7Props): JSX.Element {
         <ListItem
           link={paths.helpScoutPath}
           title={t({ id: 'DashboardPage.support_title', message: 'FAQs and Support' })}
-          footer={t({ id: 'DashboardPage.support_footer', message: 'Read through our knowledge base or contact Greenlight support directly' })}
+          footer={t({
+            id: 'DashboardPage.support_footer',
+            message: 'Read through our knowledge base or contact Greenlight support directly',
+          })}
         >
           <Icon slot="media" f7="chat_bubble_2" />
         </ListItem>
@@ -315,7 +334,6 @@ export default function DashboardPage(props: F7Props): JSX.Element {
           >
             <Icon slot="media" f7="graph_square" />
           </ListItem> */}
-
       </List>
     </Page>
   )

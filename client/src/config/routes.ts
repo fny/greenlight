@@ -59,6 +59,9 @@ import LocationLookupRegistrationCodePage from 'src/pages/locations/LocationLook
 import LocationCheckRegistrationCodePage from 'src/pages/locations/LocationCheckRegistrationCodePage'
 import MentalHealthResourcesPage from 'src/pages/resources/MentalHealthResourcesPage'
 import AdminEditGreenlightPassPage from 'src/pages/admin/AdminEditGreenlightPassPage'
+import ParentEditPage from 'src/pages/admin/ParentEditPage'
+import ParentNewPage from 'src/pages/admin/ParentNewPage'
+import InviteOtherParentPage from 'src/pages/users/InviteOtherParentPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -360,6 +363,26 @@ const userRoutes = {
   },
 }
 
+const parentRoutes = {
+  inviteOtherParent: {
+    path: '/users/:userId/invite-parent',
+    component: InviteOtherParentPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+
+  // edit Parent
+  newParentPath: {
+    path: '/users/:userId/parents/new',
+    component: ParentNewPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+  editParentPath: {
+    path: '/users/:userId/parents/:parentId',
+    component: ParentEditPage,
+    beforeEnter: beforeEnter.requireSignIn,
+  },
+}
+
 const routeMap = {
   rootPath: {
     path: '/',
@@ -374,6 +397,7 @@ const routeMap = {
   ...locationRoutes,
   ...surveyRoutes,
   ...userRoutes,
+  ...parentRoutes,
   dashboardPath: {
     path: '/dashboard',
     component: DashboardPage,

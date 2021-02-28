@@ -146,7 +146,6 @@ function ChildrenList({
               link="#"
               key={index}
               title={`${child.firstName} ${child.lastName}`}
-              after="Edit"
               onClick={(e) => {
                 e.preventDefault()
                 setSelectedUser(index)

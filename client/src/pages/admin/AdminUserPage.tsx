@@ -1,12 +1,8 @@
 import React from 'react'
-import {
-  Page, Block, Navbar, List, ListItem, BlockTitle,
-} from 'framework7-react'
+import { Page, Block, Navbar, List, ListItem, BlockTitle, AccordionContent } from 'framework7-react'
 
 import { F7Props } from 'src/types'
-import {
-  assertNotNull, assertNotUndefined, copyTextToClipboard, formatPhone,
-} from 'src/helpers/util'
+import { assertNotNull, assertNotUndefined, copyTextToClipboard, formatPhone } from 'src/helpers/util'
 
 import { User } from 'src/models'
 import { getUserParents } from 'src/api'
@@ -15,6 +11,7 @@ import LoadingUserContent from 'src/components/LoadingUserContent'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import LoadingBundleContent from 'src/components/LoadingBundleContent'
 import FakeF7ListItem from 'src/components/FakeF7ListItem'
+import Tr, { tr } from 'src/components/Tr'
 
 export default function AdminUserPage(props: F7Props): JSX.Element {
   const { locationId, userId } = props.f7route.params
@@ -48,30 +45,23 @@ export default function AdminUserPage(props: F7Props): JSX.Element {
                       </p>
                     </Block>
                     <Block>
-                      <BlockTitle>
-                        Actions
-                      </BlockTitle>
+                      <BlockTitle>Actions</BlockTitle>
                       <List>
-                        {
-                          user.hasNotSubmittedOwnSurvey() ? (
-                            <ListItem
-                              link={dynamicPaths.userSurveysNewPath(user.id, { redirect: props.f7route.path })}
-                              title="Check-In"
-                            />
-                          ) : (
-                            <FakeF7ListItem>
-                              <ListItem
-                                link={dynamicPaths.userGreenlightPassPath(user.id)}
-                                title="Greenlight Pass"
-                              />
-                              {/* <ListItem
+                        {user.hasNotSubmittedOwnSurvey() ? (
+                          <ListItem
+                            link={dynamicPaths.userSurveysNewPath(user.id, { redirect: props.f7route.path })}
+                            title="Check-In"
+                          />
+                        ) : (
+                          <FakeF7ListItem>
+                            <ListItem link={dynamicPaths.userGreenlightPassPath(user.id)} title="Greenlight Pass" />
+                            {/* <ListItem
                                 link="#"
                                 title="Submit Updated Symptoms"
                                 footer="Submit an updated survey"
                               /> */}
-                            </FakeF7ListItem>
-                          )
-                        }
+                          </FakeF7ListItem>
+                        )}
                         {/* <ListItem
                           link="#"
                           title="Submit Medical Data"
@@ -87,20 +77,19 @@ export default function AdminUserPage(props: F7Props): JSX.Element {
                           title="Unlink"
                           footer={`Unlink ${user.firstName} from ${location.name}`}
                         /> */}
-                        {
-                          !locationAccount.isStudent() && (
+                        {!locationAccount.isStudent() && (
                           <ListItem
-                            link={dynamicPaths.userLocationPermissionsPath({ userId: user.id, locationId: location.id })}
+                            link={dynamicPaths.userLocationPermissionsPath({
+                              userId: user.id,
+                              locationId: location.id,
+                            })}
                             title="Permissions"
                           />
-                          )
-                        }
+                        )}
                       </List>
                     </Block>
                     <Block>
-                      <BlockTitle>
-                        Contact
-                      </BlockTitle>
+                      <BlockTitle>Contact</BlockTitle>
 
                       <List>
                         {user.mobileNumber && (
@@ -119,39 +108,36 @@ export default function AdminUserPage(props: F7Props): JSX.Element {
                             footer={user.email}
                           />
                         )}
-                        {locationAccount.isStudent() && (
-                        <FakeF7ListItem>
-                          <LoadingBundleContent<User[]>
-                            showAsPage
-                            action={() => getUserParents(userId)}
-
-                            content={(state) => {
-                              const parents = state.bundle || []
-                              return parents.map((parent) => (
-                                <>
-                                  {parent.mobileNumber && (
-                                  <ListItem
-                                    external
-                                    link={`tel:${parent.mobileNumber}`}
-                                    title={`Call Parent: ${parent.firstName} ${parent.lastName}`}
-                                    footer={formatPhone(parent.mobileNumber)}
-                                  />
-                                  )}
-                                  {parent.email && (
-                                  <ListItem
-                                    external
-                                    link={`mailto:${parent.email}`}
-                                    title={`Email Parent: ${parent.firstName} ${parent.lastName}`}
-                                    footer={parent.email}
-                                  />
-                                  )}
-                                </>
-                              ))
-                            }}
-                          />
-                        </FakeF7ListItem>
-                        )}
                       </List>
+                    </Block>
+
+                    <Block>
+                      <BlockTitle>
+                        <Tr en="Parents" es="Padres" reviewTrans />
+                      </BlockTitle>
+
+                      <LoadingBundleContent<User[]>
+                        showAsPage
+                        action={() => getUserParents(userId)}
+                        content={(state) => {
+                          const parents = state.bundle || []
+                          return (
+                            <List>
+                              {parents.map((parent) => (
+                                <ListItem
+                                  link={dynamicPaths.editParentPath({ userId: userId, parentId: parent.id })}
+                                  key={parent.id}
+                                  title={`${parent.firstName} ${parent.lastName}`}
+                                />
+                              ))}
+                              <ListItem
+                                link={dynamicPaths.editParentPath({ userId: userId, parentId: 'new' })}
+                                title={tr({ en: 'Add a new parent', es: '', reviewTrans: true })}
+                              />
+                            </List>
+                          )
+                        }}
+                      />
                     </Block>
                   </>
                 )
