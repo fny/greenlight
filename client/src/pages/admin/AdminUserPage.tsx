@@ -64,11 +64,13 @@ export default function AdminUserPage(props: F7Props): JSX.Element {
                                 link={dynamicPaths.userGreenlightPassPath(user.id)}
                                 title="Greenlight Pass"
                               />
-                              {/* <ListItem
-                                link="#"
-                                title="Submit Updated Symptoms"
-                                footer="Submit an updated survey"
-                              /> */}
+                              {user.hasSubmittedOwnSurvey() && (
+                                <ListItem
+                                  link={dynamicPaths.userSurveysNewPath(user.id, { redirect: props.f7route.path, resubmit: true })}
+                                  title="Submit Updated Symptoms"
+                                  footer="Submit an updated survey"
+                                />
+                              )}
                             </FakeF7ListItem>
                           )
                         }

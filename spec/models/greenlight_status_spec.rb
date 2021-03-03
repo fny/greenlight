@@ -23,33 +23,21 @@ RSpec.describe GreenlightStatus, type: :model do
       travel_back
     end
 
-    it 'does allows submissions next day when submitted after the cut off' do
-      travel_to Time.zone.parse('6:05 PM')
-      new_cleared_status.save!
-      travel_to 1.day.from_now - 10.minutes
-      expect {
-        new_cleared_status.save!
-      }.to raise_error(ActiveRecord::RecordInvalid)
-      travel_back
-    end
-
-    it 'does not allow submissions within the same cutoff window' do
+    it 'allows re-submissions within the same cutoff window' do
       travel_to Time.zone.parse('8:00 AM')
       new_cleared_status.save!
       travel_to Time.zone.parse('5:55 PM')
-      expect {
-        new_cleared_status.save!
-      }.to raise_error(ActiveRecord::RecordInvalid)
+      new_cleared_status.save!
+      expect(user.greenlight_statuses.count).to eq(2)
       travel_back
     end
 
-    it 'does not allow submissions within the same cutoff window part 2' do
+    it 'allows re-submissions within the same cutoff window part 2' do
       travel_to Time.zone.parse('6:05 PM')
       new_cleared_status.save!
       travel_to Time.zone.parse('5:55 PM')
-      expect {
-        new_cleared_status.save!
-      }.to raise_error(ActiveRecord::RecordInvalid)
+      new_cleared_status.save!
+      expect(user.greenlight_statuses.count).to eq(2)
       travel_back
     end
   end

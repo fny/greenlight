@@ -79,7 +79,7 @@ module UsersController
       survey = SymptomSurvey.new(
         medical_events: request_json[:medical_events],
         user: user,
-        created_by: current_user
+        created_by: current_user,
       )
 
       return error_response(survey) unless survey.valid?

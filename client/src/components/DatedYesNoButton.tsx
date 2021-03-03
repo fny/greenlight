@@ -27,7 +27,7 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
     date: null,
   }
 
-  errorMessage() {
+  errorMessage(): JSX.Element {
     if (!this.props.showErrors) {
       return <></>
     }
@@ -41,7 +41,7 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
     return <></>
   }
 
-  render() {
+  render(): JSX.Element {
     return (
       <>
         <Row>

@@ -1,5 +1,7 @@
 import React from 'reactn'
-import { Page, Navbar, Block, Button, Preloader } from 'framework7-react'
+import {
+  Page, Navbar, Block, Button, Preloader,
+} from 'framework7-react'
 import './SurveyNewPage.css'
 import { paths } from 'src/config/routes'
 import { MedicalEventTypes } from 'src/models/MedicalEvent'
@@ -53,7 +55,9 @@ interface SymptomButtonProps {
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
-function SymptomButton({ title, image, selected, onClick }: SymptomButtonProps) {
+function SymptomButton({
+  title, image, selected, onClick,
+}: SymptomButtonProps) {
   return (
     <div className={`SymptomButton ${selected ? 'selected' : ''}`} onClick={onClick}>
       <img alt={title} src={buttonImages[image]} />
@@ -92,6 +96,8 @@ type Symptoms = 'hasFever' | 'hasChills' | 'hasNewCough' | 'hasDifficultyBreathi
 export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveyState> {
   isSequence = false
 
+  isResubmit = false
+
   currentUser: User
 
   constructor(props: SurveyProps) {
@@ -103,9 +109,9 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     this.currentUser = this.global.currentUser
 
     const { userId } = this.$f7route.params
-    if (!userId) {
-      throw 'userId missing in url'
-    }
+    const { resubmit } = this.$f7route.query
+
+    if (!userId) { throw 'userId missing in url' }
 
     if (userId === 'seq') {
       this.isSequence = true
@@ -114,6 +120,8 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
         this.setState({ targetUser: user, isLoaded: true })
       })
     }
+
+    this.isResubmit = resubmit === 'true'
 
     this.state = {
       isLoaded: this.isSequence,
@@ -207,35 +215,35 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     return this.currentUser.usersNotSubmitted()[1] || null
   }
 
-  setContacted(yesNo: boolean) {
+  setContacted(yesNo: boolean): void {
     this.setState({
       showConfirmation: false,
       hadContact: yesNo,
     })
   }
 
-  setDiagnosed(yesNo: boolean) {
+  setDiagnosed(yesNo: boolean): void {
     this.setState({
       showConfirmation: false,
       hadDiagnosis: yesNo,
     })
   }
 
-  setDiagnosisDate(date: Date) {
+  setDiagnosisDate(date: Date): void {
     this.setState({
       showConfirmation: false,
       diagnosisDate: DateTime.fromJSDate(date),
     })
   }
 
-  setContactDate(date: Date) {
+  setContactDate(date: Date): void {
     this.setState({
       showConfirmation: false,
       contactDate: DateTime.fromJSDate(date),
     })
   }
 
-  toggleSymptom(symptom: Symptoms) {
+  toggleSymptom(symptom: Symptoms): void {
     this.setState({
       ...this.state,
       [symptom]: !this.state[symptom],
@@ -243,7 +251,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     })
   }
 
-  noSymptoms() {
+  noSymptoms(): void {
     this.setState({
       ...this.state,
       noSymptoms: true,
@@ -255,14 +263,14 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     })
   }
 
-  submit1() {
+  submit1(): void {
     if (
-      !this.state.noSymptoms &&
-      !this.state.hasFever &&
-      !this.state.hasChills &&
-      !this.state.hasNewCough &&
-      !this.state.hasDifficultyBreathing &&
-      !this.state.hasLossTasteSmell
+      !this.state.noSymptoms
+      && !this.state.hasFever
+      && !this.state.hasChills
+      && !this.state.hasNewCough
+      && !this.state.hasDifficultyBreathing
+      && !this.state.hasLossTasteSmell
     ) {
       this.$f7.dialog.alert(
         tr({
@@ -280,14 +288,14 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     }
   }
 
-  async submit2() {
+  async submit2(): Promise<void> {
     if (!this.validate()) {
       this.setState({ showConfirmation: false })
       return
     }
     const medicalEvents = this.medicalEvents()
 
-    this.$f7.dialog.preloader(t({ id: 'SurveyNewPage.submitting', message: 'Submitting...' }))
+    this.$f7.dialog.preloader(tr({ en: 'Submitting...', es: 'Enviando...' }))
     const redirect = this.redirect()
     try {
       // TODO: This should load the data
@@ -324,11 +332,11 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       logger.error(error)
       // TODO: Make errors smarter
       this.$f7.dialog.alert(
-        t({
-          id: 'SurveyNewPage.submission_failed_message',
-          message: 'Something went wrong. Maybe someone already submitted?',
+        tr({
+          en: 'Something went wrong. Maybe someone already submitted?',
+          es: 'Algo salió mal. ¿Quizás alguien ya envió?',
         }),
-        t({ id: 'SurveyNewPage.submission_failed_title', message: 'Submission Failed' }),
+        tr({ en: 'Submission Failed', es: 'Error de envío' }),
       )
     }
   }
@@ -341,12 +349,12 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       this.state.hadDiagnosis === undefined,
       this.state.hadContact === true && !this.state.contactDate,
       this.state.hadDiagnosis === true && !this.state.diagnosisDate,
-      !this.state.noSymptoms &&
-        !this.state.hasFever &&
-        !this.state.hasChills &&
-        !this.state.hasNewCough &&
-        !this.state.hasDifficultyBreathing &&
-        !this.state.hasLossTasteSmell,
+      !this.state.noSymptoms
+        && !this.state.hasFever
+        && !this.state.hasChills
+        && !this.state.hasNewCough
+        && !this.state.hasDifficultyBreathing
+        && !this.state.hasLossTasteSmell,
     ]
     return !errors.includes(true)
   }
@@ -359,68 +367,69 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       return <></>
     }
     const submittingFor = this.submittingFor()
+    assertNotNull(submittingFor)
 
-    if (submittingFor === null) {
-      return (
-        <Page>
-          <Navbar title={t({ id: 'SurveyNewPage.already_submitted_title', message: 'Already Submitted' })}>
-            <NavbarHomeLink slot="left" />
-          </Navbar>
-          <Block>
-            <Trans id="SurveyNewPage.already_submitted_message">
-              All surveys have already been submitted for today. Please check back later!
-            </Trans>
-          </Block>
-        </Page>
-      )
+    let pageTitle = tr({
+      en: t`Daily Check-ins: ${submittingFor.fullName()}`,
+      es: `Encuesta de síntomas: ${submittingFor.fullName()}`,
+    })
+
+    if (this.isResubmit) {
+      pageTitle = tr({
+        en: t`Resubmit Survey: ${submittingFor.fullName()}`,
+        es: `Encuesta de síntomas: ${submittingFor.fullName()}`,
+      })
     }
 
     return (
       <Page>
-        <Navbar title={t({ id: 'SurveyNewPage.title', message: t`Daily Check-ins: ${submittingFor.fullName()}` })} />
+        <Navbar title={pageTitle} />
 
         {this.state.isLoaded ? (
           <>
             <Block>
               <div className="survey-title">
                 {this.isSubmittingForSelf() ? (
-                  <Trans id="SurveyNewPage.any_symptoms">Do you have any of these symptoms?</Trans>
+                  <Tr en="Do you have any of these symptoms?" es="¿Tienes alguno de estos síntomas?" />
                 ) : (
-                  <Trans id="SurveyNewPage.any_symptoms_child">
-                    Does
-                    {submittingFor?.firstName}
-                    have any of these symptoms?
-                  </Trans>
+                  <Tr>
+                    <En>
+                      Does {submittingFor.firstName} have any of these symptoms?
+                    </En>
+                    <Es>
+                      ¿{submittingFor.firstName} tiene alguno de estos síntomas?
+                    </Es>
+                  </Tr>
                 )}
               </div>
             </Block>
             <div className="SymptomButtons">
               <SymptomButton
-                title={tr({ en: 'No Symptoms', es: 'Sin síntomas', reviewTrans: true })}
+                title={tr({ en: 'No Symptoms', es: 'Sin síntomas' })}
                 image="noSymptoms"
                 onClick={() => this.noSymptoms()}
                 selected={this.state.noSymptoms}
               />
               <SymptomButton
-                title={t({ id: 'SurveyNewPage.fever', message: 'Fever' })}
+                title={tr({ en: 'Fever', es: 'Fiebre' })}
                 image="fever"
                 onClick={() => this.toggleSymptom('hasFever')}
                 selected={this.state.hasFever}
               />
               <SymptomButton
-                title={t({ id: 'SurveyNewPage.chills', message: 'Chills' })}
+                title={tr({ en: 'Chills', es: 'Escalofríos' })}
                 image="chills"
                 onClick={() => this.toggleSymptom('hasChills')}
                 selected={this.state.hasChills}
               />
               <SymptomButton
-                title={t({ id: 'SurveyNewPage.new_cough', message: 'New Cough' })}
+                title={tr({ en: 'New Cough', es: 'Nueva tos' })}
                 image="cough"
                 onClick={() => this.toggleSymptom('hasNewCough')}
                 selected={this.state.hasNewCough}
               />
               <SymptomButton
-                title={t({ id: 'SurveyNewPage.difficulty_breathing', message: 'Difficulty<br />Breathing' })}
+                title={tr({ en: 'Difficulty<br />Breathing', es: 'Respiración<br />dificultosa' })}
                 image="difficultyBreathing"
                 onClick={() => this.toggleSymptom('hasDifficultyBreathing')}
                 selected={this.state.hasDifficultyBreathing}
@@ -428,8 +437,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
               <SymptomButton
                 title={tr({
                   en: 'New Loss of<br />Taste/Smell',
-                  es: 'Nueva pérdida de<br/> gusto / olfato',
-                  reviewTrans: true,
+                  es: 'Nueva pérdida de<br/>gusto/olfato',
                 })}
                 image="tasteSmell"
                 onClick={() => this.toggleSymptom('hasLossTasteSmell')}
@@ -438,7 +446,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
             </div>
             <Block style={{ marginTop: 0 }}>
               <div className="survey-title">
-                <Trans id="SurveyNewPage.covid_contact_title">COVID Contact?</Trans>
+                <Tr en="COVID Contact?" es="Contacto COVID?" />
               </div>
               {this.isSubmittingForSelf() ? (
                 <Tr>
@@ -454,11 +462,11 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
               ) : (
                 <Tr>
                   <En>
-                    Has {submittingFor?.firstName} had close contact—within 6 feet for at least 15 minutes—with someone
+                    Has {submittingFor.firstName} had close contact—within 6 feet for at least 15 minutes—with someone
                     diagnosed with COVID-19 or someone with symptoms?
                   </En>
                   <Es>
-                    ¿{submittingFor?.firstName} ha tenido contacto cercano, dentro de los 6 pies durante al menos 15
+                    ¿{submittingFor.firstName} ha tenido contacto cercano, dentro de los 6 pies durante al menos 15
                     minutos, con alguien diagnosticado con COVID-19 o alguien con síntomas?
                   </Es>
                 </Tr>
@@ -478,7 +486,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                 </Trans>
               ) : (
                 <Trans id="SurveyNewPage.covid_diagnosis_child">
-                  Has {submittingFor?.firstName}
+                  Has {submittingFor.firstName}
                   been diagnosed with or tested positive for COVID-19?
                 </Trans>
               )}

@@ -57,8 +57,6 @@ class GreenlightStatus < ApplicationRecord
   validates :follow_up_date, presence: true
   validates :expiration_date, presence: true
 
-  validate :not_already_submitted
-
   def self.new_cleared_status(time, other_attrs)
     status = new(other_attrs)
     status.submitted_at = time

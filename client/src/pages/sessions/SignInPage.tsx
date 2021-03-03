@@ -129,7 +129,7 @@ export default function SignInPage(props: F7Props): JSX.Element {
           }}
         />
         <Block>
-          <Button type="submit" outline fill>
+          <Button onClick={() => submit()} outline fill>
             <Trans id="SignInPage.sign_in">
               Sign In
             </Trans>
@@ -137,7 +137,7 @@ export default function SignInPage(props: F7Props): JSX.Element {
         </Block>
       </List>
       <BlockFooter>
-        <Tr reviewTrans>
+        <Tr>
           <En>
             Forgot your password?
             {' '}

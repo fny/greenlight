@@ -27,7 +27,15 @@ class SendGridEmail < ApplicationCommand
     @pony_payload
   end
 
+  def logger
+    @logger ||= Logger.new(Rails.root.join('log', 'email.log'))
+  end
+
   def work
-    Pony.mail(pony_payload)
+    if Rails.env.development?
+      logger.info(pony_payload.inspect)
+    else
+      Pony.mail(pony_payload)
+    end
   end
 end

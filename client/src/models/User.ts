@@ -189,6 +189,11 @@ export class User extends Model {
     return this.greenlightStatus().isUnknown() && this.hasLocationThatRequiresSurvey()
   }
 
+  /** Has the user submitted their own survey */
+  hasSubmittedOwnSurvey(): boolean {
+    return !this.greenlightStatus().isUnknown() && this.hasLocationThatRequiresSurvey()
+  }
+
   /** Has the user not submitted their own survey if its required?  */
   hasNotSubmittedOwnSurveyForTomorrow(): boolean {
     return this.greenlightStatusTomorrow().isUnknown() && this.hasLocationThatRequiresSurvey()
