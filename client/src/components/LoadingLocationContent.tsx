@@ -4,7 +4,7 @@ import { Location } from 'src/models'
 import LoadingContent, { LoadingState } from './LoadingContent'
 
 interface Props {
-  locationId: string,
+  locationId: string
   content: (state: LoadingLocationState) => JSX.Element
   /** Whether to render errors and loading statuses with full page content */
   showAsPage?: boolean

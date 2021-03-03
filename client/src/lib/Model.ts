@@ -58,14 +58,15 @@ export function attribute(definiton: AttributeDefinition) {
     // `target` is the object/class where the property key resides
 
     // Pull the existing metadata or create an empty object
-    const allMetadata: { [propertyKey: string]: AttributeDefinition } = Reflect.getMetadata(ATTR_METADATA_KEY, target) || {}
+    const allMetadata: { [propertyKey: string]: AttributeDefinition } =
+      Reflect.getMetadata(ATTR_METADATA_KEY, target) || {}
 
     // Ensure allMetadata has propertyKey
     allMetadata[propertyKey] = allMetadata[propertyKey] || {}
     const currAttributes = allMetadata[propertyKey]
 
     Object.keys(attrDefinition).forEach((key) => {
-      (currAttributes as any)[key] = (attrDefinition as any)[key]
+      ;(currAttributes as any)[key] = (attrDefinition as any)[key]
     })
     // Update the metadata
     Reflect.defineMetadata(ATTR_METADATA_KEY, allMetadata, target)
@@ -94,14 +95,15 @@ export function relationship(definiton: RelationshipDefinition) {
     // `propertyKey` is the property
 
     // Pull the existing metadata or create an empty object
-    const allMetadata: { [propertyKey: string]: RelationshipDefinition } = Reflect.getMetadata(REL_METADATA_KEY, target) || {}
+    const allMetadata: { [propertyKey: string]: RelationshipDefinition } =
+      Reflect.getMetadata(REL_METADATA_KEY, target) || {}
 
     // Ensure allMetadata has propertyKey
     allMetadata[propertyKey] = allMetadata[propertyKey] || {}
     const currAttributes = allMetadata[propertyKey]
 
     Object.keys(relDefinition).forEach((key) => {
-      (currAttributes as any)[key] = (relDefinition as any)[key]
+      ;(currAttributes as any)[key] = (relDefinition as any)[key]
     })
     // Update the metadata
     Reflect.defineMetadata(REL_METADATA_KEY, allMetadata, target)
@@ -131,7 +133,7 @@ class Registry {
     this.models = {}
   }
 
-  register(...models: (typeof Model)[]) {
+  register(...models: typeof Model[]) {
     models.forEach((m) => {
       this.models[lowerCaseFirstLetter(m.modelName)] = m
     })
@@ -271,14 +273,14 @@ function _deserialize(model: typeof Model, data: any, this_?: Model) {
 
     // Cast and assign attributes
     if (attrMeta && property in attrMeta) {
-      const attrDef = ((attrMeta as any)[property] as AttributeDefinition);
-      (record as any)[property] = attrDef.type.deserialize ? attrDef.type.deserialize(value) : value
+      const attrDef = (attrMeta as any)[property] as AttributeDefinition
+      ;(record as any)[property] = attrDef.type.deserialize ? attrDef.type.deserialize(value) : value
       continue
     }
 
     // Cast and assign relationships
     if (relMeta && property in relMeta) {
-      const relDef = ((relMeta as any)[property] as RelationshipDefinition)
+      const relDef = (relMeta as any)[property] as RelationshipDefinition
       if (relDef.type === 'hasMany') {
         const model = ModelRegistry.modelFor(relDef.model)
         if (model === null) {
@@ -287,7 +289,7 @@ function _deserialize(model: typeof Model, data: any, this_?: Model) {
         if (!Array.isArray(value)) {
           throw new Error(`Expected Array for hasMany got ${debug(value)}`)
         }
-        (record as any)[property] = value.map((v) => new model(v))
+        ;(record as any)[property] = value.map((v) => new model(v))
       } else {
         const { model } = relDef
         if (!model) {
@@ -296,7 +298,7 @@ function _deserialize(model: typeof Model, data: any, this_?: Model) {
         if (Array.isArray(value)) {
           throw new Error(`Expected single object for hasOne got ${debug(value)}`)
         }
-        (record as any)[property] = new (model as any)(value)
+        ;(record as any)[property] = new (model as any)(value)
       }
       continue
     }
@@ -311,11 +313,9 @@ function _deserialize(model: typeof Model, data: any, this_?: Model) {
 //
 
 function debug(obj: any) {
-  return JSON.stringify(obj, (k, v) => (k && v && typeof v !== 'number'
-    ? Array.isArray(v)
-      ? '[object Array]'
-      : `${v}`
-    : v))
+  return JSON.stringify(obj, (k, v) =>
+    k && v && typeof v !== 'number' ? (Array.isArray(v) ? '[object Array]' : `${v}`) : v,
+  )
 }
 
 function lowerCaseFirstLetter(str: string) {

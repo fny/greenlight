@@ -2,7 +2,7 @@ import { t } from '@lingui/macro'
 import { DateTime } from 'luxon'
 import qs from 'qs'
 
-import { getGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { Dict } from 'src/types'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import logger from 'src/helpers/logger'
@@ -92,13 +92,13 @@ export function isEmptyType(data: any): boolean {
 
 export function isPrimitiveType(data: any): boolean {
   return (
-    typeof data === 'string'
-    || typeof data === 'number'
-    || typeof data === 'boolean'
-    || typeof data === 'bigint'
-    || typeof data === 'symbol'
-    || data === null
-    || data === undefined
+    typeof data === 'string' ||
+    typeof data === 'number' ||
+    typeof data === 'boolean' ||
+    typeof data === 'bigint' ||
+    typeof data === 'symbol' ||
+    data === null ||
+    data === undefined
   )
 }
 
@@ -458,19 +458,19 @@ export function stringify(
     return !val || typeof val !== 'object'
       ? val
       : ((r = recursMap.has(val)),
-      recursMap.set(val, true),
-      (a = Array.isArray(val)),
-      r
-        ? (o = (onGetObjID && onGetObjID(val)) || null)
-        : JSON.stringify(val, (k, v) => {
-          if (a || depth > 0) {
-            if (replacer) v = replacer(k, v)
-            if (!k) return (a = Array.isArray(v)), (val = v)
-            !o && (o = a ? [] : {})
-            o[k] = _build(v, a ? depth : depth - 1)
-          }
-        }),
-      o === void 0 ? (a ? [] : {}) : o)
+        recursMap.set(val, true),
+        (a = Array.isArray(val)),
+        r
+          ? (o = (onGetObjID && onGetObjID(val)) || null)
+          : JSON.stringify(val, (k, v) => {
+              if (a || depth > 0) {
+                if (replacer) v = replacer(k, v)
+                if (!k) return (a = Array.isArray(v)), (val = v)
+                !o && (o = a ? [] : {})
+                o[k] = _build(v, a ? depth : depth - 1)
+              }
+            }),
+        o === void 0 ? (a ? [] : {}) : o)
   }
   return JSON.stringify(_build(val, depth), null, space)
 }
@@ -520,7 +520,8 @@ export function titleCase(x: string): string {
 
 export function debounce<F extends (...args: any[]) => any>(
   func: F,
-  waitFor: number): (...args: Parameters<F>) => ReturnType<F> {
+  waitFor: number,
+): (...args: Parameters<F>) => ReturnType<F> {
   let timeout: ReturnType<typeof setTimeout> | null = null
 
   const debounced = (...args: Parameters<F>) => {
@@ -545,10 +546,10 @@ function useDebounce(callback: any, delay: number) {
 export function isInViewport(element: Element): boolean {
   const rect = element.getBoundingClientRect()
   return (
-    rect.top >= 0
-    && rect.left >= 0
-    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-    && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   )
 }
 
@@ -556,6 +557,13 @@ export function countVisible(selector: string): number {
   return Array.from(document.querySelectorAll(selector))
     .map(isInViewport)
     .reduce((acc, curr: boolean) => acc + (curr ? 1 : 0), 0)
+}
+
+export function forceReRender() {
+  setGlobal((globalState) => ({
+    ...globalState,
+    toggleForceUpdate: !globalState.toggleForceUpdate,
+  }))
 }
 
 export function copyTextToClipboard(text: string): void {

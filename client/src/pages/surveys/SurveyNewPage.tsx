@@ -12,7 +12,7 @@ import { NoCurrentUserError } from 'src/helpers/errors'
 import { ReactNComponent } from 'reactn/build/components'
 import { DateTime } from 'luxon'
 import { t, Trans } from '@lingui/macro'
-import { assertNotNull } from 'src/helpers/util'
+import { assertNotNull, forceReRender } from 'src/helpers/util'
 import { reloadCurrentUser } from 'src/helpers/global'
 import logger from 'src/helpers/logger'
 
@@ -305,7 +305,9 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       if (!status) {
         throw 'This should never happen, but status was somehow nil.'
       }
-      const user = await reloadCurrentUser() // Reload data
+      const user = await getUser(target.id) // Reload data
+      forceReRender()
+
       this.$f7.dialog.close()
 
       if (redirect) {

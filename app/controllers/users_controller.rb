@@ -8,7 +8,7 @@ module UsersController
       user = User.includes(:locations, :location_accounts).find(params[:user_id])
       ensure_or_forbidden! { current_user.authorized_to_view?(user) }
 
-      render json: UserSerializer.new(user, include: UserSerializer::ADMIN_INCLUDES)
+      render json: UserSerializer.new(user, include: UserSerializer::COMMON_INCLUDES)
     end
 
     get '/v1/users/:user_id/parents' do
@@ -92,6 +92,7 @@ module UsersController
       end
     end
 
+    # Update last greenlight status
     patch '/v1/users/:user_id/last-greenlight-status' do
       user = User.find(params[:user_id])
       ensure_or_forbidden! { current_user.authorized_to_edit?(user) }
@@ -106,6 +107,7 @@ module UsersController
       end
     end
 
+    # Delete last greenlight status
     delete '/v1/users/:user_id/last-greenlight-status' do
       user = User.find(params[:user_id])
       ensure_or_forbidden! { current_user.authorized_to_edit?(user) }
@@ -115,6 +117,75 @@ module UsersController
         success_response
       else
         simple_error_response("failed to delete status")
+      end
+    end
+
+    # Add a new child
+    post '/v1/users/:user_id/child' do
+      user_id = params[:user_id]
+      user = User.find(user_id)
+      ensure_or_forbidden! { current_user.authorized_to_edit?(user) }
+
+      user.children << User.new(
+        first_name: request_json[:first_name],
+        last_name: request_json[:last_name],
+        needs_physician: request_json[:needs_physician] || false,
+        physician_name: request_json[:physician_name],
+        physician_phone_number: request_json[:physician_phone_number],
+      )
+
+      if user.save
+        render json:UserSerializer.new(user,include: UserSerializer::COMMON_INCLUDES)
+      else
+        error_response(user)
+      end
+    end
+
+    # Update a child
+    patch '/v1/users/:user_id/child/:child_id' do
+      child_id = params[:child_id]
+      child = User.find(child_id)
+      ensure_or_forbidden! { current_user.authorized_to_edit?(child) }
+
+      user_id = params[:user_id]
+      user = User.find(user_id)
+      ensure_or_forbidden! { current_user.authorized_to_edit?(user) }
+
+      result = child.update(
+        first_name: request_json[:first_name],
+        last_name: request_json[:last_name],
+        needs_physician: request_json[:needs_physician] || false,
+        physician_name: request_json[:physician_name],
+        physician_phone_number: request_json[:physician_phone_number],
+      )
+
+      user = User.find(user_id)
+
+      if result
+        render json:UserSerializer.new(user,include: UserSerializer::COMMON_INCLUDES)
+      else
+        error_response(user)
+      end
+    end
+
+    # Delete a child
+    delete '/v1/users/:user_id/child/:child_id' do
+      child_id = params[:child_id]
+      child = User.find(child_id)
+      ensure_or_forbidden! { current_user.authorized_to_edit?(child) }
+
+      user_id = params[:user_id]
+      user = User.find(user_id)
+      ensure_or_forbidden! { current_user.authorized_to_edit?(user) }
+
+      result = child.destroy()
+
+      user = User.find(user_id)
+
+      if result
+        render json:UserSerializer.new(user,include: UserSerializer::COMMON_INCLUDES)
+      else
+        error_response(user)
       end
     end
   end

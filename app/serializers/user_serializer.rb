@@ -14,7 +14,7 @@ class UserSerializer < ApplicationSerializer
     :'children.location_accounts',
     :'children.location_accounts.location',
     :'children.last_greenlight_status',
-    :parents,
+    # :parents,
     :cohorts
   ].freeze
 
@@ -66,6 +66,7 @@ class UserSerializer < ApplicationSerializer
   attribute :physician_phone_number
 
   has_one :last_greenlight_status, serializer: GreenlightStatusSerializer, record_type: 'greenlightStatus'
+  has_many :children, serializer: UserSerializer, record_type: :user
 
   has_many :cohorts
   has_many :location_accounts
@@ -93,7 +94,7 @@ class UserSerializer < ApplicationSerializer
 
     # has_one :lastGreenlightStatus, :greenlightStatus
     # has_one :settings, :userSettings
-    # has_many :children, :user
+    has_many :children, :user
     # has_many :locationAccounts, :locationAccount
 
     # included GreenlightStatusSerializer::SWAGGER_SCHEMA

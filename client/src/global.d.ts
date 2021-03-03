@@ -18,5 +18,8 @@ declare module 'reactn/default' {
     registeringLocation: RegisteringLocation
     test: string | null
     progress: number | null
+
+    toggleForceUpdate: boolean // update when this value changes
+    recordStoreUpdatedAt: Date | null
   }
 }

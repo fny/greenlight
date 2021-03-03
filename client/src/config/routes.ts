@@ -57,6 +57,8 @@ import RegisterChildrenPage from 'src/pages/register-user/RegisterChildrenPage'
 import LocationLookupAccountPage from 'src/pages/locations/LocationLookupAccountPage'
 import LocationLookupRegistrationCodePage from 'src/pages/locations/LocationLookupRegistrationCodePage'
 import LocationCheckRegistrationCodePage from 'src/pages/locations/LocationCheckRegistrationCodePage'
+import EditChildrenPage from 'src/pages/users/EditChildrenPage'
+import EditChildPage from 'src/pages/users/EditChildPage'
 import MentalHealthResourcesPage from 'src/pages/resources/MentalHealthResourcesPage'
 import AdminEditGreenlightPassPage from 'src/pages/admin/AdminEditGreenlightPassPage'
 
@@ -355,8 +357,12 @@ const userRoutes = {
     component: UserEditPage,
   },
   editChildrenPath: {
+    path: '/users/:userId/children',
+    component: EditChildrenPage,
+  },
+  editChildPath: {
     path: '/users/:userId/children/:childId',
-    component: UserEditPage,
+    component: EditChildPage,
   },
 }
 

@@ -1,4 +1,3 @@
-import { t } from '@lingui/macro'
 import {
   AccordionContent,
   f7,
@@ -130,23 +129,7 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
   assertNotUndefined(locationId)
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
-
-  const location = store.findEntity<Location>(Location.uuid(locationId))
-  const [state, setState] = useState({
-    ...new State(),
-    location,
-  })
-
-  useEffect(() => {
-    if (state.location) return
-    getLocation(locationId)
-      .then((location) => {
-        setState({ ...state, location, isLoading: false })
-      })
-      .catch((error) => {
-        setState({ ...state, error, isLoading: false })
-      })
-  }, [locationId])
+  const [toggleForceUpdate] = useGlobal('toggleForceUpdate')
 
   const allowInfinite = useRef(true)
 
@@ -166,6 +149,9 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
   } = useSWRInfinite<PagedResource<User>>(
     getKey,
     async (locationId: string, page: number, name?: string, status?: GreenlightStatusTypes, role?: Roles) => getPagedUsersForLocation(locationId, page, name, status, role),
+    {
+      revalidateOnMount: false
+    }
   )
 
   const users = data ? data.map((d) => d.data).flat() : []
@@ -179,6 +165,12 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
       allowInfinite.current = true
     })
   }
+
+  useEffect(() => {
+    if (!isValidating) {
+      mutate()
+    }
+  }, [toggleForceUpdate])
 
   if (error) {
     allowInfinite.current = false
@@ -196,12 +188,7 @@ export default function AdminUsersPage(props: F7Props): JSX.Element {
   }
 
   return (
-    <Page
-      infinite
-      infiniteDistance={500}
-      infinitePreloader={isValidating}
-      onInfinite={error ? undefined : loadMore}
-    >
+    <Page infinite infiniteDistance={500} infinitePreloader={isValidating} onInfinite={error ? undefined : loadMore}>
       <Navbar title="Users" backLink>
         <Subnavbar inner={false}>
           <Searchbar

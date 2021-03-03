@@ -1,13 +1,12 @@
 import React, { useGlobal } from 'reactn'
-import {
-  Page, Navbar, List, ListItem, AccordionContent,
-} from 'framework7-react'
+import { Page, Navbar, List, ListItem, AccordionContent } from 'framework7-react'
 
 import { toggleLocale, signOut } from 'src/helpers/global'
 import { t } from '@lingui/macro'
 import { assertNotNull } from 'src/helpers/util'
 import { dynamicPaths, paths } from 'src/config/routes'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import { tr } from 'src/components/Tr'
 
 export default function SettingsPage() {
   const [currentUser] = useGlobal('currentUser')
@@ -15,10 +14,7 @@ export default function SettingsPage() {
 
   return (
     <Page>
-      <Navbar
-        title={t({ id: 'SettingsPage.title', message: 'Settings' })}
-        sliding
-      >
+      <Navbar title={t({ id: 'SettingsPage.title', message: 'Settings' })} sliding>
         <NavbarHomeLink slot="left" />
       </Navbar>
 
@@ -27,11 +23,12 @@ export default function SettingsPage() {
           link={dynamicPaths.editUserPath({ userId: currentUser.id })}
           title={t({ id: 'SettingsPage.profile', message: 'Profile' })}
         />
+        <ListItem
+          link={dynamicPaths.editChildrenPath({ userId: currentUser.id })}
+          title={tr({ en: 'My Children', es: 'Mis hijas', reviewTrans: true })}
+        />
         {currentUser.locations__HACK().length > 0 && (
-          <ListItem
-            accordionItem
-            title={t({ id: 'SettingsPage.my_locations', message: 'My Locations' })}
-          >
+          <ListItem accordionItem title={t({ id: 'SettingsPage.my_locations', message: 'My Locations' })}>
             <AccordionContent>
               <List>
                 {currentUser.locations__HACK().map((location) => (
@@ -46,10 +43,7 @@ export default function SettingsPage() {
         )}
 
         {currentUser.hasChildren() && (
-          <ListItem
-            accordionItem
-            title={t({ id: 'SettingsPage.my_children', message: 'My Children' })}
-          >
+          <ListItem accordionItem title={t({ id: 'SettingsPage.my_children', message: 'My Children' })}>
             <AccordionContent>
               <List>
                 {currentUser.sortedChildren().map((child) => (
@@ -76,31 +70,18 @@ export default function SettingsPage() {
           title={t({ id: 'Common.toggle_locale', message: 'En Español' })}
         />
 
-        <ListItem
-          link={paths.helpScoutPath}
-          title={t({ id: 'SettingsPage.support', message: 'Support' })}
-        />
+        <ListItem link={paths.helpScoutPath} title={t({ id: 'SettingsPage.support', message: 'Support' })} />
 
-        <ListItem
-          link={paths.releasesPath}
-          title={t({ id: 'SettingsPage.what_new', message: 'Whats New' })}
-        />
+        <ListItem link={paths.releasesPath} title={t({ id: 'SettingsPage.what_new', message: 'Whats New' })} />
 
         <ListItem
           link={paths.locationLookupPath}
           title={t({ id: 'SettingsPage.join_location', message: 'Join Location' })}
         />
 
-        <ListItem
-          link={paths.aboutPath}
-          title={t({ id: 'SettingsPage.about', message: 'About' })}
-        />
+        <ListItem link={paths.aboutPath} title={t({ id: 'SettingsPage.about', message: 'About' })} />
 
-        <ListItem
-          link
-          onClick={() => signOut()}
-          title={t({ id: 'Common.sign_out', message: 'Sign Out' })}
-        />
+        <ListItem link onClick={() => signOut()} title={t({ id: 'Common.sign_out', message: 'Sign Out' })} />
       </List>
     </Page>
   )
