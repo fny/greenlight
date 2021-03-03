@@ -268,4 +268,51 @@ RSpec.describe User, type: :model do
       expect(user.needs_to_submit_surveys_for.map(&:id)).to contain_exactly(child1.id)
     end
   end
+
+  describe '#purge!' do
+    let(:locations) { Fabricate.times(Faker::Number.between(from: 2, to: 4), :location) }
+    let(:cohorts) { Fabricate.times(Faker::Number.between(from:2, to: 4), :cohort, location: locations.first) }
+    let(:parents) { Fabricate.times(2, :user) }
+    let(:children) { Fabricate.times(3, :user) }
+
+    before do
+      locations.each { |l| user.add_to_location!(location, role: 'teacher', permission_level: LocationAccount::ADMIN) }
+      user.cohorts = cohorts
+      user.parents = parents
+      user.children = children
+      user.save
+
+      Array(1..Faker::Number.between(from:2, to: 10)).each do |day|
+        status = GreenlightStatus.new_cleared_status(Time.current - day.days, user: user, created_by: user)
+        status.save!
+
+        Fabricate(:yellow_medical_event, greenlight_status: status, user: user, created_by: user)
+      end
+    end
+
+    subject { user.purge! }
+    it 'deletes itself and all associations and belongings' do
+      expect(User.count).to eq(6)
+      subject
+
+      expect(LocationAccount.count).to be_zero
+      expect(ParentChild.count).to be_zero
+      expect(CohortUser.count).to be_zero
+      expect(MedicalEvent.count).to be_zero
+      expect(GreenlightStatus.count).to be_zero
+      expect(User.count).to eq(5)
+    end
+
+    it 'calls #archive! before deleting the records' do
+      expect(user).to receive(:archive!)
+
+      subject
+    end
+
+    it 'purges children if flag is set' do
+      children.each { |child| expect(child).to receive(:purge!) }
+
+      user.purge!(cascade: true)
+    end
+  end
 end

@@ -290,6 +290,10 @@ export async function deleteChild(userId: string, childId: string): Promise<User
   return entity
 }
 
+export async function deleteUser(id: string) {
+  await v1.delete(`/users/${id}`)
+}
+
 //
 // Surveys
 //

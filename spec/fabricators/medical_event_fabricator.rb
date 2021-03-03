@@ -13,7 +13,7 @@ end
 
 Fabricator(:yellow_medical_event, from: :medical_event) do
   event_type {
-    ['fever', 'new_cough', 'difficulty_breathing', 'fever', 'chills', 'taste_smell'].sample
+    ['fever', 'new_cough', 'difficulty_breathing', 'fever', 'chills', 'lost_taste_smell'].sample
   }
   occurred_at { DateTime.now }
 end

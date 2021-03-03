@@ -1,16 +1,47 @@
 import React, { useGlobal } from 'reactn'
-import { Page, Navbar, List, ListItem, AccordionContent } from 'framework7-react'
 
 import { toggleLocale, signOut } from 'src/helpers/global'
-import { t } from '@lingui/macro'
+import {
+  f7, Page, Navbar, List, ListItem, AccordionContent, Button, Block,
+} from 'framework7-react'
+
+import { F7Props } from 'src/types'
+import { t, Trans } from '@lingui/macro'
+import { deleteUser } from 'src/api'
 import { assertNotNull } from 'src/helpers/util'
+import SubmitHandler from 'src/helpers/SubmitHandler'
 import { dynamicPaths, paths } from 'src/config/routes'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { tr } from 'src/components/Tr'
 
-export default function SettingsPage() {
+export default function SettingsPage(props: F7Props) {
   const [currentUser] = useGlobal('currentUser')
   assertNotNull(currentUser)
+
+  const deleteHandler = new SubmitHandler(f7, {
+    onSuccess: () => {
+      signOut(props.f7router)
+    },
+    onSubmit: async () => {
+      await deleteUser(currentUser.id)
+    },
+    errorTitle: t({ id: 'Common.failed', message: 'Action Failed' }),
+    submittingMessage: t({ id: 'SettingsPage.deleting_account', message: 'Deleting...' }),
+    successMessage: t({ id: 'SettingsPage.delete_success', message: 'You just deleted your account.' }),
+  })
+
+  const handleDeleteAttempt = () => {
+    f7.dialog.confirm(
+      tr({
+        en: "Your account and the related information will be removed permanently. This action is irreversible. You will be automatically logged out.",
+        es: "Su cuenta y la información relacionada se eliminarán de forma permanente. Esta acción es irreversible. Se cerrará la sesión automáticamente."
+      }),
+      tr({ en: 'Delete Account', es: 'Borrar Cuenta' }),
+      () => {
+        deleteHandler.submit()
+      },
+    )
+  }
 
   return (
     <Page>
@@ -83,6 +114,12 @@ export default function SettingsPage() {
 
         <ListItem link onClick={() => signOut()} title={t({ id: 'Common.sign_out', message: 'Sign Out' })} />
       </List>
+
+      <Block>
+        <Button outline color="gray" onClick={handleDeleteAttempt}>
+          <Tr en="Delete Account" es="Borrar Cuenta" />
+        </Button>
+      </Block>
     </Page>
   )
 }

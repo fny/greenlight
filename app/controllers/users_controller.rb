@@ -31,6 +31,16 @@ module UsersController
       end
     end
 
+    # Delete a user (self)
+    delete '/v1/users/:user_id' do
+      ensure_or_forbidden! { current_user.id == params[:user_id].to_i }
+
+      current_user.purge!
+      @session.destroy
+
+      success_response
+    end
+
     # Create a user
     post '/v1/users/create-and-sign-in', auth: false do
       user = User.new(User.restrict_params(request_json))
