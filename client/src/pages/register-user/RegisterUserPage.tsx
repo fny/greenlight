@@ -1,13 +1,14 @@
 import React, {
   useEffect, useGlobal, useState, useMemo, Fragment, useCallback, getGlobal,
 } from 'reactn'
+import { useFormik, FormikProvider } from 'formik'
 import {
   assertNotNull, assertNotUndefined, esExclaim, greeting,
 } from 'src/helpers/util'
 
 import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
 import {
-  f7, Page, Block, Sheet, Row, Button, Col, Link, PageContent, Toolbar, Navbar,
+  f7, Page, Block, Sheet, Row, Button, Col, Link, PageContent, Toolbar, Navbar, List,
 } from 'framework7-react'
 import { t, Trans } from '@lingui/macro'
 import { User, Location } from 'src/models'
@@ -21,6 +22,8 @@ import LoadingPage from 'src/pages/util/LoadingPage'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import { Roles } from 'src/models/LocationAccount'
+import FormikInput from 'src/components/FormikInput'
+import { getKeyName } from 'src/helpers/util'
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
 import { Router } from 'framework7/modules/router/router'
 import LocalStorage from 'src/helpers/LocalStorage'
@@ -29,6 +32,7 @@ import Tr, { En, Es, tr } from 'src/components/Tr'
 import TermsAndConditionsSheet from 'src/components/TermsAndConditionsSheet'
 import EmailSupportLink from 'src/components/EmailSupportLink'
 import RegisterUserForm from './RegisterUserForm'
+import { getStatusProps } from 'react-query/types/core/utils'
 
 export default function RegisterUserPage(props: F7Props) {
   const [page, setPage] = useState('')
@@ -84,7 +88,12 @@ export default function RegisterUserPage(props: F7Props) {
           }
 
           if (currentUser) {
-            return <CreateLocationAccountPage location={location} />
+            return (
+              <CreateLocationAccountPage
+                location={location}
+                onParentalLA={() => props.f7router.navigate(`/go/${locationId}/register/children`)}
+              />
+            )
           }
 
           if (!registeringUser || registeringUser.registrationCode === '') {
@@ -209,16 +218,43 @@ function CurrentUserAlreadyRegisteredPage({
   )
 }
 
-function CreateLocationAccountPage({ location }: { location: Location }): JSX.Element {
+function CreateLocationAccountPage({
+  location,
+  onParentalLA,
+}: {
+  location: Location,
+  onParentalLA: () => void,
+}): JSX.Element {
   const [error, setError] = useState<any>()
-  const handleJoinLocation = useCallback(async () => {
+  const [registeringUser, setRegisteringUser] = useGlobal('registeringUser')
+  const handleJoinLocation = useCallback(async (role: Roles) => {
     try {
-      await joinLocation(location)
+      await joinLocation(location, role)
       window.location.reload()
     } catch (err) {
       setError(err)
     }
   }, [location])
+
+  const formik = useFormik<RegisteringUser>({
+    initialValues: {
+      ...registeringUser,
+    },
+    onSubmit: async (values) => {
+      if (values.role === Roles.Unknown) {
+        values.role = values.availableRoles[0]
+      }
+
+      if (values.role === Roles.Student || values.role === Roles.Staff) {
+        handleJoinLocation(values.role)
+      } else {
+        await setRegisteringUser(values)
+        LocalStorage.setRegisteringUser(values)
+        // go to add children
+        onParentalLA()
+      }
+    },
+  })
 
   return (
     <Fragment>
@@ -263,9 +299,29 @@ function CreateLocationAccountPage({ location }: { location: Location }): JSX.El
             </Tr>
           </p>
         )}
-        <Button fill onClick={handleJoinLocation}>
-          <Tr en="Join Location" es="Unitar" />
-        </Button>
+        <FormikProvider value={formik}>
+          <List
+            noHairlines
+            form
+            onSubmit={(e) => {
+              e.preventDefault()
+              formik.submitForm()
+            }}
+          >
+            {formik.values.availableRoles.length > 0 && (
+              <FormikInput label={tr({ en: 'Role', es: 'Papel' })} name="role" type="select" floatingLabel>
+                {formik.values.availableRoles.map((role) => (
+                  <option key={role} value={role}>
+                    {getKeyName(Roles, role)}
+                  </option>
+                ))}
+              </FormikInput>
+            )}
+            <Button fill type="submit">
+              <Tr en="Join Location" es="Unitar" />
+            </Button>
+          </List>
+        </FormikProvider>
       </Block>
     </Fragment>
   )

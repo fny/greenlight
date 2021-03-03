@@ -53,6 +53,19 @@ module LocationsController
       end
     end
 
+    post '/v1/locations/:location_id/join-with-children' do
+      location = Location.find_by_id_or_permalink!(params[:location_id])
+      params[:location] = location
+      params[:existing_user] = current_user
+      join = JoinLocation.new(camelize_hash(params))
+      if join.run
+        user = join.result
+        render json: CurrentUserSerializer.new(user)
+      else
+        error_response(join)
+      end
+    end
+
     post '/v1/locations/:location_id/join' do
       location_id = params[:location_id]
 
@@ -64,9 +77,9 @@ module LocationsController
 
       la = LocationAccount.new(
         user_id: current_user.id,
-        location: location,
+        location_id: location_id,
         permission_level: LocationAccount::NONE,
-        role: 'unknown',
+        role: params[:role] || 'unknown',
         created_by: current_user
       )
 

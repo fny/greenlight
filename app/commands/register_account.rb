@@ -42,29 +42,7 @@ class RegisterAccount < ApplicationCommand
       locale: locale
     )
 
-    unless role == PARENT
-      @user.location_accounts << LocationAccount.new(
-        location: location,
-        role: role
-      )
-    end
-    if location.school? && role != STUDENT
-      @user.children << (children || []).map { |c|
-        User.new(
-          first_name: c[:first_name],
-          last_name: c[:last_name],
-          needs_physician: c[:needs_physician] || false,
-          physician_name: c[:physician_name],
-          physician_phone_number: c[:physician_phone_number],
-        )
-      }
-      @user.children.each do |child|
-        child.location_accounts << LocationAccount.new(
-          location: location,
-          role: LocationAccount::STUDENT,
-        )
-      end
-    end
+    attach_location_n_children
     @user
   end
 
@@ -74,6 +52,34 @@ class RegisterAccount < ApplicationCommand
   end
 
   private
+
+  def attach_location_n_children
+    unless role == PARENT
+      @user.location_accounts << LocationAccount.new(
+        location: location,
+        role: role
+      )
+    end
+    if location.school? && role != STUDENT
+      new_children = (children || []).map { |c|
+        User.new(
+          first_name: c[:first_name],
+          last_name: c[:last_name],
+          needs_physician: c[:needs_physician] || false,
+          physician_name: c[:physician_name],
+          physician_phone_number: c[:physician_phone_number],
+        )
+      }
+      new_children.each do |child|
+        child.location_accounts << LocationAccount.new(
+          location: location,
+          role: LocationAccount::STUDENT,
+        )
+      end
+
+      @user.children += new_children
+    end
+  end
 
   def registration_code_valid
     if !code_for_staff? && !code_for_student?
