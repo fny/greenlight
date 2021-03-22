@@ -166,14 +166,15 @@ export class Location extends Model {
   registrationCode: string | null = ''
 
   @attr({ type: STRING })
-  parentRegistrationCode: string | null = ''
+  studentRegistrationCode: string | null = ''
+
 
   registrationWithCodeURL(): string {
     return `glit.me/go/${this.permalink}/code/${this.registrationCode}`
   }
 
   parentRegistrationWithCodeURL(): string {
-    return `glit.me/go/${this.permalink}/code/${this.parentRegistrationCode}`
+    return `glit.me/go/${this.permalink}/code/${this.studentRegistrationCode}`
   }
 
   isSchool(): boolean {
