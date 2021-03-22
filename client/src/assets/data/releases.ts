@@ -17,8 +17,33 @@ function date(value: string) {
 
 const releaseData: ReleaseData[] = [
   {
+    version: '1.8.0',
+    date: date('3/22/2021'),
+    notesEn: 'Multiple location registration and our second to last release!',
+    notesEs: '¡Registro de múltiples ubicaciones y nuestro penúltimo lanzamiento!',
+    whatsNewEn: [
+      'You can now register yourself for multiple locations',
+      'Resubmit surveys to update a students status during the day',
+      'Update your phone number and email address',
+      'Add and remove children with ease',
+      'Help desk can now temporarily set passwords for those who get stuck',
+      'Added new GIFs',
+      'Greenlight is now open source!'
+    ],
+    whatsNewEs: [
+      'Ahora puede registrarse para varias ubicaciones',
+      'Reenviar encuestas para actualizar el estado de los estudiantes durante el día',
+      'Actualice su número de teléfono y dirección de correo electrónico',
+      'Agregue y elimine niños con facilidad',
+      'La mesa de ayuda ahora puede establecer contraseñas temporalmente para aquellos que se atascan',
+      'Nuevos GIF agregados'
+    ],
+    bugFixesEn: [],
+    bugFixesEs: [],
+  },
+  {
     version: '1.7.3',
-    date: date('2/9/2020'),
+    date: date('2/9/2021'),
     notesEn: 'Updates to our COVID-19 resources and more',
     notesEs: 'Cambios en nuestros recursos COVID-19 y más',
     whatsNewEn: [
@@ -42,7 +67,7 @@ const releaseData: ReleaseData[] = [
   },
   {
     version: '1.7.2',
-    date: date('2/5/2020'),
+    date: date('2/5/2021'),
     notesEn: 'Status display fixes',
     notesEs: 'Correcciones para los estados',
     whatsNewEn: [],
@@ -52,7 +77,7 @@ const releaseData: ReleaseData[] = [
   },
   {
     version: '1.7.1',
-    date: date('2/2/2020'),
+    date: date('2/2/2021'),
     notesEn: 'New quarantine guidance, new admin features, bug fixes',
     notesEs: 'Nueva guía de cuarentena, nuevas funciones de administración, corrección de errores',
     whatsNewEn: [
@@ -84,7 +109,7 @@ const releaseData: ReleaseData[] = [
   },
   {
     version: '1.6.0',
-    date: date('1/20/2020'),
+    date: date('1/20/2021'),
     notesEn: 'New look, admin features and more!',
     notesEs: '¡Nuevo diseño, funciones de administración y más!',
     whatsNewEn: [
@@ -106,7 +131,7 @@ const releaseData: ReleaseData[] = [
   },
   {
     version: '1.5.0',
-    date: date('1/12/2020'),
+    date: date('1/12/2021'),
     notesEn: "Happy Tuesday! We've added many new features and changes to Greenlight!",
     notesEs: '¡Feliz martes! Hemos agregado muchas funciones nuevas y cambios a Greenlight.',
     whatsNewEn: [
