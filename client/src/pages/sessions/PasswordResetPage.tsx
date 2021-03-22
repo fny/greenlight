@@ -95,7 +95,6 @@ export default function PasswordResetPage({ f7route, f7router }: F7Props): JSX.E
         tr({
           en: 'The link you provided is invalid or has expired. Please try again.',
           es: 'El enlace que proporcionaste no es válido o ha caducado. Inténtalo de nuevo.',
-          reviewTrans: true,
         }),
         tr({
           en: 'Invalid Link',

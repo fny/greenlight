@@ -32,4 +32,6 @@ export class RegisteringUser {
   physicianPhoneNumber: string = ''
 
   zipCode: string = ''
+
+  locationId?: string
 }
