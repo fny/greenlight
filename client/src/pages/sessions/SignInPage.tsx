@@ -97,7 +97,10 @@ export default function SignInPage(props: F7Props): JSX.Element {
         <img src={greenlightLogo} alt="Greenlight" />
       </div>
 
-      <List form id="sign-in-form" onSubmit={() => submit()}>
+      <List form id="sign-in-form" onSubmit={(e) => {
+        e.preventDefault()
+        submit()
+      }}>
         <EmailOrPhoneListInput
           ref={emailOrMobileRef}
           value={state.emailOrMobile}
