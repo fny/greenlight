@@ -136,18 +136,27 @@ module UsersController
       user = User.find(user_id)
       ensure_or_forbidden! { current_user.authorized_to_edit?(user) }
 
-      user.children << User.new(
-        first_name: request_json[:first_name],
-        last_name: request_json[:last_name],
-        needs_physician: request_json[:needs_physician] || false,
-        physician_name: request_json[:physician_name],
-        physician_phone_number: request_json[:physician_phone_number],
-      )
-
-      if user.save
-        render json:UserSerializer.new(user,include: UserSerializer::COMMON_INCLUDES)
+      unless params[:locationId] && user.locations.map { |l| l.id.to_s === params[:locationId] }
+        simple_error_response("invalid school provided")
       else
-        error_response(user)
+        user.children << User.new(
+          first_name: request_json[:first_name],
+          last_name: request_json[:last_name],
+          needs_physician: request_json[:needs_physician] || false,
+          physician_name: request_json[:physician_name],
+          physician_phone_number: request_json[:physician_phone_number],
+          location_accounts: [LocationAccount.new(
+            permission_level: LocationAccount::NONE,
+            role: LocationAccount::STUDENT,
+            location_id: params[:locationId]
+          )]
+        )
+
+        if user.save
+          render json:UserSerializer.new(user,include: UserSerializer::COMMON_INCLUDES)
+        else
+          error_response(user)
+        end
       end
     end
 
