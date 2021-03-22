@@ -107,8 +107,6 @@ const UserEditPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
             validateOnBlur
             value={formik.values.email}
             onInput={formik.handleChange}
-            info={t({ id: 'EditUserPage.cant_be_changed', message: "Can't be changed at this time." })}
-            disabled
           />
           <ListInput
             name="mobileNumber"
@@ -116,8 +114,6 @@ const UserEditPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
             validateOnBlur
             value={formatPhone(formik.values.mobileNumber)}
             onInput={formik.handleChange}
-            info={t({ id: 'EditUserPage.cant_be_changed', message: "Can't be changed at this time." })}
-            disabled
           />
 
           <ListInput
@@ -129,6 +125,8 @@ const UserEditPage: FunctionComponent<F7Props> = ({ f7route, f7router }) => {
             onInput={formik.handleChange}
             onBlur={formik.handleBlur}
           />
+
+
           {/* <ListInput
             label={t({ id: 'EditUserPage.date_of_birth_label', message: 'Date of Birth' })}
             value={isBlank(formik.values.birthDate) ? [] : [formik.values.birthDate]}
