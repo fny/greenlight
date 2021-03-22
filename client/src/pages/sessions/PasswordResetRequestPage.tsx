@@ -101,6 +101,12 @@ const PasswordResetRequestPage: FunctionComponent<F7Props> = ({}) => {
               es="Enviar"
             />
           </Button>
+          <Block>
+          <Tr
+            en="Important: If you use a Microsoft hosted email (MSN, Hotmail, Outlook) you may not receive Greenlight emails. Contact help@greenlightready.com for a password."
+            es="Importante: si utiliza un correo electrónico alojado en Microsoft (MSN, Hotmail, Outlook), es posible que no reciba ningún correo electrónico de Greenlight. Comuníquese con help@greenlightready.com para obtener una contraseña."
+          />
+          </Block>
         </Block>
       </List>
     </Page>
