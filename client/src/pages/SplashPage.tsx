@@ -41,9 +41,9 @@ export default function SplashPage(props: F7Props): JSX.Element {
           <Tr en="Create Account" es="Crear una Cuenta" />
         </Button>
 
-        <Button outline href={paths.registerLocationWelcomePath}>
+        {/* <Button outline href={paths.registerLocationWelcomePath}>
           <Tr en="Register Organization" es="Registrar Organización" />
-        </Button>
+        </Button> */}
 
         <Button outline onClick={() => toggleLocale()} style={{ border: 0 }}>
           <Tr en="En Español" es="In English" />
