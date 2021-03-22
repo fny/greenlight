@@ -20,6 +20,7 @@ class LocationSerializer < ApplicationSerializer
   attribute :created_at
   attribute :updated_at
   attribute :registration_code
+  attribute :student_registration_code
   attribute :employee_count
 
   SWAGGER_SCHEMA = SwaggerSchemaBuilder.build do
@@ -47,6 +48,7 @@ class LocationSerializer < ApplicationSerializer
         created_at :string
         updated_at :string
         registration_code :string
+        student_registration_code :string
         employee_count :string
       }
     }
