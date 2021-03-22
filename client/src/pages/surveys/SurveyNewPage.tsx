@@ -1,12 +1,13 @@
 import React from 'reactn'
+
 import {
   Page, Navbar, Block, Button, Preloader,
 } from 'framework7-react'
 import './SurveyNewPage.css'
 import { paths } from 'src/config/routes'
-import { MedicalEventTypes } from 'src/models/MedicalEvent'
+import { MedicalEvent, MedicalEventTypes } from 'src/models/MedicalEvent'
 import { CUTOFF_TIME } from 'src/models/GreenlightStatus'
-import { createSymptomSurvey, getUser } from 'src/api'
+import { createSymptomSurvey, getCurrentUser, getUser } from 'src/api'
 import { User } from 'src/models'
 import { NoCurrentUserError } from 'src/helpers/errors'
 import { ReactNComponent } from 'reactn/build/components'
@@ -28,7 +29,6 @@ import difficultyBreathing from 'src/assets/images/symptoms/difficulty-breathing
 import difficultyBreathingBright from 'src/assets/images/symptoms/difficulty-breathing-bright.svg'
 import tasteSmell from 'src/assets/images/symptoms/taste-smell.svg'
 import tasteSmellBright from 'src/assets/images/symptoms/taste-smell-bright.svg'
-import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import { Case, When } from 'src/components/Case'
 import DatedYesNoButton from 'src/components/DatedYesNoButton'
 import Tr, { En, Es, tr } from 'src/components/Tr'
@@ -140,11 +140,11 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     }
   }
 
-  redirect() {
+  redirect(): string | null {
     return this.$f7route.query.redirect || null
   }
 
-  medicalEvents() {
+  medicalEvents(): Partial<MedicalEvent>[] {
     const events = []
     if (this.state.hasFever) {
       events.push({
@@ -305,8 +305,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       if (!status) {
         throw 'This should never happen, but status was somehow nil.'
       }
-      const user = await getUser(target.id) // Reload data
-      forceReRender()
+      const user = await reloadCurrentUser()
 
       this.$f7.dialog.close()
 
@@ -369,7 +368,10 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       return <></>
     }
     const submittingFor = this.submittingFor()
-    assertNotNull(submittingFor)
+
+    if (!submittingFor) {
+      return <Page />
+    }
 
     let pageTitle = tr({
       en: t`Daily Check-ins: ${submittingFor.fullName()}`,
@@ -390,6 +392,19 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
         {this.state.isLoaded ? (
           <>
             <Block>
+              { this.isResubmit && (
+              <p>
+                <Tr>
+                  <En>
+                    This only adds new symptoms to your submission on {submittingFor.lastGreenlightStatus?.createdAt.toLocaleString(DateTime.DATE_SHORT)}. To undo a submission, please contact your school administator.
+                  </En>
+                  <Es>
+                    Esto agrega nuevos síntomas a su envío el {submittingFor.lastGreenlightStatus?.createdAt.toLocaleString(DateTime.DATE_SHORT)}. No puede no cambiar los síntomas que ya envió.
+                  </Es>
+                </Tr>
+              </p>
+              ) }
+
               <div className="survey-title">
                 {this.isSubmittingForSelf() ? (
                   <Tr en="Do you have any of these symptoms?" es="¿Tienes alguno de estos síntomas?" />
