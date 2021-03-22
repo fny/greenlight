@@ -9,6 +9,8 @@ import { CUTOFF_TIME, GreenlightStatus } from './GreenlightStatus'
 import { LocationAccount, PermissionLevels } from './LocationAccount'
 import { UserSettings } from './UserSettings'
 import { RegisteringUser } from './RegisteringUser'
+import { currentUser } from 'src/helpers/global'
+import { first } from 'lodash'
 
 /**
  * Represent a user in the application, be it an employee, owner, parent,
@@ -107,6 +109,12 @@ export class User extends Model {
 
   locations__HACK(): Location[] {
     return this.locationAccounts.map((la) => la.location).filter((l): l is Location => isPresent(l))
+  }
+
+  affiliatedLocations(): Location[] {
+    const myLocations = this.locations__HACK()
+    const childLocations = this.children.flatMap(c => c.locations__HACK())
+    return myLocations.concat(childLocations).filter((v, i, a) => a.indexOf(v) === i);
   }
 
   /** The users first name. */
@@ -307,7 +315,7 @@ export class User extends Model {
   }
 
   isMemberOf(location: Location): boolean {
-    return this.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0
+    return this.locationAccounts.filter((la) => la.locationId?.toString() === location.id).length > 0 || this.children.some(c => c.isMemberOf(location))
   }
 
   isOwnerOf(user: User): boolean {
@@ -363,5 +371,10 @@ export class User extends Model {
       physicianPhoneNumber: this.physicianPhoneNumber || '',
       zipCode: this.zipCode || '',
     }
+  }
+
+  firstLocationName() {
+    const firstLoc = this.locations__HACK()[0]
+    return firstLoc ? firstLoc.name : ''
   }
 }
