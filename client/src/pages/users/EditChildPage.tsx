@@ -42,7 +42,6 @@ export default function EditChildPage(props: F7Props): JSX.Element {
         successMessage: tr({
           en: 'The child is registered successfully.',
           es: 'La niña está registrada con éxito.',
-          reviewTrans: true,
         }),
         onSuccess: () => props.f7router.back(),
       })
@@ -51,11 +50,11 @@ export default function EditChildPage(props: F7Props): JSX.Element {
         successMessage: tr({
           en: 'The child is updated successfully.',
           es: 'La niña se actualiza con éxito.',
-          reviewTrans: true,
         }),
         onSuccess: () => props.f7router.back(),
       })
     }
+    window.location.reload()
   }, [])
 
   const handleDeleteChild = useCallback(() => {
@@ -63,7 +62,6 @@ export default function EditChildPage(props: F7Props): JSX.Element {
       successMessage: tr({
         en: 'The child is updated successfully.',
         es: 'La niña se elimina exitosamente.',
-        reviewTrans: true,
       }),
       onSuccess: () => props.f7router.back(),
     })
@@ -79,8 +77,8 @@ export default function EditChildPage(props: F7Props): JSX.Element {
       <Navbar
         title={
           childId === 'new'
-            ? tr({ en: 'Add a new child', es: 'Agregar un niño nuevo', reviewTrans: true })
-            : tr({ en: 'Edit child', es: 'Editar niña', reviewTrans: true })
+            ? tr({ en: 'Add a new child', es: 'Agregar un niño nuevo' })
+            : tr({ en: 'Edit child', es: 'Editar niña' })
         }
         backLink
       />
@@ -92,6 +90,7 @@ export default function EditChildPage(props: F7Props): JSX.Element {
         onBack={() => {
           props.f7router.back()
         }}
+        setLocation={childId === 'new'}
       />
     </Page>
   )

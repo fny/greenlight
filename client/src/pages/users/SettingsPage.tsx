@@ -12,7 +12,7 @@ import { assertNotNull } from 'src/helpers/util'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { dynamicPaths, paths } from 'src/config/routes'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import { tr } from 'src/components/Tr'
+import Tr, { tr } from 'src/components/Tr'
 
 export default function SettingsPage(props: F7Props) {
   const [currentUser] = useGlobal('currentUser')
@@ -56,23 +56,23 @@ export default function SettingsPage(props: F7Props) {
         />
         <ListItem
           link={dynamicPaths.editChildrenPath({ userId: currentUser.id })}
-          title={tr({ en: 'My Children', es: 'Mis hijas', reviewTrans: true })}
+          title={tr({ en: 'My Children', es: 'Mis hijas' })}
         />
-        {currentUser.locations__HACK().length > 0 && (
+        {currentUser.affiliatedLocations().length > 0 && (
           <ListItem accordionItem title={t({ id: 'SettingsPage.my_locations', message: 'My Locations' })}>
             <AccordionContent>
               <List>
-                {currentUser.locations__HACK().map((location) => (
+                {currentUser.affiliatedLocations().map((location) => (
                   <ListItem
                     title={location.name || ''}
-                    // link={dynamicPaths.userLocationPath({ userId: currentUser.id, locationId: location.id })}
+                    link={dynamicPaths.userLocationPath({ userId: currentUser.id, locationId: location.id })}
                   />
                 ))}
               </List>
             </AccordionContent>
           </ListItem>
         )}
-
+{/*
         {currentUser.hasChildren() && (
           <ListItem accordionItem title={t({ id: 'SettingsPage.my_children', message: 'My Children' })}>
             <AccordionContent>
@@ -87,7 +87,7 @@ export default function SettingsPage(props: F7Props) {
               </List>
             </AccordionContent>
           </ListItem>
-        )}
+        )} */}
 
         <ListItem
           link={paths.notificationsPath}
@@ -101,7 +101,7 @@ export default function SettingsPage(props: F7Props) {
           title={t({ id: 'Common.toggle_locale', message: 'En Español' })}
         />
 
-        <ListItem link={paths.helpScoutPath} title={t({ id: 'SettingsPage.support', message: 'Support' })} />
+        <ListItem link={paths.supportPath} title={t({ id: 'SettingsPage.support', message: 'Support' })} />
 
         <ListItem link={paths.releasesPath} title={t({ id: 'SettingsPage.what_new', message: 'Whats New' })} />
 
@@ -112,14 +112,11 @@ export default function SettingsPage(props: F7Props) {
 
         <ListItem link={paths.aboutPath} title={t({ id: 'SettingsPage.about', message: 'About' })} />
 
+        <ListItem link="#" onClick={handleDeleteAttempt}>
+          <Tr en="Delete Account" es="Borrar Cuenta" />
+        </ListItem>
         <ListItem link onClick={() => signOut()} title={t({ id: 'Common.sign_out', message: 'Sign Out' })} />
       </List>
-
-      <Block>
-        <Button outline color="gray" onClick={handleDeleteAttempt}>
-          <Tr en="Delete Account" es="Borrar Cuenta" />
-        </Button>
-      </Block>
     </Page>
   )
 }

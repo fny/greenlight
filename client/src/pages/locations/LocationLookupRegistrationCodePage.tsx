@@ -55,6 +55,12 @@ function RegisterWithCode({ location, f7router }: { location: Location; f7router
         f7router.navigate(`/go/${location.id}/code/${registrationCode}`)
       }}
     >
+      <Block>
+        <Tr
+          en="You should have received a registration code. Enter it below to continue!"
+          es="Debería haber recibido un código de registro. ¡Escríbalo para continuar!"
+        />
+      </Block>
       <ListInput
         label={tr({ en: 'Registration Code', es: 'Código de Registro' })}
         placeholder="Su código de registro"

@@ -86,28 +86,12 @@ export default function LocationPage({ f7route, f7router }: F7Props): JSX.Elemen
               {
                   currentUser
                     ? (
-                      <p>
-                        <Tr>
-                          <En>
-                            Please contact support at <EmailSupportLink /> to link your existing account to this location.
-                          </En>
-                          <Es>
-                            Póngase en contacto con el servicio de asistencia en <EmailSupportLink /> para unitar su cuenta existente a esta lugar.
-                          </Es>
-                        </Tr>
-                      </p>
-                      // <List>
-                      //   <ListItem
-                      //     title={tr({ en: 'Link Your Account', es: 'Conectar Su Cuenta' })}
-                      //     footer={tr({
-                      //       en: `Click here to link your account to ${location.name}.`,
-                      //       es: `Haga clic aquí para conectar su cuenta a ${location.name}.`,
-                      //     })}
-                      //     link="#"
-                      //   >
-                      //     <Icon slot="media" f7="person" />
-                      //   </ListItem>
-                      // </List>
+                      <List>
+                        <ListItem
+                          link={dynamicPaths.locationLookupPath({}, { permalink: location.permalink})}
+                          title={tr({en: 'Join Location', es: 'Unite a ese Ubicación' })}
+                        />
+                      </List>
                     )
                     : (
                       <List>

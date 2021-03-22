@@ -1,8 +1,9 @@
-import { Block, BlockTitle, Button, List, ListItem, Navbar, Page } from 'framework7-react'
+import { Block, BlockTitle, Button, Link, List, ListItem, Navbar, Page } from 'framework7-react'
+import React from 'react'
 import { useGlobal, useMemo, useEffect } from 'reactn'
 import { store } from 'src/api'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import Tr, { tr } from 'src/components/Tr'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 import { dynamicPaths, paths } from 'src/config/routes'
 import { assertNotNull } from 'src/helpers/util'
 import { User } from 'src/models'
@@ -28,14 +29,13 @@ export default function EditChildrenPage(props: F7Props): JSX.Element {
 
   return (
     <Page>
-      <Navbar title={tr({ en: 'My Children', es: 'Mis hijas', reviewTrans: true })} backLink />
+      <Navbar title={tr({ en: 'My Children', es: 'Mis hijas' })} backLink />
 
       <Block>
         <p>
           <Tr
             en={`If you have any children add them here.`}
             es={`Si tienes hijos, agrégalos aquí.`}
-            reviewTrans={true}
           />
         </p>
 
@@ -47,7 +47,7 @@ export default function EditChildrenPage(props: F7Props): JSX.Element {
             <ListItem
               link="#"
               key={index}
-              title={`${child.firstName} ${child.lastName}`}
+              title={`${child.firstName} ${child.lastName} (${child.firstLocationName()})`}
               after="Edit"
               onClick={(e) => {
                 e.preventDefault()
@@ -68,6 +68,17 @@ export default function EditChildrenPage(props: F7Props): JSX.Element {
             }}
           />
         </List>
+        <p>
+          <Tr>
+            <En>
+              To add a new child to a new school, visit the <Link href={paths.locationLookupPath}>Join Location</Link> page and follow the steps given.
+            </En>
+            <Es>
+              Para agregar nuevos niños a una escuela, visite la pagina para <Link href={paths.locationLookupPath}>Únese a la ubicación</Link> y siga los pasos indicados.
+            </Es>
+          </Tr>
+
+        </p>
       </Block>
     </Page>
   )

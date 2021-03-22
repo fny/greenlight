@@ -202,7 +202,11 @@ function CurrentUserAlreadyRegisteredPage({
           <Tr en={`Registered for ${location.name}`} es={`Registrado para ${location.name}`} />
         </h1>
         <p>
-          <Tr en={`You are registered to submit check ins to ${location.name}.`} es={`Está registrado para enviar encuestas a ${location.name}`} />
+          <Tr en={`You are registered to submit check ins to ${location.name}.`} es={`Está registrado para enviar encuestas a ${location.name}`} /> {
+            location.isSchool() && <>
+              To add children to this school, visit "My Children" on the settings page.
+            </>
+          }
         </p>
         {currentUser.hasCompletedWelcome() ? (
           <Button fill href={paths.dashboardPath}>

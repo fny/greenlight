@@ -29,6 +29,7 @@ export default function LocationLookupPage(props: F7Props): JSX.Element {
             label={t({ id: 'UserRegistration.business_or_school_id', message: 'Business or School ID' })}
             placeholder={t({ id: 'UserRegistration.business_or_school_id', message: 'Business or School ID' })}
             required
+            value={props.f7route.query['permalink']}
             onChange={(e) => setPermalink(e.target.value)}
           />
           <ListInput

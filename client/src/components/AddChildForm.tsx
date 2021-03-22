@@ -1,6 +1,7 @@
 import { Block, BlockTitle, Button, List, ListInput, Row, Col, ListItem } from 'framework7-react'
 import React, { useState } from 'reactn'
 import Tr, { tr } from 'src/components/Tr'
+import { currentUser } from 'src/helpers/global'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 
 interface AddChildFormProps {
@@ -8,11 +9,12 @@ interface AddChildFormProps {
   onSubmit: (child: RegisteringUser) => any
   onDelete?: () => any
   onBack?: () => any
+  setLocation?: boolean
 }
 
 export default function AddChildForm(props: AddChildFormProps): JSX.Element {
   const [state, setState] = useState({ ...new RegisteringUser(), ...(props.user || {}) })
-
+  const currUser = currentUser()
   return (
     <Block>
       <BlockTitle>
@@ -42,6 +44,23 @@ export default function AddChildForm(props: AddChildFormProps): JSX.Element {
             value={state.lastName}
             onChange={(e) => setState({ ...state, lastName: e.target.value })}
           />
+          {
+            props.setLocation && currUser &&
+            <ListInput
+              label="School"
+              type="select"
+              placeholder="Please choose..."
+              required
+              onChange={(e) => setState({ ...state, locationId: e.target.value })}
+            >
+              <option></option>
+              {
+                currUser.affiliatedLocations().filter(l => l.isSchool()).map(l =>
+                  <option value={l.id}>{l.name}</option>
+                )
+              }
+            </ListInput>
+          }
           {/* TODO: Ask for primary care info */}
           {/* <ListItem
             checkbox
