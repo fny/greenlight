@@ -241,7 +241,7 @@ function Content({ messageId, f7router }: {messageId: RegisterLocationMessageIds
           }
           fill
         >
-          <Tr en="Continue" es="Seguir" reviewTrans />
+          <Tr en="Continue" es="Seguir" />
         </Button>
       </Block>
     )

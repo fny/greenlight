@@ -1,7 +1,6 @@
 import colors from 'src/config/colors'
 import { today, tomorrow } from 'src/helpers/util'
 import CutoffTime from 'src/helpers/CutoffTime'
-import { t } from '@lingui/macro'
 
 import { DateTime } from 'luxon'
 import {

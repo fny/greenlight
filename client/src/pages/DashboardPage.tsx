@@ -22,7 +22,7 @@ import { User } from 'src/models'
 import ReleaseCard from 'src/components/ReleaseCard'
 import { F7Props } from 'src/types'
 import Redirect from 'src/components/Redirect'
-import { tr } from 'src/components/Tr'
+import Tr, { tr } from 'src/components/Tr'
 import UserJDenticon from '../components/UserJDenticon'
 
 function UserList({ users }: { users: User[] }) {
@@ -159,7 +159,10 @@ export default function DashboardPage(props: F7Props): JSX.Element {
 
       <ReleaseCard />
 
-      <If test={!currentUser.hasChildren() && currentUser.greenlightStatus().isValidForToday()}>
+      <If test={!currentUser.hasChildren()}>
+        <BlockTitle>
+          <Tr en="Your Status" es="Su Estatus" />
+        </BlockTitle>
         <UserList users={[currentUser]} />
       </If>
 
@@ -299,7 +302,7 @@ export default function DashboardPage(props: F7Props): JSX.Element {
           </AccordionContent>
         </ListItem>
         <ListItem
-          link={paths.helpScoutPath}
+          link={paths.supportPath}
           title={t({ id: 'DashboardPage.support_title', message: 'FAQs and Support' })}
           footer={t({ id: 'DashboardPage.support_footer', message: 'Read through our knowledge base or contact Greenlight support directly' })}
         >
