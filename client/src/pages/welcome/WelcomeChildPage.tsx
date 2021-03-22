@@ -165,7 +165,7 @@ export default class extends ReactNComponent<any, State> {
             <ListItem key={location.id} title={location.name || ''} />
           ))}
         </List>
-        <List noHairlines>
+        {/* <List noHairlines>
           <ListItem
             footer={t({
               id: 'WelcomeChildPage.doctor_footer',
@@ -211,7 +211,7 @@ export default class extends ReactNComponent<any, State> {
               this.setState({ physicianPhoneNumber: e.target.value })
             }}
           />
-        </List>
+        </List> */}
         <Block>
           <Case test={this.hasNextChild()}>
             <When value>
