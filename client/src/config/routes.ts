@@ -61,6 +61,7 @@ import EditChildrenPage from 'src/pages/users/EditChildrenPage'
 import EditChildPage from 'src/pages/users/EditChildPage'
 import MentalHealthResourcesPage from 'src/pages/resources/MentalHealthResourcesPage'
 import AdminEditGreenlightPassPage from 'src/pages/admin/AdminEditGreenlightPassPage'
+import SupportPage from 'src/pages/resources/SupportPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -235,9 +236,9 @@ const resourcesRoutes = {
     component: CastlightTestSearchPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
-  helpScoutPath: {
+  supportPath: {
     path: '/support',
-    component: HelpScoutPage,
+    component: SupportPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
   chwRequestPath: {
