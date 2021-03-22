@@ -49,7 +49,7 @@ class ApplicationRecord < ActiveRecord::Base
 
     where(
       columns.map { |col| "lower(#{col}) LIKE :query"}.join(' OR '),
-      query: "%#{query.downcase}%"
+      query: "%#{query.downcase.sub(' ', '%')}%"
     )
   end
 
