@@ -7,8 +7,8 @@ class User < ApplicationRecord
     needs_physician
   ]
 
-  self.queryable_columns = %i[
-    first_name last_name email mobile_number zip_code
+  self.queryable_columns = [
+    :first_name, :last_name, :email, :mobile_number, :zip_code, 'concat(first_name, last_name)'
   ]
 
   extend Enumerize
