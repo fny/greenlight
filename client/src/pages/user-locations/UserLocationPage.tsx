@@ -19,6 +19,7 @@ import { dynamicPaths, paths } from 'src/config/routes'
 import LoadingPage from 'src/pages/util/LoadingPage'
 import LoadingPageContent from 'src/components/LoadingPageContent'
 import EmailSupportLink from 'src/components/EmailSupportLink'
+import { currentUser } from 'src/initializers/providers'
 
 interface State {
   user?: User | null
@@ -29,60 +30,61 @@ interface State {
 
 export default function UserLocationPage(props: F7Props) {
   const { locationId, userId } = props.f7route.params
-  assertNotUndefined(locationId)
-  assertNotUndefined(userId)
+  const currUser = currentUser()
+  assertNotNull(currUser)
 
-  const [state, setState] = useState<State>({
-    permissionLevel: PermissionLevels.NONE,
-  })
-
-  useEffect(() => {
-    (async () => {
-      const [user, location] = await Promise.all([getUser(userId), getLocation(locationId)])
-      const locationAccount = user?.accountFor(location)
-      setState({
-        user,
-        locationAccount,
-        location,
-        permissionLevel: locationAccount?.permissionLevel || PermissionLevels.NONE,
-      })
-    })()
-  }, [])
-
-  let content
-
-  if (!state.user || !state.location) {
-    content = <LoadingPageContent />
-  }
-
-  assertNotNull(state.location)
-  assertNotNull(state.locationAccount)
-  assertNotNull(state.user)
-  assertNotUndefined(state.location)
-  assertNotUndefined(state.locationAccount)
-  assertNotUndefined(state.user)
-  const la = state.locationAccount
-  const l = state.location
-  const handler = new SubmitHandler(f7)
-
-  content = (
-    <>
-      <Navbar title={`${state.user.firstName}'s Account`} />
-      <Block>
-        <List
-          form
-          noHairlines
-        >
-          <p>
-            You are linked to {l.name}. To request removal, please contact <EmailSupportLink />.
-          </p>
-        </List>
-      </Block>
-    </>
-  )
+  const location = currUser.affiliatedLocations().filter(l => l.id.toString() === locationId )[0]
+  const isOwnLocation = currUser.locationAccounts.some(la => la.locationId?.toString() === locationId)
+  const ownLocationAccount = currUser.locationAccounts.filter(la => la.locationId?.toString() === locationId)[0]
+  const childrenWithLocation = currUser.children.filter(c => c.locationAccounts.some(la => la.locationId?.toString() === locationId))
+  const isChildLocation = childrenWithLocation.length > 0
+  console.log(location)
   return (
     <Page>
-      {content}
+      <Navbar title={location.name || ''} backLink />
+      {
+        isOwnLocation && <Block>
+          <p>You have an account with {location.name}.
+          You are listed as a {ownLocationAccount.role} and your permission level is {ownLocationAccount.permissionLevel}.</p>
+
+          <p>To invite someone else to join {location.name} as a staff member, give them the following information to use when joining:</p>
+          <ul>
+            <li>Location ID: {location.permalink}</li>
+            <li>Registration Code: {location.registrationCode}</li>
+          </ul>
+
+          {
+            location.isSchool() && <>
+            <p>To invite someone else to register {location.name} as a parent, give them the following information to use when joining:</p>
+            <ul>
+              <li>Location ID: {location.permalink}</li>
+              <li>Parent Registration Code: {location.studentRegistrationCode}</li>
+            </ul>
+            </>
+          }
+          {
+            isChildLocation && <p>
+              The following children also have an account with account with {location.name}: {childrenWithLocation.map(c => c.firstName).join(', ')}.
+            </p>
+          }
+        </Block>
+      }
+
+      {
+        !isOwnLocation && isChildLocation && <Block>
+          <p>The following children have an account with account with {location.name}: {childrenWithLocation.map(c => c.firstName).join(', ')}.</p>
+
+          {
+            location.isSchool() && <>
+            <p>To invite someone else to register {location.name} as a parent, give them the following information to use when joining:</p>
+            <ul>
+              <li>Location ID: {location.permalink}</li>
+              <li>Parent Registration Code: {location.studentRegistrationCode}</li>
+            </ul>
+            </>
+          }
+        </Block>
+      }
     </Page>
   )
 }
