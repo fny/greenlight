@@ -6,7 +6,7 @@ import { User } from 'src/models'
 import { i18n, GLLocales } from 'src/i18n'
 import CookieJar, { Cookie } from 'src/helpers/CookieJar'
 import { LocationCategories } from 'src/models/Location'
-import SessionStorage from 'src/helpers/SessionStorage'
+import LocalStorage from 'src/helpers/LocalStorage'
 import Honeybadger from './honeybadger'
 
 export function isSignedIn() {
@@ -101,8 +101,8 @@ setGlobal({
   i18n,
   currentUser: null,
   test: null,
-  registeringUser: SessionStorage.getRegisteringUser() || new GRegisteringUser(),
-  registeringLocation: SessionStorage.getRegisteringLocation() || new GRegisteringLocation(),
+  registeringUser: LocalStorage.getRegisteringUser() || new GRegisteringUser(),
+  registeringLocation: LocalStorage.getRegisteringLocation() || new GRegisteringLocation(),
 })
 
 i18n.activate(cookieLocale())
