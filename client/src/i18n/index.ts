@@ -1,18 +1,10 @@
-import { i18n } from '@lingui/core'
-
-import * as plurals from 'make-plural/plurals'
 import React from 'react'
-import en from './locales/en'
-import es from './locales/es'
-
-export { i18n }
-
-i18n.loadLocaleData('en', { plurals: plurals.en })
-i18n.loadLocaleData('es', { plurals: plurals.es })
-
-i18n.load('en', en.messages)
-i18n.load('es', es.messages)
 
 export type GLLocales = 'en' | 'es'
 
 export const MyI18n = React.createContext('en')
+
+
+export function plural(n: number, subs: { one: string, other: string } ) {
+  return n === 1 ? subs.one.replace('#', `${n}`) : subs.other.replace('#', `${n}`)
+}

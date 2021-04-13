@@ -1,8 +1,8 @@
 import React from 'reactn'
 import { Page, Block, Button } from 'framework7-react'
-import { Trans } from '@lingui/macro'
 import logger from './helpers/logger'
 import EmailSupportLink from './components/EmailSupportLink'
+import Tr, { En, Es } from './components/Tr'
 
 interface DerivedState {
   hasError: boolean
@@ -35,20 +35,22 @@ export class ErrorBoundary extends React.Component<any, any> {
         <Page>
           <Block>
             <h1>
-              <Trans id="ErrorBoundary.something_went_wrong">
-                Something went wrong.
-              </Trans>
+              <Tr en="Something went wrong." es="Algo salió mal" />
             </h1>
             <pre>
-              <Trans id="ErrorBoundary.error_message">Error Message:</Trans>
+              <Tr en="Error Message:" es="Error:" />
               {' '}
               {this.state.message}
             </pre>
             <p>
-              If this continues to happen please contact us at <EmailSupportLink />
+              <Tr>
+                <En>If this continues to happen please contact us at <EmailSupportLink /></En>
+                <Es>Si esto continúa, contáctenos en<EmailSupportLink /></Es>
+              </Tr>
+
             </p>
             <Button fill onClick={() => { window.location.href = '/' }}>
-              <Trans id="ErrorBoundary.return_home">Return Home</Trans>
+              <Tr en="Return Home" es="Volver al inicio" />
             </Button>
           </Block>
         </Page>

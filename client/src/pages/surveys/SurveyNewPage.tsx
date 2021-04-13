@@ -7,13 +7,12 @@ import './SurveyNewPage.css'
 import { paths } from 'src/config/routes'
 import { MedicalEvent, MedicalEventTypes } from 'src/models/MedicalEvent'
 import { CUTOFF_TIME } from 'src/models/GreenlightStatus'
-import { createSymptomSurvey, getCurrentUser, getUser } from 'src/api'
+import { createSymptomSurvey, getUser } from 'src/api'
 import { User } from 'src/models'
 import { NoCurrentUserError } from 'src/helpers/errors'
 import { ReactNComponent } from 'reactn/build/components'
 import { DateTime } from 'luxon'
-import { t, Trans } from '@lingui/macro'
-import { assertNotNull, forceReRender } from 'src/helpers/util'
+import { assertNotNull } from 'src/helpers/util'
 import { reloadCurrentUser } from 'src/helpers/global'
 import logger from 'src/helpers/logger'
 
@@ -374,13 +373,13 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     }
 
     let pageTitle = tr({
-      en: t`Daily Check-ins: ${submittingFor.fullName()}`,
+      en: `Daily Check-ins: ${submittingFor.fullName()}`,
       es: `Encuesta de síntomas: ${submittingFor.fullName()}`,
     })
 
     if (this.isResubmit) {
       pageTitle = tr({
-        en: t`Resubmit Survey: ${submittingFor.fullName()}`,
+        en: `Resubmit Survey: ${submittingFor.fullName()}`,
         es: `Encuesta de síntomas: ${submittingFor.fullName()}`,
       })
     }
@@ -396,10 +395,10 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
               <p>
                 <Tr>
                   <En>
-                    This only adds new symptoms to your submission on {submittingFor.lastGreenlightStatus?.createdAt.toLocaleString(DateTime.DATE_SHORT)}. To undo a submission, please contact your school administator.
+                    This only adds new symptoms to your current submission. To undo a submission, please contact your school administator.
                   </En>
                   <Es>
-                    Esto agrega nuevos síntomas a su envío el {submittingFor.lastGreenlightStatus?.createdAt.toLocaleString(DateTime.DATE_SHORT)}. No puede no cambiar los síntomas que ya envió.
+                    Esto agrega nuevos síntomas a su envío reciente. No puede no cambiar los síntomas que ya envió.
                   </Es>
                 </Tr>
               </p>
@@ -495,17 +494,18 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                 showErrors={this.state.submitClicked}
               />
               <div className="survey-title">
-                <Trans id="SurveyNewPage.covid_diagnosis_title">COVID Diagnosis?</Trans>
+                <Tr en="COVID Diagnosis?" es="Diagnóstico de COVID" />
               </div>
               {this.isSubmittingForSelf() ? (
-                <Trans id="SurveyNewPage.covid_diagnosis">
-                  Have you been diagnosed with or tested positive for COVID-19?
-                </Trans>
+                <Tr>
+                  <En>Have you been diagnosed with or tested positive for COVID-19?</En>
+                  <Es>¿Le han diagnosticado COVID-19 o ha dado positivo en la prueba?</Es>
+                </Tr>
               ) : (
-                <Trans id="SurveyNewPage.covid_diagnosis_child">
-                  Has {submittingFor.firstName}
-                  been diagnosed with or tested positive for COVID-19?
-                </Trans>
+                <Tr>
+                  <En>Has {submittingFor.firstName} been diagnosed with or tested positive for COVID-19?</En>
+                  <Es>¿Se ha {0} diagnosticado o dado positivo por COVID-19?</Es>
+                </Tr>
               )}
               <DatedYesNoButton
                 setYesNo={(yesNo: boolean) => this.setDiagnosed(yesNo)}
@@ -518,19 +518,22 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                 <Case test={this.hasNextUser()}>
                   <When value>
                     <Button fill onClick={() => this.submit1()}>
-                      <Trans id="SurveyNewPage.continue">Continue to {this.nextUser()?.firstName}</Trans>
+                      <Tr>
+                        <En>Continue to {this.nextUser()?.firstName}</En>
+                        <Es>Continua a {this.nextUser()?.firstName}</Es>
+                      </Tr>
                     </Button>
                   </When>
                   <When value={false}>
                     <Button fill onClick={() => this.submit1()}>
-                      <Trans id="SurveyNewPage.finish">Finish</Trans>
+                      <Tr en="Finish" es="Finalizar" />
                     </Button>
                   </When>
                 </Case>
               )}
               {this.state.showConfirmation && (
                 <Button fill onClick={() => this.submit2()}>
-                  <Trans id="SurveyNewPage.confirmation">Are you sure?</Trans>
+                  <Tr en="Are you sure?" es="¿Esta seguro?" />
                 </Button>
               )}
             </Block>

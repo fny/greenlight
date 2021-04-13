@@ -8,13 +8,12 @@ import {
 
 import { Case, When } from 'src/components/Case'
 
-import { t, Trans } from '@lingui/macro'
-
 import { Dict } from 'src/types'
 import { getCurrentUser, magicSignIn } from 'src/api'
 import { dynamicPaths, paths } from 'src/config/routes'
 import logger from 'src/helpers/logger'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import Tr, { tr } from 'src/components/Tr'
 
 interface State {
   hasReceivedResponse: boolean
@@ -56,25 +55,19 @@ export default class MagicSignInAuthPage extends React.Component<Dict<any>, Stat
   render() {
     return (
       <Page className="MagicSignInAuthPage" noToolbar noSwipeback loginScreen>
-        <Navbar title={t({ id: 'MagicSignInAuthPage.title', message: 'Magic Sign In' })} backLink="Back">
+        <Navbar title={tr({ en: 'Magic Sign In', es: 'Iniciar con Mágia' })} backLink="Back">
           <NavbarHomeLink slot="left" />
         </Navbar>
         <Block>
           <Case test={this.state.hasReceivedResponse && !this.state.isSuccess}>
             <When value>
-              <Trans id="SignInAuthPage.magic_link_failed">
-                That magic sign in link didn't work. It may have expired.
-              </Trans>
+              <Tr en="That magic sign in link didn't work. It may have expired." es="Ese enlace no trabajo." />
               <Link href={paths.rootPath}>
-                <Trans id="SignInAuthPage.try_again">
-                  Try again?
-                </Trans>
+                <Tr en="Try again?" es="¿Otra vez?" />
               </Link>
             </When>
             <When value={false}>
-              <Trans id="SignInAuthPage.signing_in">
-                Signing in...
-              </Trans>
+              <Tr en="Signing in..." es="Iniciando session..." />
             </When>
           </Case>
         </Block>

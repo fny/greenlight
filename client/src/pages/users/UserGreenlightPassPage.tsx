@@ -7,7 +7,6 @@ import './UserGreenlightPassPage.css'
 import StatusJDenticon from 'src/components/StatusJDenticon'
 import { Case, When } from 'src/components/Case'
 
-import { t, Trans } from '@lingui/macro'
 import { DateTime } from 'luxon'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import Tr, { En, Es, tr } from 'src/components/Tr'
@@ -59,7 +58,6 @@ export default function UserGreenlightPassPage(props: F7Props): JSX.Element {
             errorTitle: tr({ en: 'Something went wrong', es: 'Algo salió mal' }),
             errorMessage: tr({ en: 'Updating the last greenlight status is failed.', es: 'No se pudo cambiar el último estado.' }),
           })
-
 
           return (
             <Block className="text-center">

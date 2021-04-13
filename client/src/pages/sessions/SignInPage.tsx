@@ -16,12 +16,11 @@ import {
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
 import './SessionsPage.css'
 import { createSession, getCurrentUser } from 'src/api'
-import { t, Trans } from '@lingui/macro'
 import { paths, dynamicPaths } from 'src/config/routes'
 import { F7Props, JSONAPIError } from 'src/types'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import logger from 'src/helpers/logger'
-import Tr, { En, Es } from 'src/components/Tr'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 
 import greenlightLogo from 'src/assets/images/logos/greenlight-banner-logo.svg'
 
@@ -48,7 +47,7 @@ export default function SignInPage(props: F7Props): JSX.Element {
       return
     }
     f7.dialog.preloader(
-      t({ id: 'SignInPage.signing_you_in', message: 'Signing you in...' }),
+      tr({ es: 'Trabajando...', en: 'Signing you in...' }),
     )
     try {
       await createSession(state.emailOrMobile, state.password, state.rememberMe)
@@ -62,19 +61,19 @@ export default function SignInPage(props: F7Props): JSX.Element {
       if (error.response && error.response.status === 422) {
         f7.dialog.alert(
           error.response.data.errors.map((x: JSONAPIError) => x.detail).join(' '),
-          t({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' }),
+          tr({ es: 'Fallo al iniciar sesion', en: 'Sign In Failed' }),
         )
       } else if (error.response) {
         f7.dialog.alert(
-          `${t({ id: 'SignInPage.something_went_wrong', message: 'Something went wrong' })} (${error.response.status})`,
-          t({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' }),
+          `${tr({ es: 'Algo salio mal', en: 'Something went wrong' })} (${error.response.status})`,
+          tr({ es: 'Fallo al iniciar sesion', en: 'Sign In Failed' }),
         )
         logger.notify(error, { name: 'SignInServerError' })
         logger.error(error)
       } else {
         f7.dialog.alert(
-          t({ id: 'SignInPage.something_went_wrong', message: 'Something went wrong' }),
-          t({ id: 'SignInPage.sign_in_failed', message: 'Sign In Failed' }),
+          tr({ es: 'Algo salio mal', en: 'Something went wrong' }),
+          tr({ es: 'Fallo al iniciar sesion', en: 'Sign In Failed' }),
         )
         logger.notify(error, { name: 'SignInError' })
         logger.error(error)
@@ -85,10 +84,10 @@ export default function SignInPage(props: F7Props): JSX.Element {
   return (
     <Page className="SignInPage" noToolbar>
       <Navbar
-        title={t({ id: 'SignInPage.title', message: 'Sign In' })}
+        title={tr({ es: 'Iniciar Sesión', en: 'Sign In' })}
       >
         <Link href={paths.magicSignInPath} slot="right">
-          <Trans id="SignInPage.with_magic">with Magic ✨</Trans>
+          <Tr en="with Magic ✨" es="con Magia ✨" />
         </Link>
         <NavbarHomeLink slot="left" />
       </Navbar>
@@ -97,10 +96,14 @@ export default function SignInPage(props: F7Props): JSX.Element {
         <img src={greenlightLogo} alt="Greenlight" />
       </div>
 
-      <List form id="sign-in-form" onSubmit={(e) => {
-        e.preventDefault()
-        submit()
-      }}>
+      <List
+        form
+        id="sign-in-form"
+        onSubmit={(e) => {
+          e.preventDefault()
+          submit()
+        }}
+      >
         <EmailOrPhoneListInput
           ref={emailOrMobileRef}
           value={state.emailOrMobile}
@@ -112,7 +115,7 @@ export default function SignInPage(props: F7Props): JSX.Element {
           type="password"
           ref={passwordRef}
           placeholder={
-              t({ id: 'SignInPage.password_placeholder', message: 'Password' })
+              tr({ es: 'Contraseña', en: 'Password' })
             }
           validateOnBlur
           value={state.password}
@@ -120,12 +123,12 @@ export default function SignInPage(props: F7Props): JSX.Element {
           onInput={(e) => {
             setState({ ...state, password: e.target.value as string })
           }}
-          errorMessage={t({ id: 'SignInPage.password_missing', message: 'Please enter your password' })}
+          errorMessage={tr({ es: 'Incresar su contraseña', en: 'Please enter your password' })}
         />
         <ListItem
           checkbox
           title={
-              t({ id: 'SignInPage.remember_me', message: 'Remember me' })
+              tr({ es: 'Recuerdame', en: 'Remember me' })
             }
           onChange={(e) => {
             setState({ ...state, rememberMe: e.target.checked as boolean })
@@ -133,9 +136,7 @@ export default function SignInPage(props: F7Props): JSX.Element {
         />
         <Block>
           <Button onClick={() => submit()} outline fill>
-            <Trans id="SignInPage.sign_in">
-              Sign In
-            </Trans>
+            <Tr en="Sign In" es="Inciar Sesion" />
           </Button>
         </Block>
       </List>

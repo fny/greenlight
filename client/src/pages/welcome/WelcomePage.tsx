@@ -16,8 +16,9 @@ import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/helpers/errors'
 
 import { toggleLocale, signOut } from 'src/helpers/global'
-import { plural, Trans } from '@lingui/macro'
 import TermsAndConditionsSheet from 'src/components/TermsAndConditionsSheet'
+import { plural } from 'src/i18n'
+import Tr, { En, Es } from 'src/components/Tr'
 
 interface State {
   termsOpened: boolean
@@ -50,36 +51,46 @@ export default class WelcomePage extends ReactNComponent<any, State> {
     const fillForChildren = user.children.length > 0
     if (fillForSelf && fillForChildren) {
       return (
-        <Trans id="WelcomePage.fill_for_self_and_children">
-          Every day you'll need to check in and fill out symptom surveys for you and your{' '}
-          {plural(user.children.length, { one: 'child', other: 'children' })}.
-        </Trans>
+        <Tr>
+          <En>
+            Every day you'll need to check in and fill out symptom surveys for you and your{' '}
+            {plural(user.children.length, { one: 'child', other: 'children' })}.
+          </En>
+          <Es>
+            Todos los días deberás completar encuestas de síntomas para usted y {plural(user.children.length, { one: 'su niño', other: 'sus niños' })}.
+          </Es>
+        </Tr>
       )
     }
     if (fillForSelf) {
-      return <Trans id="WelcomePage.fill_for_self">Every day you'll need to check in and fill out a survey.</Trans>
+      return <Tr en="Every day you'll need to check in and fill out a survey." es="Todos los días deberás completar encuestas de síntomas de ti mismo." />
     }
 
     if (fillForChildren && !fillForSelf) {
       return (
-        <Trans id="WelcomePage.fill_children">
-          Every day you'll need to fill out symptom surveys for your{' '}
-          {plural(user.children.length, { one: 'child', other: 'children' })}.
-        </Trans>
+        <Tr>
+          <En>
+            Every day you'll need to check in and fill out symptom surveys for your{' '}
+            {plural(user.children.length, { one: 'child', other: 'children' })}.
+          </En>
+          <Es>
+            Todos los días deberás completar encuestas de síntomas para {plural(user.children.length, { one: 'su niño', other: 'sus niños' })}.
+          </Es>
+        </Tr>
       )
     }
 
     if (!fillForSelf) {
       return (
-        <Trans id="WelcomePage.fill_for_self_optional">Every day you can choose to fill out symptom surveys.</Trans>
+        <Tr en="Every day you can choose to fill out symptom surveys." es="Todos los días puede optar por completar encuestas de síntomas." />
       )
     }
 
     return (
-      <Trans id="WelcomePage.fill_for_no_one_error">
+      <>
         It looks like your account has not been set up properly. Please contact Greenlight at{' '}
         <Link href="mailto:help@greenlightready.com">help@greenlightready.com</Link>.
-      </Trans>
+      </>
     )
   }
 
@@ -93,36 +104,48 @@ export default class WelcomePage extends ReactNComponent<any, State> {
             {esExclaim()}
             {greeting()}! &nbsp;&nbsp;&nbsp;&nbsp;
             <Link style={{ fontSize: '12px' }} onClick={() => toggleLocale()}>
-              <Trans id="WelcomePage.toggle_locale">En Español</Trans>
+              <Tr en="En Español" es="In English" />
             </Link>
           </h1>
           <Case test={locationCount}>
             <When value={0}>
               <p>
-                <Trans id="WelcomePage.welcome_solo">
-                  Hi {user.firstName}! Welcome to Greenlight's secure COVID-19 monitoring platform.
-                </Trans>
+                <Tr>
+                  <En>Hi {user.firstName}! Welcome to Greenlight's secure COVID-19 monitoring platform.</En>
+                  <Es>¡Hola, {user.firstName}! Bienvenido a la plataforma segura de monitoreo COVID-19 de Greenlight.</Es>
+                </Tr>
               </p>
             </When>
             <When>
               <p>
-                <Trans id="WelcomePage.welcome">
-                  Hi {user.firstName}! You're connected to{' '}
-                  {plural(this.totalLocations(), { one: '# location', other: '# locations' })} to Greenlight's secure
-                  COVID-19 monitoring platform.
-                </Trans>
+                <Tr>
+                  <En>
+                    Hi {user.firstName}! You're connected to{' '}
+                    {plural(this.totalLocations(), { one: '# location', other: '# locations' })} to Greenlight's secure
+                    COVID-19 monitoring platform.
+                  </En>
+                  <Es>
+                  ¡Hola, {user.firstName}! Está conectado a la plataforma segura de monitoreo COVID-19 de Greenlight.
+                  </Es>
+                </Tr>
               </p>
               <p>
-                <Trans id="WelcomePage.instructions">
+                <Tr>
+                  <En>
                   {this.whoDoYouFillSurveysFor()} We will not share any data without your permission.
-                </Trans>
+                  </En>
+                  <Es>
+                  {this.whoDoYouFillSurveysFor()} No compartiremos ningún dato sin tu permiso.
+                  </Es>
+                </Tr>
               </p>
             </When>
           </Case>
 
           <img alt="Welcome to Greenlight!" src={welcomeImage} width="100%" />
           <p>
-            <Trans id="WelcomePage.terms_and_conditions">
+            <Tr>
+              <En>
               By continuing, you accept Greenlight's{' '}
               <Link
                 onClick={() => {
@@ -133,19 +156,32 @@ export default class WelcomePage extends ReactNComponent<any, State> {
                 Terms and Conditions
               </Link>
               .
-            </Trans>
+              </En>
+              <Es>
+              Al continuar, acepta los{' '}
+              <Link
+                onClick={() => {
+                  this.setState({ termsOpened: true })
+                }}
+              >
+                {' '}
+                Términos y condiciones
+              </Link>
+              de Greenlight.
+              </Es>
+            </Tr>
           </p>
         </Block>
         <Block>
           <Row tag="p">
             <Col tag="span">
               <Button large onClick={() => signOut(this.$f7router)}>
-                <Trans id="Common.sign_out">Sign Out</Trans>
+                <Tr en="Sign Out" es="Cerrar Session" />
               </Button>
             </Col>
             <Col tag="span">
               <Button large fill href={paths.welcomeReviewPath}>
-                <Trans id="Common.continue">Continue</Trans>
+                <Tr en="Continue" es="Continuar" />
               </Button>
             </Col>
           </Row>

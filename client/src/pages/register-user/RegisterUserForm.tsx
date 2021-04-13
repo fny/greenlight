@@ -1,4 +1,3 @@
-import { t, Trans } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
 import {
   Button, List, ListInput, ListItem, Toggle,
@@ -113,18 +112,18 @@ export default function RegisterUserForm({
 }
 
 const schema = Yup.object<RegisteringUser>().shape({
-  firstName: Yup.string().required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
-  lastName: Yup.string().required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
+  firstName: Yup.string().required(tr({ es: 'No puede estar en blanco', en: "Can't be blank" })),
+  lastName: Yup.string().required(tr({ es: 'No puede estar en blanco', en: "Can't be blank" })),
   // !TODO: Should be able to check if the email or mobile number is available (not duplicated)
   email: Yup.string()
-    .email(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
-    .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
+    .email(tr({ es: 'No es valido', en: 'Is invalid' }))
+    .required(tr({ es: 'No puede estar en blanco', en: "Can't be blank" })),
   mobileNumber: Yup.string()
-    .phone(t({ id: 'Form.error_invalid', message: 'Is invalid' }))
-    .required(t({ id: 'Form.error_blank', message: "Can't be blank" })),
-  password: Yup.string().min(8, t({ id: 'Form.password_invalid', message: 'must be at least 8 characters' })),
+    .phone(tr({ es: 'No es valido', en: 'Is invalid' }))
+    .required(tr({ es: 'No puede estar en blanco', en: "Can't be blank" })),
+  password: Yup.string().min(8, tr({ es: 'debe tener al menos 8 caracteres ', en: 'must be at least 8 characters' })),
   zipCode: Yup.string().matches(/^\d{5}$/, {
     excludeEmptyString: true,
-    message: t({ id: 'EditUserPage.invalid_zip_code', message: 'Zip code should be 5 digits' }),
+    message: tr({ es: 'El código postal debe tener 5 dígitos', en: 'Zip code should be 5 digits' }),
   }),
 })

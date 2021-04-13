@@ -1,7 +1,7 @@
 import React from 'reactn'
 import { ListInput } from 'framework7-react'
 import { validEmail, validPhone } from 'src/helpers/util'
-import { t } from '@lingui/macro'
+import { tr } from './Tr'
 
 export type EmailOrPhoneInputTypes = 'email' | 'phone' | 'blank' | 'unknown'
 
@@ -12,7 +12,6 @@ interface State {
   errorMessageForce: boolean
   value: string
 }
-
 export default class EmailOrPhoneListInput extends React.Component<ListInput.Props, State> {
   // Required for this to be collected in the List
   static displayName = 'F7ListItem'
@@ -31,9 +30,9 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
     if (value === '') {
       this.setState({
         inputType: 'blank',
-        errorMessage: t({
-          id: 'EmailOrPhoneListInput.email_or_phone_missing',
-          message: 'Please enter your email or mobile number.',
+        errorMessage: tr({
+          es: 'Proporciona un teléfono o correo electrónico',
+          en: 'Please enter your email or mobile number.',
         }),
       })
       this.setState({ errorMessageForce: true })
@@ -50,9 +49,9 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
     if (!validEmail(value) && !validPhone(value)) {
       this.setState({
         inputType: 'unknown',
-        errorMessage: t({
-          id: 'EmailOrPhoneListInput.email_or_phone_invalid',
-          message: 'Invalid email or mobile number.',
+        errorMessage: tr({
+          en: 'Invalid email or mobile number.',
+          es: 'Proporciona un teléfono o correo electrónico válido.',
         }),
       })
       this.setState({ errorMessageForce: true })
@@ -90,7 +89,7 @@ export default class EmailOrPhoneListInput extends React.Component<ListInput.Pro
         errorMessage={this.state.errorMessage}
         errorMessageForce={this.state.errorMessageForce}
         placeholder={
-            t({ id: 'EmailOrPhoneListInput.email_or_phone_placeholder', message: 'Email or mobile phone number.' })
+            tr({ es: 'Correo electrónico o número de teléfono móvil', en: 'Email or mobile phone number.' })
           }
         onInput={this.props.onInput}
       />

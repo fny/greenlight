@@ -10,10 +10,10 @@ import { paths } from 'src/config/routes'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/helpers/errors'
 
-import { t, Trans } from '@lingui/macro'
 import logger from 'src/helpers/logger'
 import { toggleLocale } from 'src/helpers/global'
 import { User } from 'src/models/User'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 
 interface State {
   originalEmail: string | null
@@ -70,7 +70,7 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
       return
     }
 
-    this.$f7.dialog.preloader(t({ id: 'WelcomeReviewPage.submitting_changes', message: 'Submitting changes...' }))
+    this.$f7.dialog.preloader(tr({ en: 'Submitting changes...', es: 'Enviando cambios...' }))
     try {
       const user = await updateCurrentUser(updatedUserAttrs)
       this.setGlobal({ currentUser: user })
@@ -81,8 +81,8 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
       logger.error(error)
       // TODO: make errors smarter
       this.$f7.dialog.alert(
-        t({ id: 'WelcomeReviewPage.somethings_wrong', message: 'Something went wrong' }),
-        t({ id: 'WelcomeReviewPage.update_failed', message: 'Update Failed' }),
+        tr({ en: 'Something went wrong', es: 'Algo salio mal' }),
+        tr({ en: 'Update Failed', es: 'Error al actualizar' }),
       )
     }
   }
@@ -96,22 +96,27 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
     return (
       <Page>
         <Navbar
-          title={t({ id: 'WelcomeReviewPage.review_info', message: 'Review Your Info' })}
+          title={tr({ en: 'Review Your Info', es: 'Revisa su información' })}
         />
         <Block>
           <p>
-            <Trans id="WelcomeReviewPage.info_on_file">
-              Here is the information we have on file for you. Feel free to make
-              any changes.
-            </Trans>
+            <Tr>
+              <En>
+                Here is the information we have on file for you. Feel free to make
+                any changes.
+              </En>
+              <Es>
+                Aquí está la información que tenemos archivada para usted. No dude en hacer cualquier cambio.
+              </Es>
+            </Tr>
           </p>
         </Block>
 
         <List noHairlinesMd form id="WelcomeReviewPage-form">
           <ListInput
-            label={t({ id: 'WelcomeReviewPage.first_name_label', message: 'First Name' })}
+            label={tr({ en: 'First Name', es: 'Nombre' })}
             type="text"
-            placeholder={t({ id: 'WelcomeReviewPage.first_name_placeholder', message: 'Your first name' })}
+            placeholder={tr({ en: 'Your first name', es: 'Su nombre' })}
             value={updatedUser.firstName}
             onChange={(e) => {
               updatedUser.firstName = (e.target.value as string) || ''
@@ -121,9 +126,9 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             required
           />
           <ListInput
-            label={t({ id: 'WelcomeReviewPage.last_name_label', message: 'Last Name' })}
+            label={tr({ en: 'Last Name', es: 'Apellido' })}
             type="text"
-            placeholder={t({ id: 'WelcomeReviewPage.last_name_placeholder', message: 'Your last name' })}
+            placeholder={tr({ en: 'Your last name', es: 'Su apellido' })}
             value={updatedUser.lastName}
             onChange={(e) => {
               updatedUser.lastName = (e.target.value as string) || ''
@@ -132,28 +137,11 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             validateOnBlur
             required
           />
-          {/* <ListInput
-            label={t({ id: 'WelcomeReviewPage.reminders_label', message: 'Receive Reminders By' })}
-            type="select"
-            defaultValue="text"
-            placeholder={t({ id: 'WelcomeReviewPage.reminders_placeholder', message: 'Please choose...' })}
-            onChange={(e) => {
-              updatedUser.dailyReminderType = e.target.value
-              this.setState({ updatedUser })
-            }}
-          >
-            <option value="text">
-              {t({ id: 'WelcomeReviewPage.text_message', message: 'Text Message' })}
-            </option>
-            <option value="email">
-              {t({ id: 'WelcomeReviewPage.email', message: 'Email' })}
-            </option>
-          </ListInput> */}
           <ListInput
-            label={t({ id: 'WelcomeReviewPage.language_label', message: 'Language' })}
+            label={tr({ en: 'Language', es: 'Idioma' })}
             type="select"
             defaultValue={this.global.locale}
-            placeholder={t({ id: 'WelcomeReviewPage.language_placeholder', message: 'Please choose...' })}
+            placeholder={tr({ en: 'Please choose...', es: 'Escoger...' })}
             onChange={(e) => {
               toggleLocale()
               updatedUser.locale = e.target.value
@@ -161,17 +149,17 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             }}
           >
             <option value="en">
-              {t({ id: 'WelcomeReviewPage.english', message: 'English' })}
+              {tr({ en: 'English', es: 'English' })}
             </option>
             <option value="es">
-              {t({ id: 'WelcomeReviewPage.spanish', message: 'Español' })}
+              {tr({ en: 'Español', es: 'Español' })}
             </option>
           </ListInput>
           <ListInput
             disabled
-            label={t({ id: 'WelcomeReviewPage.email_label', message: 'Email' })}
+            label={tr({ en: 'Email', es: 'Correo electrónico' })}
             type="email"
-            placeholder={t({ id: 'WelcomeReviewPage.email_placeholder', message: 'Your email' })}
+            placeholder={tr({ en: 'Your email', es: 'Su correo electrónico' })}
             value={updatedUser.email || ''}
             // info={
             //   isDifferentEmail
@@ -179,7 +167,7 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
             //     : undefined
             // }
             info={
-              t({ id: 'WelcomeReviewPage.email_failed_to_change', message: "Can't be changed at this time." })
+              tr({ en: "Can't be changed at this time.", es: 'No se puede cambiar en este momento' })
             }
             onChange={(e) => {
               updatedUser.email = (e.target.value as string) || ''
@@ -190,12 +178,12 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
           />
           <ListInput
             disabled
-            label={t({ id: 'WelcomeReviewPage.phone_label', message: 'Mobile Number' })}
+            label={tr({ en: 'Mobile Number', es: '' })}
             type="tel"
-            placeholder={t({ id: 'WelcomeReviewPage.phone_placeholder', message: 'Your mobile number' })}
+            placeholder={tr({ en: 'Your mobile number', es: '' })}
             value={updatedUser.mobileNumber || ''}
             info={
-              t({ id: 'WelcomeReviewPage.phone_failed_to_change', message: "Can't be changed at this time." })
+              tr({ en: "Can't be changed at this time.", es: '' })
             }
             errorMessageForce={this.state.showMobileNumberError}
 
@@ -213,13 +201,13 @@ export default class WelcomeReviewUserPage extends ReactNComponent<any, State> {
           />
 
           <Block>
-            <p><Trans id="WelcomeReviewPage.next_password">Next you'll set your password.</Trans></p>
+            <p><Tr en="Next you'll set your password." es="A continuación, establecerá su contraseña" /></p>
             <Button onClick={() => this.submit()} fill>
-              <Trans id="Common.continue">Continue</Trans>
+              <Tr en="Continue" es="Seguir" />
             </Button>
             {/* TOOD: HACK: Preload password image. */}
             <img
-              alt={t({ id: 'WelcomeReviewPage.security_alt_text', message: 'Greenlight gives security the highest importance.' })}
+              alt={tr({ en: 'Greenlight gives security the highest importance.', es: '' })}
               src="/images/welcome-secure.svg"
               style={{ display: 'none' }}
             />

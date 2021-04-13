@@ -8,7 +8,7 @@ import {
 } from 'framework7-react'
 
 import { DateTime } from 'luxon'
-import { t, Trans } from '@lingui/macro'
+import Tr, { tr } from './Tr'
 
 interface Props {
   showErrors?: boolean
@@ -32,11 +32,11 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
       return <></>
     }
     if (this.state.yesNo === null) {
-      return <Trans id="DatedYesNoButton.yes_no_missing">Please choose yes or no.</Trans>
+      return <Tr en="Please choose yes or no." es="" />
     }
 
     if (this.state.yesNo === true && this.state.date === null) {
-      return <Trans id="DatedYesNoButton.date_missing">Please set the date.</Trans>
+      return <Tr en="Please set the date." es="" />
     }
     return <></>
   }
@@ -55,7 +55,7 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
                   this.props.setYesNo(true)
                 }}
               >
-                <Trans id="DatedYesNoButton.yes">Yes</Trans>
+                <Tr en="Yes" es="Sí" />
               </Button>
               <Button
                 outline
@@ -65,7 +65,7 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
                   this.props.setYesNo(false)
                 }}
               >
-                <Trans id="DatedYesNoButton.no">No</Trans>
+                <Tr en="No" es="No" />
               </Button>
             </Segmented>
           </Col>
@@ -87,7 +87,7 @@ export default class DatedYesNoButton extends React.Component<Props, State> {
                   this.props.setDate(d[0])
                 }}
                 type="datepicker"
-                placeholder={t({ id: 'DatedYesNoButton.select_date', message: 'Select date' })}
+                placeholder={tr({ en: 'Select date', es: 'Selecciona una fecha' })}
                 readonly
               />
             </List>

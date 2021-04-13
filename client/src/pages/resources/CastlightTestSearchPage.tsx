@@ -1,9 +1,10 @@
-import { t } from '@lingui/macro'
+// TODO: Incomplete translation
 import { Navbar, Page } from 'framework7-react'
-import React, { useLayoutEffect, useState, useGlobal } from 'reactn'
+import React, { useState, useGlobal } from 'reactn'
 import LoadingPageContent from 'src/components/LoadingPageContent'
 
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import { tr } from 'src/components/Tr'
 import './IframeResource.css'
 
 export default function CastlightTestSearchPage(): JSX.Element {
@@ -16,7 +17,7 @@ export default function CastlightTestSearchPage(): JSX.Element {
       {
       state.isLoaded ? (
         <Navbar
-          title={t({ id: 'TestLocationsPage.title2', message: 'Find a Testing Site' })}
+          title={tr({ en: 'Find a Testing Site', es: 'Prueba de sitios cercanos' })}
         >
           <NavbarHomeLink slot="left" />
         </Navbar>

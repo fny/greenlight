@@ -1,4 +1,3 @@
-import { Trans } from '@lingui/macro'
 import React from 'react'
 import { useState } from 'reactn'
 import './SupportedBrowserBar.css'
@@ -15,11 +14,9 @@ export default function SupportedBrowserBar(): JSX.Element {
 
   return (
     <div className="SupportedBrowserBar">
-      <Trans id="SupportedBrowserBar.error">
-        Your browser isn't supported. Some things might not work!
-      </Trans>
+      Your browser isn't supported. Some things might not work!
       <button type="button" className="close" onClick={() => setHidden(true)}>
-        <Trans id="Common.hide">Hide</Trans>
+        Hide
       </button>
     </div>
   )

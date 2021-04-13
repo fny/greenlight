@@ -15,14 +15,12 @@ import { esExclaim, greeting } from 'src/helpers/util'
 import If from 'src/components/If'
 import { dynamicPaths, paths } from 'src/config/routes'
 import colors from 'src/config/colors'
-
-import { t, Trans } from '@lingui/macro'
 import { User } from 'src/models'
 
 import ReleaseCard from 'src/components/ReleaseCard'
 import { F7Props } from 'src/types'
 import Redirect from 'src/components/Redirect'
-import Tr, { tr } from 'src/components/Tr'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 import UserJDenticon from '../components/UserJDenticon'
 
 function UserList({ users }: { users: User[] }) {
@@ -41,18 +39,18 @@ function UserList({ users }: { users: User[] }) {
           ></ListItem> */}
               <ListItem
                 link={dynamicPaths.userGreenlightPassPath(user.id)}
-                title={t({ id: 'DashboardPage.greenlight_pass', message: 'Greenlight Pass' })}
+                title={tr({en: 'Greenlight Pass', es: 'Pase Greenlight' })}
               />
               <If test={user.hasNotSubmittedOwnSurvey()}>
                 <ListItem
                   link={dynamicPaths.userSurveysNewPath(user.id, { single: true })}
-                  title={t({ id: 'DashboardPage.check_in', message: 'Check In' })}
+                  title={tr({en: 'Check In', es: 'Enviar Encuesta' })}
                 />
               </If>
               <If test={user.hasSubmittedOwnSurvey()}>
                 <ListItem
                   link={dynamicPaths.userSurveysNewPath(user.id, { single: true, resubmit: true })}
-                  title={t({ id: 'DashboardPage.resubmit', message: 'Resubmit Survey' })}
+                  title={tr({en: 'Resubmit Survey', es: 'Cambiar Encuesta' })}
                 />
               </If>
               {/* <ListItem
@@ -99,17 +97,22 @@ export default function DashboardPage(props: F7Props): JSX.Element {
         <Link href={paths.userSeqSurveysNewPath}>
           <div className="GLCard">
             <div className="GLCard-title">
-              <Trans id="DashboardPage.submit_check_in">Submit Daily Check-In</Trans>
+              <Tr es="Enviar encuesta diaria" en="Submit Daily Check-In" />
             </div>
             <div className="GLCard-body" style={{ color: colors.greenDark }}>
-              <Trans id="DashboardPage.needs_to_submit">
-                How are you today? You still need to check in {currentUser.usersNotSubmittedText()}.
-              </Trans>
+              <Tr>
+                <En>
+                  How are you today? You still need to check in {currentUser.usersNotSubmittedText()}.
+                </En>
+                <Es>
+                  ¿Cómo está hoy? Necesita completar encuestas para {currentUser.usersNotSubmittedText()}.
+                </Es>
+              </Tr>
             </div>
             <div className="GLCard-action">
               <div className="GLCard-action">
                 <div style={{ width: '80%', display: 'inline-block' }}>
-                  <Trans id="DashboardPage.go_to_check_in">Go to Check-In</Trans>
+                  <Tr en="Go to Check-In" es="Ir a Enquesta" />
                 </div>
                 <div
                   style={{
@@ -130,17 +133,22 @@ export default function DashboardPage(props: F7Props): JSX.Element {
         <Link href={paths.userSeqSurveysNewPath}>
           <div className="GLCard">
             <div className="GLCard-title">
-              <Trans id="DashboardPage.submit_check_in">Submit Daily Check-In</Trans>
+            <Tr es="Enviar encuesta diaria" en="Submit Daily Check-In" />
             </div>
             <div className="GLCard-body" style={{ color: colors.greenDark }}>
-              <Trans id="DashboardPage.needs_to_submit_for_tomorrow">
-                Get ready for tomorrow! You need to check in {currentUser.usersNotSubmittedForTomorrowText()}.
-              </Trans>
+              <Tr>
+                <En>
+                  Get ready for tomorrow! You need to check in {currentUser.usersNotSubmittedForTomorrowText()}.
+                </En>
+                <Es>
+                  Prepárase para mañana. Debe completar encuestas para {currentUser.usersNotSubmittedForTomorrowText()}.
+                </Es>
+              </Tr>
             </div>
             <div className="GLCard-action">
               <div className="GLCard-action">
                 <div style={{ width: '50%', display: 'inline-block' }}>
-                  <Trans id="DashboardPage.go_to_check_in">Go to Check-In</Trans>
+                  <Tr en="Go to Check-In" es="Ir a Enquesta" />
                 </div>
                 <div
                   style={{
@@ -170,16 +178,16 @@ export default function DashboardPage(props: F7Props): JSX.Element {
         <BlockTitle>
           {/* User is a worker and has children */}
           {currentUser.hasLocationThatRequiresSurvey() && currentUser.isParent()
-              && <Trans id="DashboardPage.your_family">Your Family</Trans>}
+              && <Tr en="Your Family" es="Su Familia" />}
           {/* User is only a parent */}
-          {!currentUser.hasLocationThatRequiresSurvey() && currentUser.isParent() && <Trans id="DashboardPage.your_children">Your Children</Trans>}
+          {!currentUser.hasLocationThatRequiresSurvey() && currentUser.isParent() && <Tr en="Your Children" es="Sus Hijos" />}
           {/* User is not a parent */}
-          {!currentUser.isParent() && <Trans id="DashboardPage.your_status">Your Status</Trans>}
+          {!currentUser.isParent() && <Tr en="Your Status" es="Su Estado" />}
         </BlockTitle>
         <UserList users={currentUser.usersExpectedToSubmit()} />
       </If>
       <BlockTitle>
-        <Trans id="DashboardPage.resources_title">Resources For You</Trans>
+        <Tr en="Resources For You" es="Rescursos" />
       </BlockTitle>
       <List>
         {
@@ -251,15 +259,15 @@ export default function DashboardPage(props: F7Props): JSX.Element {
             <List>
               <ListItem
                 link={paths.testSearchPath}
-                title={t({ id: 'DashboardPage.testing_title2', message: 'Find Testing' })}
-                footer={t({ id: 'DashboardPage.testing_footer2', message: 'Testing Sites Near You' })}
+                title={tr({en: 'Find Testing', es: 'Buscar Pruebas' })}
+                footer={tr({en: 'Testing Sites Near You', es: 'Prueba de sitios cercanos' })}
               >
                 <Icon slot="media" f7="search" />
               </ListItem>
               {!currentUser.isInBrevard__HACK() && (
                 <ListItem
-                  title={t({ id: 'DashboardPage.duke_testing_title', message: 'Testing at Duke' })}
-                  footer={t({ id: 'DashboardPage.duke_testing_footer', message: 'Connect to streamlined testing 8am to 5pm any day' })}
+                  title={tr({en: 'Testing at Duke', es: 'Pruebas de Duke' })}
+                  footer={tr({en: 'Connect to streamlined testing 8am to 5pm any day', es: 'Conéctese a pruebas rápidas de 8am a 5pm cualquier día' })}
                   link={paths.dukeScheduleTestPath}
                 >
                   <Icon slot="media" f7="thermometer" />
@@ -280,10 +288,10 @@ export default function DashboardPage(props: F7Props): JSX.Element {
               <ListItem
                 external
                 link="tel:1-888-600-1685"
-                title={t({ id: 'DashboardPage.child_care_title', message: 'Child Care Hotline' })}
-                footer={t({
-                  id: 'DashboardPage.child_care_footer',
-                  message: 'Child care referrals available 8am-5pm Monday-Friday',
+                title={tr({en: 'Child Care Hotline', es: 'Cuidado Infantil' })}
+                footer={tr({
+                  en: 'Child care referrals available 8am-5pm Monday-Friday',
+                  es: 'Referencias de cuidado infantil de 8am a 5pm lunes a viernes'
                 })}
               >
                 <Icon slot="media" f7="phone" />
@@ -293,8 +301,8 @@ export default function DashboardPage(props: F7Props): JSX.Element {
               <ListItem
                 external
                 link="tel:1-877-490-6642"
-                title={t({ id: 'DashboardPage.triage_title', message: 'Contact NC COVID-19 Triage Hotline' })}
-                footer={t({ id: 'DashboardPage.triage_footer', message: 'Call 7am-11pm any day' })}
+                title={tr({en: 'Contact NC COVID-19 Triage Hotline', es: 'Llama a la ayuda de COVID-19' })}
+                footer={tr({en: 'Call 7am-11pm any day', es: 'Llama de 7:00 a 23:00 cualquier día' })}
               >
                 <Icon slot="media" f7="phone" />
               </ListItem>
@@ -303,8 +311,8 @@ export default function DashboardPage(props: F7Props): JSX.Element {
         </ListItem>
         <ListItem
           link={paths.supportPath}
-          title={t({ id: 'DashboardPage.support_title', message: 'FAQs and Support' })}
-          footer={t({ id: 'DashboardPage.support_footer', message: 'Read through our knowledge base or contact Greenlight support directly' })}
+          title={tr({en: 'FAQs and Support', es: 'Ayuda' })}
+          footer={tr({en: 'Contact Greenlight support directly', es: 'Conectese a Greenlight' })}
         >
           <Icon slot="media" f7="chat_bubble_2" />
         </ListItem>
@@ -319,8 +327,8 @@ export default function DashboardPage(props: F7Props): JSX.Element {
         {/* <ListItem
             link={paths.ncStatewideStatsPath}
             // link="tel:1-877-490-6642"
-            title={t({ id: 'DashboardPage.nc_covid_data_title', message: 'NC COVID-19 Data' })}
-            footer={t({ id: 'DashboardPage.nc_covid_data_footer', message: 'COVID-19 maps and statistics from across the state' })}
+            title={tr({en: 'NC COVID-19 Data', es: '' })}
+            footer={tr({en: 'COVID-19 maps and statistics from across the state', es: '' })}
           >
             <Icon slot="media" f7="graph_square" />
           </ListItem> */}

@@ -4,11 +4,9 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "@lingui/core": "^3.2.1",
-    "@lingui/macro": "^3.2.1",
-    "@lingui/react": "^3.2.1",
     "axios": "^0.21.1",
     "chart.js": "^2.9.4",
+    "es6-promise": "^4.2.8",
     "formik": "^2.2.5",
     "framework7": "^5.7.13",
     "framework7-icons": "^3.0.1",
@@ -19,6 +17,7 @@
     "libphonenumber-js": "^1.7.57",
     "lodash": "^4.17.20",
     "luxon": "^1.25.0",
+    "promise.prototype.finally": "^3.1.2",
     "qs": "^6.9.4",
     "react": "^16.13.1",
     "react-chartjs-2": "^2.11.1",
@@ -37,28 +36,22 @@
     "eject": "react-scripts eject",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "lint-fix": "eslint 'src/**/*.{js,ts,tsx}' --fix",
-    "i18n-add-locale": "lingui add-locale",
-    "i18n-extract": "lingui extract",
-    "i18n-extract-hard": "lingui extract --clean --overwrite",
-    "i18n-compile": "lingui compile",
     "licenses": "license-report --output=json > src/data/licenses.json"
   },
   "browserslist": {
     "production": [
       ">0.2%",
-      "ie >= 11",
-      "not dead",
-      "not op_mini all"
+      "ie >= 10",
+      "not dead"
     ],
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+      ">0.2%",
+      "ie >= 10",
+      "not dead"
     ]
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
-    "@lingui/cli": "^3.2.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",

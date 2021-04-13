@@ -1,5 +1,5 @@
 import {
-  Page, Navbar, Block, List, ListItem, ListInput, Button,
+  Page, Navbar, Block, List, ListItem, Button
 } from 'framework7-react'
 
 import { updateUser } from 'src/api'
@@ -8,12 +8,12 @@ import { deleteBlanks } from 'src/helpers/util'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/helpers/errors'
 
-import {
-  t, Trans, plural,
-} from '@lingui/macro'
 import logger from 'src/helpers/logger'
 import { User } from '../../models/User'
 import { Case, When } from '../../components/Case'
+import Tr, { En, Es, tr } from 'src/components/Tr'
+import { plural } from 'src/i18n'
+import React from 'react'
 
 interface State {
   physicianName: string
@@ -85,7 +85,7 @@ export default class extends ReactNComponent<any, State> {
     })
 
     this.$f7.dialog.preloader(
-      t({ id: 'WelcomeChildPage.submitting_changes', message: 'Submitting changes...' }),
+      tr({ es: 'WelcomeChildPage.submitting_changes', en: 'Submitting changes...' }),
     )
     try {
       const user = await updateUser(this.child(), attrs as Partial<User>)
@@ -100,8 +100,8 @@ export default class extends ReactNComponent<any, State> {
       this.$f7.dialog.close()
       logger.error(error)
       this.$f7.dialog.alert(
-        t({ id: 'WelcomeChildPage.somethings_wrong', message: 'Something went wrong' }),
-        t({ id: 'WelcomeChildPage.update_failed', message: 'Update Failed' }),
+        tr({ es: 'Algo salio mal', en: 'Something went wrong' }),
+        tr({ es: 'Cambio fallido', en: 'Update Failed' }),
       )
     }
   }
@@ -113,51 +113,72 @@ export default class extends ReactNComponent<any, State> {
     return (
       <Page>
         <Navbar
-          title={t({ id: 'WelcomeChildPage.review_child_title', message: t`Review ${child.firstName}'s Info` })}
+          title={tr({ es: `Revisar ${child.firstName}'s Info`, en: `Review ${child.firstName}'s Info` })}
         />
         <Case test>
           {/* First Child */}
           <When value={user.sortedChildren()[0] === child}>
             <Block>
-              <Trans id="WelcomeChildPage.review_children">
-                We've found {plural(user.children.length, { one: '# child', other: '# children' })}
-                associated with you: {this.childrenNames()}. Let's take a moment to review their information.
-              </Trans>
+              <Tr>
+                <En>
+                  We've found {plural(user.children.length, { one: '# child', other: '# children' })}
+                  associated with you: {this.childrenNames()}. Let's take a moment to review their information.
+                </En>
+                <Es>
+                Hemos encontrado {plural(user.children.length, { one: '# niño', other: '# niños' })}
+                asociados con usted: {this.childrenNames()}. Toma un momento para revisar su información.
+                </Es>
+
+              </Tr>
               <br />
             </Block>
           </When>
           {/* Last Child */}
           <When value={user.sortedChildren()[user.children.length - 1] === child}>
             <Block>
-              <Trans id="WelcomeChildPage.review_child_last">
-                Finally, take a moment to review {child.firstName}
-                's information.
-              </Trans>
+              <Tr>
+                <En>
+                  Finally, take a moment to review {child.firstName}'s information.
+                </En>
+                <Es>
+                  Por último, dedique un momento a revisar la información de {child.firstName}
+                </Es>
+              </Tr>
             </Block>
           </When>
           <When value>
             <Block>
-              <Trans id="WelcomeChildPage.review_child">
-                Take a moment to review {child.firstName}
-                's information.
-              </Trans>
+              <Tr>
+                <En>
+                  Take a moment to review {child.firstName}'s information.
+                </En>
+                <Es>
+                  Tómate un momento para revisar la información de {child.firstName}.
+                </Es>
+              </Tr>
             </Block>
           </When>
         </Case>
 
         <List noHairlines>
           <ListItem
-            footer={t({
-              id: 'WelcomeChildPage.review_schools',
-              message: t`Review the schools ${child.firstName} will be attending.`,
+            footer={tr({
+              es: `Revisa las escuelas a las que asistirá ${child.firstName}.`,
+              en: `Review the schools ${child.firstName} will be attending.`,
             })}
           >
             <div slot="title">
               <b>
-                <Trans id="WelcomeChildPage.review_schools_title">
+                <Tr>
+                  <En>
                   {child.firstName}
                   's Schools and Places
-                </Trans>
+                  </En>
+
+                  <Es>
+                    Escuelas y lugares de {child.firstName}
+                  </Es>
+                </Tr>
               </b>
             </div>
           </ListItem>
@@ -165,66 +186,27 @@ export default class extends ReactNComponent<any, State> {
             <ListItem key={location.id} title={location.name || ''} />
           ))}
         </List>
-        {/* <List noHairlines>
-          <ListItem
-            footer={t({
-              id: 'WelcomeChildPage.doctor_footer',
-              message: t`Who is ${child.firstName}'s primary care doctor?`,
-            })}
-          >
-            <div slot="title">
-              <b>
-                <Trans id="WelcomeChildPage.doctor_title">
-                  {child.firstName}
-                  's Primary Care (Optional)
-                </Trans>
-              </b>
-            </div>
-          </ListItem>
-          <ListItem
-            checkbox
-            header={t({ id: 'WelcomeChildPage.no_doctor', message: "Don't have a primary care doctor?" })}
-            title={t({ id: 'WelcomeChildPage.find_doctor', message: 'Get help finding one' })}
-            onChange={(e) => {
-              this.setState({ needsPhysician: e.target.checked })
-            }}
-          />
-          <ListInput
-            label={t({ id: 'WelcomeChildPage.doctor_name_label', message: 'Primary Care Doctor' })}
-            placeholder={t({
-              id: 'WelcomeChildPage.doctor_name_placeholder',
-              message: t`${child.firstName}'s doctor's name`,
-            })}
-            type="text"
-            onInput={(e) => {
-              this.setState({ physicianName: e.target.value })
-            }}
-          />
-          <ListInput
-            label={t({ id: 'WelcomeChildPage.doctor_phone_label', message: 'Primary Care Doctor Phone' })}
-            placeholder={t({
-              id: 'WelcomeChildPage.doctor_phone_placeholder',
-              message: t`${child.firstName}'s doctor's phone`,
-            })}
-            type="tel"
-            onInput={(e) => {
-              this.setState({ physicianPhoneNumber: e.target.value })
-            }}
-          />
-        </List> */}
+
         <Block>
           <Case test={this.hasNextChild()}>
             <When value>
               {/* TODO: FIXME DELAYED EVALUATION BUG */}
               {this.hasNextChild() && (
                 <Button onClick={() => this.submit()} fill>
-                  <Trans id="WelcomeChildPage.continue_to_child">Continue to {this.nextChild()?.firstName}</Trans>
+                  <Tr>
+                    <En>
+                      Continue to {this.nextChild()?.firstName}
+                    </En>
+                    <Es>
+                      Continua a {this.nextChild()?.firstName}
+                    </Es>
+                  </Tr>
                 </Button>
               )}
             </When>
             <When value={false}>
               <Button fill onClick={() => this.submit()}>
-                <Trans id="WelcomeChildPage.continue">Continue</Trans>
+                <Tr en="Continue" es="Continuar" />
               </Button>
             </When>
           </Case>

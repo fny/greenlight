@@ -1,11 +1,11 @@
 import React from 'react'
 import { Navbar, Page, Block } from 'framework7-react'
 import releases, { ReleaseData } from 'src/assets/data/releases'
-import { t, Trans } from '@lingui/macro'
 import { getGlobal } from 'reactn'
 import { DateTime } from 'luxon'
 import { GLLocales } from 'src/i18n'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import Tr, { tr } from 'src/components/Tr'
 
 class Release {
   releaseData: ReleaseData
@@ -27,7 +27,7 @@ class Release {
   }
 
   title() {
-    const version = t({ id: 'Common.version', message: 'Version' })
+    const version = tr({ en: 'Version', es: 'Version' })
     return `${version} ${this.releaseData.version}`
   }
 
@@ -68,7 +68,7 @@ export default function ReleaseNotesPage() {
   return (
     <Page className="ReleaseNotesPage" noToolbar>
       <Navbar
-        title={t({ id: 'ReleaseNotesPage.title', message: 'Greenlight Release Notes' })}
+        title={tr({ en: 'Greenlight Release Notes', es: 'Notas de Lanzamiento' })}
         sliding
         backLink
       />
@@ -85,14 +85,14 @@ export default function ReleaseNotesPage() {
               {release.hasWhatsNew() && (
                 <>
                   <p style={{ fontWeight: 'bold' }}>
-                    <Trans id="ReleaseNotesPage.whats_new">What's New</Trans>
+                    <Tr en="What's New" es="Qué Hay de Nuevo" />
                   </p>
                   {release.whatsNewList()}
                 </>
               )}
               {release.hasBugFixes() && (
                 <>
-                  <p style={{ fontWeight: 'bold' }}><Trans id="ReleaseNotesPage.bug_fixes">Bug Fixes</Trans></p>
+                  <p style={{ fontWeight: 'bold' }}><Tr en="Bug Fixes" es="Corrección de errores" /></p>
                   {release.bugFixesList()}
                 </>
               )}

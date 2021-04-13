@@ -1,4 +1,3 @@
-import { t, Trans } from '@lingui/macro'
 import { useFormik, FormikProvider } from 'formik'
 import FormikInput from 'src/components/FormikInput'
 import FormikItem from 'src/components/FormikItem'
@@ -23,7 +22,7 @@ import SubmitHandler from 'src/helpers/SubmitHandler'
 import { updateUserSettings } from 'src/api'
 import { reloadCurrentUser } from 'src/helpers/global'
 import { DailyReminderType } from 'src/models/UserSettings'
-import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import Tr, { tr } from 'src/components/Tr'
 
 interface NotificationsForm {
   dailyReminderType: DailyReminderType
@@ -88,41 +87,41 @@ export default function NotificationsPage(props: F7Props) {
 
   return (
     <Page>
-      <Navbar title={t({ id: 'NotificationsPage.title', message: 'Notifications' })} backLink />
+      <Navbar title={tr({ es: 'Notificaciones', en: 'Notifications' })} backLink />
       <Block>
         <BlockTitle>
-          <Trans id="NotificationsPage.daily_reminders_title">Daily Reminders</Trans>
+          <Tr en="Daily Reminders" es="Recordatorios diarios" />
         </BlockTitle>
         <FormikProvider value={formik}>
           <List accordionList form id="EditUserPage-form" onSubmit={formik.handleSubmit} noHairlines>
             <FormikInput
               name="dailyReminderType"
-              label={t({ id: 'NotificationsPage.how_to_remind', message: 'How should we send you reminders?' })}
+              label={tr({ es: '¿Cómo deberíamos enviarle recordatorios?', en: 'How should we send you reminders?' })}
               type="select"
             >
               {user.mobileNumber && (
               <option value={DailyReminderType.TEXT}>
-                {t({ id: 'DailyReminder.send_via_text', message: 'Send Reminders via Text' })}
+                {tr({ es: 'Enviar recordatorios por mensaje de texto', en: 'Send Reminders via Text' })}
               </option>
               )}
               {user.email && (
                 <option value={DailyReminderType.EMAIL}>
-                  {t({ id: 'DailyReminder.send_via_email', message: 'Send Reminders via Email' })}
+                  {tr({ es: 'Enviar recordatorios por correo electrónico', en: 'Send Reminders via Email' })}
                 </option>
               )}
               <option value={DailyReminderType.NONE}>
-                {t({ id: 'DailyReminder.disable_all', message: 'Disable All Reminders' })}
+                {tr({ es: 'Deshabilitar todos los recordatorios', en: 'Disable All Reminders' })}
               </option>
             </FormikInput>
             <FormikItem
               name="overrideLocationReminders"
-              title={t({
-                id: 'NotificationsPage.override_location_reminders_title',
-                message: 'Set my own reminder times',
+              title={tr({
+                es: 'NotificationsPage.override_location_reminders_title',
+                en: 'Override reminders',
               })}
-              footer={t({
-                id: 'NotificationsPage.override_location_reminders_footer',
-                message: 'Set my own reminder times',
+              footer={tr({
+                es: 'Establecer mis propias horas de recordatorio',
+                en: 'Set my own reminder times',
               })}
               checkbox
             />
@@ -142,28 +141,28 @@ export default function NotificationsPage(props: F7Props) {
             {formik.values.overrideLocationReminders && (
               <List>
                 <ListItem
-                  title={t({
-                    id: 'NotificationsPage.days_to_remind',
-                    message: 'What days would you like to be reminded?',
+                  title={tr({
+                    es: '¿Qué días le gustaría que le recordaran?',
+                    en: 'What days would you like to be reminded?',
                   })}
                 />
                 <FormikItem
-                  title={t({ id: 'Weekday.monday', message: 'Monday' })}
+                  title={tr({ es: 'Lunes', en: 'Monday' })}
                   name="remindMon"
                   onChange={formik.handleChange}
                   checkbox
                 />
-                <FormikItem title={t({ id: 'Weekday.tuesday', message: 'Tuesday' })} name="remindTue" checkbox />
-                <FormikItem title={t({ id: 'Weekday.wednesday', message: 'Wednesday' })} name="remindWed" checkbox />
-                <FormikItem title={t({ id: 'Weekday.thursday', message: 'Thursday' })} name="remindThu" checkbox />
-                <FormikItem title={t({ id: 'Weekday.friday', message: 'Friday' })} name="remindFri" checkbox />
-                <FormikItem title={t({ id: 'Weekday.saturday', message: 'Saturday' })} name="remindSat" checkbox />
-                <FormikItem title={t({ id: 'Weekday.sunday', message: 'Sunday' })} name="remindSun" checkbox />
+                <FormikItem title={tr({ es: 'Martes', en: 'Martes' })} name="remindTue" checkbox />
+                <FormikItem title={tr({ es: 'Miercoles', en: 'Wednesday' })} name="remindWed" checkbox />
+                <FormikItem title={tr({ es: 'Jueves', en: 'Thursday' })} name="remindThu" checkbox />
+                <FormikItem title={tr({ es: 'Viernes', en: 'Friday' })} name="remindFri" checkbox />
+                <FormikItem title={tr({ es: 'Sabado', en: 'Saturday' })} name="remindSat" checkbox />
+                <FormikItem title={tr({ es: 'Domingo', en: 'Sunday' })} name="remindSun" checkbox />
               </List>
             )}
             <Block>
               <Button type="submit" outline fill>
-                <Trans id="Common.submit">Submit</Trans>
+                <Tr en="Submit" es="Enviar" />
               </Button>
             </Block>
           </List>

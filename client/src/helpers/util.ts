@@ -1,4 +1,3 @@
-import { t } from '@lingui/macro'
 import { DateTime } from 'luxon'
 import qs from 'qs'
 
@@ -8,6 +7,7 @@ import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import logger from 'src/helpers/logger'
 import GLPhoneNumber from 'src/helpers/GLPhoneNumber'
 import { useCallback } from 'react'
+import { tr } from 'src/components/Tr'
 
 //
 // Date and Time Related
@@ -92,13 +92,13 @@ export function isEmptyType(data: any): boolean {
 
 export function isPrimitiveType(data: any): boolean {
   return (
-    typeof data === 'string' ||
-    typeof data === 'number' ||
-    typeof data === 'boolean' ||
-    typeof data === 'bigint' ||
-    typeof data === 'symbol' ||
-    data === null ||
-    data === undefined
+    typeof data === 'string'
+    || typeof data === 'number'
+    || typeof data === 'boolean'
+    || typeof data === 'bigint'
+    || typeof data === 'symbol'
+    || data === null
+    || data === undefined
   )
 }
 
@@ -227,11 +227,11 @@ export function greeting(): string {
   const time = timeOfDay()
   switch (time) {
     case 'morning':
-      return t({ id: 'util.good_morning', message: 'Good morning' })
+      return tr({ en: 'Good morning', es: 'Buenos dias' })
     case 'afternoon':
-      return t({ id: 'util.good_afternoon', message: 'Good afternoon' })
+      return tr({ en: 'Good afternoon', es: 'Buenas tardes' })
     case 'evening':
-      return t({ id: 'util.good_evening', message: 'Good evening' })
+      return tr({ en: 'Good evening', es: 'Buenas noches' })
     default:
       throw new Error(`Unknown time of day ${time}`)
   }
@@ -250,14 +250,14 @@ export function joinWords(words: string[], conjunction?: string): string {
   let lastWordConnector
 
   if (conjunction === 'or') {
-    twoWordsConnector = t({ id: 'util.two_words_or', message: ' or ' })
-    lastWordConnector = t({ id: 'util.last_word_or', message: ', or ' })
+    twoWordsConnector = tr({ en: ' or ', es: ' o ' })
+    lastWordConnector = tr({ en: ', or ', es: ' o ' })
   } else {
-    twoWordsConnector = t({ id: 'util.two_words_and', message: ' and ' })
-    lastWordConnector = t({ id: 'util.last_word_and', message: ', and ' })
+    twoWordsConnector = tr({ en: ' and ', es: ' y ' })
+    lastWordConnector = tr({ en: ', and ', es: ' y ' })
   }
 
-  const wordsConnector = t({ id: 'util.words_connector', message: ', ' })
+  const wordsConnector = tr({ en: ', ', es: ', ' })
   if (words.length === 0) {
     return ''
   }
@@ -458,19 +458,19 @@ export function stringify(
     return !val || typeof val !== 'object'
       ? val
       : ((r = recursMap.has(val)),
-        recursMap.set(val, true),
-        (a = Array.isArray(val)),
-        r
-          ? (o = (onGetObjID && onGetObjID(val)) || null)
-          : JSON.stringify(val, (k, v) => {
-              if (a || depth > 0) {
-                if (replacer) v = replacer(k, v)
-                if (!k) return (a = Array.isArray(v)), (val = v)
-                !o && (o = a ? [] : {})
-                o[k] = _build(v, a ? depth : depth - 1)
-              }
-            }),
-        o === void 0 ? (a ? [] : {}) : o)
+      recursMap.set(val, true),
+      (a = Array.isArray(val)),
+      r
+        ? (o = (onGetObjID && onGetObjID(val)) || null)
+        : JSON.stringify(val, (k, v) => {
+          if (a || depth > 0) {
+            if (replacer) v = replacer(k, v)
+            if (!k) return (a = Array.isArray(v)), (val = v)
+            !o && (o = a ? [] : {})
+            o[k] = _build(v, a ? depth : depth - 1)
+          }
+        }),
+      o === void 0 ? (a ? [] : {}) : o)
   }
   return JSON.stringify(_build(val, depth), null, space)
 }
@@ -520,8 +520,7 @@ export function titleCase(x: string): string {
 
 export function debounce<F extends (...args: any[]) => any>(
   func: F,
-  waitFor: number,
-): (...args: Parameters<F>) => ReturnType<F> {
+  waitFor: number): (...args: Parameters<F>) => ReturnType<F> {
   let timeout: ReturnType<typeof setTimeout> | null = null
 
   const debounced = (...args: Parameters<F>) => {
@@ -546,10 +545,10 @@ function useDebounce(callback: any, delay: number) {
 export function isInViewport(element: Element): boolean {
   const rect = element.getBoundingClientRect()
   return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    rect.top >= 0
+    && rect.left >= 0
+    && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+    && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   )
 }
 

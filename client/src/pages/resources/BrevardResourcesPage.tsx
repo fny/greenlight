@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+// TODO: Incomplete translation
 import {
   Block,
   Link,
@@ -8,7 +8,7 @@ import {
 import React from 'react'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 
-export default function BrevardResourcesPage() {
+export default function BrevardResourcesPage(): JSX.Element {
   return (
     <Page>
       <Navbar title="Connect to Care">

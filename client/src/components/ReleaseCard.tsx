@@ -4,9 +4,9 @@ import Version from 'src/helpers/Version'
 import { Icon, Link } from 'framework7-react'
 import './ReleaseCard.css'
 import { useReducer } from 'reactn'
-import { Trans } from '@lingui/macro'
 import { paths } from 'src/config/routes'
 import CookieJar, { Cookie } from 'src/helpers/CookieJar'
+import Tr, { En, Es } from './Tr'
 
 function setLastVersionCookie() {
   CookieJar.set(Cookie.LAST_VERSION, releaseData[0].version)
@@ -35,7 +35,10 @@ export default function ReleaseCard(): JSX.Element {
         <div className="ReleaseCard-title">
 
           <div style={{ width: '50%', display: 'inline-block' }}>
-            <Trans id="ReleaseCard.title">You're updated to v{releaseData[0].version}!</Trans>
+            <Tr>
+              <En>You're updated to v{releaseData[0].version}!</En>
+              <Es>¡Ahora estas usando v{releaseData[0].version}!</Es>
+            </Tr>
           </div>
           <div
             style={{
@@ -59,7 +62,7 @@ export default function ReleaseCard(): JSX.Element {
           <div className="ReleaseCard-action">
             <div style={{ width: '50%', display: 'inline-block' }}>
               <Link href={paths.releasesPath}>
-                <Trans id="ReleaseCard.action">See What's New 🎉</Trans>
+                <Tr en="See What's New 🎉" es="Ver lo que es nuevo 🎉" />
               </Link>
             </div>
           </div>

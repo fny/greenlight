@@ -7,14 +7,14 @@ en:
       salutation: Hello %{name},
       body: |
         You requested a magic link to sign in and here it is!
-        Note that this link expires in 1 hour and can only be used once.
+        Note that this link expires in 4 hours and can only be used once.
       action: Click Here to Sign In
     password_reset:
       subject: ✨ Greenlight Password Reset
       title: Use this link to reset your Greenlight account's password
       body: |
         You requested to reset your password and here's the link!
-        Note that this link expires in 1 hour and can only be used once.
+        Note that this link expires in 4 hours and can only be used once.
       action: Click Here to Reset Password
     reminder:
       subject: ✨ Daily Greenlight Reminder

@@ -1,29 +1,19 @@
-import React, { Fragment, getGlobal, useGlobal } from 'reactn'
+import React, { useGlobal } from 'reactn'
 
 import './App.css'
 
 import {
-  App, f7, Progressbar, View,
+  App, Progressbar, View,
 } from 'framework7-react'
 
 import { Framework7Params } from 'framework7/components/app/app-class'
 
-import { I18nProvider, useLingui } from '@lingui/react'
 import routes from 'src/config/routes'
-import { i18n as globalI18n, MyI18n } from 'src/i18n'
+import { MyI18n } from 'src/i18n'
 import { ErrorBoundary } from 'src/ErrorBoundary'
 import OnlineStatus from 'src/components/OnlineStatus'
 import env from './config/env'
 import StillRegisteringMessage from './components/FlashMessage'
-
-function I18nWatchLocale({ children }: { children: React.ReactNode }) {
-  const { i18n } = useLingui()
-
-  // Skip render when locale isn't loaded
-  if (!i18n.locale) return null
-  // Force re-render by using active locale as an element key.
-  return <Fragment key={i18n.locale}>{children}</Fragment>
-}
 
 // Framework7 parameters here
 const f7params: Framework7Params = {
@@ -44,21 +34,16 @@ export default function Main(): JSX.Element {
   const [global] = useGlobal()
 
   return (
+    <MyI18n.Provider value={global.locale}>
+      <App key={global.locale} params={f7params} className="App">
+        <OnlineStatus />
+        <StillRegisteringMessage />
+        <ErrorBoundary>
+          { global.progress && <Progressbar color="green" progress={global.progress} /> }
 
-    <I18nProvider i18n={globalI18n}>
-      <I18nWatchLocale>
-        <MyI18n.Provider value={global.locale}>
-          <App key={global.locale} params={f7params} className="App">
-            <OnlineStatus />
-            <StillRegisteringMessage />
-            <ErrorBoundary>
-              { global.progress && <Progressbar color="green" progress={global.progress} /> }
-
-              <View id="main-view" url="/" main className="safe-areas" />
-            </ErrorBoundary>
-          </App>
-        </MyI18n.Provider>
-      </I18nWatchLocale>
-    </I18nProvider>
+          <View id="main-view" url="/" main className="safe-areas" />
+        </ErrorBoundary>
+      </App>
+    </MyI18n.Provider>
   )
 }

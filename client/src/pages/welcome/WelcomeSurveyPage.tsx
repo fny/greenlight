@@ -13,12 +13,12 @@ import { paths } from 'src/config/routes'
 import { ReactNComponent } from 'reactn/build/components'
 import { NoCurrentUserError } from 'src/helpers/errors'
 
-import { t, Trans } from '@lingui/macro'
 import { completeWelcomeUser } from 'src/api'
 
 import welcomeSurveyImage from 'src/assets/images/illustrations/survey.png'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { reloadCurrentUser } from 'src/helpers/global'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 
 interface State {
   termsOpened: boolean
@@ -41,40 +41,26 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
     return (
       <Page>
         <Navbar
-          title={t({ id: 'WelcomeSurveyPage.title', message: 'Daily Checkins' })}
+          title={tr({ en: 'Daily Checkins', es: 'Encusta de Síntomas' })}
         />
 
         <BlockTitle>
-          <Trans id="WelcomeSurveyPage.heading">
-            Your First Symptom Check-In
-          </Trans>
+          <Tr en="Your First Symptom Check-In" es="Su primera encuesta de síntomas" />
         </BlockTitle>
         <Block>
           <p>
-            {
-            this.user.isOwnerSomewhere() ? (
-              <Trans id="WelcomeSurveyPage.instructions_owner">
+            <Tr>
+              <En>
                 Greenlight helps you keep your community safe by monitoring everyone’s health, connecting individuals to services and information, and minimizing the risk of an outbreak at your business. We need your help to make sure we can keep your community safe! To kick things off, you and your employees should check-in every day.
-              </Trans>
-            ) : (
-              <Trans id="WelcomeSurvyePage.instructions">
-                Greenlight helps keep your community safe by monitoring everyone's
-                health and connecting everyone to services.
-                We need your help! You should fill out this survey every day.
-              </Trans>
-            )
-          }
+              </En>
+              <Es>
+                Greenlight ayuda a mantener su comunidad segura al monitorear la salud de todos. ¡Necesitamos su ayuda! Debe completar esta encuesta todos los días.
+              </Es>
+            </Tr>
           </p>
           <br />
           <img src={welcomeSurveyImage} alt="Daily Check-In" width="100%" />
 
-          <br />
-          <br />
-          <Trans id="WelcomeSurveyPage.next_screen">
-            On the next screen, you'll fill out your first survey.
-          </Trans>
-          <br />
-          <br />
           <Button
             onClick={async () => {
               new SubmitHandler(f7).submit(async () => {
@@ -85,7 +71,10 @@ export default class WelcomeSurveyPage extends ReactNComponent<any, State> {
             }}
             fill
           >
-            <Trans id="WelcomeSurveyPage.continue">Continue to Check-in</Trans>
+            <Tr>
+              <En>Continue to Check-in</En>
+              <Es>Continuar con las Encuestas</Es>
+            </Tr>
           </Button>
         </Block>
       </Page>

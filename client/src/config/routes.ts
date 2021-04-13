@@ -7,7 +7,6 @@ import AboutPage from 'src/pages/AboutPage'
 import AdminUserPermissionsPage from 'src/pages/admin/AdminUserPermissionsPage'
 import AdminUsersPage from 'src/pages/admin/AdminUsersPage'
 import CHWRequestPage from 'src/pages/resources/CHWRequestPage'
-import CovidCountyMapPage from 'src/pages/resources/CovidCountyMapPage'
 import DashboardPage from 'src/pages/DashboardPage'
 import DebugPage from 'src/pages/util/DebugPage'
 import DukeScheduleTestPage from 'src/pages/resources/DukeScheduleTestPage'
@@ -15,7 +14,6 @@ import GiphySchedulePage from 'src/pages/util/GiphySchedulePage'
 import LocationPage from 'src/pages/locations/LocationPage'
 import MagicSignInAuthPage from 'src/pages/sessions/MagicSignInAuthPage'
 import MagicSignInPage from 'src/pages/sessions/MagicSignInPage'
-import MobileVerificationPage from 'src/pages/MobileVerificationPage'
 import NCStatewideStatsPage from 'src/pages/resources/NCStatewideStatsPage'
 import CastlightTestSearchPage from 'src/pages/resources/CastlightTestSearchPage'
 import NotFoundPage from 'src/pages/util/NotFoundPage'
@@ -45,7 +43,6 @@ import WelcomeReviewPage from 'src/pages/welcome/WelcomeReviewPage'
 import WelcomeSurveyPage from 'src/pages/welcome/WelcomeSurveyPage'
 import BrevardResourcesPage from 'src/pages/resources/BrevardResourcesPage'
 import AdminUserPage from 'src/pages/admin/AdminUserPage'
-import HelpScoutPage from 'src/pages/resources/HelpScoutPage'
 import PositiveResourcesPage from 'src/pages/resources/PositiveResourcesPage'
 import AdminDashboardPage from 'src/pages/admin/AdminDashboardPage'
 import SchoolScoreCardPage from 'src/pages/resources/SchoolScoreCardPage'
@@ -246,10 +243,6 @@ const resourcesRoutes = {
     component: CHWRequestPage,
     beforeEnter: beforeEnter.requireSignIn,
   },
-  mapPath: {
-    path: '/covid-county-map',
-    component: CovidCountyMapPage,
-  },
   positiveResourcesPath: {
     path: '/resources/positive-help',
     component: PositiveResourcesPage,
@@ -404,10 +397,6 @@ const routeMap = {
   splashPath: {
     path: '/splash',
     component: SplashPage,
-  },
-  mobileVerificationPath: {
-    path: '/mobile-verifications',
-    component: MobileVerificationPage,
   },
   debugPath: {
     path: '/debug',

@@ -1,15 +1,13 @@
-import {
-  getGlobal, setGlobal, addReducer, addCallback,
-} from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { deleteSession, getCurrentUser } from 'src/api'
 import { User } from 'src/models'
-import { i18n, GLLocales } from 'src/i18n'
 import CookieJar, { Cookie } from 'src/helpers/CookieJar'
 import { LocationCategories } from 'src/models/Location'
 import LocalStorage from 'src/helpers/LocalStorage'
+import { GLLocales } from 'src/i18n'
 import Honeybadger from './honeybadger'
 
-export function isSignedIn() {
+export function isSignedIn(): boolean {
   const user = currentUser()
   return user !== null && user !== undefined
 }
@@ -36,7 +34,6 @@ export function toggleLocale(): void {
   const newLocale = cookieLocale() === 'en' ? 'es' : 'en'
   CookieJar.set(Cookie.LOCALE, newLocale)
   setGlobal({ locale: newLocale })
-  i18n.activate(newLocale)
   // TODO: How do we stop doing this?
   // window.location.reload()
 }
@@ -98,11 +95,8 @@ export class GRegisteringLocation {
 
 setGlobal({
   locale: cookieLocale(),
-  i18n,
   currentUser: null,
   test: null,
   registeringUser: LocalStorage.getRegisteringUser() || new GRegisteringUser(),
   registeringLocation: LocalStorage.getRegisteringLocation() || new GRegisteringLocation(),
 })
-
-i18n.activate(cookieLocale())

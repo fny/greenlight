@@ -1,38 +1,35 @@
+// TODO: Incomplete translation
 import React, {
-  useEffect, useGlobal, useState, useMemo, Fragment, useCallback, getGlobal,
+  useGlobal, useState, useMemo, Fragment, useCallback, getGlobal,
 } from 'reactn'
 import { useFormik, FormikProvider } from 'formik'
 import {
   assertNotNull, assertNotUndefined, esExclaim, greeting,
+  getKeyName,
 } from 'src/helpers/util'
 
 import welcomeDoctorImage from 'src/assets/images/welcome-doctor.svg'
 import {
-  f7, Page, Block, Sheet, Row, Button, Col, Link, PageContent, Toolbar, Navbar, List,
+  f7, Page, Block, Row, Button, Col, Link, Navbar, List,
 } from 'framework7-react'
-import { t, Trans } from '@lingui/macro'
 import { User, Location } from 'src/models'
 import { F7Props } from 'src/types'
 import {
-  checkLocationRegistrationCode, getLocation, joinLocation, registerUser,
+  joinLocation, registerUser,
 } from 'src/api'
 import { paths } from 'src/config/routes'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
-import LoadingPage from 'src/pages/util/LoadingPage'
 import SubmitHandler from 'src/helpers/SubmitHandler'
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import { Roles } from 'src/models/LocationAccount'
 import FormikInput from 'src/components/FormikInput'
-import { getKeyName } from 'src/helpers/util'
+
 import LoadingLocationContent from 'src/components/LoadingLocationContent'
-import { Router } from 'framework7/modules/router/router'
 import LocalStorage from 'src/helpers/LocalStorage'
-import { LocationCategories } from 'src/models/Location'
 import Tr, { En, Es, tr } from 'src/components/Tr'
 import TermsAndConditionsSheet from 'src/components/TermsAndConditionsSheet'
 import EmailSupportLink from 'src/components/EmailSupportLink'
 import RegisterUserForm from './RegisterUserForm'
-import { getStatusProps } from 'react-query/types/core/utils'
 
 export default function RegisterUserPage(props: F7Props) {
   const [page, setPage] = useState('')
@@ -133,31 +130,25 @@ function WelcomePage({ setPage }: WelcomePageProps): JSX.Element {
           {greeting()}!
         </h1>
         <p>
-          <Trans id="locationRegistered.welcome1">
-            You're about to join Greenlight's secure COVID-19 monitoring platform. Every day you'll need to fill out
-            symptom surveys for yourself. You will also get access to health and social support in your community.
-          </Trans>
+          You're about to join Greenlight's secure COVID-19 monitoring platform. Every day you'll need to fill out
+          symptom surveys for yourself. You will also get access to health and social support in your community.
         </p>
         <p>
-          <Trans id="locationRegistered.welcome2">
-            Your data is secure and stored by a HIPAA and FERPA-compliant cloud provider.{' '}
-            <i>We will not share any data without your permission.</i>
-          </Trans>
+          Your data is secure and stored by a HIPAA and FERPA-compliant cloud provider.{' '}
+          <i>We will not share any data without your permission.</i>
         </p>
         <img alt="Welcome to Greenlight!" src={welcomeDoctorImage} />
         <p>
-          <Trans id="WelcomePage.terms_and_conditions">
-            By continuing, you accept Greenlight's{' '}
-            <Link
-              onClick={() => {
-                setTermsOpened(true)
-              }}
-            >
-              {' '}
-              Terms and Conditions
-            </Link>
-            .
-          </Trans>
+          By continuing, you accept Greenlight's{' '}
+          <Link
+            onClick={() => {
+              setTermsOpened(true)
+            }}
+          >
+            {' '}
+            Terms and Conditions
+          </Link>
+          .
         </p>
       </Block>
       <Block>
@@ -170,7 +161,7 @@ function WelcomePage({ setPage }: WelcomePageProps): JSX.Element {
                 setPage('register')
               }}
             >
-              <Trans id="Common.continue">Continue</Trans>
+              <Tr en="Continue" es="Continuar" />
             </Button>
           </Col>
         </Row>
@@ -203,9 +194,11 @@ function CurrentUserAlreadyRegisteredPage({
         </h1>
         <p>
           <Tr en={`You are registered to submit check ins to ${location.name}.`} es={`Está registrado para enviar encuestas a ${location.name}`} /> {
-            location.isSchool() && <>
+            location.isSchool() && (
+            <>
               To add children to this school, visit "My Children" on the settings page.
             </>
+            )
           }
         </p>
         {currentUser.hasCompletedWelcome() ? (
@@ -342,7 +335,7 @@ function CreateAccountPage({
 }): JSX.Element {
   return (
     <Fragment>
-      <Navbar title={t({ id: 'locationRegistered.new_account', message: 'Create a New Account' })}>
+      <Navbar title={tr({ en: 'Create a New Account', es: 'Crear una cuenta nueva' })}>
         <NavbarHomeLink slot="left" />
       </Navbar>
       <Block>

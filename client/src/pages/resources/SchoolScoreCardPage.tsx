@@ -1,4 +1,3 @@
-import { t } from '@lingui/macro'
 import { Navbar, Page } from 'framework7-react'
 import React, { useState } from 'react'
 
@@ -14,7 +13,7 @@ export default function SchoolScoreCardPage(): JSX.Element {
       {
         state.isLoaded ? (
           <Navbar
-            title={t({ id: 'SchoolScoreCardPage.title', message: 'Score Card' })}
+            title="Score Card"
           >
             <NavbarHomeLink slot="left" />
           </Navbar>

@@ -4,7 +4,6 @@ import React, {
 import {
   Page, Block, Button, Navbar, f7, ListInput, List,
 } from 'framework7-react'
-import { Trans, t } from '@lingui/macro'
 
 import { F7Props } from 'src/types'
 import { assertNotNull, assertNotUndefined, formatPhone } from 'src/helpers/util'
@@ -18,6 +17,7 @@ import { LocationAccount, PermissionLevels } from 'src/models/LocationAccount'
 import { dynamicPaths } from 'src/config/routes'
 import LoadingPage from 'src/pages/util/LoadingPage'
 import LoadingPageContent from 'src/components/LoadingPageContent'
+import { tr } from 'src/components/Tr'
 
 interface State {
   user?: User | null
@@ -83,7 +83,7 @@ export default function AdminUserPermissionsPage(props: F7Props) {
             noHairlines
           >
             <ListInput
-              label={t({ id: 'AdminUserPermissionsPage.permission_level', message: 'Permission Level' })}
+              label={tr({ en: 'Permission Level', es: 'Permission Level' })}
               type="select"
               value={state.permissionLevel}
               onChange={(e) => setState({ ...state, permissionLevel: e.target.value })}

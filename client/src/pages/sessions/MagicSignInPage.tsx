@@ -8,8 +8,6 @@ import {
   ListItem,
 } from 'framework7-react'
 
-import { t, Trans } from '@lingui/macro'
-
 import EmailOrPhoneListInput from 'src/components/EmailOrPhoneListInput'
 import './MagicSignInPage.css'
 import { Dict } from 'src/types'
@@ -20,6 +18,7 @@ import { paths } from 'src/config/routes'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import './SessionsPage.css'
 import greenlightLogo from 'src/assets/images/logos/greenlight-banner-logo.svg'
+import Tr, { En, Es, tr } from 'src/components/Tr'
 
 interface State {
   emailOrMobile: string
@@ -40,7 +39,7 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
 
   async submit() {
     if (this.state.isSubmitting) return
-  
+
     const input = this.emailOrMobileRef?.current
 
     assertNotNull(input)
@@ -51,23 +50,23 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
     this.setState({ isSubmitting: true })
     try {
       await createMagicSignIn(this.state.emailOrMobile, this.state.rememberMe)
-      const alertTitle = t({ id: 'MagicSignInPage.sign_in_sent', message: 'Magic Sign In Sent' })
+      const alertTitle = tr({ en: 'Magic Sign In Sent', es: 'Inicio de sesión mágico enviado' })
       if (this.state.emailOrMobile.includes('@')) {
         this.$f7.dialog.alert(
-          t({ id: 'MagicSignInPage.will_get_email', message: 'You should receive an email shortly with a magic sign in link.' }),
+          tr({ en: 'You should receive an email shortly with a magic sign in link.', es: 'Debería recibir un correo electrónico en breve con un enlace de inicio de sesión mágico.' }),
           alertTitle,
         )
       } else {
         this.$f7.dialog.alert(
-          t({ id: 'MagicSignInPage.will_get_text', message: 'You should receive a text shortly with a magic sign in link.' }),
+          tr({ en: 'You should receive a text shortly with a magic sign in link.', es: 'You should receive a text shortly with a magic sign in link.' }),
           alertTitle,
         )
       }
     } catch (e) {
       logger.error(e.response)
       this.$f7.dialog.alert(
-        t({ id: 'MagicSignInPage.failed_setup', message: "We couldn't set up a magic sign for that info." }),
-        t({ id: 'MagicSignInPage.sign_in_failed', message: 'Magic Sign In Failed' }),
+        tr({ en: "We couldn't set up a magic sign in for that info.", es: 'No pudimos configurar un enlace mágico para esa información.' }),
+        tr({ en: 'Magic Sign In Failed', es: 'Error' }),
       )
     } finally {
       this.setState({ isSubmitting: false })
@@ -78,7 +77,7 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
     return (
       <Page className="MagicSignInPage" noToolbar noSwipeback loginScreen>
         <Navbar
-          title={t({ id: 'MagicSignInPage.title', message: 'Magic Sign In' })}
+          title={tr({ en: 'Magic Sign In', es: 'Inciar Sesion Con Magia' })}
         >
           <NavbarHomeLink slot="left" />
         </Navbar>
@@ -87,9 +86,10 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
         </div>
         <List form>
           <Block>
-            <Trans id="MagicSignInPage.directions">
-              Enter your email or mobile number, and we'll send you a magic sign in link.
-            </Trans>
+            <Tr>
+              <En>Enter your email or mobile number, and we'll send you a magic sign in link.</En>
+              <Es>Ingrese su correo electrónico o número de teléfono móvil y le enviaremos un enlace mágico para iniciar sesión.</Es>
+            </Tr>
           </Block>
           <EmailOrPhoneListInput
             value={this.state.emailOrMobile}
@@ -100,7 +100,7 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
           />
           <ListItem
             checkbox
-            title={t({ id: 'MagicSignInPage.remember_me', message: 'Remember Me' })}
+            title={tr({ es: 'Recuerdame', en: 'Remember Me' })}
             onInput={(e) => {
               this.setState({ rememberMe: e.target.value })
             }}
@@ -108,13 +108,9 @@ export default class MagicSignInPage extends React.Component<Dict<any>, State> {
           <Block>
             <Button outline fill disabled={this.state.isSubmitting} onClick={() => { this.submit() }}>
               {this.state.isSubmitting ? (
-                <Trans id="MagicSignInPage.requesting_magic_link">
-                  Requesting Magic Link...
-                </Trans>
+                <Tr en="Requesting Magic Link..." es="Enviando..." />
               ) : (
-                <Trans id="MagicSignInPage.request_magic_link">
-                  Request Magic Link
-                </Trans>
+                <Tr en="Request Magic Link" es="Enviar" />
               )}
             </Button>
           </Block>

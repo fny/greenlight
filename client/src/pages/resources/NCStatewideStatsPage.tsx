@@ -1,4 +1,3 @@
-import { t } from '@lingui/macro'
 import {
   Navbar, Page, Toolbar, Link, Block, Tab, Tabs,
 } from 'framework7-react'
@@ -6,10 +5,10 @@ import React from 'react'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import './NCStatewideStatsPage.css'
 
-export default function NCStatewideStatsPage() {
+export default function NCStatewideStatsPage(): JSX.Element {
   return (
     <Page className="NCStatwideStatsPage">
-      <Navbar title={t({ id: 'NCStatewideStatsPage.nc_statewide_stats_title', message: 'NC COVID-19 Statistics' })}>
+      <Navbar title="NC COVID-19 Statistics">
         <NavbarHomeLink slot="left" />
       </Navbar>
       <Toolbar tabbar bottom>

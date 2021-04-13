@@ -1,7 +1,9 @@
 import axios, { AxiosResponse } from 'axios'
 
 import { getGlobal, setGlobal } from 'reactn'
-import { assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI } from 'src/helpers/util'
+import {
+  assertArray, assertNotArray, assertNotNull, assertNotUndefined, transformForAPI,
+} from 'src/helpers/util'
 
 // FIXME: This shouldn't be assigned here. It should go in a provider
 import Honeybadger from 'honeybadger-js'

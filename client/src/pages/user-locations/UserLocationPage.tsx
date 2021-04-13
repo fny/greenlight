@@ -4,7 +4,6 @@ import React, {
 import {
   Page, Block, Button, Navbar, f7, ListInput, List, Link, ListItem,
 } from 'framework7-react'
-import { Trans, t } from '@lingui/macro'
 
 import { F7Props } from 'src/types'
 import { assertNotNull, assertNotUndefined, formatPhone } from 'src/helpers/util'
@@ -33,19 +32,21 @@ export default function UserLocationPage(props: F7Props) {
   const currUser = currentUser()
   assertNotNull(currUser)
 
-  const location = currUser.affiliatedLocations().filter(l => l.id.toString() === locationId )[0]
-  const isOwnLocation = currUser.locationAccounts.some(la => la.locationId?.toString() === locationId)
-  const ownLocationAccount = currUser.locationAccounts.filter(la => la.locationId?.toString() === locationId)[0]
-  const childrenWithLocation = currUser.children.filter(c => c.locationAccounts.some(la => la.locationId?.toString() === locationId))
+  const location = currUser.affiliatedLocations().filter((l) => l.id.toString() === locationId)[0]
+  const isOwnLocation = currUser.locationAccounts.some((la) => la.locationId?.toString() === locationId)
+  const ownLocationAccount = currUser.locationAccounts.filter((la) => la.locationId?.toString() === locationId)[0]
+  const childrenWithLocation = currUser.children.filter((c) => c.locationAccounts.some((la) => la.locationId?.toString() === locationId))
   const isChildLocation = childrenWithLocation.length > 0
   console.log(location)
   return (
     <Page>
       <Navbar title={location.name || ''} backLink />
       {
-        isOwnLocation && <Block>
+        isOwnLocation && (
+        <Block>
           <p>You have an account with {location.name}.
-          You are listed as a {ownLocationAccount.role} and your permission level is {ownLocationAccount.permissionLevel}.</p>
+            You are listed as a {ownLocationAccount.role} and your permission level is {ownLocationAccount.permissionLevel}.
+          </p>
 
           <p>To invite someone else to join {location.name} as a staff member, give them the following information to use when joining:</p>
           <ul>
@@ -54,36 +55,45 @@ export default function UserLocationPage(props: F7Props) {
           </ul>
 
           {
-            location.isSchool() && <>
-            <p>To invite someone else to register {location.name} as a parent, give them the following information to use when joining:</p>
-            <ul>
-              <li>Location ID: {location.permalink}</li>
-              <li>Parent Registration Code: {location.studentRegistrationCode}</li>
-            </ul>
+            location.isSchool() && (
+            <>
+              <p>To invite someone else to register {location.name} as a parent, give them the following information to use when joining:</p>
+              <ul>
+                <li>Location ID: {location.permalink}</li>
+                <li>Parent Registration Code: {location.studentRegistrationCode}</li>
+              </ul>
             </>
+            )
           }
           {
-            isChildLocation && <p>
-              The following children also have an account with account with {location.name}: {childrenWithLocation.map(c => c.firstName).join(', ')}.
+            isChildLocation && (
+            <p>
+              The following children also have an account with account with {location.name}: {childrenWithLocation.map((c) => c.firstName).join(', ')}.
             </p>
+            )
           }
         </Block>
+        )
       }
 
       {
-        !isOwnLocation && isChildLocation && <Block>
-          <p>The following children have an account with account with {location.name}: {childrenWithLocation.map(c => c.firstName).join(', ')}.</p>
+        !isOwnLocation && isChildLocation && (
+        <Block>
+          <p>The following children have an account with account with {location.name}: {childrenWithLocation.map((c) => c.firstName).join(', ')}.</p>
 
           {
-            location.isSchool() && <>
-            <p>To invite someone else to register {location.name} as a parent, give them the following information to use when joining:</p>
-            <ul>
-              <li>Location ID: {location.permalink}</li>
-              <li>Parent Registration Code: {location.studentRegistrationCode}</li>
-            </ul>
+            location.isSchool() && (
+            <>
+              <p>To invite someone else to register {location.name} as a parent, give them the following information to use when joining:</p>
+              <ul>
+                <li>Location ID: {location.permalink}</li>
+                <li>Parent Registration Code: {location.studentRegistrationCode}</li>
+              </ul>
             </>
+            )
           }
         </Block>
+        )
       }
     </Page>
   )

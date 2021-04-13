@@ -1,4 +1,3 @@
-import { t } from '@lingui/macro'
 import {
   Navbar,
   Page,
@@ -8,10 +7,11 @@ import { useGlobal, useState } from 'reactn'
 import LoadingPageContent from 'src/components/LoadingPageContent'
 
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import { tr } from 'src/components/Tr'
 
 import './IframeResource.css'
 
-export default function CHWRequestPage() {
+export default function CHWRequestPage(): JSX.Element {
   const spanishURL = 'https://airtable.com/embed/shrn4S5XoOVO8S4dC'
   const englishURL = 'https://airtable.com/embed/shrIt4hurTNBrZD0g'
 
@@ -23,7 +23,7 @@ export default function CHWRequestPage() {
     <Page className="IframeResource">
       {
         state.isLoaded ? (
-          <Navbar title={t({ id: 'CHWRequestPage.title2', message: 'Services Request' })}>
+          <Navbar title={tr({ en: 'Services Request', es: 'Respuesta par Servicios' })}>
             <NavbarHomeLink slot="left" />
           </Navbar>
         )

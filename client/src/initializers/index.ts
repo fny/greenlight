@@ -1,3 +1,4 @@
+import './polyfills'
 import './framework7'
 import './honeybadger'
 import './reactn-devtools'

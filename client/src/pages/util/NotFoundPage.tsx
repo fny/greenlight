@@ -1,7 +1,7 @@
 import React from 'react'
 import { Page, Navbar, Block } from 'framework7-react'
-import { Trans } from '@lingui/macro'
 import NavbarHomeLink from 'src/components/NavbarHomeLink'
+import Tr from 'src/components/Tr'
 
 export default function NotFoundPage() {
   return (
@@ -11,10 +11,10 @@ export default function NotFoundPage() {
       </Navbar>
       <Block strong>
         <p>
-          <Trans id="NotFoundPage.sorry">Sorry</Trans>
+          <Tr en="Sorry" es="Lo siento" />
         </p>
         <p>
-          <Trans id="NotFoundPage.not_found">Requested content not found.</Trans>
+          <Tr en="Requested content not found." es="No se encontró el contenido." />
         </p>
       </Block>
     </Page>

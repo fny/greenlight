@@ -1,4 +1,3 @@
-import { t, Trans } from '@lingui/macro'
 import {
   Block, Button, Link, Page,
 } from 'framework7-react'

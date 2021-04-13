@@ -61,6 +61,9 @@ export default function AddChildForm(props: AddChildFormProps): JSX.Element {
               }
             </ListInput>
           }
+          {
+            !props.setLocation
+          }
           {/* TODO: Ask for primary care info */}
           {/* <ListItem
             checkbox
@@ -71,7 +74,7 @@ export default function AddChildForm(props: AddChildFormProps): JSX.Element {
             }}
           />
           <ListInput
-            label={t({ id: 'WelcomeChildPage.doctor_name_label', message: 'Primary Care Doctor' })}
+            label={tr({ id: 'WelcomeChildPage.doctor_name_label', message: 'Primary Care Doctor' })}
             placeholder={t({
               id: 'WelcomeChildPage.doctor_name_placeholder',
               message: t`${child.firstName}'s doctor's name`,
@@ -82,8 +85,8 @@ export default function AddChildForm(props: AddChildFormProps): JSX.Element {
             }}
           />
           <ListInput
-            label={t({ id: 'WelcomeChildPage.doctor_phone_label', message: 'Primary Care Doctor Phone' })}
-            placeholder={t({
+            label={tr({ id: 'WelcomeChildPage.doctor_phone_label', message: 'Primary Care Doctor Phone' })}
+            placeholder={tr({
               id: 'WelcomeChildPage.doctor_phone_placeholder',
               message: t`Doctor's phone`,
             })}
