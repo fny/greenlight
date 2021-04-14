@@ -11,7 +11,18 @@ class PlivoSMS < ApplicationCommand
   argument :message
 
   validates :from, presence: true, phone: true
-  validates :to, presence: true, phone: true
+  validates :to, presence: true
+  validates :message, presence: true
+
+  validate :valid_to
+
+
+  def valid_to
+    unless to && to.split(',').all? { |p| PhoneNumber.valid?(p) }
+      errors.add(:to, "invalid phone number")
+    end
+  end
+
 
   def self.deliveries
     @deliveries ||= []
@@ -33,6 +44,14 @@ class PlivoSMS < ApplicationCommand
 
   def work
     ensure_message_in_range!
+    if multiple_numbers?
+      send_multiple
+    else
+      send_one
+    end
+  end
+
+  def send_one
     return if PhoneNumber.fivefivefive?(to)
     if Rails.env.production?
       PlivoSMS.client.messages.create(
@@ -43,6 +62,23 @@ class PlivoSMS < ApplicationCommand
     else
       PlivoSMS.test_deliver(from: from, to: to, message: message)
     end
+  end
+
+  def send_multiple
+    nums = Set.new(to.split(','))
+    if Rails.env.production?
+      PlivoSMS.client.messages.create(
+        PhoneNumber.parse(from),
+        [nums.map { |num| PhoneNumber.parse(num) }],
+        message
+      )
+    else
+      PlivoSMS.test_deliver(from: from, to: to, message: message)
+    end
+  end
+
+  def multiple_numbers?
+    to.include?(',')
   end
 
   private

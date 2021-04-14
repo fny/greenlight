@@ -11,8 +11,8 @@ class SymptomSurvey
   validate :medical_events_present
 
   def strategy
-    prev_medical_events = user.medical_events.where('occurred_at >= ?', 14.days.ago)
-    last_cleared_overrie_date = user.recent_cleared_override&.submission_date
+    prev_medical_events = user ? user.medical_events.where('occurred_at >= ?', 14.days.ago) : []
+    last_cleared_overrie_date = user ? user.recent_cleared_override&.submission_date : nil
     @strategy ||= GreenlightStrategyNorthCarolina.new(
       medical_events.map { |e| MedicalEvent.new(e) },
       prev_medical_events,
@@ -21,11 +21,18 @@ class SymptomSurvey
   end
 
   def save
+    process
+    @greenlight_status.save
+  end
+
+  def process
     self.santize_medical_events()
     @greenlight_status = strategy.status
     @greenlight_status.created_by = created_by
     @greenlight_status.user = user
-    @greenlight_status.save
+    if !user
+      @greenlight_status.created_at = Time.now
+    end
   end
 
   private

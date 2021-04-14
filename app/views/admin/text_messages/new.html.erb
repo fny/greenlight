@@ -1,0 +1,7 @@
+<h1>Send Text Messages</h1>
+
+<%= simple_form_for [:admin, @sms], url: admin_text_messages_url do |f| %>
+  <%= f.input :to, label: 'Phone numbers (comma separated)' %>
+  <%= f.input :message, as: :text %>
+  <%= f.button :submit, 'Send' %>
+<% end %>

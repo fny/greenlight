@@ -36,6 +36,9 @@ Users:
     Magic Sign In: <%= @user.magic_sign_in_url %>
   </li>
   <li>
+    Password Reset: <%= @user.password_reset_url %> <%= link_to 'Refresh', admin_user_refresh_reset_path(@user) %>
+  </li>
+  <li>
     Completed Welcome At: <%= @user.completed_welcome_at %>
   </li>
 </ul>

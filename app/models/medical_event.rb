@@ -6,6 +6,9 @@ class MedicalEvent < ApplicationRecord
     DIFFICULTY_BREATING = 'difficulty_breathing',
     LOST_TASTE_SMELL = 'lost_taste_smell',
     CHILLS = 'chills',
+    DIARHEA = 'diarhea',
+    SORE_THROAT = 'sore_throat',
+    HEADACHE = 'headache',
     COVID_EXPOSURE = 'covid_exposure',
     COVID_TEST_TAKEN = 'covid_test_taken',
     COVID_TEST_POSITIVE = 'covid_test_positive',
@@ -21,11 +24,14 @@ class MedicalEvent < ApplicationRecord
   ].freeze
 
   SYMPTOMS = [
-  FEVER,
+    FEVER,
     NEW_COUGH,
     DIFFICULTY_BREATING,
     LOST_TASTE_SMELL,
-    CHILLS
+    CHILLS,
+    DIARHEA,
+    SORE_THROAT,
+    HEADACHE
   ].freeze
 
   PENDING_TRIGGERS = [

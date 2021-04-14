@@ -102,6 +102,15 @@ module UsersController
       end
     end
 
+    # Guest symptom survey
+    post '/v1/users/guest/guest-symptom-surveys', auth: false do
+      survey = SymptomSurvey.new(
+        medical_events: request_json[:medical_events],
+      )
+      survey.process
+      render json: GreenlightStatusSerializer.new(survey.greenlight_status)
+    end
+
     # Update last greenlight status
     patch '/v1/users/:user_id/last-greenlight-status' do
       user = User.find(params[:user_id])

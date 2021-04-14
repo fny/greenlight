@@ -138,6 +138,12 @@ module Admin
       redirect_to [:admin, @user]
     end
 
+    def refresh_reset
+      @user = User.find(params[:user_id])
+      @user.generate_password_token!
+      redirect_to [:admin, @user]
+    end
+
     def join_location
       @user = User.find_by(id: params[:user_id])
       @location = Location.find_by_id_or_permalink(params[:location])

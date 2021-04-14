@@ -34,6 +34,7 @@ class SendGridEmail < ApplicationCommand
   def work
     if Rails.env.development?
       logger.info(pony_payload.inspect)
+      Pony.mail(pony_payload)
     else
       Pony.mail(pony_payload)
     end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class PasswordReset < ApplicationRecord
-  DEFAULT_VALIDITY_PERIOD = 1.hour
+  DEFAULT_VALIDITY_PERIOD = 8.hours
 
   has_secure_token
 
@@ -25,7 +25,7 @@ class PasswordReset < ApplicationRecord
   def token_valid?
     return false if token.nil?
 
-    (updated_at + DEFAULT_VALIDITY_PERIOD) > Time.now.utc
+    Time.now < (updated_at + DEFAULT_VALIDITY_PERIOD)
   end
 end
 
