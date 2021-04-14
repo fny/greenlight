@@ -4,7 +4,7 @@ import { Page, Block, Button } from 'framework7-react'
 import './SplashPage.css'
 import { signOut, toggleLocale } from 'src/helpers/global'
 import releaseData from 'src/assets/data/releases'
-import { paths } from 'src/config/routes'
+import { dynamicPaths, paths } from 'src/config/routes'
 import { F7Props } from 'src/types'
 
 import greenlightLogo from 'src/assets/images/logos/greenlight-banner-logo.svg'
@@ -39,6 +39,10 @@ export default function SplashPage(props: F7Props): JSX.Element {
 
         <Button outline href={paths.locationLookupPath}>
           <Tr en="Create Account" es="Crear una Cuenta" />
+        </Button>
+
+        <Button outline href={dynamicPaths.userSurveysNewPath('guest')}>
+          <Tr en="Guest Pass" es="Crear una Cuenta" />
         </Button>
 
         {/* <Button outline href={paths.registerLocationWelcomePath}>

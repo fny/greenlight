@@ -7,11 +7,12 @@ import { MedicalEvent } from './MedicalEvent'
 import { UserSettings } from './UserSettings'
 import { Cohort } from './Cohort'
 import CurrentUser from './CurrentUser'
+import { GuestPass } from './GuestPass'
 
 ModelRegistry.register(
-  User, CurrentUser, UserSettings, GreenlightStatus, Location, LocationAccount, MedicalEvent, Cohort,
+  User, CurrentUser, UserSettings, GreenlightStatus, Location, LocationAccount, MedicalEvent, Cohort, GuestPass,
 )
 
 export {
-  Model, ModelRegistry, User, CurrentUser, UserSettings, GreenlightStatus, Location, LocationAccount, MedicalEvent, Cohort,
+  Model, ModelRegistry, User, CurrentUser, UserSettings, GreenlightStatus, Location, LocationAccount, MedicalEvent, Cohort, GuestPass,
 }

@@ -13,16 +13,16 @@ function setLastVersionCookie() {
 }
 
 function showNewRelease(): boolean {
+  if (releaseData[0].date.diffNow('days').days < -3) {
+    return false
+  }
   const rawLastVersion = CookieJar.get(Cookie.LAST_VERSION)
   if (!rawLastVersion) {
     return true
   }
-
   const lastVersion = new Version(rawLastVersion)
   const latestVersion = new Version(releaseData[0].version)
-  if (releaseData[0].date.diffNow('days').days > 5) {
-    return false
-  }
+
   return latestVersion > lastVersion
 }
 

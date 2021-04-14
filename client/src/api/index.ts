@@ -26,6 +26,9 @@ import { GreenlightStatusTypes } from 'src/models/GreenlightStatus'
 import qs from 'qs'
 import { Roles } from 'src/models/LocationAccount'
 import { RegisteringUser } from 'src/models/RegisteringUser'
+import LocalStorage from 'src/helpers/LocalStorage'
+import { GuestPass } from 'src/models/GuestPass'
+import { attribute } from 'src/lib/Model'
 import { transformRecordResponse, recordStore } from './stores'
 
 const BASE_URL = `${env.API_URL}/v1`
@@ -323,6 +326,22 @@ export async function createSymptomSurvey(user: User, medicalEvents: Partial<Med
   assertNotUndefined(record.attributes)
 
   return record.attributes.status || null
+}
+
+export async function createGuestSymptomSurvey(name: string, medicalEvents: Partial<MedicalEvent>[]): Promise<GuestPass> {
+  const payload = { medicalEvents }
+  const response = await v1.post<RecordResponse<GreenlightStatus>>(
+    '/users/guest/guest-symptom-surveys',
+    transformForAPI(payload),
+  )
+  const record = response.data.data
+
+  assertNotArray(record)
+  assertNotUndefined(record.attributes)
+  const guestPass = new GuestPass({ name, ...record.attributes })
+  guestPass.name = name
+  LocalStorage.addGuestPass(guestPass)
+  return guestPass
 }
 
 export async function deleteLastGreenlightStatus(user: User): Promise<string | null> {

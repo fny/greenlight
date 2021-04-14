@@ -1,9 +1,11 @@
 import { RegisteringUser } from 'src/models/RegisteringUser'
 import { RegisteringLocation } from 'src/models/RegisteringLocation'
+import { GuestPass } from 'src/models/GuestPass'
 
 export enum StorageKeys {
   REGISTERING_USER = 'GL.registering_user',
   REGISTERING_LOCATION = 'GL.registering_location',
+  GUEST_PASSES = 'GL.guest_passes',
 }
 /**
  * Singleton that wraps the localStorage API
@@ -50,6 +52,32 @@ const LocalStorage = {
 
   deleteRegisteringLocation(): void {
     LocalStorage.delete(StorageKeys.REGISTERING_LOCATION)
+  },
+
+  getGuestPasses(): GuestPass[] {
+    return (LocalStorage.deserialize<GuestPass[]>(StorageKeys.GUEST_PASSES) || []).map((p) => {
+      const gp = new GuestPass({ ...p._data })
+      gp.id = p.id
+      gp.name = p.name
+      return gp
+    })
+  },
+  setGuestPasses(guestPasses: GuestPass[]) {
+    LocalStorage.serialize(StorageKeys.GUEST_PASSES, guestPasses)
+  },
+  addGuestPass(guestPass: GuestPass) {
+    const passes = LocalStorage.getGuestPasses()
+    passes.push(guestPass)
+    LocalStorage.setGuestPasses(passes)
+    return LocalStorage.getGuestPasses()
+  },
+  removeGuestPass(guestPass: GuestPass) {
+    const passes = LocalStorage.getGuestPasses()
+    LocalStorage.setGuestPasses(passes.filter((p) => p.id !== guestPass.id))
+    return LocalStorage.getGuestPasses()
+  },
+  clearGuestPasses() {
+    LocalStorage.delete(StorageKeys.GUEST_PASSES)
   },
 }
 

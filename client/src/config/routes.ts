@@ -59,6 +59,7 @@ import EditChildPage from 'src/pages/users/EditChildPage'
 import MentalHealthResourcesPage from 'src/pages/resources/MentalHealthResourcesPage'
 import AdminEditGreenlightPassPage from 'src/pages/admin/AdminEditGreenlightPassPage'
 import SupportPage from 'src/pages/resources/SupportPage'
+import GuestPassPage from 'src/pages/surveys/GuestPassPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -317,10 +318,13 @@ const locationRoutes = {
 }
 
 const surveyRoutes = {
+  guestPassPath: {
+    path: '/guest',
+    component: GuestPassPage
+  },
   userSurveysNewPath: {
     path: '/users/:userId/surveys/new',
     component: SurveyNewPage,
-    beforeEnter: beforeEnter.requireSignIn,
   },
   userSeqSurveysNewPath: {
     path: '/users/seq/surveys/new',

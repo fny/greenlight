@@ -8,7 +8,7 @@ import NavbarHomeLink from 'src/components/NavbarHomeLink'
 import Tr, { En, Es, tr } from 'src/components/Tr'
 
 export default function LocationLookupPage(props: F7Props): JSX.Element {
-  const [permalink, setPermalink] = useState('')
+  const [permalink, setPermalink] = useState(props.f7route.query.permalink || '')
   const [registrationCode, setRegistrationCode] = useState('')
 
   return (

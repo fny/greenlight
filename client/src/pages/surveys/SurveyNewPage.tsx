@@ -1,13 +1,13 @@
 import React from 'reactn'
 
 import {
-  Page, Navbar, Block, Button, Preloader,
+  Page, Navbar, Block, Button, Preloader, ListInput, List,
 } from 'framework7-react'
 import './SurveyNewPage.css'
 import { paths } from 'src/config/routes'
 import { MedicalEvent, MedicalEventTypes } from 'src/models/MedicalEvent'
 import { CUTOFF_TIME } from 'src/models/GreenlightStatus'
-import { createSymptomSurvey, getUser } from 'src/api'
+import { createGuestSymptomSurvey, createSymptomSurvey, getUser } from 'src/api'
 import { User } from 'src/models'
 import { NoCurrentUserError } from 'src/helpers/errors'
 import { ReactNComponent } from 'reactn/build/components'
@@ -28,6 +28,13 @@ import difficultyBreathing from 'src/assets/images/symptoms/difficulty-breathing
 import difficultyBreathingBright from 'src/assets/images/symptoms/difficulty-breathing-bright.svg'
 import tasteSmell from 'src/assets/images/symptoms/taste-smell.svg'
 import tasteSmellBright from 'src/assets/images/symptoms/taste-smell-bright.svg'
+import diarhea from 'src/assets/images/symptoms/diarhea.svg'
+import diarheaBright from 'src/assets/images/symptoms/diarhea-bright.svg'
+import headache from 'src/assets/images/symptoms/headache.svg'
+import headacheBright from 'src/assets/images/symptoms/headache-bright.svg'
+import soreThroat from 'src/assets/images/symptoms/sore-throat.svg'
+import soreThroatBright from 'src/assets/images/symptoms/sore-throat-bright.svg'
+
 import { Case, When } from 'src/components/Case'
 import DatedYesNoButton from 'src/components/DatedYesNoButton'
 import Tr, { En, Es, tr } from 'src/components/Tr'
@@ -45,6 +52,12 @@ const buttonImages = {
   tasteSmellBright,
   noSymptoms,
   noSymptomsBright,
+  diarhea,
+  diarheaBright,
+  soreThroat,
+  soreThroatBright,
+  headache,
+  headacheBright,
 }
 
 interface SymptomButtonProps {
@@ -79,6 +92,9 @@ interface SurveyState {
   hasNewCough: boolean
   hasDifficultyBreathing: boolean
   hasLossTasteSmell: boolean
+  hasHeadache: boolean
+  hasDiarhea: boolean
+  hasSoreThroat: boolean
   hadDiagnosis: boolean | null
   diagnosisDate: DateTime | null
   hadContact: boolean | null
@@ -90,10 +106,14 @@ interface SurveyState {
   noSymptoms: boolean
 }
 
-type Symptoms = 'hasFever' | 'hasChills' | 'hasNewCough' | 'hasDifficultyBreathing' | 'hasLossTasteSmell'
+type Symptoms = 'hasFever' | 'hasChills' | 'hasNewCough' | 'hasDifficultyBreathing' | 'hasLossTasteSmell' | 'hasHeadache' | 'hasDiarhea' | 'hasSoreThroat'
 
 export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveyState> {
   isSequence = false
+
+  isGuest = false
+
+  guestName = ''
 
   isResubmit = false
 
@@ -101,19 +121,23 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
 
   constructor(props: SurveyProps) {
     super(props)
-    if (!this.global.currentUser) {
+    const { userId } = this.$f7route.params
+    const { guestName } = this.$f7route.query
+    this.guestName = guestName || ''
+
+    if (!this.global.currentUser && userId !== 'guest') {
       throw new NoCurrentUserError()
     }
+    this.currentUser = this.global.currentUser || new User({ id: 'guest', firstName: guestName, lastName: '' })
 
-    this.currentUser = this.global.currentUser
-
-    const { userId } = this.$f7route.params
     const { resubmit } = this.$f7route.query
 
     if (!userId) { throw 'userId missing in url' }
 
     if (userId === 'seq') {
       this.isSequence = true
+    } else if (userId === 'guest') {
+      this.isGuest = true
     } else {
       getUser(userId).then((user) => {
         this.setState({ targetUser: user, isLoaded: true })
@@ -123,18 +147,21 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     this.isResubmit = resubmit === 'true'
 
     this.state = {
-      isLoaded: this.isSequence,
+      isLoaded: this.isSequence || this.isGuest,
       hasFever: false,
       hasChills: false,
       hasNewCough: false,
       hasDifficultyBreathing: false,
       hasLossTasteSmell: false,
+      hasHeadache: false,
+      hasDiarhea: false,
+      hasSoreThroat: false,
       diagnosisDate: null,
       hadDiagnosis: null,
       contactDate: null,
       hadContact: null,
       showConfirmation: false,
-      targetUser: null,
+      targetUser: userId === 'guest' ? this.currentUser : null,
       noSymptoms: false,
     }
   }
@@ -172,6 +199,24 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
     if (this.state.hasLossTasteSmell) {
       events.push({
         eventType: MedicalEventTypes.LOST_TASTE_SMELL,
+        occurredAt: DateTime.local(),
+      })
+    }
+    if (this.state.hasHeadache) {
+      events.push({
+        eventType: MedicalEventTypes.HEADACHE,
+        occurredAt: DateTime.local(),
+      })
+    }
+    if (this.state.hasDiarhea) {
+      events.push({
+        eventType: MedicalEventTypes.DIARHEA,
+        occurredAt: DateTime.local(),
+      })
+    }
+    if (this.state.hasSoreThroat) {
+      events.push({
+        eventType: MedicalEventTypes.SORE_THROAT,
         occurredAt: DateTime.local(),
       })
     }
@@ -259,6 +304,9 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       hasNewCough: false,
       hasDifficultyBreathing: false,
       hasLossTasteSmell: false,
+      hasHeadache: false,
+      hasDiarhea: false,
+      hasSoreThroat: false,
     })
   }
 
@@ -270,6 +318,9 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       && !this.state.hasNewCough
       && !this.state.hasDifficultyBreathing
       && !this.state.hasLossTasteSmell
+      && !this.state.hasDiarhea
+      && !this.state.hasSoreThroat
+      && !this.state.hasHeadache
     ) {
       this.$f7.dialog.alert(
         tr({
@@ -300,10 +351,23 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
       // TODO: This should load the data
       const target = this.submittingFor()
       assertNotNull(target)
-      const status = await createSymptomSurvey(target, medicalEvents)
+      let status
+      if (this.isGuest) {
+        status = await createGuestSymptomSurvey(this.guestName, medicalEvents)
+      } else {
+        status = await createSymptomSurvey(target, medicalEvents)
+      }
+
       if (!status) {
         throw 'This should never happen, but status was somehow nil.'
       }
+
+      if (this.isGuest) {
+        this.$f7.dialog.close()
+        this.$f7router.navigate(paths.guestPassPath)
+        return
+      }
+
       const user = await reloadCurrentUser()
 
       this.$f7.dialog.close()
@@ -354,7 +418,10 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
         && !this.state.hasChills
         && !this.state.hasNewCough
         && !this.state.hasDifficultyBreathing
-        && !this.state.hasLossTasteSmell,
+        && !this.state.hasLossTasteSmell
+        && !this.state.hasDiarhea
+        && !this.state.hasSoreThroat
+        && !this.state.hasHeadache,
     ]
     return !errors.includes(true)
   }
@@ -433,12 +500,6 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
                 selected={this.state.hasFever}
               />
               <SymptomButton
-                title={tr({ en: 'Chills', es: 'Escalofríos' })}
-                image="chills"
-                onClick={() => this.toggleSymptom('hasChills')}
-                selected={this.state.hasChills}
-              />
-              <SymptomButton
                 title={tr({ en: 'New Cough', es: 'Nueva tos' })}
                 image="cough"
                 onClick={() => this.toggleSymptom('hasNewCough')}
@@ -452,12 +513,30 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
               />
               <SymptomButton
                 title={tr({
-                  en: 'New Loss of<br />Taste/Smell',
-                  es: 'Nueva pérdida de<br/>gusto/olfato',
+                  en: 'Loss of<br />Taste/Smell',
+                  es: 'Pérdida de<br/>gusto/olfato',
                 })}
                 image="tasteSmell"
                 onClick={() => this.toggleSymptom('hasLossTasteSmell')}
                 selected={this.state.hasLossTasteSmell}
+              />
+              <SymptomButton
+                title={tr({ en: 'Severe Headache', es: 'Dolor de cabeza<br />intenso' })}
+                image="headache"
+                onClick={() => this.toggleSymptom('hasHeadache')}
+                selected={this.state.hasHeadache}
+              />
+              <SymptomButton
+                title={tr({ en: 'Diarhea<br />or Vomiting', es: 'Diarrea <br /> o vómitos' })}
+                image="diarhea"
+                onClick={() => this.toggleSymptom('hasDiarhea')}
+                selected={this.state.hasDiarhea}
+              />
+              <SymptomButton
+                title={tr({ en: 'Sore Throat', es: 'Dolor de garganta' })}
+                image="soreThroat"
+                onClick={() => this.toggleSymptom('hasSoreThroat')}
+                selected={this.state.hasSoreThroat}
               />
             </div>
             <Block style={{ marginTop: 0 }}>
@@ -504,7 +583,7 @@ export default class SurveyNewPage extends ReactNComponent<SurveyProps, SurveySt
               ) : (
                 <Tr>
                   <En>Has {submittingFor.firstName} been diagnosed with or tested positive for COVID-19?</En>
-                  <Es>¿Se ha {0} diagnosticado o dado positivo por COVID-19?</Es>
+                  <Es>¿Se ha {submittingFor.firstName} diagnosticado o dado positivo por COVID-19?</Es>
                 </Tr>
               )}
               <DatedYesNoButton
