@@ -24,7 +24,6 @@ export default function RegisterChildrenPage(props: F7Props): JSX.Element {
   const [registeringUser, setRegisteringUser] = useGlobal('registeringUser')
   const [currentUser] = useGlobal('currentUser') as [User, any] // FIXME
   const [selectedUser, setSelectedUser] = useState<number | null>(null)
-  const [registeringUserDetail] = useGlobal('registeringUserDetail')
   assertNotUndefined(locationId)
 
   const submitHandler = useMemo(
@@ -46,7 +45,7 @@ export default function RegisterChildrenPage(props: F7Props): JSX.Element {
         }
 
         // creating a new user
-        await registerUser(locationId, { ...registeringUser, password: registeringUserDetail })
+        await registerUser(locationId, { ...registeringUser })
       },
     }),
     [locationId, registeringUser],

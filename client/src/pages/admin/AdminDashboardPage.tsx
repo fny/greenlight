@@ -255,6 +255,26 @@ export default function AdminDashboardPage(props: F7Props): JSX.Element {
             )
             }
           </List>
+          <>{
+              state.location.category === 'school'
+            && (
+              <>
+              <p>
+                Please provide the following info to people who need to create an account for Greenlight:
+              </p>
+              <p>
+                <b>School ID</b>: {state.location.permalink}<br />
+                <b>Student/Parent Registration Code</b>: {state.location.studentRegistrationCode}<br />
+                <b>Staff Registration Code</b>: {state.location.registrationCode}
+              </p>
+              <p>
+                If they continue to have issues, they can use the "Guest Pass" to
+                submit a symptom survey.
+              </p>
+              </>
+            )
+          }
+          </>
         </Block>
       </>
     )

@@ -2,7 +2,6 @@
 class PasswordResetWorker < ApplicationWorker
   def perform(user_id, email_or_phone, locale)
     user = User.find(user_id)
-    puts "PENISSSSSS"
     I18n.with_locale(locale) do
       if email_or_phone.to_s == 'email'
         send_email(user)

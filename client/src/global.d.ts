@@ -14,7 +14,6 @@ declare module 'reactn/default' {
     isAPIOnline?: boolean
     isInternetOnline?: boolean
     registeringUser: RegisteringUser
-    registeringUserDetail: string
     registeringLocation: RegisteringLocation
     test: string | null
     progress: number | null

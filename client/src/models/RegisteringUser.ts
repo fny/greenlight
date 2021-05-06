@@ -34,4 +34,6 @@ export class RegisteringUser {
   zipCode: string = ''
 
   locationId?: string
+
+  password: string = ''
 }

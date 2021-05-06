@@ -121,7 +121,7 @@ const schema = Yup.object<RegisteringUser>().shape({
   mobileNumber: Yup.string()
     .phone(tr({ es: 'No es valido', en: 'Is invalid' }))
     .required(tr({ es: 'No puede estar en blanco', en: "Can't be blank" })),
-  password: Yup.string().min(8, tr({ es: 'debe tener al menos 8 caracteres ', en: 'must be at least 8 characters' })),
+  password: Yup.string().min(8, tr({ es: 'debe tener al menos 8 caracteres ', en: 'must be at least 8 characters' })).required(tr({ es: 'No puede estar en blanco', en: "Can't be blank" })),
   zipCode: Yup.string().matches(/^\d{5}$/, {
     excludeEmptyString: true,
     message: tr({ es: 'El código postal debe tener 5 dígitos', en: 'Zip code should be 5 digits' }),

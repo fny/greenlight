@@ -11,7 +11,6 @@ setGlobal({
   currentUser: null,
   test: null,
   registeringUser: LocalStorage.getRegisteringUser() || new RegisteringUser(),
-  registeringUserDetail: '',
   registeringLocation: LocalStorage.getRegisteringLocation() || new RegisteringLocation(),
   progress: null,
   toggleForceUpdate: false,

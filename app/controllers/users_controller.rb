@@ -43,6 +43,7 @@ module UsersController
 
     # Create a user
     post '/v1/users/create-and-sign-in', auth: false do
+      binding.pry
       user = User.new(User.restrict_params(request_json))
       if user.save
         set_status_created
