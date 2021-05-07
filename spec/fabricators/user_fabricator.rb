@@ -8,6 +8,8 @@ Fabricator(:user) do
   email { Faker::Internet.unique.email }
   mobile_number { PhoneNumber.random_number }
   password 'super_secret_password'
+  last_seen_at { Time.now - 1.day }
+  last_sign_in_at { Time.now - 3.day }
 end
 
 Fabricator(:child, from: :user) do

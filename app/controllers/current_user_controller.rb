@@ -3,6 +3,7 @@ module CurrentUserController
   extend ActiveSupport::Concern
   included do
     get '/v1/current-user' do
+      begin current_user.update_column(:last_seen_at, Time.now); rescue; end
       render json: CurrentUserSerializer.new(
         current_user,
         include: CurrentUserSerializer::INCLUDES

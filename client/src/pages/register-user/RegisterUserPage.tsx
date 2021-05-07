@@ -54,11 +54,10 @@ export default function RegisterUserPage(props: F7Props) {
     async (user: RegisteringUser) => {
       await setRegisteringUser(user)
       LocalStorage.setRegisteringUser(user)
-      const { registeringUserDetail } = getGlobal()
       if (user.role === Roles.Student || user.role === Roles.Staff) {
         // create user
         submitHandler.submit(async () => {
-          await registerUser(locationId, { ...user, password: registeringUserDetail })
+          await registerUser(locationId, { ...user })
         })
       } else {
         // go to add children

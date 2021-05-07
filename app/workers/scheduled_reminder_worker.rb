@@ -36,17 +36,22 @@ class ScheduledReminderWorker < ApplicationWorker
       and (u.email is not null or u.mobile_number is not null)
       -- have not sent it already
       and (u.daily_reminder_sent_at is null or date(timezone('America/New_York', u.daily_reminder_sent_at)) != date(timezone('America/New_York', now())))
+      -- has been on the app within the last 30 days
+      and DATE_PART('day', '#{Time.now.to_date}'::timestamp - u.last_seen_at::timestamp) <= 30
       union
       -- Parents without overrides
       select distinct parent_id as user_id from (
-	      select * from parents_children pc, location_accounts la, users u, locations l
-	      where u.id = pc.parent_id and la.user_id = pc.child_id and la.location_id = l.id
-        -- has completed registration
-	      and u.completed_welcome_at is not null
-	      -- has contact info
-	      and (u.email is not null or u.mobile_number is not null)
-	      -- have not sent it already
-	      and (u.daily_reminder_sent_at is null or date(timezone('America/New_York', u.daily_reminder_sent_at)) != date(timezone('America/New_York', now())))
+          select * from parents_children pc, location_accounts la, users u, locations l
+          where u.id = pc.parent_id and la.user_id = pc.child_id and la.location_id = l.id
+          -- has completed registration
+          and u.completed_welcome_at is not null
+          -- has contact info
+          and (u.email is not null or u.mobile_number is not null)
+          -- have not sent it already
+          and la.location_id NOT IN (select id from locations where permalink = 'socrates-academy')
+          and (u.daily_reminder_sent_at is null or date(timezone('America/New_York', u.daily_reminder_sent_at)) != date(timezone('America/New_York', now())))
+          -- has been on the app within the last 30 days
+          and DATE_PART('day', now() - u.last_seen_at) <= 30
       ) as x
       left outer join user_settings us on x.parent_id = us.user_id
       -- doesn't have an override
@@ -70,11 +75,17 @@ class ScheduledReminderWorker < ApplicationWorker
       and (u.daily_reminder_sent_at is null or date(timezone('America/New_York', u.daily_reminder_sent_at)) != date(timezone('America/New_York', now())))
       -- has completed registration
       and u.completed_welcome_at is not null
+      -- has been on the app within the last 30 days
+      and DATE_PART('day', now() - u.last_seen_at) <= 30
     SQL
   end
 
   def user_ids
     @user_ids ||= DB.query(sql).map(&:user_id)
+  end
+
+  def distances
+    @distances ||= DB.query(sql).map(&:distance)
   end
 
   def perform

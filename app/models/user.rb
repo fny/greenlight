@@ -508,6 +508,7 @@ end
 #  created_at                         :datetime         not null
 #  updated_at                         :datetime         not null
 #  daily_reminder_sent_at             :datetime
+#  last_seen_at                       :datetime
 #
 # Indexes
 #

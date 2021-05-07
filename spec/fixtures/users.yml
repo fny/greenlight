@@ -6,6 +6,7 @@ marge:
   password_digest: <%= BCrypt::Password.create('verysecure', cost: 4) %>
   auth_token: <%= SecureRandom.hex %>
   completed_welcome_at: <%= 20.days.ago %>
+  last_seen_at: <%= 20.days.ago %>
 
 # A parent who has two kids in a school and uses Greenlight for work
 homer:
@@ -16,6 +17,7 @@ homer:
   password_digest: <%= BCrypt::Password.create('verysecure', cost: 4) %>
   auth_token: <%= SecureRandom.hex %>
   completed_welcome_at: <%= 1.day.ago %>
+  last_seen_at: <%= 20.days.ago %>
 
 # A student at a school
 lisa:
