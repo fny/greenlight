@@ -25,7 +25,8 @@ const releaseData: ReleaseData[] = [
       'We updated the symptom list to match NC DHHS guidance',
       "We've added Supply Hawk as a sponsor",
       "We added an easy way to see registration codes for school administrators",
-      'We no longer send notifications to inactive accounts'
+      'We no longer send notifications to inactive accounts',
+      'We updated our software for improved security'
     ],
     whatsNewEs: [
     ],

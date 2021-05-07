@@ -36,7 +36,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "lint-fix": "eslint 'src/**/*.{js,ts,tsx}' --fix",
-    "licenses": "license-report --output=json > src/data/licenses.json"
+    "licenses": "license-report --output=json > src/assets/data/licenses.json"
   },
   "browserslist": {
     "production": [
