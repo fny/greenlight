@@ -60,6 +60,7 @@ import MentalHealthResourcesPage from 'src/pages/resources/MentalHealthResources
 import AdminEditGreenlightPassPage from 'src/pages/admin/AdminEditGreenlightPassPage'
 import SupportPage from 'src/pages/resources/SupportPage'
 import GuestPassPage from 'src/pages/surveys/GuestPassPage'
+import SupplyHawkPage from 'src/pages/resources/SupplyHawkPage'
 
 const beforeEnter = {
   // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars
@@ -256,6 +257,10 @@ const resourcesRoutes = {
     path: '/resources/mental-health',
     component: MentalHealthResourcesPage,
   },
+  supplyHawkPath: {
+    path: '/resources/supplyhawk',
+    component: SupplyHawkPage
+  }
 }
 
 const adminRoutes = {

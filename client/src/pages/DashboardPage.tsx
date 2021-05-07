@@ -223,6 +223,13 @@ export default function DashboardPage(props: F7Props): JSX.Element {
           <Icon slot="media" f7="exclamationmark_triangle" />
         </ListItem>
         <ListItem
+          title={tr({ en: "N95 Masks and More", es: '¡Ayuda! Estoy Sintomático o Positivo' })}
+          footer={tr({ en: 'Special Discounts from our sponsor Supply Hawk', es: 'Descuentos especiales de nuestro sponsor Supply Hawk' })}
+          link={paths.supplyHawkPath}
+        >
+          <Icon slot="media" f7="shield_fill" />
+        </ListItem>
+        <ListItem
           link={paths.chwRequestPath}
           title={tr({ en: 'Connect to Services', es: 'Conectarse a los servicios' })}
           footer={tr({

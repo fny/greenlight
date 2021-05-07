@@ -17,6 +17,24 @@ function date(value: string) {
 
 const releaseData: ReleaseData[] = [
   {
+    version: '1.9.1',
+    date: date('5/6/2021'),
+    notesEn: 'Updated symptoms',
+    notesEs: '',
+    whatsNewEn: [
+      'We updated the symptom list to match NC DHHS guidance',
+      "We've added Supply Hawk as a sponsor",
+      "We added an easy way to see registration codes for school administrators",
+      'We no longer send notifications to inactive accounts'
+    ],
+    whatsNewEs: [
+    ],
+    bugFixesEn: [
+      "We fixed the issues with passwords not being set at registration"
+    ],
+    bugFixesEs: [],
+  },
+  {
     version: '1.8.0',
     date: date('3/22/2021'),
     notesEn: 'Multiple location registration and our second to last release!',
